@@ -7,20 +7,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, CheckCircle2, AlertCircle, Loader2, Zap, ShieldCheck, Mail } from "lucide-react";
 import { toast } from "sonner";
 
-import { authClient } from "@/src/lib/auth-client";
+import { registerAction } from "../_actions/register.action";
 import { FormField } from "./FormField";
 import { SocialAuth } from "./SocialAuth";
 import { PasswordStrength } from "./PasswordStrength";
 import { cn } from "@/src/lib/utils";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.07, duration: 0.45, ease: [0.22, 1, 0.36, 1] },
-  }),
-};
+import { fadeUp } from "@/src/lib/motion";
 
 export function RegisterForm() {
   const router = useRouter();
@@ -33,7 +26,6 @@ export function RegisterForm() {
     e.preventDefault();
     setGlobalError(null);
     const formData = new FormData(e.currentTarget);
-    const name = formData.get("name") as string;
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
     const confirmPassword = formData.get("confirmPassword") as string;
@@ -44,23 +36,21 @@ export function RegisterForm() {
     }
 
     startTransition(async () => {
-      const { data, error } = await authClient.signUp.email({
-        email,
-        password,
-        name,
-        callbackURL: "/dashboard",
-      });
+      const result = await registerAction(formData);
 
-      if (error) {
-        setGlobalError(error.message || "Failed to create account. Please try again.");
-        toast.error(error.message || "Registration failed");
+      if (!result.success) {
+        const msg =
+          result.error ??
+          (result.fieldErrors ? Object.values(result.fieldErrors)[0] : null) ??
+          "Failed to create account. Please try again.";
+        setGlobalError(msg);
+        toast.error(msg);
         return;
       }
 
       setSuccess(true);
       toast.success("Account created successfully!");
-      
-      // Since email verification is required, we redirect to verify-email
+
       setTimeout(() => {
         router.push(`/verify-email?email=${encodeURIComponent(email)}`);
       }, 1500);
@@ -69,10 +59,8 @@ export function RegisterForm() {
 
   const handleSocialAuth = async (provider: "github" | "google") => {
     try {
-      await authClient.signIn.social({ 
-        provider, 
-        callbackURL: "/" 
-      });
+      const BASE = process.env.NEXT_PUBLIC_API_BASE_URL?.replace("/api/v1", "") ?? "http://localhost:5000";
+      window.location.href = `${BASE}/api/auth/sign-in/social?provider=${provider}&callbackURL=/dashboard`;
     } catch (err) {
       console.error(err);
       toast.error(`Failed to sign in with ${provider}`);

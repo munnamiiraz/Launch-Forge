@@ -2,6 +2,8 @@
 
 import { VerifyEmailActionResult, ResendOtpActionResult } from "../_types";
 
+const BASE = process.env.NEXT_PUBLIC_API_BASE_URL?.replace("/api/v1", "") ?? "http://localhost:5000";
+
 export async function verifyEmailAction(
   otp: string,
   email: string
@@ -11,25 +13,19 @@ export async function verifyEmailAction(
   }
 
   try {
-    /**
-     * Better-Auth OTP verification.
-     *
-     * import { auth } from "@/lib/auth";
-     *
-     * const result = await auth.api.verifyEmailOtp({
-     *   body: { email, otp },
-     * });
-     *
-     * if (result.error) {
-     *   if (result.error.status === 400) {
-     *     return { success: false, error: "Invalid or expired code. Please try again." };
-     *   }
-     *   return { success: false, error: result.error.message ?? "Verification failed." };
-     * }
-     */
+    const res = await fetch(`${BASE}/api/auth/email-otp/verify-email`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, otp }),
+    });
 
-    // ↑ Uncomment once better-auth is wired up.
-    await new Promise((r) => setTimeout(r, 800));
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}));
+      if (res.status === 400) {
+        return { success: false, error: json?.message ?? "Invalid or expired code. Please try again." };
+      }
+      return { success: false, error: json?.message ?? "Verification failed." };
+    }
 
     return { success: true };
   } catch {
@@ -45,25 +41,19 @@ export async function resendOtpAction(
   }
 
   try {
-    /**
-     * Better-Auth resend OTP.
-     *
-     * import { auth } from "@/lib/auth";
-     *
-     * const result = await auth.api.sendVerificationEmail({
-     *   body: { email },
-     * });
-     *
-     * if (result.error) {
-     *   if (result.error.status === 429) {
-     *     return { success: false, error: "Too many requests.", cooldownSeconds: 60 };
-     *   }
-     *   return { success: false, error: result.error.message ?? "Could not resend code." };
-     * }
-     */
+    const res = await fetch(`${BASE}/api/auth/email-otp/send-verification-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, type: "email-verification" }),
+    });
 
-    // ↑ Uncomment once better-auth is wired up.
-    await new Promise((r) => setTimeout(r, 600));
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}));
+      if (res.status === 429) {
+        return { success: false, error: "Too many requests. Please wait before retrying.", cooldownSeconds: 60 };
+      }
+      return { success: false, error: json?.message ?? "Could not resend code." };
+    }
 
     return { success: true, cooldownSeconds: 60 };
   } catch {

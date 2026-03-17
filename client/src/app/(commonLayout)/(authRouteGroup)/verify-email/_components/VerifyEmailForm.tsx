@@ -22,6 +22,7 @@ import { Separator } from "@/src/components/ui/separator";
 
 import { OtpInput } from "../_components/OtpInput";
 import { ResendButton } from "../_components/ResendButton";
+import { verifyEmailAction } from "../_actions/verify-email.action";
 import { toast } from "sonner";
 import { cn } from "@/src/lib/utils";
 
@@ -47,8 +48,6 @@ const shakeVariants: any = {
 export function VerifyEmailForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5000/api/v1";
-
   // email passed as ?email=... query param from the register flow
   const email = searchParams.get("email") ?? "";
   const maskedEmail = email
@@ -63,70 +62,35 @@ export function VerifyEmailForm() {
 
   const isComplete = otp.length === 6;
 
-  const verifyEmail = async (otpValue: string) => {
-    const res = await fetch(`${apiBaseUrl}/auth/verify-email`, {
-      method: "POST",
-      credentials: "include",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, otp: otpValue }),
+  const runVerify = (otpValue: string) => {
+    setError(null);
+    startTransition(async () => {
+      const result = await verifyEmailAction(otpValue, email);
+      if (result.success) {
+        setSuccess(true);
+        toast.success("Email verified successfully!");
+        setTimeout(() => router.push("/"), 1300);
+      } else {
+        const message = result.error ?? "Verification failed. Please try again.";
+        setError(message);
+        toast.error(message);
+        setOtp("");
+        setShakeKey((k) => k + 1);
+      }
     });
-
-    const payload = await res.json().catch(() => null);
-
-    if (!res.ok) {
-      const message =
-        payload?.message ||
-        payload?.error ||
-        "Invalid or expired code. Please try again.";
-      throw new Error(message);
-    }
-
-    return payload;
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!isComplete || isPending) return;
-
-    setError(null);
-    startTransition(async () => {
-      try {
-        await verifyEmail(otp);
-        setSuccess(true);
-        toast.success("Email verified successfully!");
-        setTimeout(() => router.push("/"), 1300);
-      } catch (err: any) {
-        const message = err?.message || "Verification failed. Please try again.";
-        setError(message);
-        toast.error(message);
-        setOtp("");
-        setShakeKey((k) => k + 1); // retrigger shake
-      }
-    });
+    runVerify(otp);
   };
 
   // Auto-submit when all 6 digits are entered
   const handleOtpChange = (value: string) => {
     setOtp(value);
     setError(null);
-    if (value.length === 6) {
-      setError(null);
-      startTransition(async () => {
-        try {
-          await verifyEmail(value);
-          setSuccess(true);
-          toast.success("Email verified successfully!");
-          setTimeout(() => router.push("/"), 1300);
-        } catch (err: any) {
-          const message = err?.message || "Verification failed. Please try again.";
-          setError(message);
-          toast.error(message);
-          setOtp("");
-          setShakeKey((k) => k + 1);
-          // Keep user on page so they can resend OTP if needed.
-        }
-      });
-    }
+    if (value.length === 6) runVerify(value);
   };
 
   return (

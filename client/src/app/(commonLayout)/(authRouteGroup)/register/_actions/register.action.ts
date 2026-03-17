@@ -1,7 +1,10 @@
 "use server";
 
 import { z } from "zod";
+import { setTokenInCookies } from "@/src/lib/tokenUtils";
 import { RegisterActionResult } from "../_types";
+
+const BASE_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const registerSchema = z
   .object({
@@ -32,12 +35,11 @@ export async function registerAction(
     confirmPassword: formData.get("confirmPassword") as string,
   };
 
-  // Validate with Zod
   const parsed = registerSchema.safeParse(raw);
 
   if (!parsed.success) {
     const fieldErrors: RegisterActionResult["fieldErrors"] = {};
-    parsed.error.errors.forEach((err) => {
+    parsed.error.issues.forEach((err) => {
       const field = err.path[0] as keyof typeof fieldErrors;
       if (field) fieldErrors[field] = err.message;
     });
@@ -45,37 +47,33 @@ export async function registerAction(
   }
 
   try {
-    /**
-     * Better-Auth server-side sign-up.
-     * Replace the import path with your actual better-auth instance.
-     *
-     * import { auth } from "@/lib/auth";
-     *
-     * const result = await auth.api.signUpEmail({
-     *   body: {
-     *     name: parsed.data.name,
-     *     email: parsed.data.email,
-     *     password: parsed.data.password,
-     *   },
-     * });
-     *
-     * if (result.error) {
-     *   if (result.error.status === 422) {
-     *     return { success: false, error: "An account with this email already exists." };
-     *   }
-     *   return { success: false, error: result.error.message ?? "Registration failed." };
-     * }
-     */
+    const res = await fetch(`${BASE_API_URL}/auth/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: parsed.data.name,
+        email: parsed.data.email,
+        password: parsed.data.password,
+      }),
+    });
 
-    // ↑ Uncomment the block above and remove this simulated delay once
-    //   your better-auth instance is wired up.
-    await new Promise((r) => setTimeout(r, 800));
+    const json = await res.json();
+
+    if (!res.ok) {
+      if (res.status === 422 || json?.message?.toLowerCase().includes("already")) {
+        return { success: false, error: "An account with this email already exists." };
+      }
+      return { success: false, error: json?.message ?? "Registration failed. Please try again." };
+    }
+
+    const { accessToken, refreshToken, sessionToken } = json.data;
+
+    if (accessToken) await setTokenInCookies("accessToken", accessToken);
+    if (refreshToken) await setTokenInCookies("refreshToken", refreshToken);
+    if (sessionToken) await setTokenInCookies("better-auth.session_token", sessionToken, 24 * 60 * 60);
 
     return { success: true };
   } catch {
-    return {
-      success: false,
-      error: "Something went wrong. Please try again.",
-    };
+    return { success: false, error: "Something went wrong. Please try again." };
   }
 }

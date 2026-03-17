@@ -1,71 +1,93 @@
 "use server";
 
 import { z } from "zod";
-import { ForgotPasswordActionResult, ResendLinkActionResult } from "../_types";
+import { ForgotPasswordActionResult, ResendOtpActionResult, ResetPasswordActionResult } from "../_types";
 
-/* ── Send reset link ─────────────────────────────────────────────── */
-export async function forgotPasswordAction(
-  formData: FormData
+const BASE_API = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5000/api/v1";
+
+async function sendPasswordResetOtp(email: string): Promise<{ success: boolean; error?: string }> {
+  const res = await fetch(`${BASE_API}/auth/forget-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!res.ok) {
+    const json = await res.json().catch(() => ({}));
+    return { success: false, error: json?.message ?? "Something went wrong. Please try again." };
+  }
+
+  return { success: true };
+}
+
+export async function requestPasswordResetAction(
+  email: string
 ): Promise<ForgotPasswordActionResult> {
-  const email = (formData.get("email") as string)?.trim();
-
-  const parsed = z
-    .string()
-    .email("Please enter a valid email address")
-    .safeParse(email);
-
+  const parsed = z.string().email("Please enter a valid email address").safeParse(email.trim());
   if (!parsed.success) {
-    return { success: false, fieldError: parsed.error.errors[0].message };
+    return { success: false, fieldError: parsed.error.issues[0].message };
   }
 
   try {
-    /**
-     * Better-Auth forgot password.
-     *
-     * import { auth } from "@/lib/auth";
-     *
-     * await auth.api.forgetPassword({
-     *   body: {
-     *     email: parsed.data,
-     *     redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`,
-     *   },
-     * });
-     *
-     * NOTE: Always return { success: true } regardless of whether the email
-     * exists — this prevents email-enumeration attacks.
-     */
-
-    await new Promise((r) => setTimeout(r, 750));
+    const result = await sendPasswordResetOtp(parsed.data.toLowerCase());
+    if (!result.success) return { success: false, error: result.error };
     return { success: true };
   } catch {
-    return {
-      success: false,
-      error: "Something went wrong. Please try again.",
-    };
+    return { success: false, error: "Something went wrong. Please try again." };
   }
 }
 
-/* ── Resend reset link ───────────────────────────────────────────── */
-export async function resendForgotLinkAction(
+export async function resendPasswordResetOtpAction(
   email: string
-): Promise<ResendLinkActionResult> {
-  if (!email) return { success: false, error: "Email address is required." };
-
+): Promise<ResendOtpActionResult> {
   try {
-    /**
-     * import { auth } from "@/lib/auth";
-     *
-     * await auth.api.forgetPassword({
-     *   body: {
-     *     email,
-     *     redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`,
-     *   },
-     * });
-     */
-
-    await new Promise((r) => setTimeout(r, 600));
+    const result = await sendPasswordResetOtp(email.toLowerCase());
+    if (!result.success) return { success: false, error: result.error };
     return { success: true };
   } catch {
-    return { success: false, error: "Could not resend. Please try again." };
+    return { success: false, error: "Could not resend OTP. Please try again." };
+  }
+}
+
+export async function resetPasswordWithOtpAction(
+  email: string,
+  otp: string,
+  password: string,
+  confirmPassword: string
+): Promise<ResetPasswordActionResult> {
+  if (password.length < 8) {
+    return { success: false, fieldErrors: { password: "Password must be at least 8 characters" } };
+  }
+  if (!/[A-Z]/.test(password)) {
+    return { success: false, fieldErrors: { password: "Must contain at least one uppercase letter" } };
+  }
+  if (!/[0-9]/.test(password)) {
+    return { success: false, fieldErrors: { password: "Must contain at least one number" } };
+  }
+  if (password !== confirmPassword) {
+    return { success: false, fieldErrors: { confirmPassword: "Passwords do not match" } };
+  }
+  if (otp.length !== 6) {
+    return { success: false, fieldErrors: { otp: "OTP must be 6 digits" } };
+  }
+
+  try {
+    const res = await fetch(`${BASE_API}/auth/reset-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: email.toLowerCase(), otp, newPassword: password }),
+    });
+
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}));
+      if (res.status === 400) {
+        return { success: false, error: json?.message ?? "Invalid or expired OTP." };
+      }
+      return { success: false, error: json?.message ?? "Reset failed. Please try again." };
+    }
+
+    return { success: true };
+  } catch {
+    return { success: false, error: "Something went wrong. Please try again." };
   }
 }

@@ -6,14 +6,7 @@ import Link from "next/link";
 import { Button } from "@/src/components/ui/button";
 import { cn } from "@/src/lib/utils";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.07, duration: 0.45, ease: [0.22, 1, 0.36, 1] },
-  }),
-};
+import { fadeUp } from "@/src/lib/motion";
 
 export function InvalidTokenView() {
   return (

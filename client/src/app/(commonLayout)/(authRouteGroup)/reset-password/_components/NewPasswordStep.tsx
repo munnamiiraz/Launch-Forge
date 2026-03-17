@@ -26,14 +26,7 @@ import { PasswordFieldWithToggle } from "../../login/_components/PasswordFieldWi
 import { PasswordStrength } from "../../../(authRouteGroup)/register/_components/PasswordStrength";
 import { cn } from "@/src/lib/utils";
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 16 },
-  visible: (i: number) => ({
-    opacity: 1,
-    y: 0,
-    transition: { delay: i * 0.07, duration: 0.45, ease: [0.22, 1, 0.36, 1] },
-  }),
-};
+import { fadeUp } from "@/src/lib/motion";
 
 interface NewPasswordStepProps {
   token: string;
@@ -57,7 +50,7 @@ export function NewPasswordStep({
     const formData = new FormData(e.currentTarget);
 
     startTransition(async () => {
-      const res = await resetPasswordAction(formData, token);
+      const res = await resetPasswordAction(formData);
       setResult(res);
       if (res.success) onSuccess();
     });

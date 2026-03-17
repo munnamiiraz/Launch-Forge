@@ -1,12 +1,10 @@
 "use server";
 
 import { z } from "zod";
-import {
-  ForgotPasswordActionResult,
-  ResetPasswordActionResult,
-} from "../_types";
+import { ForgotPasswordActionResult, ResetPasswordActionResult } from "../_types";
 
-/* ── Step 1 — request a reset link ───────────────────────────────── */
+const BASE_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export async function forgotPasswordAction(
   formData: FormData
 ): Promise<ForgotPasswordActionResult> {
@@ -14,35 +12,31 @@ export async function forgotPasswordAction(
 
   const parsed = z.string().email("Please enter a valid email address").safeParse(email);
   if (!parsed.success) {
-    return { success: false, fieldError: parsed.error.errors[0].message };
+    return { success: false, fieldError: parsed.error.issues[0].message };
   }
 
   try {
-    /**
-     * Better-Auth forgot password.
-     *
-     * import { auth } from "@/lib/auth";
-     *
-     * await auth.api.forgetPassword({
-     *   body: {
-     *     email: parsed.data,
-     *     redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`,
-     *   },
-     * });
-     *
-     * Always return success to avoid email enumeration attacks.
-     */
+    const res = await fetch(`${BASE_API_URL}/auth/forget-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: parsed.data }),
+    });
 
-    await new Promise((r) => setTimeout(r, 700));
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}));
+      return { success: false, error: json?.message ?? "Something went wrong. Please try again." };
+    }
+
     return { success: true };
   } catch {
     return { success: false, error: "Something went wrong. Please try again." };
   }
 }
 
-/* ── Step 2 — set the new password (token from URL) ──────────────── */
 const resetSchema = z
   .object({
+    email: z.string().email("Invalid email"),
+    otp: z.string().length(6, "OTP must be 6 digits"),
     password: z
       .string()
       .min(8, "Password must be at least 8 characters")
@@ -56,10 +50,11 @@ const resetSchema = z
   });
 
 export async function resetPasswordAction(
-  formData: FormData,
-  token: string
+  formData: FormData
 ): Promise<ResetPasswordActionResult> {
   const raw = {
+    email: formData.get("email") as string,
+    otp: formData.get("otp") as string,
     password: formData.get("password") as string,
     confirmPassword: formData.get("confirmPassword") as string,
   };
@@ -67,39 +62,32 @@ export async function resetPasswordAction(
   const parsed = resetSchema.safeParse(raw);
   if (!parsed.success) {
     const fieldErrors: ResetPasswordActionResult["fieldErrors"] = {};
-    parsed.error.errors.forEach((e) => {
+    parsed.error.issues.forEach((e: any) => {
       const field = e.path[0] as keyof typeof fieldErrors;
       if (field) fieldErrors[field] = e.message;
     });
     return { success: false, fieldErrors };
   }
 
-  if (!token) {
-    return { success: false, error: "Reset token is missing or invalid." };
-  }
-
   try {
-    /**
-     * Better-Auth reset password.
-     *
-     * import { auth } from "@/lib/auth";
-     *
-     * const result = await auth.api.resetPassword({
-     *   body: {
-     *     token,
-     *     newPassword: parsed.data.password,
-     *   },
-     * });
-     *
-     * if (result.error) {
-     *   if (result.error.status === 400) {
-     *     return { success: false, error: "This reset link has expired or already been used." };
-     *   }
-     *   return { success: false, error: result.error.message ?? "Reset failed." };
-     * }
-     */
+    const res = await fetch(`${BASE_API_URL}/auth/reset-password`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: parsed.data.email,
+        otp: parsed.data.otp,
+        newPassword: parsed.data.password,
+      }),
+    });
 
-    await new Promise((r) => setTimeout(r, 800));
+    if (!res.ok) {
+      const json = await res.json().catch(() => ({}));
+      if (res.status === 400) {
+        return { success: false, error: json?.message ?? "Invalid or expired OTP." };
+      }
+      return { success: false, error: json?.message ?? "Reset failed. Please try again." };
+    }
+
     return { success: true };
   } catch {
     return { success: false, error: "Something went wrong. Please try again." };

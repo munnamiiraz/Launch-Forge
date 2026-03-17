@@ -30,7 +30,7 @@ function getStrength(password: string): StrengthResult {
 
   return {
     score: clamped,
-    ...(clamped > 0 ? map[clamped] : { label: "", color: "bg-zinc-800" }),
+    ...(clamped > 0 ? map[clamped as 1 | 2 | 3 | 4] : { label: "", color: "bg-zinc-800" }),
   };
 }
 

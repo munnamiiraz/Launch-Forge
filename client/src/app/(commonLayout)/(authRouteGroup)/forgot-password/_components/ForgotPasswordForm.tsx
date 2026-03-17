@@ -5,21 +5,27 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Zap, ArrowLeft } from "lucide-react";
 import { Separator } from "@/src/components/ui/separator";
+import { cn } from "@/src/lib/utils";
 
 import { RequestView } from "./RequestView";
-import { SentView } from "./SentView";
-import { ForgotPasswordActionResult, ForgotPasswordView } from "../_types";
-import { cn } from "@/src/lib/utils";
+import { VerifyView } from "./VerifyView";
+import { DoneView } from "./DoneView";
+import { ForgotPasswordView } from "../_types";
+
+const STEP_LABELS: Record<ForgotPasswordView, { pill: string; pillColor: string }> = {
+  request: { pill: "Step 1 of 2", pillColor: "border-indigo-500/25 bg-indigo-500/10 text-indigo-400" },
+  verify:  { pill: "Step 2 of 2", pillColor: "border-amber-500/25 bg-amber-500/10 text-amber-400" },
+  done:    { pill: "Complete ✓",  pillColor: "border-emerald-500/25 bg-emerald-500/10 text-emerald-400" },
+};
 
 export function ForgotPasswordForm() {
   const [view, setView] = useState<ForgotPasswordView>("request");
-  const [sentEmail, setSentEmail] = useState("");
-  const [requestResult, setRequestResult] =
-    useState<ForgotPasswordActionResult | null>(null);
+  const [email, setEmail] = useState("");
+
+  const { pill, pillColor } = STEP_LABELS[view];
 
   return (
     <div className="relative w-full max-w-md">
-      {/* ── Card ──────────────────────────────────────────────────── */}
       <motion.div
         initial={{ opacity: 0, y: 24, scale: 0.98 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -31,7 +37,7 @@ export function ForgotPasswordForm() {
           "before:bg-gradient-to-b before:from-zinc-800/10 before:to-transparent"
         )}
       >
-        {/* Logo */}
+        {/* Logo + step pill */}
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
@@ -42,12 +48,9 @@ export function ForgotPasswordForm() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/15">
               <Zap size={15} className="text-indigo-400" />
             </div>
-            <span className="text-sm font-semibold tracking-tight text-zinc-100">
-              LaunchForge
-            </span>
+            <span className="text-sm font-semibold tracking-tight text-zinc-100">LaunchForge</span>
           </div>
 
-          {/* Step pill */}
           <AnimatePresence mode="wait">
             <motion.div
               key={view}
@@ -55,68 +58,58 @@ export function ForgotPasswordForm() {
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.85 }}
               transition={{ duration: 0.2 }}
-              className={cn(
-                "rounded-full border px-2.5 py-0.5 text-[10px] font-medium tracking-wide",
-                view === "request"
-                  ? "border-indigo-500/25 bg-indigo-500/10 text-indigo-400"
-                  : "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
-              )}
+              className={cn("rounded-full border px-2.5 py-0.5 text-[10px] font-medium tracking-wide", pillColor)}
             >
-              {view === "request" ? "Step 1 of 2" : "Step 1 complete ✓"}
+              {pill}
             </motion.div>
           </AnimatePresence>
         </motion.div>
 
-        {/* ── View content ──────────────────────────────────────── */}
+        {/* Step content */}
         <AnimatePresence mode="wait">
-          {view === "request" ? (
+          {view === "request" && (
             <RequestView
               key="request"
-              result={requestResult}
-              setResult={setRequestResult}
-              onSuccess={(email) => {
-                setSentEmail(email);
-                setView("sent");
-              }}
-            />
-          ) : (
-            <SentView
-              key="sent"
-              email={sentEmail}
-              onChangeEmail={() => {
-                setRequestResult(null);
-                setView("request");
+              onSuccess={(submittedEmail) => {
+                setEmail(submittedEmail);
+                setView("verify");
               }}
             />
           )}
+          {view === "verify" && (
+            <VerifyView
+              key="verify"
+              email={email}
+              onBack={() => setView("request")}
+              onSuccess={() => setView("done")}
+            />
+          )}
+          {view === "done" && <DoneView key="done" />}
         </AnimatePresence>
 
-        {/* Separator + bottom nav */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.55, duration: 0.4 }}
-          className="mt-6 flex flex-col gap-4"
-        >
-          <Separator className="bg-zinc-800/60" />
-
-          <div className="flex items-center justify-between">
-            <Link
-              href="/login"
-              className="flex items-center gap-1.5 text-xs text-zinc-600 transition-colors hover:text-zinc-400"
-            >
-              <ArrowLeft size={12} />
-              Back to sign in
-            </Link>
-
-            <Link
-              href="/register"
-              className="text-xs text-zinc-600 transition-colors hover:text-zinc-400"
-            >
-              Create an account
-            </Link>
-          </div>
-        </motion.div>
+        {/* Bottom nav — hide on done */}
+        {view !== "done" && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.55, duration: 0.4 }}
+            className="mt-6 flex flex-col gap-4"
+          >
+            <Separator className="bg-zinc-800/60" />
+            <div className="flex items-center justify-between">
+              <Link
+                href="/login"
+                className="flex items-center gap-1.5 text-xs text-zinc-600 transition-colors hover:text-zinc-400"
+              >
+                <ArrowLeft size={12} />
+                Back to sign in
+              </Link>
+              <Link href="/register" className="text-xs text-zinc-600 transition-colors hover:text-zinc-400">
+                Create an account
+              </Link>
+            </div>
+          </motion.div>
+        )}
       </motion.div>
     </div>
   );

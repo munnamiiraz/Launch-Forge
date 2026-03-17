@@ -21,7 +21,7 @@ export async function loginAction(formData: FormData): Promise<LoginActionResult
 
   if (!parsed.success) {
     const fieldErrors: LoginActionResult["fieldErrors"] = {};
-    parsed.error.errors.forEach((err) => {
+    parsed.error.issues.forEach((err) => {
       const field = err.path[0] as keyof typeof fieldErrors;
       if (field) fieldErrors[field] = err.message;
     });

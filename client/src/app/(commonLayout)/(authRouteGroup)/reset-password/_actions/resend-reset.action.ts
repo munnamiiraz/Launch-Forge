@@ -1,17 +1,11 @@
 "use server";
 
+const BASE_API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
 export async function resendResetLinkAction(email: string): Promise<void> {
-  /**
-   * Better-Auth resend reset link.
-   *
-   * import { auth } from "@/lib/auth";
-   *
-   * await auth.api.forgetPassword({
-   *   body: {
-   *     email,
-   *     redirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/reset-password`,
-   *   },
-   * });
-   */
-  await new Promise((r) => setTimeout(r, 600));
+  await fetch(`${BASE_API_URL}/auth/forget-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
 }

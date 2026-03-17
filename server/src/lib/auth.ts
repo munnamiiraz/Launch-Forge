@@ -93,32 +93,25 @@ export const auth = betterAuth({
       emailOTP({
         overrideDefaultEmailVerification: true,
         async sendVerificationOTP({email, otp, type}) {
-          console.log(`Sending ${type} OTP to ${email}`);
-          const user = await prisma.user.findUnique({
-            where: { email }
-          });
-
-          const name = user?.name || "User";
-
-          console.log(`Actually sending ${type} OTP to ${email}...`);
+          let name = "User";
           try {
-            await sendEmail({
-              to: email,
-              subject: type === "email-verification" ? "Verify your email" : 
-                       type === "forget-password" ? "Password Reset OTP" : "OTP Code",
-              templateName: "otp",
-              templateData: {
-                name,
-                otp,
-              }
-            });
-            console.log(`Email successfully sent to ${email}`);
-          } catch (error) {
-            console.error(`Failed to send ${type} email to ${email}:`, error);
+            const user = await prisma.user.findUnique({ where: { email } });
+            if (user?.name) name = user.name;
+          } catch {
+            // non-fatal — fall back to "User"
           }
+
+          await sendEmail({
+            to: email,
+            subject: type === "email-verification" ? "Verify your email" :
+                     type === "forget-password" ? "Password Reset OTP" : "OTP Code",
+            templateName: "otp",
+            templateData: { name, otp, type },
+          });
         },
-        expiresIn: 10 * 60, // 10 minutes (user request mentioned 10 minutes in the UI)
+        expiresIn: 10 * 60,
         otpLength: 6,
+        rateLimit: { window: 60, max: 10 },
       })
     ],
 

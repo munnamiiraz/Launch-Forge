@@ -12,6 +12,7 @@ const outfit = Outfit({
 });
 
 import type { Metadata } from "next";
+import { QueryProvider } from "@/src/provider/QueryProvider";
 
 export const metadata: Metadata = {
   title: "LaunchForge",
@@ -26,7 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${outfit.variable} ${inter.variable}`}>
       <body className="font-inter antialiased">
-        {children}
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );
