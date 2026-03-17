@@ -31,58 +31,47 @@ const registerUser = async (payload: IRegisterPatientPayload) => {
         throw new AppError(status.BAD_REQUEST, "Failed to register patient");
     }
 
-    //TODO : Create Patient Profile In Transaction After Sign Up Of Patient In USer Model
-    try {
-        const user = await prisma.$transaction(async (tx) => {
+    // better-auth handles user creation via the prismaAdapter, 
+    // so we don't need to manually create the user here.
+    // We can just use the user object returned from signUpEmail.
+    const user = data.user;
 
-            const userTx = await tx.user.create({
-                data: {
-                    id: data.user.id,
-                    name: payload.name,
-                    email: payload.email,
-                }
-            })
-
-            return userTx
-        })
-
-        const accessToken = tokenUtils.getAccessToken({
-            userId: data.user.id,
-            role: data.user.role,
-            name: data.user.name,
-            email: data.user.email,
-            status: data.user.status,
-            isDeleted: data.user.isDeleted,
-            emailVerified: data.user.emailVerified,
-        });
-
-        const refreshToken = tokenUtils.getRefreshToken({
-            userId: data.user.id,
-            role: data.user.role,
-            name: data.user.name,
-            email: data.user.email,
-            status: data.user.status,
-            isDeleted: data.user.isDeleted,
-            emailVerified: data.user.emailVerified,
-        });
-
-        return {
-            ...data,
-            accessToken,
-            refreshToken,
-            user
-        }
-
-    } catch (error) {
-        console.log("Transaction error : ", error);
-        await prisma.user.delete({
-            where: {
-                id: data.user.id
-            }
-        })
-        throw error;
+    // DATABASE VERIFICATION: Explicitly check if the user was persisted to the database
+    const dbUserCheck = await prisma.user.findUnique({
+        where: { id: user.id }
+    });
+    
+    if (dbUserCheck) {
+        console.log(`✅ SUCCESS: User ${user.email} (ID: ${user.id}) found in database.`);
+    } else {
+        console.warn(`❌ WARNING: User ${user.email} (ID: ${user.id}) was NOT found in database despite signUpEmail success!`);
     }
 
+    const accessToken = tokenUtils.getAccessToken({
+        userId: user.id,
+        role: user.role,
+        name: user.name,
+        email: user.email,
+        status: user.status,
+        isDeleted: user.isDeleted,
+        emailVerified: user.emailVerified,
+    });
+
+    const refreshToken = tokenUtils.getRefreshToken({
+        userId: user.id,
+        role: user.role,
+        name: user.name,
+        email: user.email,
+        status: user.status,
+        isDeleted: user.isDeleted,
+        emailVerified: user.emailVerified,
+    });
+
+    return {
+        ...data,
+        accessToken,
+        refreshToken,
+    }
 }
 
 
@@ -95,6 +84,28 @@ const loginUser = async (payload: ILoginUserPayload) => {
             password,
         }
     })
+
+    // Ensure a session row exists for refresh-token logic (which depends on `prisma.session`).
+    // better-auth may already create this; we upsert defensively using the session token.
+    const sessionToken = (data as any)?.session?.token || (data as any)?.token;
+    if (sessionToken) {
+        await prisma.session.upsert({
+            where: { token: sessionToken },
+            update: {
+                userId: data.user.id,
+                expiresAt: new Date(Date.now() + 60 * 60 * 60 * 24 * 1000),
+                updatedAt: new Date(),
+            },
+            create: {
+                id: sessionToken,
+                token: sessionToken,
+                userId: data.user.id,
+                expiresAt: new Date(Date.now() + 60 * 60 * 60 * 24 * 1000),
+                ipAddress: null,
+                userAgent: null,
+            },
+        });
+    }
 
     if (data.user.status === UserStatus.SUSPENDED) {
         throw new AppError(status.FORBIDDEN, "User is suspended");
@@ -302,16 +313,59 @@ const verifyEmail = async (email : string, otp : string) => {
         }
     })
 
-    if(result.status && !result.user.emailVerified){
-        await prisma.user.update({
+    if(result.status){
+        // Ensure user is updated in database if Better-Auth plugin doesn't do it automatically
+        // Actually, verifyEmailOTP SHOULD update better-auth user, but let's be sure.
+        const user = await prisma.user.update({
             where : {
                 email,
             },
             data : {
                 emailVerified: true,
             }
-        })
+        });
+
+        // Get session after verification to provide token 
+        // (if it switched session or just to be consistent)
+        // Actually, we can just find the latest session for this user
+        const session = await prisma.session.findFirst({
+            where: {
+                userId: user.id
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        });
+
+        const accessToken = tokenUtils.getAccessToken({
+            userId: user.id,
+            role: user.role,
+            name: user.name,
+            email: user.email,
+            status: user.status,
+            isDeleted: user.isDeleted,
+            emailVerified: user.emailVerified,
+        });
+
+        const refreshToken = tokenUtils.getRefreshToken({
+            userId: user.id,
+            role: user.role,
+            name: user.name,
+            email: user.email,
+            status: user.status,
+            isDeleted: user.isDeleted,
+            emailVerified: user.emailVerified,
+        });
+
+        return {
+            user,
+            session,
+            accessToken,
+            refreshToken,
+        }
     }
+
+    throw new AppError(status.BAD_REQUEST, "Invalid or expired OTP");
 }
 
 const forgetPassword = async (email : string) => {

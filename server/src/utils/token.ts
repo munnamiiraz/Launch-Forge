@@ -4,6 +4,25 @@ import { envVars } from "../config/env";
 import { CookieUtils } from "./cookie";
 import { jwtUtils } from "./jwt";
 
+const isHttpsUrl = (url: string | undefined) =>
+    typeof url === "string" && url.startsWith("https://");
+
+const getCookieAttributes = () => {
+    // `SameSite=None` requires `Secure`, which breaks localhost over http.
+    const cookieSecure =
+        envVars.NODE_ENV === "production" ||
+        isHttpsUrl(envVars.FRONTEND_URL) ||
+        isHttpsUrl(envVars.BETTER_AUTH_URL);
+
+    const sameSite = cookieSecure ? "none" : "lax";
+
+    return {
+        httpOnly: true,
+        secure: cookieSecure,
+        sameSite: sameSite as "none" | "lax",
+        path: "/",
+    };
+};
 
 //Creating access token
 const getAccessToken = (payload: JwtPayload) => {
@@ -28,10 +47,7 @@ const getRefreshToken = (payload: JwtPayload) => {
 
 const setAccessTokenCookie = (res: Response, token: string) => {
     CookieUtils.setCookie(res, 'accessToken', token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        path: '/',
+        ...getCookieAttributes(),
         //1 day
         maxAge: 60 * 60 * 24 * 1000,
     });
@@ -39,10 +55,7 @@ const setAccessTokenCookie = (res: Response, token: string) => {
 
 const setRefreshTokenCookie = (res: Response, token: string) => {
     CookieUtils.setCookie(res, 'refreshToken', token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        path: '/',
+        ...getCookieAttributes(),
         //7d
         maxAge: 60 * 60 * 24 * 1000 * 7,
     });
@@ -50,15 +63,18 @@ const setRefreshTokenCookie = (res: Response, token: string) => {
 
 const setBetterAuthSessionCookie = (res: Response, token: string) => {
     CookieUtils.setCookie(res, "better-auth.session_token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        path: '/',
+        ...getCookieAttributes(),
         //1 day
         maxAge: 60 * 60 * 24 * 1000,
     });
 }
 
+const clearAuthCookies = (res: Response) => {
+    const attributes = getCookieAttributes();
+    CookieUtils.clearCookie(res, "accessToken", attributes);
+    CookieUtils.clearCookie(res, "refreshToken", attributes);
+    CookieUtils.clearCookie(res, "better-auth.session_token", attributes);
+};
 
 
 export const tokenUtils = {
@@ -67,4 +83,5 @@ export const tokenUtils = {
     setAccessTokenCookie,
     setRefreshTokenCookie,
     setBetterAuthSessionCookie,
+    clearAuthCookies,
 }

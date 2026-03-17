@@ -11,7 +11,7 @@ import { auth } from "./lib/auth";
 import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 import { notFound } from "./middlewares/notFound";
 // import { PaymentController } from "./app/modules/payment/payment.controller";
-// import { IndexRoutes } from "./app/routes";
+import { IndexRoutes } from "./routes";
 
 const app: Application = express();
 app.set("query parser", (str : string) => qs.parse(str));
@@ -38,7 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 
-// app.use("/api/v1", IndexRoutes);
+app.use("/api/v1", IndexRoutes);
 
 // Basic route
 app.get('/', async (req: Request, res: Response) => {

@@ -7,6 +7,17 @@ import { sendEmail } from "../utils/email";
 import { prisma } from "./prisma";
 // If your Prisma file is located elsewhere, you can change the path
 
+const isHttpsUrl = (url: string | undefined) =>
+  typeof url === "string" && url.startsWith("https://");
+
+// `SameSite=None` requires `Secure`, which breaks localhost over http.
+const authCookieSecure =
+  envVars.NODE_ENV === "production" ||
+  isHttpsUrl(envVars.BETTER_AUTH_URL) ||
+  isHttpsUrl(envVars.FRONTEND_URL);
+
+const authCookieSameSite = authCookieSecure ? "none" : "lax";
+
 export const auth = betterAuth({
     baseURL: envVars.BETTER_AUTH_URL,
     secret: envVars.BETTER_AUTH_SECRET,
@@ -16,7 +27,7 @@ export const auth = betterAuth({
 
     emailAndPassword: {
       enabled: true,
-      requireEmailVerification: true,
+      requireEmailVerification: false,
     },
 
     socialProviders:{
@@ -39,7 +50,7 @@ export const auth = betterAuth({
 
     emailVerification:{
       sendOnSignUp: true,
-      sendOnSignIn: true,
+      sendOnSignIn: false,
       autoSignInAfterVerification: true,
     },
 
@@ -82,57 +93,33 @@ export const auth = betterAuth({
       emailOTP({
         overrideDefaultEmailVerification: true,
         async sendVerificationOTP({email, otp, type}) {
-          if(type === "email-verification"){
-            const user = await prisma.user.findUnique({
-              where : {
-                email,
+          console.log(`Sending ${type} OTP to ${email}`);
+          const user = await prisma.user.findUnique({
+            where: { email }
+          });
+
+          const name = user?.name || "User";
+
+          console.log(`Actually sending ${type} OTP to ${email}...`);
+          try {
+            await sendEmail({
+              to: email,
+              subject: type === "email-verification" ? "Verify your email" : 
+                       type === "forget-password" ? "Password Reset OTP" : "OTP Code",
+              templateName: "otp",
+              templateData: {
+                name,
+                otp,
               }
-            })
-
-            if(!user){
-              console.error(`User with email ${email} not found. Cannot send verification OTP.`);
-                return;
-                }
-
-            // if(user && user.role === Role.ADMIN){
-            //   console.log(`User with email ${email} is a super admin. Skipping sending verification OTP.`);
-            //   return;
-            // }
-                  
-            if (user && !user.emailVerified){
-              sendEmail({
-                  to : email,
-                  subject : "Verify your email",
-                  templateName : "otp",
-                  templateData :{
-                      name : user.name,
-                      otp,
-                  }
-              })
-            }
-            }else if(type === "forget-password"){
-              const user = await prisma.user.findUnique({
-                  where : {
-                      email,
-                  }
-              })
-
-              if(user){
-                sendEmail({
-                  to : email,
-                  subject : "Password Reset OTP",
-                  templateName : "otp",
-                  templateData :{
-                      name : user.name,
-                      otp,
-                  }
-                })
-              }
-            }
-          },
-            expiresIn : 2 * 60, // 2 minutes in seconds
-            otpLength : 6,
-        })
+            });
+            console.log(`Email successfully sent to ${email}`);
+          } catch (error) {
+            console.error(`Failed to send ${type} email to ${email}:`, error);
+          }
+        },
+        expiresIn: 10 * 60, // 10 minutes (user request mentioned 10 minutes in the UI)
+        otpLength: 6,
+      })
     ],
 
     session: {
@@ -152,22 +139,22 @@ export const auth = betterAuth({
 
     advanced: {
         // disableCSRFCheck: true,
-      useSecureCookies : false,
+      useSecureCookies: authCookieSecure,
       cookies:{
         state:{
           attributes:{
-            sameSite: "none",
-            secure: true,
+            sameSite: authCookieSameSite,
+            secure: authCookieSecure,
             httpOnly: true,
             path: "/",
           }
         },
         sessionToken:{
           attributes:{
-            sameSite: "none",
-              secure: true,
-              httpOnly: true,
-              path: "/",
+            sameSite: authCookieSameSite,
+            secure: authCookieSecure,
+            httpOnly: true,
+            path: "/",
           }
         }
       }
