@@ -1,0 +1,295 @@
+import status from "http-status";
+import { prisma } from "../../lib/prisma";
+import AppError from "../../errorHelpers/AppError";
+import {
+  CreateWaitlistPayload,
+  GetWaitlistsPayload,
+  PaginatedWaitlists,
+  WaitlistItem,
+} from "./waitlist.interface";
+import {
+  WAITLIST_MESSAGES,
+  WAITLIST_PLAN_LIMITS,
+} from "./waitlist.constants";
+import { normalisePagination, buildPaginationMeta } from "./waitlist.utils";
+
+export const waitlistService = {
+  /* ── POST /api/waitlists ─────────────────────────────────────── */
+
+  async createWaitlist(payload: CreateWaitlistPayload): Promise<WaitlistItem> {
+    const { workspaceId, requestingUserId, ...data } = payload;
+    console.log(payload);
+    /* 1. Verify the caller is a member of the workspace ─────────── */
+    const membership = await prisma.workspaceMember.findUnique({
+      where: {
+        workspaceId_userId: { workspaceId, userId: requestingUserId },
+        deletedAt: null,
+      },
+      include: { workspace: true },
+    });
+
+    if (!membership) {
+      throw new AppError(status.FORBIDDEN, WAITLIST_MESSAGES.UNAUTHORIZED);
+    }
+
+    const workspace = membership.workspace;
+
+    /* 2. Enforce plan waitlist limits ───────────────────────────── */
+    const planLimit = WAITLIST_PLAN_LIMITS[workspace.plan] ?? 1;
+
+    if (planLimit !== Infinity) {
+      const existingCount = await prisma.waitlist.count({
+        where: { workspaceId, deletedAt: null },
+      });
+
+      if (existingCount >= planLimit) {
+        throw new AppError(status.PAYMENT_REQUIRED, WAITLIST_MESSAGES.PLAN_LIMIT);
+      }
+    }
+
+    /* 3. Check slug uniqueness within the workspace ─────────────── */
+    const slugTaken = await prisma.waitlist.findUnique({
+      where: {
+        workspaceId_slug: { workspaceId, slug: data.slug },
+      },
+    });
+
+    if (slugTaken) {
+      throw new AppError(status.CONFLICT, WAITLIST_MESSAGES.SLUG_TAKEN);
+    }
+
+    /* 4. Create the waitlist ─────────────────────────────────────── */
+    const waitlist = await prisma.waitlist.create({
+      data: {
+        workspaceId,
+        name:        data.name,
+        slug:        data.slug,
+        description: data.description,
+        logoUrl:     data.logoUrl,
+        theme:       data.theme,
+        isOpen:      data.isOpen ?? true,
+      },
+      select: {
+        id:          true,
+        name:        true,
+        slug:        true,
+        description: true,
+        logoUrl:     true,
+        isOpen:      true,
+        createdAt:   true,
+        updatedAt:   true,
+        _count: { select: { subscribers: true } },
+      },
+    });
+
+    return waitlist;
+  },
+
+  /* ── GET /api/waitlists ──────────────────────────────────────── */
+
+  async getWaitlists(payload: GetWaitlistsPayload): Promise<PaginatedWaitlists> {
+    const { workspaceId, requestingUserId, query } = payload;
+
+    /* 1. Verify membership ───────────────────────────────────────── */
+    const membership = await prisma.workspaceMember.findUnique({
+      where: {
+        workspaceId_userId: { workspaceId, userId: requestingUserId },
+        deletedAt: null,
+      },
+    });
+
+    if (!membership) {
+      throw new AppError(status.FORBIDDEN, WAITLIST_MESSAGES.UNAUTHORIZED);
+    }
+
+    /* 2. Build filters ──────────────────────────────────────────── */
+    const { page, limit, skip } = normalisePagination(query);
+
+    const where = {
+      workspaceId,
+      deletedAt: null,
+      ...(query.search
+        ? {
+            OR: [
+              { name:        { contains: query.search, mode: "insensitive" as const } },
+              { slug:        { contains: query.search, mode: "insensitive" as const } },
+              { description: { contains: query.search, mode: "insensitive" as const } },
+            ],
+          }
+        : {}),
+      ...(query.isOpen !== undefined ? { isOpen: query.isOpen } : {}),
+    };
+
+    /* 3. Parallel count + data fetch ─────────────────────────────── */
+    const [total, waitlists] = await prisma.$transaction([
+      prisma.waitlist.count({ where }),
+      prisma.waitlist.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip,
+        take: limit,
+        select: {
+          id:          true,
+          name:        true,
+          slug:        true,
+          description: true,
+          logoUrl:     true,
+          isOpen:      true,
+          createdAt:   true,
+          updatedAt:   true,
+          _count: { select: { subscribers: true } },
+        },
+      }),
+    ]);
+
+    return {
+      data: waitlists,
+      meta: buildPaginationMeta(total, page, limit),
+    };
+  },
+
+};
+
+import {
+  GetWaitlistByIdPayload,
+  DeleteWaitlistPayload,
+  WaitlistDetail,
+  DeletedWaitlistAck,
+} from "./waitlist.interface";
+import { WAITLIST_BY_ID_MESSAGES } from "./waitlist.constants";
+import {
+  assertWaitlistBelongsToWorkspace,
+  CrossWorkspaceAccessError,
+  isWorkspaceOwner,
+} from "./waitlist.utils";
+
+/** Prisma select reused by both service methods to keep projections consistent. */
+const WAITLIST_DETAIL_SELECT = {
+  id:          true,
+  workspaceId: true,
+  name:        true,
+  slug:        true,
+  description: true,
+  logoUrl:     true,
+  theme:       true,
+  isOpen:      true,
+  createdAt:   true,
+  updatedAt:   true,
+  _count: { select: { subscribers: true } },
+} as const;
+
+export const waitlistByIdService = {
+  /* ── GET /api/workspaces/:workspaceId/waitlists/:id ──────────── */
+
+  async getWaitlistById(
+    payload: GetWaitlistByIdPayload,
+  ): Promise<WaitlistDetail> {
+    const { waitlistId, workspaceId, requestingUserId } = payload;
+
+    /* 1. Verify workspace membership ─────────────────────────────── */
+    const membership = await prisma.workspaceMember.findUnique({
+      where: {
+        workspaceId_userId: { workspaceId, userId: requestingUserId },
+        deletedAt: null,
+      },
+    });
+
+    if (!membership) {
+      throw new AppError(status.FORBIDDEN, WAITLIST_BY_ID_MESSAGES.UNAUTHORIZED);
+    }
+
+    /* 2. Fetch the waitlist (non-deleted) ────────────────────────── */
+    const waitlist = await prisma.waitlist.findUnique({
+      where: { id: waitlistId, deletedAt: null },
+      select: WAITLIST_DETAIL_SELECT,
+    });
+
+    if (!waitlist) {
+      throw new AppError(status.NOT_FOUND, WAITLIST_BY_ID_MESSAGES.NOT_FOUND);
+    }
+
+    /* 3. IDOR guard — confirm it belongs to the URL's workspace ──── */
+    try {
+      assertWaitlistBelongsToWorkspace(waitlist, workspaceId);
+    } catch (err) {
+      if (err instanceof CrossWorkspaceAccessError) {
+        // Surface as 404, not 403 — never confirm the resource exists
+        throw new AppError(status.NOT_FOUND, WAITLIST_BY_ID_MESSAGES.NOT_FOUND);
+      }
+      throw err;
+    }
+
+    return waitlist;
+  },
+
+  /* ── DELETE /api/workspaces/:workspaceId/waitlists/:id ───────── */
+
+  async deleteWaitlist(
+    payload: DeleteWaitlistPayload,
+  ): Promise<DeletedWaitlistAck> {
+    const { waitlistId, workspaceId, requestingUserId } = payload;
+
+    /* 1. Verify workspace membership + fetch role in one query ───── */
+    const membership = await prisma.workspaceMember.findUnique({
+      where: {
+        workspaceId_userId: { workspaceId, userId: requestingUserId },
+        deletedAt: null,
+      },
+    });
+
+    if (!membership) {
+      throw new AppError(status.FORBIDDEN, WAITLIST_BY_ID_MESSAGES.UNAUTHORIZED);
+    }
+
+    /* 2. Only OWNER may delete a waitlist ───────────────────────── */
+    if (!isWorkspaceOwner(membership.role)) {
+      throw new AppError(status.FORBIDDEN, WAITLIST_BY_ID_MESSAGES.FORBIDDEN);
+    }
+
+    /* 3. Fetch waitlist — verify existence + cross-workspace ─────── */
+    const waitlist = await prisma.waitlist.findUnique({
+      where: { id: waitlistId, deletedAt: null },
+      select: {
+        id:          true,
+        workspaceId: true,
+        name:        true,
+        _count: { select: { subscribers: { where: { deletedAt: null } } } },
+      },
+    });
+
+    if (!waitlist) {
+      throw new AppError(status.NOT_FOUND, WAITLIST_BY_ID_MESSAGES.NOT_FOUND);
+    }
+
+    try {
+      assertWaitlistBelongsToWorkspace(waitlist, workspaceId);
+    } catch (err) {
+      if (err instanceof CrossWorkspaceAccessError) {
+        throw new AppError(status.NOT_FOUND, WAITLIST_BY_ID_MESSAGES.NOT_FOUND);
+      }
+      throw err;
+    }
+
+    /* 4. Block deletion if active subscribers remain ─────────────── */
+    if (waitlist._count.subscribers > 0) {
+      throw new AppError(
+        status.CONFLICT,
+        WAITLIST_BY_ID_MESSAGES.HAS_SUBSCRIBERS,
+      );
+    }
+
+    /* 5. Soft-delete ─────────────────────────────────────────────── */
+    const deletedAt = new Date();
+
+    await prisma.waitlist.update({
+      where: { id: waitlistId },
+      data:  { deletedAt },
+    });
+
+    return {
+      id:        waitlist.id,
+      name:      waitlist.name,
+      deletedAt,
+    };
+  },
+};
