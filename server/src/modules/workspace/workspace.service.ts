@@ -180,11 +180,7 @@ export const workspaceService = {
     
     const workspaceIds = memberships.map(m => m.workspaceId);
 
-    // 2. Aggregate stats
-    const totalWaitlists = await prisma.waitlist.count({
-      where: { workspaceId: { in: workspaceIds }, deletedAt: null },
-    });
-
+    // 2. Fetch waitlists with their subscriber counts and top 3 referrers
     const waitlists = await prisma.waitlist.findMany({
       where: { workspaceId: { in: workspaceIds }, deletedAt: null },
       select: {
@@ -197,42 +193,83 @@ export const workspaceService = {
             select: {
                subscribers: { where: { deletedAt: null } }
             }
+         },
+         subscribers: {
+            where: { deletedAt: null, referralsCount: { gt: 0 } },
+            orderBy: [{ referralsCount: "desc" }, { createdAt: "asc" }],
+            take: 3,
+            select: {
+               id: true,
+               name: true,
+               email: true,
+               referralsCount: true,
+               isConfirmed: true,
+               createdAt: true,
+            }
          }
       },
       orderBy: { createdAt: "desc" },
-      take: 10,
     });
 
-    // 3. Total Subscribers
+    // 3. Stats aggregation per waitlist
+    // We fetch aggregate stats for referrals for each waitlist to show on cards
+    const waitlistStats = await Promise.all(waitlists.map(async (w) => {
+       const referralsAggr = await prisma.subscriber.aggregate({
+          _sum: { referralsCount: true },
+          _count: { id: true },
+          where: { waitlistId: w.id, deletedAt: null, referralsCount: { gt: 0 } }
+       });
+       
+       const totalReferrals = referralsAggr._sum.referralsCount || 0;
+       const activeReferrers = referralsAggr._count.id || 0;
+       
+       return {
+          id: w.id,
+          totalReferrals,
+          activeReferrers,
+          avgReferrals: activeReferrers > 0 ? totalReferrals / activeReferrers : 0,
+       };
+    }));
+
+    const statsMap = new Map(waitlistStats.map(s => [s.id, s]));
+
+    // 4. Global Stats
+    const totalWaitlists = waitlists.length;
     const totalSubscribers = await prisma.subscriber.count({
       where: { waitlist: { workspaceId: { in: workspaceIds } }, deletedAt: null },
     });
+    const totalReferrals = waitlistStats.reduce((sum, s) => sum + s.totalReferrals, 0);
 
-    // 4. Referrals
-    // Sum of referralsCount from subscribers
-    const referralsAggr = await prisma.subscriber.aggregate({
-      _sum: { referralsCount: true },
-      where: { waitlist: { workspaceId: { in: workspaceIds } }, deletedAt: null },
+    // Build standard return format
+    const formattedWaitlists = waitlists.map(w => {
+       const s = statsMap.get(w.id)!;
+       return {
+          id: w.id,
+          name: w.name,
+          slug: w.slug,
+          isOpen: w.isOpen,
+          subscribers: w._count.subscribers,
+          totalReferrals: s.totalReferrals,
+          activeReferrers: s.activeReferrers,
+          avgReferrals: s.avgReferrals,
+          topReferrers: w.subscribers.map((r, i) => ({
+             rank: i + 1,
+             name: r.name,
+             email: r.email,
+             directReferrals: r.referralsCount,
+             isConfirmed: r.isConfirmed,
+             joinedAt: r.createdAt.toISOString(),
+          })),
+          createdAt: w.createdAt.toISOString().split("T")[0],
+       };
     });
-    const totalReferrals = referralsAggr._sum.referralsCount || 0;
-
-    // Build standard return format matching frontend DashboardWaitlist
-    const formattedWaitlists = waitlists.map(w => ({
-       id: w.id,
-       name: w.name,
-       slug: w.slug,
-       isOpen: w.isOpen,
-       subscribers: w._count.subscribers,
-       referrals: 0, // Could be derived if needed separately per waitlist, for now 0
-       createdAt: w.createdAt.toISOString().split("T")[0],
-    }));
 
     return {
       stats: {
         totalSubscribers,
         totalWaitlists,
         totalReferrals,
-        conversionRate: 0, // Placeholder
+        conversionRate: totalSubscribers > 0 ? (totalReferrals / totalSubscribers) * 100 : 0,
       },
       waitlists: formattedWaitlists,
     };

@@ -106,11 +106,15 @@ export const getWorkspacesQuerySchema = z.object({
   search: z.string().trim().optional(),
 
   sortBy: z
-    .enum(WORKSPACE_SORT_FIELDS, `sortBy must be one of: ${WORKSPACE_SORT_FIELDS.join(", ")}`)
+    .enum(WORKSPACE_SORT_FIELDS, {
+      message: `sortBy must be one of: ${WORKSPACE_SORT_FIELDS.join(", ")}`,
+    })
     .default(WORKSPACE_DEFAULT_SORT.FIELD),
 
   sortOrder: z
-    .enum(SORT_ORDERS, "sortOrder must be 'asc' or 'desc'.")
+    .enum(SORT_ORDERS, {
+      message: "sortOrder must be 'asc' or 'desc'.",
+    })
     .default(WORKSPACE_DEFAULT_SORT.ORDER),
 });
 

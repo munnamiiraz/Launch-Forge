@@ -222,6 +222,46 @@ export const waitlistByIdService = {
     return waitlist;
   },
 
+  /* ── GET /api/v1/waitlists/by-id/:id ─────────────────────────── */
+
+  async getWaitlistByIdOnly(
+    payload: { waitlistId: string; requestingUserId: string },
+  ): Promise<WaitlistDetail> {
+    const { waitlistId, requestingUserId } = payload;
+
+    // Try finding by ID first, then fallback to slug
+    const waitlist = await prisma.waitlist.findFirst({
+      where: {
+         OR: [
+            { id: waitlistId, deletedAt: null },
+            { slug: waitlistId, deletedAt: null }
+         ]
+      },
+      select: WAITLIST_DETAIL_SELECT,
+    });
+
+    if (!waitlist) {
+      throw new AppError(status.NOT_FOUND, WAITLIST_BY_ID_MESSAGES.NOT_FOUND);
+    }
+
+    // Verify membership in the waitlist's workspace
+    const membership = await prisma.workspaceMember.findUnique({
+      where: {
+        workspaceId_userId: { 
+          workspaceId: waitlist.workspaceId, 
+          userId:      requestingUserId 
+        },
+        deletedAt: null,
+      },
+    });
+
+    if (!membership) {
+      throw new AppError(status.FORBIDDEN, WAITLIST_BY_ID_MESSAGES.UNAUTHORIZED);
+    }
+
+    return waitlist;
+  },
+
   /* ── DELETE /api/workspaces/:workspaceId/waitlists/:id ───────── */
 
   async deleteWaitlist(

@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { workspaceController }   from "./workspace.controller";
-import { validateRequest }       from "../../middlewares/validateRequest";
+import { validateRequest, validateQuery } from "../../middlewares/validateRequest";
 import { validateParams }        from "../../middlewares/validateParams";
 import { checkAuth }             from "../../middlewares/checkAuth";
 import {
@@ -34,31 +34,30 @@ import  { Role } from "../../constraint/index";
 const router = Router();
 
 /* ── Workspace CRUD ──────────────────────────────────────────────── */
-
+//TODO: validateQuery(getWorkspacesQuerySchema),
 router
   .route("/")
   .post(
-    checkAuth(Role.OWNER, Role.ADMIN),
+    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
     validateRequest(createWorkspaceSchema),
     workspaceController.createWorkspace,
   )
   .get(
-    checkAuth(Role.OWNER, Role.ADMIN),
-    validateRequest(getWorkspacesQuerySchema),
+    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
+    // validateQuery(getWorkspacesQuerySchema),
     workspaceController.getWorkspaces,
   );
-
 router
   .route("/dashboard/overview")
   .get(
-    checkAuth(Role.OWNER, Role.ADMIN),
+    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
     workspaceController.getDashboardOverview,
   );
 
 router
   .route("/:workspaceId")
   .get(
-    checkAuth(Role.OWNER, Role.ADMIN),
+    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
     validateParams(workspaceIdParamSchema),
     workspaceController.getWorkspace,
   )
@@ -79,9 +78,9 @@ router
 router
   .route("/:workspaceId/members")
   .get(
-    checkAuth(Role.OWNER, Role.ADMIN),
+    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
     validateParams(workspaceIdParamSchema),
-    validateRequest(getMembersQuerySchema),
+    validateQuery(getMembersQuerySchema),
     workspaceController.getMembers,
   )
   .post(

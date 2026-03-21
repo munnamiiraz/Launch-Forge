@@ -16,6 +16,15 @@ import { Role } from "../../constraint/index";
 
 const router = Router();
 
+/* ── Lookup by ID/slug (NOT workspace-scoped) ───────────────────── */
+// NOTE: This must come BEFORE "/:workspaceId/:id" or "by-id" will be treated as a workspaceId.
+router
+  .route("/by-id/:id")
+  .get(
+    checkAuth(Role.OWNER, Role.ADMIN, Role.USER),
+    waitlistByIdController.getWaitlistByIdOnly,
+  );
+
 /**
  * Mounted under /api/v1/waitlists in IndexRoutes
  */

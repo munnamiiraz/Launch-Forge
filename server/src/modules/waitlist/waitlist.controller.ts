@@ -93,6 +93,30 @@ export const waitlistByIdController = {
     }
   },
 
+  async getWaitlistByIdOnly(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const waitlistId       = req.params.id as string;
+      const requestingUserId = req.user!.id;
+
+      const waitlist = await waitlistByIdService.getWaitlistByIdOnly({
+        waitlistId,
+        requestingUserId,
+      });
+
+      res.status(status.OK).json({
+        success: true,
+        message: WAITLIST_BY_ID_MESSAGES.FETCHED,
+        data:    waitlist,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
   /* ── DELETE /api/v1/waitlists/:workspaceId/:id ──────────────────── */
 
   async deleteWaitlist(
