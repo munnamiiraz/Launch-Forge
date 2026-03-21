@@ -14,7 +14,7 @@ import { cn }      from "@/src/lib/utils";
 import { ProductCard }        from "./ProductCard";
 import { ProductDetailSheet } from "./ProductDetailSheet";
 import { JoinWaitlistModal }  from "./JoinWaitlistModal";
-import { CATEGORIES, MOCK_PRODUCTS } from "../_lib/data";
+import { CATEGORIES } from "../_lib/data";
 import type { PublicProduct, ProductCategory, SortOption } from "../_lib/data";
 
 const SORT_OPTIONS: { id: SortOption; label: string; icon: React.ReactNode }[] = [
@@ -39,12 +39,22 @@ function sortProducts(list: PublicProduct[], by: SortOption): PublicProduct[] {
   });
 }
 
-export function ExploreClient() {
-  const [search,          setSearch]          = useState("");
+export function ExploreClient({
+  products,
+  initialSearch = "",
+  initialShowOpen = false,
+  initialShowPrizesOnly = false,
+}: {
+  products: PublicProduct[];
+  initialSearch?: string;
+  initialShowOpen?: boolean;
+  initialShowPrizesOnly?: boolean;
+}) {
+  const [search,          setSearch]          = useState(initialSearch);
   const [activeCategory,  setActiveCategory]  = useState<ProductCategory | "All">("All");
   const [sortBy,          setSortBy]          = useState<SortOption>("trending");
-  const [showOpen,        setShowOpen]        = useState(false);
-  const [showPrizesOnly,  setShowPrizesOnly]  = useState(false);
+  const [showOpen,        setShowOpen]        = useState(initialShowOpen);
+  const [showPrizesOnly,  setShowPrizesOnly]  = useState(initialShowPrizesOnly);
 
   // Modals
   const [joinProduct,   setJoinProduct]   = useState<PublicProduct | null>(null);
@@ -53,7 +63,7 @@ export function ExploreClient() {
   const [detailOpen,    setDetailOpen]    = useState(false);
 
   const filtered = useMemo(() => {
-    let list = [...MOCK_PRODUCTS];
+    let list = [...products];
 
     if (search.trim()) {
       const q = search.toLowerCase();
@@ -72,10 +82,10 @@ export function ExploreClient() {
     if (showPrizesOnly) list = list.filter((p) => p.prizes.length > 0);
 
     return sortProducts(list, sortBy);
-  }, [search, activeCategory, sortBy, showOpen, showPrizesOnly]);
+  }, [products, search, activeCategory, sortBy, showOpen, showPrizesOnly]);
 
-  const openCount  = MOCK_PRODUCTS.filter((p) => p.isOpen).length;
-  const prizeCount = MOCK_PRODUCTS.filter((p) => p.prizes.length > 0).length;
+  const openCount  = products.filter((p) => p.isOpen).length;
+  const prizeCount = products.filter((p) => p.prizes.length > 0).length;
   const hasFilters = search || activeCategory !== "All" || showOpen || showPrizesOnly;
 
   const handleJoin   = (p: PublicProduct) => { setJoinProduct(p);   setJoinOpen(true);   };

@@ -1,21 +1,47 @@
 import { NextFunction, Request, Response } from "express";
 import z from "zod";
 
-export const validateRequest = (zodSchema: z.ZodObject) => {
+/**
+ * Validates req.body against a Zod schema.
+ * Replaces req.body with the parsed (sanitised) data on success.
+ */
+export const validateRequest = (zodSchema: z.ZodTypeAny) => {
     return (req: Request, res: Response, next: NextFunction) => {
-        if(req.body.data){
-            req.body = JSON.parse(req.body.data)
+        // Support multipart / form-data wrappers that nest JSON under req.body.data
+        if (req.body && req.body.data) {
+            try {
+                req.body = JSON.parse(req.body.data);
+            } catch {
+                // not JSON — leave as-is
+            }
         }
 
-        const parsedResult = zodSchema.safeParse(req.body)
+        const parsedResult = zodSchema.safeParse(req.body);
 
         if (!parsedResult.success) {
-            next(parsedResult.error)
+            return next(parsedResult.error);
         }
 
-        //sanitizing the data
+        // Replace body with sanitised / coerced data
         req.body = parsedResult.data;
-
         next();
-    }
-}
+    };
+};
+
+/**
+ * Validates req.query against a Zod schema.
+ * Replaces req.query with the parsed (coerced) data on success.
+ */
+export const validateQuery = (zodSchema: z.ZodTypeAny) => {
+    return (req: Request, res: Response, next: NextFunction) => {
+        const parsedResult = zodSchema.safeParse(req.query);
+
+        if (!parsedResult.success) {
+            return next(parsedResult.error);
+        }
+
+        // Overwrite req.query with the coerced result (strings → numbers etc.)
+        req.query = parsedResult.data as typeof req.query;
+        next();
+    };
+};

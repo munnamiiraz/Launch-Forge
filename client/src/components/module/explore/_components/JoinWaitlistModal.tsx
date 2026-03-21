@@ -16,34 +16,10 @@ import { Label }    from "@/src/components/ui/label";
 import { Badge }    from "@/src/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
 import { cn }       from "@/src/lib/utils";
+import { joinWaitlistAction as joinPublicWaitlist } from "@/src/services/public-waitlist/public-waitlist.services";
 import type { PublicProduct, JoinResult } from "../_lib/data";
 
 /* ── Simulated join action ────────────────────────────────────────── */
-async function joinWaitlistAction(
-  slug: string,
-  name: string,
-  email: string,
-): Promise<JoinResult> {
-  /**
-   * Real:
-   * const res = await fetch(`/api/public/waitlist/${slug}`, {
-   *   method: "POST",
-   *   headers: { "Content-Type": "application/json" },
-   *   body: JSON.stringify({ name, email }),
-   * });
-   * return res.json();
-   */
-  await new Promise((r) => setTimeout(r, 900));
-  const code = Math.random().toString(36).slice(2, 10).toUpperCase();
-  return {
-    position:     Math.floor(Math.random() * 500) + 1,
-    referralCode: code,
-    referralUrl:  `https://launchforge.app/ref/${code}`,
-    totalInQueue: Math.floor(Math.random() * 5000) + 500,
-    alreadyJoined: false,
-  };
-}
-
 interface JoinWaitlistModalProps {
   product:  PublicProduct | null;
   open:     boolean;
@@ -72,8 +48,23 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
     if (!name.trim())  { setError("Your name is required."); return; }
     if (!email.trim() || !email.includes("@")) { setError("A valid email is required."); return; }
     startTx(async () => {
-      const r = await joinWaitlistAction(product.slug, name.trim(), email.trim());
-      setResult(r);
+      const r = await joinPublicWaitlist({
+        slug: product.slug,
+        name: name.trim(),
+        email: email.trim(),
+      });
+
+      if (!r.success) {
+        setError(r.message || "Failed to join waitlist.");
+        return;
+      }
+
+      if (!r.data) {
+        setError("Malformed join response. Please try again.");
+        return;
+      }
+
+      setResult(r.data as JoinResult);
     });
   };
 
