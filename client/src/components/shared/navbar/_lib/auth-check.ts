@@ -5,6 +5,7 @@ import type { NavUser } from "../_types";
 const AUTH_COOKIE_NAMES = [
   "accessToken",
   "better-auth.session_token",
+  "better-auth.session-token",
   "refreshToken",
 ] as const;
 

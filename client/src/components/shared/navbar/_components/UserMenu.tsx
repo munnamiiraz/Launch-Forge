@@ -30,6 +30,7 @@ import { Button } from "@/src/components/ui/button";
 import { PlanBadge } from "@/src/components/shared/navbar/_components/PlanBadge";
 import type { NavUser } from "@/src/components/shared/navbar/_types";
 import { cn } from "@/src/lib/utils";
+import { logoutAction } from "@/src/services/auth/logout.action";
 
 interface UserMenuProps {
   user: NavUser;
@@ -39,14 +40,7 @@ export function UserMenu({ user }: UserMenuProps) {
   const router = useRouter();
 
   const handleSignOut = async () => {
-    /**
-     * Better-Auth sign out:
-     *
-     * import { authClient } from "@/lib/auth-client";
-     * await authClient.signOut();
-     * router.push("/");
-     * router.refresh();
-     */
+    await logoutAction();
     router.push("/login");
     router.refresh();
   };

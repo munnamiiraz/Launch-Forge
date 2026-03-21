@@ -12,7 +12,6 @@ import {
   Settings,
   CreditCard,
   Users,
-  LifeBuoy,
   LogOut,
   ChevronRight,
   Sparkles,
@@ -32,6 +31,7 @@ import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
 import { PlanBadge } from "./PlanBadge";
 import type { NavUser } from "../_types";
 import { cn } from "@/src/lib/utils";
+import { logoutAction } from "@/src/services/auth/logout.action";
 
 const PUBLIC_LINKS = [
   { label: "Product", href: "/product" },
@@ -60,10 +60,7 @@ export function MobileMenu({ isAuthenticated, user }: MobileMenuProps) {
   const close = () => setOpen(false);
 
   const handleSignOut = async () => {
-    /**
-     * import { authClient } from "@/lib/auth-client";
-     * await authClient.signOut();
-     */
+    await logoutAction();
     close();
     router.push("/login");
     router.refresh();

@@ -25,6 +25,7 @@ model User {
 
   workspaceMemberships WorkspaceMember[]
   ownedWorkspaces  Workspace[]       @relation("WorkspaceOwner")
+  payments           Payment[]
 
   @@map("user")
 }
@@ -149,6 +150,7 @@ model Waitlist {
 
   workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   subscribers Subscriber[]
+  prizes      LeaderboardPrize[]
 
   @@unique([workspaceId, slug])
   @@index([workspaceId])
@@ -330,3 +332,84 @@ model Changelog {
   @@map("changelog")
 }
 
+model Payment {
+    id                 String        @id @default(uuid(7))
+    amount             Float
+    transactionId      String        @unique
+    stripeEventId       String?         @unique
+    status             PaymentStatus @default(UNPAID)
+    paymentGatewayData Json?
+    createdAt          DateTime      @default(now())
+    updatedAt          DateTime      @updatedAt
+    planMode           PaymentMode   @default(MONTHLY)
+    planType           PaymentType   @default(PRO)
+
+    userId  String @unique
+    user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+    @@index([transactionId])
+    @@map("payments")
+}
+
+model LeaderboardPrize {
+  id          String      @id @default(cuid())
+  waitlistId  String
+
+  title       String
+  description String?
+  prizeType   PrizeType   @default(CUSTOM)
+  value       Float?                          // monetary value if applicable
+  currency    String?                         // ISO 4217, e.g. "USD"
+
+  rankFrom    Int                             // inclusive lower bound — e.g. 1
+  rankTo      Int                             // inclusive upper bound — e.g. 3
+
+  imageUrl    String?
+  status      PrizeStatus @default(ACTIVE)
+  expiresAt   DateTime?                       // null = never expires
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  deletedAt   DateTime?
+
+  waitlist    Waitlist    @relation(fields: [waitlistId], references: [id], onDelete: Cascade)
+
+  // Unique: a waitlist can't have two active prizes for the same exact rank band.
+  // Overlap detection is enforced at the application layer (hasRankOverlap util).
+  @@index([waitlistId])
+  @@index([waitlistId, status])
+  @@index([deletedAt])
+  @@map("leaderboard_prize")
+}
+
+enum PrizeType {
+  CASH
+  GIFT_CARD
+  PRODUCT
+  LIFETIME_ACCESS
+  DISCOUNT
+  CUSTOM
+}
+
+enum PrizeStatus {
+  ACTIVE
+  AWARDED
+  CANCELLED
+}
+
+
+enum PaymentStatus {
+  PAID
+  UNPAID
+}
+
+enum PaymentMode {
+  MONTHLY
+  YEARLY
+}
+
+enum PaymentType {
+  PRO
+  GROWTH
+}
