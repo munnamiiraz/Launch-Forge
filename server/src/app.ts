@@ -12,6 +12,7 @@ import { globalErrorHandler } from "./middlewares/globalErrorHandler";
 import { notFound } from "./middlewares/notFound";
 // import { PaymentController } from "./app/modules/payment/payment.controller";
 import { IndexRoutes } from "./routes";
+import { paymentRouter } from "./modules/payment/payment.route";
 
 const app: Application = express();
 app.set("query parser", (str : string) => qs.parse(str));
@@ -29,6 +30,10 @@ app.use(cors({
 }))
 
 app.use("/api/auth", toNodeHandler(auth))
+
+// Payment router must be mounted BEFORE express.json()
+// because the webhook route needs raw body for Stripe signature verification
+app.use("/api/payment", paymentRouter);
 
 app.use(express.urlencoded({ extended: true }));
 
