@@ -3,18 +3,18 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Zap, LayoutDashboard, Users, Trophy, MessageSquare,
   Map, Megaphone, CreditCard, Settings, ChevronLeft,
-  ChevronRight, Plus, Bell, LogOut, Sparkles, BarChart3,
+  ChevronRight, Plus, LogOut, Sparkles, BarChart3,
   Gift, ChevronDown, Building2, Check, Edit, Trash2
 } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
-import { Separator } from "@/src/components/ui/separator";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
@@ -29,6 +29,8 @@ import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
 import { cn } from "@/src/lib/utils";
 import type { DashboardUser } from "../_types";
+import { useWorkspace } from "@/src/provider/WorkspaceProvider";
+import { logoutAction } from "@/src/services/auth/logout.action";
 
 /* ── Nav structure ───────────────────────────────────────────────── */
 const NAV_GROUPS = [
@@ -78,10 +80,16 @@ interface DashboardSidebarProps {
 
 export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSidebarProps) {
   const pathname  = usePathname();
+  const router = useRouter();
+  const { activeWorkspace, setActiveWorkspace } = useWorkspace();
   const [collapsed, setCollapsed] = useState(false);
-  const [activeWs,  setActiveWs]  = useState<Workspace | null>(
-    initialWorkspaces.length > 0 ? initialWorkspaces[0] : null
-  );
+
+  // Use activeWorkspace from context everywhere now.
+  // No more local activeWs!
+
+  const handleSetActive = (ws: Workspace) => {
+    setActiveWorkspace(ws);
+  };
 
   const [showNewWsDialog, setShowNewWsDialog] = useState(false);
   const [showEditWsDialog, setShowEditWsDialog] = useState(false);
@@ -132,14 +140,20 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
     }
   };
 
+  const handleSignOut = async () => {
+    await logoutAction();
+    router.push("/login");
+    router.refresh();
+  };
+
   const handleEditWorkspace = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!activeWs) return;
+    if (!activeWorkspace) return;
     const name = (document.getElementById("edit-ws-name") as HTMLInputElement).value;
     const slug = (document.getElementById("edit-ws-slug") as HTMLInputElement).value;
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
-      const res = await fetch(`${baseUrl}/workspaces/${activeWs.id}`, {
+      const res = await fetch(`${baseUrl}/workspaces/${activeWorkspace.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -193,7 +207,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                       </div>
                       <div className="flex min-w-0 flex-1 items-center justify-between">
                         <span className="truncate text-sm font-semibold text-zinc-100">
-                          {activeWs ? activeWs.name : "Select Workspace"}
+                          {activeWorkspace ? activeWorkspace.name : "Select Workspace"}
                         </span>
                         <ChevronDown size={13} className="ml-1 shrink-0 text-zinc-600" />
                       </div>
@@ -210,13 +224,13 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                     {initialWorkspaces.map((ws) => (
                       <DropdownMenuItem
                         key={ws.id}
-                        onClick={() => setActiveWs(ws)}
+                        onClick={() => handleSetActive(ws)}
                         className="cursor-pointer gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60 focus:text-zinc-100"
                       >
                         <Building2 size={13} className="text-zinc-600" />
                         <span className="flex-1">{ws.name}</span>
                         <span className="text-[10px] text-zinc-600 capitalize">{ws.plan}</span>
-                        {activeWs?.id === ws.id && (
+                        {activeWorkspace?.id === ws.id && (
                           <Check size={11} className="text-indigo-400" />
                         )}
                       </DropdownMenuItem>
@@ -232,7 +246,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                       <Plus size={13} />
                       New workspace
                     </DropdownMenuItem>
-                    {activeWs && (
+                    {activeWorkspace && (
                       <>
                         <DropdownMenuSeparator className="bg-zinc-800/60" />
                         <DropdownMenuItem 
@@ -243,7 +257,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                           Edit workspace
                         </DropdownMenuItem>
                         <DropdownMenuItem 
-                          onSelect={(e) => { e.preventDefault(); handleDeleteWorkspace(activeWs.id); }}
+                          onSelect={(e) => { e.preventDefault(); handleDeleteWorkspace(activeWorkspace.id); }}
                           className="cursor-pointer gap-2 text-xs text-red-500 hover:bg-red-500/10 hover:text-red-400 focus:bg-red-500/10 focus:text-red-400"
                         >
                           <Trash2 size={13} />
@@ -442,7 +456,10 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                 </DropdownMenuItem>
               )}
               <DropdownMenuSeparator className="bg-zinc-800/60" />
-              <DropdownMenuItem className="cursor-pointer gap-2 text-xs text-zinc-400 hover:bg-red-500/8 hover:text-red-400 focus:bg-red-500/8 focus:text-red-400">
+              <DropdownMenuItem
+                onClick={handleSignOut}
+                className="cursor-pointer gap-2 text-xs text-zinc-400 hover:bg-red-500/8 hover:text-red-400 focus:bg-red-500/8 focus:text-red-400"
+              >
                 <LogOut size={13} />Sign out
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -485,14 +502,14 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
               Update your workspace&#39;s name and slug.
             </DialogDescription>
           </DialogHeader>
-          <form key={activeWs?.id || "form"} onSubmit={handleEditWorkspace} className="space-y-4 py-4">
+          <form key={activeWorkspace?.id || "form"} onSubmit={handleEditWorkspace} className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="edit-ws-name">Workspace Name</Label>
-              <Input id="edit-ws-name" defaultValue={activeWs?.name} className="border-zinc-800 bg-zinc-900 focus-visible:ring-indigo-500" required />
+              <Input id="edit-ws-name" defaultValue={activeWorkspace?.name} className="border-zinc-800 bg-zinc-900 focus-visible:ring-indigo-500" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="edit-ws-slug">Workspace Slug</Label>
-              <Input id="edit-ws-slug" defaultValue={activeWs?.slug} className="border-zinc-800 bg-zinc-900 focus-visible:ring-indigo-500" required />
+              <Input id="edit-ws-slug" defaultValue={activeWorkspace?.slug} className="border-zinc-800 bg-zinc-900 focus-visible:ring-indigo-500" required />
             </div>
             <DialogFooter>
               <Button type="button" variant="ghost" onClick={() => setShowEditWsDialog(false)} className="hover:bg-zinc-800 hover:text-zinc-100">Cancel</Button>

@@ -14,19 +14,23 @@
  *   - ~220 payments (paid users across PRO/GROWTH × MONTHLY/YEARLY)
  *
  * Usage:
- *   npx ts-node --project tsconfig.json prisma/seed.ts
+ *   pnpm exec tsx src/utils/seed.ts
  *   OR add to package.json:
- *   "prisma": { "seed": "ts-node prisma/seed.ts" }
- *   then run: npx prisma db seed
+ *   "prisma": { "seed": "tsx src/utils/seed.ts" }
+ *   then run: pnpm dlx prisma db seed
  *
  * Requirements:
  *   npm install -D ts-node @types/node bcryptjs @types/bcryptjs
  *   (bcryptjs is optional — password hashing for Account records)
  */
 
+import "dotenv/config";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../../generated/client";
+import { envVars } from "../config/env";
 
-const db = new PrismaClient();
+const adapter = new PrismaPg({ connectionString: envVars.DATABASE_URL });
+const db = new PrismaClient({ adapter });
 
 /* ─────────────────────────────────────────────────────────────────
    HELPERS
@@ -362,28 +366,26 @@ async function seedUsers(count: number) {
     });
   }
 
-  // Upsert in batches of 50
+  // Create users in batches using createMany for better performance
   const BATCH = 50;
   for (let i = 0; i < users.length; i += BATCH) {
     const batch = users.slice(i, i + BATCH);
-    await db.$transaction(
-      batch.map((u) =>
-        db.user.upsert({
-          where:  { email: u.email },
-          update: {},
-          create: {
-            id:            u.id,
-            name:          u.name,
-            email:         u.email,
-            emailVerified: Math.random() > 0.2,
-            role:          u.role,
-            status:        u.status,
-            createdAt:     u.createdAt,
-            updatedAt:     u.createdAt,
-          },
-        })
-      )
-    );
+    
+    // Use createMany with skipDuplicates for better performance
+    await db.user.createMany({
+      data: batch.map((u) => ({
+        id:            u.id,
+        name:          u.name,
+        email:         u.email,
+        emailVerified: Math.random() > 0.2,
+        role:          u.role,
+        status:        u.status,
+        createdAt:     u.createdAt,
+        updatedAt:     u.createdAt,
+      })),
+      skipDuplicates: true,
+    });
+    
     if ((i / BATCH + 1) % 4 === 0) log(`  users: ${Math.min(i + BATCH, users.length)}/${count}`);
   }
 
@@ -395,59 +397,39 @@ async function seedAccountsAndSessions(users: { id: string; email: string; creat
   log("Creating accounts and sessions…");
 
   const BATCH = 50;
-
-  // Accounts (credential provider, hashed placeholder password)
   for (let i = 0; i < users.length; i += BATCH) {
     const batch = users.slice(i, i + BATCH);
-    await db.$transaction(
-      batch.map((u) =>
-        db.account.upsert({
-          where: { providerId_accountId: { providerId: "credential", accountId: u.email } },
-          update: {},
-          create: {
-            id:         cuid(),
-            userId:     u.id,
-            accountId:  u.email,
-            providerId: "credential",
-            // Hashed "Password@123" — replace with real bcrypt hash in production
-            password:   "$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewYpfQN0TU1BUlWy",
-            createdAt:  u.createdAt,
-            updatedAt:  u.createdAt,
-          },
-        })
-      )
-    );
+    await db.account.createMany({
+      data: batch.map((u) => ({
+        id: uuid(), userId: u.id, accountId: u.email, providerId: "credential",
+        password: "$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewYpfQN0TU1BUlWy",
+        createdAt: u.createdAt, updatedAt: u.createdAt,
+      })),
+      skipDuplicates: true,
+    });
   }
+
 
   // Sessions — 60% of users have an active session
   const withSession = users.filter(() => Math.random() < 0.6);
-  for (let i = 0; i < withSession.length; i += BATCH) {
-    const batch = withSession.slice(i, i + BATCH);
-    await db.$transaction(
-      batch.map((u) => {
+  const BATCH_S = 50;
+  for (let i = 0; i < withSession.length; i += BATCH_S) {
+    const batch = withSession.slice(i, i + BATCH_S);
+    await db.session.createMany({
+      data: batch.map((u) => {
         const createdAt = randomDate(30, 0);
-        const expiresAt = new Date(createdAt.getTime() + 30 * 86_400_000);
-        return db.session.create({
-          data: {
-            id:        cuid(),
-            userId:    u.id,
-            token:     cuid() + cuid(),
-            createdAt,
-            updatedAt: createdAt,
-            expiresAt,
-            ipAddress: `${rng(1, 254)}.${rng(1, 254)}.${rng(1, 254)}.${rng(1, 254)}`,
-            userAgent:  pick([
-              "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36",
-              "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
-              "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
-              "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X)",
-              "Mozilla/5.0 (iPad; CPU OS 16_0 like Mac OS X)",
-            ]),
-          },
-        });
-      })
-    );
+        return {
+          id: cuid(), userId: u.id, token: cuid() + cuid(),
+          createdAt, updatedAt: createdAt,
+          expiresAt: new Date(createdAt.getTime() + 30 * 86_400_000),
+          ipAddress: `${rng(1,254)}.${rng(1,254)}.${rng(1,254)}.${rng(1,254)}`,
+          userAgent: pick(["Mozilla/5.0 (Macintosh...)", "Mozilla/5.0 (Windows...)"]),
+        };
+      }),
+      skipDuplicates: true,
+    });
   }
+
 
   success(`Created ${users.length} accounts + ${withSession.length} sessions`);
 }
@@ -481,23 +463,14 @@ async function seedWorkspaces(users: { id: string; name: string; plan: "FREE" | 
   const BATCH = 50;
   for (let i = 0; i < workspaces.length; i += BATCH) {
     const batch = workspaces.slice(i, i + BATCH);
-    await db.$transaction(
-      batch.map((w) =>
-        db.workspace.upsert({
-          where:  { slug: w.slug },
-          update: {},
-          create: {
-            id:        w.id,
-            name:      w.name,
-            slug:      w.slug,
-            ownerId:   w.ownerId,
-            plan:      w.plan,
-            createdAt: w.createdAt,
-            updatedAt: w.createdAt,
-          },
-        })
-      )
-    );
+    await db.workspace.createMany({
+      data: batch.map((w) => ({
+        id: w.id, name: w.name, slug: w.slug, ownerId: w.ownerId,
+        plan: w.plan, createdAt: w.createdAt, updatedAt: w.createdAt,
+      })),
+      skipDuplicates: true,
+    });
+
     if ((i / BATCH + 1) % 4 === 0) log(`  workspaces: ${Math.min(i + BATCH, workspaces.length)}/${workspaces.length}`);
   }
 
@@ -572,22 +545,14 @@ async function seedWaitlists(workspaces: { id: string; plan: string; createdAt: 
   const BATCH = 50;
   for (let i = 0; i < waitlists.length; i += BATCH) {
     const batch = waitlists.slice(i, i + BATCH);
-    await db.$transaction(
-      batch.map((w) =>
-        db.waitlist.create({
-          data: {
-            id:          w.id,
-            workspaceId: w.workspaceId,
-            name:        w.name,
-            slug:        w.slug,
-            description: pick(TAGLINES),
-            isOpen:      w.isOpen,
-            createdAt:   w.createdAt,
-            updatedAt:   w.createdAt,
-          },
-        })
-      )
-    );
+    await db.waitlist.createMany({
+    data: batch.map((w) => ({
+      id: w.id, workspaceId: w.workspaceId, name: w.name, slug: w.slug,
+      description: pick(TAGLINES), isOpen: w.isOpen,
+      createdAt: w.createdAt, updatedAt: w.createdAt,
+    })),
+    skipDuplicates: true,
+  });
     if ((i / BATCH + 1) % 4 === 0) log(`  waitlists: ${Math.min(i + BATCH, waitlists.length)}/${waitlists.length}`);
   }
 
@@ -653,27 +618,25 @@ async function seedSubscribers(waitlists: { id: string; createdAt: Date }[]) {
     }
 
     // Insert in batches of 100
+    // Insert in batches of 100
     const BATCH = 100;
     for (let i = 0; i < subs.length; i += BATCH) {
       const batch = subs.slice(i, i + BATCH);
-      await db.$transaction(
-        batch.map((s) =>
-          db.subscriber.create({
-            data: {
-              id:             s.id,
-              waitlistId:     s.waitlistId,
-              name:           s.name,
-              email:          s.email,
-              referralCode:   s.referralCode,
-              referredById:   s.referredById,
-              referralsCount: s.referralsCount,
-              isConfirmed:    s.isConfirmed,
-              createdAt:      s.createdAt,
-              updatedAt:      s.createdAt,
-            },
-          })
-        )
-      );
+      await db.subscriber.createMany({
+        data: batch.map((s) => ({
+          id:             s.id,
+          waitlistId:     s.waitlistId,
+          name:           s.name,
+          email:          s.email,
+          referralCode:   s.referralCode,
+          referredById:   s.referredById,
+          referralsCount: s.referralsCount,
+          isConfirmed:    s.isConfirmed,
+          createdAt:      s.createdAt,
+          updatedAt:      s.createdAt,
+        })),
+        skipDuplicates: true,
+      });
     }
 
     totalSubs += subs.length;
@@ -953,6 +916,26 @@ async function main() {
   console.log("\x1b[1m\x1b[35m═══════════════════════════════════════════\x1b[0m\n");
 
   const startTime = Date.now();
+
+  // ── Step 1: Users
+  // ── Cleanup: delete children before parents
+  log("Clearing existing data…");
+  await db.comment.deleteMany({});
+  await db.vote.deleteMany({});
+  await db.featureRequest.deleteMany({});
+  await db.feedbackBoard.deleteMany({});
+  await db.roadmapItem.deleteMany({});
+  await db.roadmap.deleteMany({});
+  await db.changelog.deleteMany({});
+  await db.subscriber.deleteMany({});
+  await db.waitlist.deleteMany({});
+  await db.workspaceMember.deleteMany({});
+  await db.workspace.deleteMany({});
+  await db.payment.deleteMany({});
+  await db.session.deleteMany({});
+  await db.account.deleteMany({});
+  await db.user.deleteMany({});
+  success("Cleared existing data");
 
   // ── Step 1: Users
   const users = await seedUsers(500);

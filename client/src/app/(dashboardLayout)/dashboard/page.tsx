@@ -10,6 +10,7 @@ import { RecentActivityFeed }   from "@/src/components/module/dashboard/_compone
 import { WaitlistsTable }       from "@/src/components/module/dashboard/_components/WaitlistsTable";
 import { CreateWaitlistDialog } from "@/src/components/module/dashboard/_components/CreateWaitlistDialog";
 import { useWorkspace }         from "@/src/provider/WorkspaceProvider";
+import type { DashboardWaitlist } from "@/src/components/module/dashboard/_types";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
 
@@ -20,6 +21,26 @@ interface DashboardStats {
   conversionRate:   number;
 }
 
+type ApiDashboardOverview = {
+  data?: {
+    stats?: Partial<DashboardStats>;
+    waitlists?: ApiWaitlist[];
+  };
+  message?: string;
+};
+
+type ApiWaitlist = {
+  id: string;
+  name?: string;
+  slug?: string;
+  isOpen?: boolean;
+  subscribers?: number;
+  totalReferrals?: number;
+  referrals?: number;
+  createdAt?: string;
+  _count?: { subscribers?: number };
+};
+
 export default function DashboardPage() {
   const { activeWorkspace } = useWorkspace();
   const [stats, setStats]         = useState<DashboardStats>({
@@ -28,7 +49,7 @@ export default function DashboardPage() {
     totalReferrals:   0,
     conversionRate:   0,
   });
-  const [waitlists, setWaitlists] = useState<any[]>([]);
+  const [waitlists, setWaitlists] = useState<DashboardWaitlist[]>([]);
   const [loading, setLoading]     = useState(false);
   const [error, setError]         = useState<string | null>(null);
 
@@ -44,13 +65,29 @@ export default function DashboardPage() {
         credentials: "include",
         cache: "no-store",
       });
-      const json = await res.json();
+      const json = (await res.json()) as ApiDashboardOverview;
       if (!res.ok) throw new Error(json.message || "Failed to fetch overview");
       
-      setStats(json.data.stats);
-      setWaitlists(json.data.waitlists);
-    } catch (e: any) {
-      setError(e.message);
+      const apiStats = json?.data?.stats ?? {};
+      setStats({
+        totalSubscribers: Number(apiStats.totalSubscribers ?? 0),
+        totalWaitlists:   Number(apiStats.totalWaitlists ?? 0),
+        totalReferrals:   Number(apiStats.totalReferrals ?? 0),
+        conversionRate:   Number(apiStats.conversionRate ?? 0),
+      });
+
+      const apiWaitlists = Array.isArray(json?.data?.waitlists) ? json.data.waitlists : [];
+      setWaitlists(apiWaitlists.map((w) => ({
+        id:          w.id,
+        name:        w.name ?? "",
+        slug:        w.slug ?? "",
+        isOpen:      Boolean(w.isOpen),
+        subscribers: Number(w.subscribers ?? w._count?.subscribers ?? 0),
+        referrals:   Number(w.totalReferrals ?? w.referrals ?? 0),
+        createdAt:   w.createdAt ?? "",
+      })));
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Failed to fetch overview");
     } finally {
       setLoading(false);
     }

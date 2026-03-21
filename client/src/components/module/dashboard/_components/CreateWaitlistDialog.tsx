@@ -20,6 +20,7 @@ import { Switch } from "@/src/components/ui/switch";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { Separator } from "@/src/components/ui/separator";
 import { cn } from "@/src/lib/utils";
+import { useWorkspace } from "@/src/provider/WorkspaceProvider";
 
 function slugify(str: string): string {
   return str.toLowerCase().trim()
@@ -35,8 +36,9 @@ interface CreateWaitlistDialogProps {
 
 export function CreateWaitlistDialog({ trigger }: CreateWaitlistDialogProps) {
   const router = useRouter();
+  const { activeWorkspace } = useWorkspace();
   const [open, setOpen]           = useState(false);
-  const [isPending, startTx]      = useTransition();
+  const [isPending, setIsPending] = useState(false);
   const [success, setSuccess]     = useState(false);
   const [error, setError]         = useState<string | null>(null);
 
@@ -63,38 +65,41 @@ export function CreateWaitlistDialog({ trigger }: CreateWaitlistDialogProps) {
     setSuccess(false); setError(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!activeWorkspace) {
+      setError("No workspace selected.");
+      return;
+    }
     setError(null);
 
     if (!name.trim()) { setError("Waitlist name is required."); return; }
     if (!slug.trim())  { setError("Slug is required."); return; }
 
-    startTx(async () => {
-      try {
-        /**
-         * Replace with actual API call:
-         *
-         * const res = await fetch("/api/waitlists", {
-         *   method: "POST",
-         *   headers: { "Content-Type": "application/json" },
-         *   body: JSON.stringify({ name, slug, description, isOpen, workspaceId }),
-         * });
-         * const data = await res.json();
-         * if (!data.success) throw new Error(data.message);
-         */
-        await new Promise((r) => setTimeout(r, 800));
-        setSuccess(true);
-        setTimeout(() => {
-          setOpen(false);
-          reset();
-          router.push("/dashboard/waitlists");
-          router.refresh();
-        }, 1400);
-      } catch (err: any) {
-        setError(err?.message ?? "Something went wrong. Please try again.");
-      }
-    });
+    setIsPending(true);
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
+      const res = await fetch(`${baseUrl}/waitlists/${activeWorkspace.id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ name, slug, description, isOpen }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to create waitlist");
+
+      setSuccess(true);
+      setTimeout(() => {
+        setOpen(false);
+        reset();
+        router.push("/dashboard/waitlists");
+        router.refresh();
+      }, 1400);
+    } catch (err: any) {
+      setError(err?.message ?? "Something went wrong. Please try again.");
+    } finally {
+      setIsPending(false);
+    }
   };
 
   return (

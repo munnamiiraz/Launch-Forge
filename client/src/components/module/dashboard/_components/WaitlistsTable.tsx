@@ -106,7 +106,7 @@ export function WaitlistsTable({ waitlists }: WaitlistsTableProps) {
                 <div className="flex items-center gap-1.5">
                   <Users size={12} className="text-zinc-700" />
                   <span className="text-sm font-medium text-zinc-300">
-                    {wl.subscribers.toLocaleString()}
+                    {Number(wl.subscribers ?? 0).toLocaleString()}
                   </span>
                 </div>
 
@@ -114,7 +114,7 @@ export function WaitlistsTable({ waitlists }: WaitlistsTableProps) {
                 <div className="flex items-center gap-1.5">
                   <Share2 size={12} className="text-zinc-700" />
                   <span className="text-sm text-zinc-400">
-                    {wl.referrals.toLocaleString()}
+                    {Number(wl.referrals ?? 0).toLocaleString()}
                   </span>
                 </div>
 

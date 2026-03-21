@@ -1,22 +1,6 @@
 import { DashboardSidebar } from "./_components/DashboardSidebar";
+import { WorkspaceProvider } from "@/src/provider/WorkspaceProvider";
 import type { DashboardUser } from "./_types";
-
-/**
- * Dashboard layout — wraps every dashboard page.
- *
- * Usage in src/app/(dashboard)/layout.tsx:
- *
- *   import { DashboardLayout } from "@/app/modules/dashboard/DashboardLayout";
- *   export default function Layout({ children }) {
- *     return <DashboardLayout>{children}</DashboardLayout>;
- *   }
- *
- * Auth guard:
- *   import { auth } from "@/lib/auth";
- *   import { redirect } from "next/navigation";
- *   const session = await auth.api.getSession({ headers: await headers() });
- *   if (!session) redirect("/login");
- */
 
 import { cookies } from "next/headers";
 
@@ -74,16 +58,19 @@ export async function DashboardLayout({ children }: DashboardLayoutProps) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-zinc-950">
-      {/* Sidebar */}
-      <DashboardSidebar user={user} initialWorkspaces={workspaces} />
+    <WorkspaceProvider initialWorkspaces={workspaces}>
+      <div className="flex h-screen overflow-hidden bg-zinc-950">
+        {/* Sidebar */}
+        <DashboardSidebar user={user} initialWorkspaces={workspaces} />
 
-      {/* Main content area */}
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <main className="flex-1 overflow-y-auto">
-          {children}
-        </main>
+        {/* Main content area */}
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <main className="flex-1 overflow-y-auto">
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
+    </WorkspaceProvider>
   );
 }
+

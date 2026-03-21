@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${outfit.variable} ${inter.variable}`}>
+    <html lang="en" className={`${outfit.variable} ${inter.variable}`} suppressHydrationWarning={true}>
       <body className="font-inter antialiased">
         <QueryProvider>{children}</QueryProvider>
       </body>
