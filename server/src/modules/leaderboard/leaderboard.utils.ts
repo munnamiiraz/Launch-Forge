@@ -11,7 +11,6 @@ import {
   LEADERBOARD_TIERS,
   LEADERBOARD_PAGINATION,
   REFERRAL_CHAIN,
-  REFERRAL_BASE_URL,
 } from "./leaderboard.constants";
 
 /* ── Tier resolution ─────────────────────────────────────────────── */
@@ -30,8 +29,14 @@ export function resolveTier(rank: number): LeaderboardTier {
 
 /* ── Referral URL builder ────────────────────────────────────────── */
 
-export function buildReferralUrl(referralCode: string): string {
-  return `${REFERRAL_BASE_URL}/${referralCode}`;
+export function buildReferralUrl(waitlistSlug: string, referralCode: string): string {
+  const base =
+    process.env.FRONTEND_URL ||
+    process.env.NEXT_PUBLIC_APP_URL ||
+    "https://launchforge.app";
+
+  const normalisedBase = base.replace(/\/+$/, "");
+  return `${normalisedBase}/explore/${waitlistSlug}/${referralCode}`;
 }
 
 /* ── Referral chain counter ─────────────────────────────────────── */

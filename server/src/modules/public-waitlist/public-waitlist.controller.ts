@@ -36,7 +36,6 @@ export const publicWaitlistController = {
   ): Promise<void> {
     try {
       const { slug } = req.params;
-      // name, email, referralCode come from the validated body
       const { name, email, referralCode } = req.body;
 
       const confirmation = await publicWaitlistService.joinWaitlist({

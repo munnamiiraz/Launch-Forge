@@ -47,8 +47,6 @@ export const REFERRAL_CHAIN = {
 
 /* ── Referral URL ────────────────────────────────────────────────── */
 
-export const REFERRAL_BASE_URL = "https://launchforge.app/ref" as const;
-
 /* ── Tier filter — maps query tier values to rank range predicates ── */
 
 export type TierRankRange = { min: number; max: number | null };

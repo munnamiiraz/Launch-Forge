@@ -22,6 +22,8 @@ model User {
   deletedAt          DateTime?
   sessions           Session[]
   accounts           Account[]
+  newsLadder         Boolean   @default(false)
+  newsLadderId       String?   @unique
 
   workspaceMemberships WorkspaceMember[]
   ownedWorkspaces  Workspace[]       @relation("WorkspaceOwner")

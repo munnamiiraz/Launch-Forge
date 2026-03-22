@@ -21,10 +21,17 @@ export function generateReferralCode(): string {
 /**
  * Build the full shareable referral URL for a given code.
  *
- * Example: "https://launchforge.app/ref/A3FX92KD"
+ * Pattern: {FRONTEND_URL}/explore/{waitlistSlug}/{referralCode}
+ * Example: "https://launchforge.app/explore/my-waitlist/A3FX92KD"
  */
-export function buildReferralUrl(referralCode: string): string {
-  return `${REFERRAL.BASE_URL}/${referralCode}`;
+export function buildReferralUrl(waitlistSlug: string, referralCode: string): string {
+  const base =
+    process.env.FRONTEND_URL ||
+    process.env.NEXT_PUBLIC_APP_URL ||
+    "https://launchforge.app";
+
+  const normalisedBase = base.replace(/\/+$/, "");
+  return `${normalisedBase}/explore/${waitlistSlug}/${referralCode}`;
 }
 
 /**

@@ -78,7 +78,7 @@ export const publicWaitlistService = {
     /* 1. Resolve the waitlist ────────────────────────────────────── */
     const waitlist = await prisma.waitlist.findFirst({
       where: { slug, deletedAt: null },
-      select: { id: true, isOpen: true },
+      select: { id: true, slug: true, isOpen: true },
     });
 
     if (!waitlist) {
@@ -116,7 +116,7 @@ export const publicWaitlistService = {
       return {
         position:      derivePosition(orderedIds, existing.id),
         referralCode:  existing.referralCode,
-        referralUrl:   buildReferralUrl(existing.referralCode),
+        referralUrl:   buildReferralUrl(waitlist.slug, existing.referralCode),
         totalInQueue:  totalSubscribers,
         alreadyJoined: true,
       };
@@ -208,7 +208,7 @@ export const publicWaitlistService = {
     return {
       position:      derivePosition(orderedIds, newSubscriber.id),
       referralCode:  newSubscriber.referralCode,
-      referralUrl:   buildReferralUrl(newSubscriber.referralCode),
+      referralUrl:   buildReferralUrl(waitlist.slug, newSubscriber.referralCode),
       totalInQueue:  totalSubscribers,
       alreadyJoined: false,
     };

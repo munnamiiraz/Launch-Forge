@@ -45,12 +45,13 @@ export const leaderboardService = {
     /* 2. Verify waitlist belongs to this workspace ───────────────── */
     const waitlist = await prisma.waitlist.findUnique({
       where: { id: waitlistId, workspaceId, deletedAt: null },
-      select: { id: true },
+      select: { id: true, slug: true },
     });
 
     if (!waitlist) {
       throw new AppError(status.NOT_FOUND, LEADERBOARD_MESSAGES.NOT_FOUND);
     }
+    const waitlistSlug = waitlist.slug;
 
     /* 3. Fetch ALL non-deleted subscribers for full context ───────── */
     const allRaw: RawSubscriberRow[] = await prisma.subscriber.findMany({
@@ -177,7 +178,7 @@ export const leaderboardService = {
         name:             sub.name,
         email:            sub.email,
         referralCode:     sub.referralCode,
-        referralUrl:      buildReferralUrl(sub.referralCode),
+        referralUrl:      buildReferralUrl(waitlistSlug, sub.referralCode),
         directReferrals:  sub.effectiveReferrals,
         chainReferrals:   countChain(sub.id, childrenMap),
         sharePercent:     calcSharePercent(sub.effectiveReferrals, totalReferrals),
