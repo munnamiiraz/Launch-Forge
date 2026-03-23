@@ -350,7 +350,7 @@ export const adminOverviewService = {
         name:  PLAN_META[key]?.label ?? key,
         value: count,
         mrr,
-        fill:  PLAN_META[key]?.fill ?? "hsl(240 4% 30%)",
+        fill:  PLAN_META[key]?.fill ?? "hsl(240 5% 55%)",
       };
     }).filter((item) => item.value > 0);
   },
@@ -404,7 +404,7 @@ export const adminOverviewService = {
       "hsl(var(--chart-3))",
       "hsl(var(--chart-4))",
       "hsl(var(--chart-5))",
-      "hsl(240 4% 30%)",
+      "hsl(240 5% 55%)",
     ];
 
     return [

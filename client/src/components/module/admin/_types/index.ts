@@ -29,8 +29,8 @@ export interface AdminUser {
   id:           string;
   name:         string;
   email:        string;
-  role:         "USER" | "ADMIN";
-  status:       "ACTIVE" | "SUSPENDED" | "DELETED";
+  role:         "USER" | "ADMIN" | "OWNER";
+  status:       "ACTIVE" | "SUSPENDED" | "DELETED" | "INACTIVE";
   plan:         "FREE" | "PRO" | "GROWTH";
   planMode:     "MONTHLY" | "YEARLY" | null;
   waitlists:    number;

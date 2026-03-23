@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import {
   Search, MoreHorizontal, CheckCircle2, XCircle,
   UserX, ShieldAlert, Users, ExternalLink,
-  Ban, Globe,
+  Ban, Globe, MinusCircle,
 } from "lucide-react";
 
 import { Card } from "@/src/components/ui/card";
@@ -29,6 +29,7 @@ const STATUS_BADGE: Record<string, string> = {
   ACTIVE:    "border-emerald-500/25 bg-emerald-500/10 text-emerald-400",
   SUSPENDED: "border-amber-500/25 bg-amber-500/10 text-amber-400",
   DELETED:   "border-red-500/25 bg-red-500/10 text-red-400",
+  INACTIVE:  "border-zinc-700/60 bg-zinc-800/40 text-zinc-500",
 };
 const AVATAR_GRADS = [
   "from-indigo-500 to-violet-600",
@@ -128,7 +129,7 @@ export function AdminUsersTable({ users: initialUsers }: AdminUsersTableProps) {
             {/* Avatar */}
             <Avatar className="h-8 w-8 shrink-0 rounded-lg">
               <AvatarFallback className={cn(
-                "rounded-lg bg-gradient-to-br text-[10px] font-bold text-white",
+                "rounded-lg bg-linear-to-br text-[10px] font-bold text-white",
                 AVATAR_GRADS[i % AVATAR_GRADS.length],
               )}>
                 {user.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()}
@@ -141,6 +142,9 @@ export function AdminUsersTable({ users: initialUsers }: AdminUsersTableProps) {
                 <p className="truncate text-sm font-medium text-zinc-200">{user.name}</p>
                 {user.role === "ADMIN" && (
                   <ShieldAlert size={11} className="shrink-0 text-red-400" />
+                )}
+                {user.role === "OWNER" && (
+                  <Badge variant="outline" className="border-red-500/20 bg-red-500/10 px-1 py-0 text-[8px] font-bold text-red-400 uppercase">Owner</Badge>
                 )}
               </div>
               <p className="truncate text-[11px] text-zinc-600">{user.email}</p>
@@ -169,6 +173,7 @@ export function AdminUsersTable({ users: initialUsers }: AdminUsersTableProps) {
               {user.status === "ACTIVE"    && <CheckCircle2 size={9} />}
               {user.status === "SUSPENDED" && <Ban          size={9} />}
               {user.status === "DELETED"   && <XCircle      size={9} />}
+              {user.status === "INACTIVE"  && <MinusCircle  size={9} />}
               {user.status}
             </Badge>
 

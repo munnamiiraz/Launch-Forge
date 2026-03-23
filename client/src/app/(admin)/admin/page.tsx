@@ -39,14 +39,22 @@ function Section({ title, description, children }: {
 
 export default async function AdminPage() {
   const [
-    kpis, activity, health, topWaitlists, users,
+    kpis, revenue, growth7d, growth30d, growth90d, plans, sources, activity, health, topWaitlists, users,
   ] = await Promise.all([
     getAdminKpis(),
+    getRevenueTrend(),
+    getUserGrowth(7),
+    getUserGrowth(30),
+    getUserGrowth(90),
+    getPlanBreakdown(),
+    getSignupSources(),
     getRecentActivity(),
     getSystemHealth(),
     getTopWaitlists(),
     getRecentUsers(),
   ]);
+
+  const growthData = { "7d": growth7d, "30d": growth30d, "90d": growth90d };
 
   return (
     <div className="flex flex-col gap-8 p-6">
@@ -85,16 +93,16 @@ export default async function AdminPage() {
       {/* ── Revenue + growth charts ───────────────────────────── */}
       <Section title="Revenue & Growth" description="MRR trend and user acquisition">
         <div className="grid gap-4 lg:grid-cols-2">
-          <AdminRevenueChart />
-          <AdminUserGrowthChart />
+          <AdminRevenueChart data={revenue} />
+          <AdminUserGrowthChart data={growthData} />
         </div>
       </Section>
 
       {/* ── Plan breakdown + signup sources ───────────────────── */}
       <Section title="Acquisition" description="Where users come from and what they pay">
         <div className="grid gap-4 lg:grid-cols-2">
-          <AdminPlanChart />
-          <AdminSignupSourcesChart />
+          <AdminPlanChart data={plans} />
+          <AdminSignupSourcesChart data={sources} />
         </div>
       </Section>
 

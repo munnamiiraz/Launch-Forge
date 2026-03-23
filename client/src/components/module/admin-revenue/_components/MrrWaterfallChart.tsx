@@ -9,7 +9,7 @@ import { Badge }  from "@/src/components/ui/badge";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/src/components/ui/chart";
 import { ArrowUpRight, TrendingUp } from "lucide-react";
 import { cn } from "@/src/lib/utils";
-import { getMrrWaterfall } from "../_lib/revenue-data";
+import { getMrrWaterfall, MrrWaterfallPoint } from "../_lib/revenue-data";
 
 const mrrConfig = {
   mrr:       { label: "MRR",       color: "hsl(var(--chart-2))" },
@@ -22,8 +22,7 @@ const netConfig = {
   net: { label: "Net MRR", color: "hsl(var(--chart-2))" },
 };
 
-export function MrrWaterfallChart() {
-  const data    = getMrrWaterfall();
+export function MrrWaterfallChart({ data }: { data: MrrWaterfallPoint[] }) {
   const current = data[data.length - 1].mrr;
   const prev    = data[data.length - 2].mrr;
   const pct     = Math.round(((current - prev) / prev) * 100);
@@ -34,7 +33,7 @@ export function MrrWaterfallChart() {
 
       {/* ── MRR area chart ─────────────────────────────── */}
       <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/35 to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-emerald-500/35 to-transparent" />
         <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
           <div className="flex items-start justify-between gap-4">
             <div>
@@ -100,7 +99,7 @@ export function MrrWaterfallChart() {
 
       {/* ── Net MRR bar chart ───────────────────────────── */}
       <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-indigo-500/30 to-transparent" />
         <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
           <div className="flex items-start justify-between">
             <div>

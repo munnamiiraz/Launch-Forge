@@ -9,6 +9,12 @@ import { CohortLtvTable, RevenueByCountryCard } from "@/src/components/module/ad
 import { TransactionsTable }  from "@/src/components/module/admin-revenue/_components/TransactionsTable";
 import {
   getRevenueKpis,
+  getMrrWaterfall,
+  getPlanRevenue,
+  getChurnData,
+  getCohortLtv,
+  getRevenueByCountry,
+  getRecentTransactions,
 } from "@/src/components/module/admin-revenue/_lib/revenue-data";
 
 export const metadata: Metadata = {
@@ -30,7 +36,24 @@ function SectionDivider({ title, sub }: { title: string; sub: string }) {
 }
 
 export default async function AdminRevenuePage() {
-  const kpis = getRevenueKpis();
+  const [kpis, mrrWaterfall, planRevenue, churnData, cohortLtv, countries, transactions] = await Promise.all([
+    getRevenueKpis(),
+    getMrrWaterfall(),
+    getPlanRevenue(),
+    getChurnData(),
+    getCohortLtv(),
+    getRevenueByCountry(),
+    getRecentTransactions(),
+  ]);
+
+  // Ensure all data is defined with safe defaults
+  const safeKpis = kpis ?? { mrr: 0, arr: 0, mrrGrowthPct: 0, newMrrThisMonth: 0, churnedMrr: 0, expansionMrr: 0, netNewMrr: 0, ltv: 0, arpu: 0, payingUsers: 0, churnRatePct: 0, avgSubLengthMonths: 0 };
+  const safeMrrWaterfall = mrrWaterfall ?? [];
+  const safePlanRevenue = planRevenue ?? [];
+  const safeChurnData = churnData ?? [];
+  const safeCohortLtv = cohortLtv ?? [];
+  const safeCountries = countries ?? [];
+  const safeTransactions = transactions ?? [];
 
   return (
     <div className="flex flex-col gap-8 p-6">
@@ -53,11 +76,11 @@ export default async function AdminRevenuePage() {
             </p>
             <div className="mt-3 flex flex-wrap gap-2 text-[10px] text-zinc-600">
               {[
-                `$${(kpis.mrr / 1000).toFixed(1)}k MRR`,
-                `$${(kpis.arr / 1000).toFixed(0)}k ARR`,
-                `${kpis.payingUsers.toLocaleString()} paying users`,
-                `${kpis.churnRatePct}% monthly churn`,
-                `$${kpis.ltv} avg LTV`,
+                `${(safeKpis.mrr / 1000).toFixed(1)}k MRR`,
+                `${(safeKpis.arr / 1000).toFixed(0)}k ARR`,
+                `${safeKpis.payingUsers.toLocaleString()} paying users`,
+                `${safeKpis.churnRatePct}% monthly churn`,
+                `${safeKpis.ltv} avg LTV`,
               ].map((s) => (
                 <span key={s} className="rounded-full border border-zinc-800/60 bg-zinc-900/40 px-2.5 py-1">
                   {s}
@@ -70,40 +93,40 @@ export default async function AdminRevenuePage() {
 
       {/* ── KPI strip ─────────────────────────────────────── */}
       <section>
-        <RevenueKpiStrip kpis={kpis} />
+        <RevenueKpiStrip kpis={safeKpis} />
       </section>
 
       {/* ── MRR waterfall ─────────────────────────────────── */}
       <section className="flex flex-col gap-4">
         <SectionDivider title="MRR Trend" sub="12-month waterfall and net new MRR" />
-        <MrrWaterfallChart />
+        <MrrWaterfallChart data={safeMrrWaterfall} />
       </section>
 
       {/* ── Plan revenue breakdown ────────────────────────── */}
       <section className="flex flex-col gap-4">
         <SectionDivider title="Plan revenue" sub="Revenue and churn per subscription tier" />
-        <PlanRevenueChart />
+        <PlanRevenueChart data={safePlanRevenue} />
       </section>
 
       {/* ── Churn analysis ────────────────────────────────── */}
       <section className="flex flex-col gap-4">
         <SectionDivider title="Churn" sub="Monthly churn users, recovery, and rate trend" />
-        <ChurnAnalysisChart />
+        <ChurnAnalysisChart data={safeChurnData} />
       </section>
 
       {/* ── Cohort LTV + geography ───────────────────────── */}
       <section className="flex flex-col gap-4">
         <SectionDivider title="LTV & Geography" sub="Cohort revenue retention and top markets" />
         <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-          <CohortLtvTable />
-          <RevenueByCountryCard />
+          <CohortLtvTable data={safeCohortLtv} />
+          <RevenueByCountryCard data={safeCountries} />
         </div>
       </section>
 
       {/* ── Transactions ─────────────────────────────────── */}
       <section className="flex flex-col gap-4">
         <SectionDivider title="Transactions" sub="Recent payment events from the Payment model" />
-        <TransactionsTable />
+        <TransactionsTable allTx={safeTransactions} />
       </section>
 
     </div>

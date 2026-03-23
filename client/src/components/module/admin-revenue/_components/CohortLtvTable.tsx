@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Globe } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/src/components/ui/card";
 import { cn } from "@/src/lib/utils";
-import { getCohortLtv, getRevenueByCountry } from "../_lib/revenue-data";
+import { getCohortLtv, getRevenueByCountry, CohortLtvRow, RevenueByCountry } from "../_lib/revenue-data";
 
 /* ── Heat colour based on MRR retention % ────────────────────────── */
 function heatColor(pct: number): string {
@@ -18,12 +18,11 @@ function heatColor(pct: number): string {
 }
 
 /* ── Cohort LTV heatmap ──────────────────────────────────────────── */
-export function CohortLtvTable() {
-  const data = getCohortLtv();
+export function CohortLtvTable({ data }: { data: CohortLtvRow[] }) {
 
   return (
     <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-cyan-500/30 to-transparent" />
       <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
         <p className="text-sm font-semibold text-zinc-200">Cohort revenue retention (LTV heatmap)</p>
         <p className="text-[11px] text-zinc-600">
@@ -113,14 +112,13 @@ export function CohortLtvTable() {
 }
 
 /* ── Revenue by country ──────────────────────────────────────────── */
-export function RevenueByCountryCard() {
-  const data     = getRevenueByCountry();
+export function RevenueByCountryCard({ data }: { data: RevenueByCountry[] }) {
   const maxMrr   = Math.max(...data.map((d) => d.mrr));
   const totalMrr = data.reduce((s, d) => s + d.mrr, 0);
 
   return (
     <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-amber-500/30 to-transparent" />
       <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
         <div className="flex items-center gap-2">
           <Globe size={14} className="text-amber-400" />
@@ -155,7 +153,7 @@ export function RevenueByCountryCard() {
                   initial={{ width: 0 }}
                   animate={{ width: `${Math.round((country.mrr / maxMrr) * 100)}%` }}
                   transition={{ delay: i * 0.05 + 0.15, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                  className="h-full rounded-full bg-gradient-to-r from-amber-500 to-orange-500"
+                  className="h-full rounded-full bg-linear-to-r from-amber-500 to-orange-500"
                 />
               </div>
             </div>

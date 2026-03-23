@@ -7,23 +7,22 @@ import { motion } from "framer-motion";
 import {
   LayoutDashboard, Users, DollarSign, BarChart3,
   Settings, Shield, ChevronLeft, ChevronRight,
-  Zap, Bell, LogOut, Activity, Database,
+  Bell, LogOut,
 } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
 import { Button }  from "@/src/components/ui/button";
-import { Badge }   from "@/src/components/ui/badge";
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
 } from "@/src/components/ui/tooltip";
 import { cn } from "@/src/lib/utils";
+import { adminLogoutAction } from "@/src/services/auth/admin-logout.action";
 
 const NAV = [
   { href: "/admin",          label: "Overview",  icon: LayoutDashboard },
   { href: "/admin/users",    label: "Users",     icon: Users           },
   { href: "/admin/revenue",  label: "Revenue",   icon: DollarSign      },
   { href: "/admin/analytics",label: "Analytics", icon: BarChart3       },
-  { href: "/admin/system",   label: "System",    icon: Activity        },
   { href: "/admin/settings", label: "Settings",  icon: Settings        },
 ];
 
@@ -107,16 +106,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
           </nav>
 
           {/* Back to dashboard */}
-          {!collapsed && (
-            <div className="border-t border-zinc-800/60 px-3 py-3">
-              <Link
-                href="/dashboard"
-                className="flex items-center gap-2 rounded-lg px-2 py-2 text-xs text-zinc-600 hover:bg-zinc-800/50 hover:text-zinc-400 transition-colors"
-              >
-                <Zap size={12} />← Owner dashboard
-              </Link>
-            </div>
-          )}
+          {/* Removed: Owner dashboard link */}
         </motion.aside>
 
         {/* ── Main ─────────────────────────────────────────── */}
@@ -126,15 +116,29 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
             <p className="text-xs font-semibold text-red-400 uppercase tracking-widest">
               Admin Console
             </p>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3">
               <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300">
                 <Bell size={14} />
               </Button>
-              <Avatar className="h-7 w-7 rounded-lg">
-                <AvatarFallback className="rounded-lg bg-gradient-to-br from-red-500 to-rose-600 text-[10px] font-black text-white">
-                  SA
-                </AvatarFallback>
-              </Avatar>
+              <div className="flex items-center gap-2 border-l border-zinc-800/60 pl-3">
+                <div className="flex flex-col items-end gap-0.5">
+                  <span className="text-xs font-medium text-zinc-200">Admin</span>
+                  <span className="text-[10px] text-zinc-500">admin@launchforge.io</span>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 rounded-lg text-zinc-500 hover:bg-red-500/10 hover:text-red-400"
+                  onClick={() => adminLogoutAction()}
+                >
+                  <LogOut size={14} />
+                </Button>
+                <Avatar className="h-7 w-7 rounded-lg">
+                  <AvatarFallback className="rounded-lg bg-gradient-to-br from-red-500 to-rose-600 text-[10px] font-black text-white">
+                    A
+                  </AvatarFallback>
+                </Avatar>
+              </div>
             </div>
           </header>
 

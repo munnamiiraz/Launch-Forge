@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo, useCallback, useTransition } from "react";
+import { useState, useMemo, useCallback, useTransition, useEffect } from "react";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search, ArrowUpDown, ArrowUp, ArrowDown,
@@ -8,6 +9,7 @@ import {
   ShieldAlert, UserX, Trash2, Crown,
   Users, Globe, Layers, UserCheck,
   ChevronLeft, ChevronRight, UserPlus,
+  Loader2,
 } from "lucide-react";
 
 import { Card }   from "@/src/components/ui/card";
@@ -15,7 +17,6 @@ import { Input }  from "@/src/components/ui/input";
 import { Badge }  from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
-import { Separator }  from "@/src/components/ui/separator";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuTrigger,
@@ -26,11 +27,13 @@ import {
 import { cn }  from "@/src/lib/utils";
 import { UserDetailDrawer } from "./UserDetailDrawer";
 import { InviteUserModal }  from "./InviteUserModal";
-import { bulkSuspendAction, bulkDeleteAction } from "@/src/services/admin-users/users.actions";
+import { 
+  bulkSuspendAction, bulkDeleteAction, 
+  suspendUserAction, reactivateUserAction,
+  promoteToAdminAction, demoteFromAdminAction, deleteUserAction
+} from "@/src/services/admin-users/users.actions";
 import type { AdminUser } from "@/src/components/module/admin/_types";
 import type { SortField, SortDir, StatusFilter, PlanFilter } from "@/src/components/module/admin-users/_lib/users-data";
-
-const PAGE_SIZE = 10;
 
 const PLAN_BADGE: Record<string, string> = {
   FREE:   "border-zinc-700/60 bg-zinc-800/40 text-zinc-500",
@@ -65,19 +68,82 @@ function SortIcon({ field, active, dir }: { field: SortField; active: SortField;
 
 interface UsersTableProps {
   users: AdminUser[];
+  meta: {
+    total:           number;
+    page:            number;
+    limit:           number;
+    totalPages:      number;
+    hasNextPage:     boolean;
+    hasPreviousPage: boolean;
+  };
+  currentQuery: {
+    page:      number;
+    limit:     number;
+    search:    string;
+    status:    StatusFilter;
+    plan:      PlanFilter;
+    sortBy:    SortField;
+    sortOrder: SortDir;
+  };
 }
 
-export function UsersTable({ users: initialUsers }: UsersTableProps) {
-  const [users,     setUsers]     = useState<AdminUser[]>(initialUsers);
-  const [search,    setSearch]    = useState("");
-  const [statusTab, setStatusTab] = useState<StatusFilter>("ALL");
-  const [planFilter, setPlanFilter] = useState<PlanFilter>("ALL");
-  const [sortField, setSortField] = useState<SortField>("createdAt");
-  const [sortDir,   setSortDir]   = useState<SortDir>("desc");
-  const [page,      setPage]      = useState(1);
+export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTableProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const [users, setUsers] = useState<AdminUser[]>(initialUsers);
+  const [isPending, startTransition] = useTransition();
+  const [bulkPending, startBulkTx] = useTransition();
+
+  // URL State helpers
+  const updateUrl = useCallback((updates: Record<string, string | number | null>) => {
+    const params = new URLSearchParams(searchParams.toString());
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value === null || value === "") params.delete(key);
+      else params.set(key, String(value));
+    });
+    
+    startTransition(() => {
+      router.push(`${pathname}?${params.toString()}`);
+    });
+  }, [router, pathname, searchParams]);
+
+  // Sync state when props change
+  useEffect(() => {
+    setUsers(initialUsers);
+  }, [initialUsers]);
+
+  // Handle pagination/sorting/filtering
+  const handlePageChange = (p: number) => updateUrl({ page: p });
+  const handleSearch = (s: string) => updateUrl({ search: s, page: 1 });
+  const handleStatus = (s: StatusFilter) => updateUrl({ status: s, page: 1 });
+  const handlePlan = (p: PlanFilter) => updateUrl({ plan: p, page: 1 });
+  const handleSort = (field: SortField) => {
+    const order = (field === currentQuery.sortBy && currentQuery.sortOrder === "desc") ? "asc" : "desc";
+    updateUrl({ sortBy: field, sortOrder: order, page: 1 });
+  };
 
   // Selection
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const allPageSelected = users.length > 0 && users.every((u) => selected.has(u.id));
+  
+  const toggleAll = () => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (allPageSelected) users.forEach((u) => next.delete(u.id));
+      else users.forEach((u) => next.add(u.id));
+      return next;
+    });
+  };
+
+  const toggleOne = (id: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  };
 
   // Drawer
   const [drawerUser,  setDrawerUser]  = useState<AdminUser | null>(null);
@@ -87,88 +153,11 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
   // Invite modal
   const [inviteOpen, setInviteOpen] = useState(false);
 
-  // Bulk actions
-  const [bulkPending, startBulkTx] = useTransition();
-
-  /* ── Derived ─────────────────────────────────────────────────── */
-  const filtered = useMemo(() => {
-    let list = [...users];
-
-    // Search
-    if (search.trim()) {
-      const q = search.toLowerCase();
-      list = list.filter((u) =>
-        u.name.toLowerCase().includes(q) ||
-        u.email.toLowerCase().includes(q) ||
-        u.id.toLowerCase().includes(q),
-      );
-    }
-
-    // Status tab
-    if (statusTab !== "ALL") list = list.filter((u) => u.status === statusTab);
-
-    // Plan
-    if (planFilter !== "ALL") list = list.filter((u) => u.plan === planFilter);
-
-    // Sort
-    list.sort((a, b) => {
-      let cmp = 0;
-      if (sortField === "name")         cmp = a.name.localeCompare(b.name);
-      if (sortField === "createdAt")    cmp = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-      if (sortField === "lastActiveAt") {
-        const ta = a.lastActiveAt ? new Date(a.lastActiveAt).getTime() : 0;
-        const tb = b.lastActiveAt ? new Date(b.lastActiveAt).getTime() : 0;
-        cmp = ta - tb;
-      }
-      if (sortField === "subscribers")  cmp = a.subscribers  - b.subscribers;
-      if (sortField === "waitlists")    cmp = a.waitlists    - b.waitlists;
-      return sortDir === "asc" ? cmp : -cmp;
-    });
-
-    return list;
-  }, [users, search, statusTab, planFilter, sortField, sortDir]);
-
-  // Status tab counts
-  const tabCounts = useMemo(() => ({
-    ALL:       users.length,
-    ACTIVE:    users.filter((u) => u.status === "ACTIVE").length,
-    SUSPENDED: users.filter((u) => u.status === "SUSPENDED").length,
-    DELETED:   users.filter((u) => u.status === "DELETED").length,
-  }), [users]);
-
-  // Pagination
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-  const paginated  = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-  const handleSort = (field: SortField) => {
-    if (field === sortField) setSortDir((d) => d === "asc" ? "desc" : "asc");
-    else { setSortField(field); setSortDir("desc"); }
-    setPage(1);
-  };
-
   const openDrawer = useCallback((user: AdminUser, idx: number) => {
     setDrawerUser(user);
     setDrawerIndex(idx);
     setDrawerOpen(true);
   }, []);
-
-  /* ── Selection ─────────────────────────────────────────────── */
-  const allPageSelected = paginated.length > 0 && paginated.every((u) => selected.has(u.id));
-  const toggleAll = () => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      if (allPageSelected) paginated.forEach((u) => next.delete(u.id));
-      else paginated.forEach((u) => next.add(u.id));
-      return next;
-    });
-  };
-  const toggleOne = (id: string) => {
-    setSelected((prev) => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
-  };
 
   /* ── Callbacks from drawer ──────────────────────────────────── */
   const handleUserUpdated = (updated: AdminUser) => {
@@ -176,25 +165,51 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
     setDrawerUser(updated);
   };
   const handleUserDeleted = (id: string) => {
-    setUsers((prev) => prev.map((u) => u.id === id ? { ...u, status: "DELETED" as const, isDeleted: true } : u));
+    setUsers((prev) => prev.filter((u) => u.id !== id));
     setSelected((prev) => { const next = new Set(prev); next.delete(id); return next; });
+  };
+
+  /* ── Single Actions ─────────────────────────────────────────── */
+  const onSuspend = async (user: AdminUser) => {
+    const r = await suspendUserAction(user.id);
+    if (r.success) handleUserUpdated({ ...user, status: "SUSPENDED" });
+  };
+  const onReactivate = async (user: AdminUser) => {
+    const r = await reactivateUserAction(user.id);
+    if (r.success) handleUserUpdated({ ...user, status: "ACTIVE" });
+  };
+  const onPromote = async (user: AdminUser) => {
+    const r = await promoteToAdminAction(user.id);
+    if (r.success) handleUserUpdated({ ...user, role: "ADMIN" });
+  };
+  const onDemote = async (user: AdminUser) => {
+    const r = await demoteFromAdminAction(user.id);
+    if (r.success) handleUserUpdated({ ...user, role: "USER" });
+  };
+  const onDelete = async (user: AdminUser) => {
+    const r = await deleteUserAction(user.id);
+    if (r.success) handleUserDeleted(user.id);
   };
 
   /* ── Bulk actions ───────────────────────────────────────────── */
   const handleBulkSuspend = () => {
     const ids = [...selected];
     startBulkTx(async () => {
-      await bulkSuspendAction(ids);
-      setUsers((prev) => prev.map((u) => ids.includes(u.id) ? { ...u, status: "SUSPENDED" as const } : u));
-      setSelected(new Set());
+      const r = await bulkSuspendAction(ids);
+      if (r.success) {
+        setUsers((prev) => prev.map((u) => ids.includes(u.id) ? { ...u, status: "SUSPENDED" as const } : u));
+        setSelected(new Set());
+      }
     });
   };
   const handleBulkDelete = () => {
     const ids = [...selected];
     startBulkTx(async () => {
-      await bulkDeleteAction(ids);
-      setUsers((prev) => prev.map((u) => ids.includes(u.id) ? { ...u, status: "DELETED" as const, isDeleted: true } : u));
-      setSelected(new Set());
+      const r = await bulkDeleteAction(ids);
+      if (r.success) {
+        setUsers((prev) => prev.filter((u) => !ids.includes(u.id)));
+        setSelected(new Set());
+      }
     });
   };
 
@@ -208,18 +223,18 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
         {/* ── Toolbar ─────────────────────────────────────── */}
         <div className="flex flex-col gap-3">
 
-          {/* Row 1: status tabs + invite */}
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             {/* Status tabs */}
             <div className="flex items-center gap-0.5 rounded-lg border border-zinc-800/80 bg-zinc-900/40 p-0.5">
               {STATUS_TABS.map((tab) => {
-                const active = statusTab === tab.id;
+                const active = currentQuery.status === tab.id;
                 return (
                   <button
                     key={tab.id}
-                    onClick={() => { setStatusTab(tab.id); setPage(1); setSelected(new Set()); }}
+                    disabled={isPending}
+                    onClick={() => handleStatus(tab.id)}
                     className={cn(
-                      "relative flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all duration-150",
+                      "relative flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all duration-150 disabled:opacity-50",
                       active ? "text-zinc-100" : "text-zinc-500 hover:text-zinc-300",
                     )}
                   >
@@ -233,12 +248,6 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
                     <span className="relative flex items-center gap-1.5">
                       {tab.icon}
                       {tab.label}
-                      <span className={cn(
-                        "rounded-full px-1.5 py-0 text-[9px] font-bold tabular-nums",
-                        active ? "bg-zinc-700 text-zinc-300" : "bg-zinc-800/60 text-zinc-600",
-                      )}>
-                        {tabCounts[tab.id]}
-                      </span>
                     </span>
                   </button>
                 );
@@ -248,6 +257,7 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
             {/* Invite button */}
             <Button
               size="sm"
+              disabled={isPending}
               onClick={() => setInviteOpen(true)}
               className="group relative overflow-hidden bg-red-600 text-xs font-semibold text-white hover:bg-red-500 transition-all"
             >
@@ -257,16 +267,23 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
             </Button>
           </div>
 
-          {/* Row 2: search + plan filter */}
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
             <div className="relative flex-1 max-w-sm">
               <Search size={13} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-600" />
               <Input
-                value={search}
-                onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-                placeholder="Search by name, email or ID…"
+                defaultValue={currentQuery.search}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSearch(e.currentTarget.value);
+                }}
+                disabled={isPending}
+                placeholder="Search and press Enter…"
                 className="h-9 border-zinc-800 bg-zinc-900/60 pl-8 text-xs text-zinc-100 placeholder:text-zinc-600 focus-visible:border-zinc-600 focus-visible:ring-0"
               />
+              {isPending && (
+                <div className="absolute right-2.5 top-1/2 -translate-y-1/2">
+                   <Loader2 size={12} className="animate-spin text-zinc-600" />
+                </div>
+              )}
             </div>
 
             {/* Plan filter */}
@@ -274,10 +291,11 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
               {(["ALL", "FREE", "PRO", "GROWTH"] as PlanFilter[]).map((p) => (
                 <button
                   key={p}
-                  onClick={() => { setPlanFilter(p); setPage(1); }}
+                  disabled={isPending}
+                  onClick={() => handlePlan(p)}
                   className={cn(
-                    "rounded-md px-2.5 py-1 text-xs font-medium transition-all",
-                    planFilter === p ? "bg-zinc-800 text-zinc-200" : "text-zinc-600 hover:text-zinc-400",
+                    "rounded-md px-2.5 py-1 text-xs font-medium transition-all disabled:opacity-50",
+                    currentQuery.plan === p ? "bg-zinc-800 text-zinc-200" : "text-zinc-600 hover:text-zinc-400",
                   )}
                 >
                   {p === "ALL" ? "All plans" : p}
@@ -306,14 +324,16 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
                   onClick={handleBulkSuspend}
                   className="gap-1.5 border-amber-500/20 bg-transparent text-xs text-amber-400 hover:bg-amber-500/8"
                 >
-                  <Ban size={11} />Suspend all
+                  {bulkPending ? <Loader2 size={11} className="animate-spin" /> : <Ban size={11} />}
+                  Suspend all
                 </Button>
                 <Button
                   size="sm" variant="outline" disabled={bulkPending}
                   onClick={handleBulkDelete}
                   className="gap-1.5 border-red-500/20 bg-transparent text-xs text-red-400 hover:bg-red-500/8"
                 >
-                  <Trash2 size={11} />Delete all
+                  {bulkPending ? <Loader2 size={11} className="animate-spin" /> : <Trash2 size={11} />}
+                  Delete all
                 </Button>
                 <Button
                   size="sm" variant="ghost" disabled={bulkPending}
@@ -333,7 +353,6 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
 
           {/* Column headers */}
           <div className="hidden grid-cols-[32px_24px_1fr_auto_auto_auto_auto_auto_32px] gap-3 border-b border-zinc-800/60 bg-zinc-900/60 px-4 py-2.5 sm:grid">
-            {/* Select all */}
             <div className="flex items-center justify-center">
               <input
                 type="checkbox"
@@ -343,46 +362,41 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
               />
             </div>
             <div />
-            {/* Sortable: Name */}
-            <button onClick={() => handleSort("name")} className="flex items-center gap-1 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-600 hover:text-zinc-400">
-              User <SortIcon field="name" active={sortField} dir={sortDir} />
+            <button disabled={isPending} onClick={() => handleSort("name")} className="flex items-center gap-1 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-600 hover:text-zinc-400 disabled:opacity-50">
+              User <SortIcon field="name" active={currentQuery.sortBy} dir={currentQuery.sortOrder} />
             </button>
             <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">Plan</span>
-            {/* Sortable: Waitlists */}
-            <button onClick={() => handleSort("waitlists")} className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-600 hover:text-zinc-400 tabular-nums">
-              Waitlists <SortIcon field="waitlists" active={sortField} dir={sortDir} />
+            <button disabled={isPending} onClick={() => handleSort("waitlists")} className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-600 hover:text-zinc-400 tabular-nums disabled:opacity-50">
+              Waitlists <SortIcon field="waitlists" active={currentQuery.sortBy} dir={currentQuery.sortOrder} />
             </button>
-            {/* Sortable: Subscribers */}
-            <button onClick={() => handleSort("subscribers")} className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-600 hover:text-zinc-400 tabular-nums">
-              Subscribers <SortIcon field="subscribers" active={sortField} dir={sortDir} />
+            <button disabled={isPending} onClick={() => handleSort("subscribers")} className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-600 hover:text-zinc-400 tabular-nums disabled:opacity-50">
+              Subscribers <SortIcon field="subscribers" active={currentQuery.sortBy} dir={currentQuery.sortOrder} />
             </button>
-            {/* Sortable: Joined */}
-            <button onClick={() => handleSort("createdAt")} className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-600 hover:text-zinc-400">
-              Joined <SortIcon field="createdAt" active={sortField} dir={sortDir} />
+            <button disabled={isPending} onClick={() => handleSort("createdAt")} className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-600 hover:text-zinc-400 disabled:opacity-50">
+              Joined <SortIcon field="createdAt" active={currentQuery.sortBy} dir={currentQuery.sortOrder} />
             </button>
             <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">Status</span>
             <div />
           </div>
 
-          {/* Rows */}
-          <div className="divide-y divide-zinc-800/40">
+          <div className="divide-y divide-zinc-800/40 min-h-[400px]">
             <AnimatePresence mode="popLayout">
-              {paginated.length === 0 ? (
+              {users.length === 0 ? (
                 <motion.div
                   key="empty"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
-                  className="flex flex-col items-center gap-2 py-16 text-center"
+                  className="flex flex-col items-center gap-2 py-32 text-center"
                 >
                   <Users size={32} className="text-zinc-800" />
-                  <p className="text-sm text-zinc-600">No users match your filters.</p>
+                  <p className="text-sm text-zinc-600">No users found matching your criteria.</p>
                 </motion.div>
-              ) : paginated.map((user, i) => {
-                const globalIdx  = (page - 1) * PAGE_SIZE + i;
+              ) : users.map((user, i) => {
+                const globalIdx = (currentQuery.page - 1) * currentQuery.limit + i;
                 const isSelected = selected.has(user.id);
-                const grad       = AVATAR_GRADS[globalIdx % AVATAR_GRADS.length];
-                const initials   = user.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
+                const grad = AVATAR_GRADS[globalIdx % AVATAR_GRADS.length];
+                const initials = user.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
 
                 return (
                   <motion.div
@@ -391,14 +405,14 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
                     initial={{ opacity: 0, x: -8 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ delay: i * 0.03, duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
+                    transition={{ delay: i * 0.02, duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
                     className={cn(
                       "group grid items-center gap-3 px-4 py-3 transition-colors",
                       "grid-cols-[32px_24px_1fr] sm:grid-cols-[32px_24px_1fr_auto_auto_auto_auto_auto_32px]",
                       isSelected ? "bg-red-500/5" : "hover:bg-zinc-900/40",
+                      isPending && "opacity-60 grayscale-[0.5]"
                     )}
                   >
-                    {/* Checkbox */}
                     <div className="flex items-center justify-center">
                       <input
                         type="checkbox"
@@ -408,17 +422,15 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
                       />
                     </div>
 
-                    {/* Avatar */}
                     <Avatar className="h-7 w-7 shrink-0 rounded-lg">
                       <AvatarFallback className={cn("rounded-lg bg-gradient-to-br text-[9px] font-bold text-white", grad)}>
                         {initials}
                       </AvatarFallback>
                     </Avatar>
 
-                    {/* Name + email */}
-                    <button
+                    <div
                       onClick={() => openDrawer(user, globalIdx)}
-                      className="flex min-w-0 flex-col items-start text-left"
+                      className="flex min-w-0 flex-col items-start text-left cursor-pointer"
                     >
                       <div className="flex items-center gap-1.5">
                         <span className="truncate text-sm font-medium text-zinc-200 group-hover:text-zinc-100 transition-colors">
@@ -426,8 +438,8 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
                         </span>
                         {user.role === "ADMIN" && (
                           <Tooltip>
-                            <TooltipTrigger>
-                              <ShieldAlert size={11} className="shrink-0 text-red-400" />
+                            <TooltipTrigger asChild>
+                              <ShieldAlert size={11} className="shrink-0 text-red-400 cursor-pointer" />
                             </TooltipTrigger>
                             <TooltipContent side="top" className="border-zinc-800 bg-zinc-900 text-xs text-zinc-300">
                               Admin
@@ -436,33 +448,28 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
                         )}
                       </div>
                       <span className="truncate text-[11px] text-zinc-600">{user.email}</span>
-                    </button>
+                    </div>
 
-                    {/* Plan */}
                     <Badge variant="outline" className={cn("hidden shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold sm:inline-flex", PLAN_BADGE[user.plan])}>
                       {user.plan}{user.planMode ? ` · ${user.planMode === "MONTHLY" ? "Mo" : "Yr"}` : ""}
                     </Badge>
 
-                    {/* Waitlists */}
                     <div className="hidden items-center justify-end sm:flex">
                       <span className="w-16 text-right text-xs font-medium tabular-nums text-zinc-400">
                         {user.waitlists}
                       </span>
                     </div>
 
-                    {/* Subscribers */}
                     <div className="hidden items-center justify-end sm:flex">
                       <span className="w-24 text-right text-xs tabular-nums text-zinc-500">
                         {user.subscribers.toLocaleString()}
                       </span>
                     </div>
 
-                    {/* Joined */}
                     <span className="hidden text-xs tabular-nums text-zinc-600 sm:block">
                       {fmtDate(user.createdAt)}
                     </span>
 
-                    {/* Status */}
                     <Badge variant="outline" className={cn("hidden shrink-0 gap-1 rounded-full px-2 py-0.5 text-[9px] font-semibold sm:inline-flex", STATUS_BADGE[user.status])}>
                       {user.status === "ACTIVE"    && <CheckCircle2 size={9} />}
                       {user.status === "SUSPENDED" && <Ban          size={9} />}
@@ -470,7 +477,6 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
                       {user.status}
                     </Badge>
 
-                    {/* Row actions */}
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -483,43 +489,37 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
                       <DropdownMenuContent align="end" className="w-44 border-zinc-800 bg-zinc-950/95 backdrop-blur-xl">
                         <DropdownMenuItem
                           onClick={() => openDrawer(user, globalIdx)}
-                          className="gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60"
+                          className="gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60 cursor-pointer"
                         >
                           <Users size={12} />View details
                         </DropdownMenuItem>
                         <DropdownMenuSeparator className="bg-zinc-800/60" />
                         {user.status === "ACTIVE" ? (
                           <DropdownMenuItem
-                            onClick={() => {
-                              const updated = { ...user, status: "SUSPENDED" as const };
-                              setUsers((prev) => prev.map((u) => u.id === user.id ? updated : u));
-                            }}
-                            className="gap-2 text-xs text-amber-400 hover:bg-amber-500/8 focus:bg-amber-500/8"
+                            onClick={() => onSuspend(user)}
+                            className="gap-2 text-xs text-amber-400 hover:bg-amber-500/8 focus:bg-amber-500/8 cursor-pointer"
                           >
                             <UserX size={12} />Suspend
                           </DropdownMenuItem>
                         ) : user.status === "SUSPENDED" ? (
                           <DropdownMenuItem
-                            onClick={() => {
-                              const updated = { ...user, status: "ACTIVE" as const };
-                              setUsers((prev) => prev.map((u) => u.id === user.id ? updated : u));
-                            }}
-                            className="gap-2 text-xs text-emerald-400 hover:bg-emerald-500/8 focus:bg-emerald-500/8"
+                            onClick={() => onReactivate(user)}
+                            className="gap-2 text-xs text-emerald-400 hover:bg-emerald-500/8 focus:bg-emerald-500/8 cursor-pointer"
                           >
                             <CheckCircle2 size={12} />Reactivate
                           </DropdownMenuItem>
                         ) : null}
                         {user.role === "USER" ? (
-                          <DropdownMenuItem className="gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 focus:bg-zinc-800/60">
+                          <DropdownMenuItem onClick={() => onPromote(user)} className="gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 focus:bg-zinc-800/60 cursor-pointer">
                             <Crown size={12} />Promote to admin
                           </DropdownMenuItem>
                         ) : (
-                          <DropdownMenuItem className="gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 focus:bg-zinc-800/60">
+                          <DropdownMenuItem onClick={() => onDemote(user)} className="gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 focus:bg-zinc-800/60 cursor-pointer">
                             <ShieldAlert size={12} />Remove admin
                           </DropdownMenuItem>
                         )}
                         <DropdownMenuSeparator className="bg-zinc-800/60" />
-                        <DropdownMenuItem className="gap-2 text-xs text-red-400 hover:bg-red-500/8 focus:bg-red-500/8 focus:text-red-400">
+                        <DropdownMenuItem onClick={() => onDelete(user)} className="gap-2 text-xs text-red-400 hover:bg-red-500/8 focus:bg-red-500/8 focus:text-red-400 cursor-pointer">
                           <Trash2 size={12} />Delete
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -533,33 +533,34 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
           {/* ── Pagination ────────────────────────────────── */}
           <div className="flex items-center justify-between border-t border-zinc-800/60 bg-zinc-900/30 px-4 py-3">
             <p className="text-[11px] text-zinc-600">
-              Showing <span className="font-semibold text-zinc-400">{Math.min((page - 1) * PAGE_SIZE + 1, filtered.length)}–{Math.min(page * PAGE_SIZE, filtered.length)}</span>{" "}
-              of <span className="font-semibold text-zinc-400">{filtered.length}</span> users
+              Showing <span className="font-semibold text-zinc-400">{Math.min((meta.page - 1) * meta.limit + 1, meta.total)}–{Math.min(meta.page * meta.limit, meta.total)}</span>{" "}
+              of <span className="font-semibold text-zinc-400">{meta.total}</span> users
             </p>
 
             <div className="flex items-center gap-1">
               <Button
-                variant="ghost" size="icon" disabled={page <= 1}
-                onClick={() => setPage((p) => p - 1)}
+                variant="ghost" size="icon" disabled={!meta.hasPreviousPage || isPending}
+                onClick={() => handlePageChange(meta.page - 1)}
                 className="h-7 w-7 rounded-md text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300 disabled:opacity-30"
               >
                 <ChevronLeft size={13} />
               </Button>
 
-              {Array.from({ length: Math.min(totalPages, 5) }, (_, i) => {
-                const p = totalPages <= 5 ? i + 1
-                  : page <= 3 ? i + 1
-                  : page >= totalPages - 2 ? totalPages - 4 + i
-                  : page - 2 + i;
+              {Array.from({ length: Math.min(meta.totalPages, 5) }, (_, i) => {
+                const p = meta.totalPages <= 5 ? i + 1
+                  : meta.page <= 3 ? i + 1
+                  : meta.page >= meta.totalPages - 2 ? meta.totalPages - 4 + i
+                  : meta.page - 2 + i;
                 return (
                   <Button
                     key={p}
                     variant="ghost"
                     size="icon"
-                    onClick={() => setPage(p)}
+                    disabled={isPending}
+                    onClick={() => handlePageChange(p)}
                     className={cn(
                       "h-7 w-7 rounded-md text-xs font-medium",
-                      p === page
+                      p === meta.page
                         ? "bg-red-600 text-white hover:bg-red-500"
                         : "text-zinc-500 hover:bg-zinc-800/60 hover:text-zinc-300",
                     )}
@@ -570,8 +571,8 @@ export function UsersTable({ users: initialUsers }: UsersTableProps) {
               })}
 
               <Button
-                variant="ghost" size="icon" disabled={page >= totalPages}
-                onClick={() => setPage((p) => p + 1)}
+                variant="ghost" size="icon" disabled={!meta.hasNextPage || isPending}
+                onClick={() => handlePageChange(meta.page + 1)}
                 className="h-7 w-7 rounded-md text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300 disabled:opacity-30"
               >
                 <ChevronRight size={13} />

@@ -9,13 +9,12 @@ import { Badge } from "@/src/components/ui/badge";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/src/components/ui/chart";
 import { DollarSign } from "lucide-react";
 import { cn } from "@/src/lib/utils";
-import { getPlanRevenue } from "../_lib/revenue-data";
+import { getPlanRevenue, PlanRevenue } from "../_lib/revenue-data";
 
 const planConfig = { mrr: { label: "MRR" }, users: { label: "Users" } };
 const churnConfig = { churnPct: { label: "Churn %", color: "hsl(var(--chart-5))" } };
 
-export function PlanRevenueChart() {
-  const data     = getPlanRevenue();
+export function PlanRevenueChart({ data }: { data: PlanRevenue[] }) {
   const totalMrr = data.reduce((s, d) => s + d.mrr, 0);
 
   const donutData = data.map((d) => ({
@@ -29,7 +28,7 @@ export function PlanRevenueChart() {
 
       {/* ── Revenue by plan donut + table ──────────────── */}
       <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/30 to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-violet-500/30 to-transparent" />
         <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
           <div className="flex items-center justify-between">
             <div>
@@ -110,7 +109,7 @@ export function PlanRevenueChart() {
 
       {/* ── Churn rate per plan ────────────────────────── */}
       <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/25 to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-red-500/25 to-transparent" />
         <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
           <p className="text-sm font-semibold text-zinc-200">Churn rate by plan</p>
           <p className="text-[11px] text-zinc-600">

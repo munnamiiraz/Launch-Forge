@@ -1,5 +1,5 @@
 import { type Metadata } from "next";
-import { BarChart3, Download } from "lucide-react";
+import { Download } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 
 import { DashboardHeader }       from "@/src/components/module/dashboard/_components/DashboardHeader";
@@ -10,7 +10,6 @@ import { ViralKFactorChart, WaitlistComparisonChart } from "@/src/components/mod
 import { ConfirmationRateChart, TopReferrersChart } from "@/src/components/module/owners-analytics/_components/ConfirmationRateChart";
 import { RevenueMrrChart, PlanDistributionChart } from "@/src/components/module/owners-analytics/_components/RevenueMrrChart";
 import { CohortRetentionChart, FeedbackActivityChart } from "@/src/components/module/owners-analytics/_components/CohortRetentionChart";
-import { getAnalyticsSummary } from "@/src/services/analytics/analytics.action";
 
 export const metadata: Metadata = {
   title:       "Analytics — LaunchForge",
@@ -37,8 +36,6 @@ function SectionDivider({ children }: { children: React.ReactNode }) {
 }
 
 export default function AnalyticsPage() {
-  const summary = getAnalyticsSummary();
-
   return (
     <div className="flex flex-col">
 
@@ -65,7 +62,7 @@ export default function AnalyticsPage() {
             title="Overview"
             description="Key metrics across all your waitlists and revenue"
           />
-          <AnalyticsKpiStrip summary={summary} />
+          <AnalyticsKpiStrip />
         </section>
 
         {/* ── Growth ────────────────────────────────────────────── */}

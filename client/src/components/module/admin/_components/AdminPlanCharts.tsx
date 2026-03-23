@@ -9,20 +9,24 @@ import { Badge }  from "@/src/components/ui/badge";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/src/components/ui/chart";
 import { DollarSign } from "lucide-react";
 import { cn } from "@/src/lib/utils";
-import { getPlanBreakdown, getSignupSources } from "../_lib/data";
+import {
+  AdminKpis, AdminUser, RevenuePoint, UserGrowthPoint,
+  SignupSourcePoint, PlanBreakdownItem, AdminActivity,
+  SystemHealth, TopWaitlist,
+} from "../_types";
 
 /* ── Plan distribution ───────────────────────────────────────────── */
 const planConfig = { value: { label: "Users" }, mrr: { label: "MRR" } };
 
-export function AdminPlanChart() {
-  const data  = getPlanBreakdown();
+export function AdminPlanChart({ data }: { data: PlanBreakdownItem[] }) {
+  if (!data || data.length === 0) return null;
   const total = data.reduce((s, d) => s + d.value, 0);
   const totalMrr = data.reduce((s, d) => s + d.mrr, 0);
   const paid  = total - (data.find((d) => d.name === "Free")?.value ?? 0);
 
   return (
     <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-violet-500/30 to-transparent" />
       <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <div>
@@ -30,7 +34,7 @@ export function AdminPlanChart() {
             <p className="text-[11px] text-zinc-600">All user accounts by subscription tier</p>
           </div>
           <Badge className="border-violet-500/25 bg-violet-500/10 text-[10px] text-violet-400">
-            {Math.round((paid / total) * 100)}% paid
+            {total > 0 ? Math.round((paid / total) * 100) : 0}% paid
           </Badge>
         </div>
       </CardHeader>
@@ -63,7 +67,7 @@ export function AdminPlanChart() {
                 <span className="text-[11px] text-zinc-400">{d.name}</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[10px] text-zinc-600">{Math.round((d.value / total) * 100)}%</span>
+                <span className="text-[10px] text-zinc-600">{total > 0 ? Math.round((d.value / total) * 100) : 0}%</span>
                 <span className="w-16 text-right text-[11px] font-semibold tabular-nums text-zinc-300">
                   {d.value.toLocaleString()}
                 </span>
@@ -92,13 +96,13 @@ export function AdminPlanChart() {
 /* ── Signup sources ──────────────────────────────────────────────── */
 const sourceConfig = { value: { label: "Signups", color: "hsl(var(--chart-1))" } };
 
-export function AdminSignupSourcesChart() {
-  const data  = getSignupSources();
+export function AdminSignupSourcesChart({ data }: { data: SignupSourcePoint[] }) {
+  if (!data || data.length === 0) return null;
   const total = data.reduce((s, d) => s + d.value, 0);
 
   return (
     <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-cyan-500/30 to-transparent" />
       <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
         <p className="text-sm font-semibold text-zinc-200">Signup sources</p>
         <p className="text-[11px] text-zinc-600">

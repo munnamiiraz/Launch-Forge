@@ -3,16 +3,38 @@ import { Users } from "lucide-react";
 
 import { UsersStatsStrip } from "@/src/components/module/admin-users/_components/UsersStatsStrip";
 import { UsersTable }      from "@/src/components/module/admin-users/_components/UsersTable";
-import { getAllUsers, computeUsersPageStats } from "@/src/components/module/admin-users/_lib/users-data";
+import { getPaginatedUsers, getUsersStats } from "@/src/components/module/admin-users/_lib/users-data";
 
 export const metadata: Metadata = {
   title:       "Users — Admin · LaunchForge",
   description: "Manage all registered users on the LaunchForge platform.",
 };
 
-export default async function AdminUsersPage() {
-  const users = getAllUsers();
-  const stats = computeUsersPageStats(users);
+interface PageProps {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function AdminUsersPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  
+  // Extract query params for server-side fetching
+  const query = {
+    page:      params.page ? parseInt(params.page as string, 10) : 1,
+    limit:     params.limit ? parseInt(params.limit as string, 10) : 10,
+    search:    (params.search as string) || "",
+    status:    (params.status as any) || "ALL",
+    plan:      (params.plan as any) || "ALL",
+    sortBy:    (params.sortBy as any) || "createdAt",
+    sortOrder: (params.sortOrder as any) || "desc",
+  };
+
+  // Parallel data fetching
+  const [paginated, stats] = await Promise.all([
+    getPaginatedUsers(query),
+    getUsersStats(),
+  ]);
+
+  const { data: users, meta } = paginated;
 
   return (
     <div className="flex flex-col gap-6 p-6">
@@ -38,7 +60,7 @@ export default async function AdminUsersPage() {
                 `${stats.total} total`,
                 `${stats.active} active`,
                 `${stats.suspended} suspended`,
-                `${stats.pro + stats.growth} paid`,
+                `${stats.paid} paid`,
                 `+${stats.newToday} today`,
               ].map((s) => (
                 <span key={s} className="rounded-full border border-zinc-800/60 bg-zinc-900/40 px-2.5 py-1">
@@ -54,7 +76,11 @@ export default async function AdminUsersPage() {
       <UsersStatsStrip stats={stats} />
 
       {/* ── Full users table ──────────────────────────────── */}
-      <UsersTable users={users} />
+      <UsersTable 
+        users={users} 
+        meta={meta}
+        currentQuery={query}
+      />
 
     </div>
   );

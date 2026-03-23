@@ -44,7 +44,7 @@ const AVATAR_GRADS = [
 export function AdminActivityFeed({ activities }: { activities: AdminActivity[] }) {
   return (
     <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-red-500/20 to-transparent" />
       <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <p className="text-sm font-semibold text-zinc-200">Recent activity</p>
@@ -68,7 +68,7 @@ export function AdminActivityFeed({ activities }: { activities: AdminActivity[] 
           >
             <div className="relative mt-0.5 shrink-0">
               <Avatar className="h-7 w-7 rounded-lg">
-                <AvatarFallback className={cn("rounded-lg bg-gradient-to-br text-[9px] font-bold text-white", AVATAR_GRADS[i % AVATAR_GRADS.length])}>
+                <AvatarFallback className={cn("rounded-lg bg-linear-to-br text-[9px] font-bold text-white", AVATAR_GRADS[i % AVATAR_GRADS.length])}>
                   {a.user.split(" ").map((w) => w[0]).join("").slice(0, 2)}
                 </AvatarFallback>
               </Avatar>
@@ -114,7 +114,7 @@ export function AdminSystemHealth({ health }: { health: SystemHealth }) {
 
   return (
     <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-zinc-700/50 to-transparent" />
       <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <p className="text-sm font-semibold text-zinc-200">System health</p>
@@ -177,7 +177,7 @@ const WL_GRADS = [
 export function AdminTopWaitlists({ waitlists }: { waitlists: TopWaitlist[] }) {
   return (
     <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-amber-500/30 to-transparent" />
       <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
         <div className="flex items-center gap-2">
           <Trophy size={13} className="text-amber-400" />
@@ -202,7 +202,7 @@ export function AdminTopWaitlists({ waitlists }: { waitlists: TopWaitlist[] }) {
             </span>
 
             <Avatar className="h-7 w-7 shrink-0 rounded-lg">
-              <AvatarFallback className={cn("rounded-lg bg-gradient-to-br text-[9px] font-bold text-white", WL_GRADS[i % WL_GRADS.length])}>
+              <AvatarFallback className={cn("rounded-lg bg-linear-to-br text-[9px] font-bold text-white", WL_GRADS[i % WL_GRADS.length])}>
                 {wl.name.slice(0, 2).toUpperCase()}
               </AvatarFallback>
             </Avatar>

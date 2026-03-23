@@ -5,6 +5,7 @@ export const validateParams = (schema: z.ZodObject<any>) =>
 (req: Request, res: Response, next: NextFunction) => {
   const result = schema.safeParse(req.params);
   if (!result.success) return next(result.error);
-  req.params = result.data;  // sanitised + lowercased slug flows into controller
+  // Express types require string-ish params; zod schemas may produce unknowns.
+  req.params = result.data as unknown as typeof req.params; // sanitised params
   next();
 };

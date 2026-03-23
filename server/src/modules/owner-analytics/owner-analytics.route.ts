@@ -50,19 +50,19 @@ import { Role } from "../../constraint/index";
  */
 const router = Router({ mergeParams: true });
 
-const auth    = checkAuth(Role.USER, Role.ADMIN);
+const auth    = checkAuth(Role.OWNER, Role.ADMIN);
 const params  = validateParams(analyticsParamSchema);
 const qparams = validateQuery(analyticsQuerySchema);
 
-router.get("/summary",   auth, params, qparams, analyticsController.getSummary);
-router.get("/growth",    auth, params, qparams, analyticsController.getSubscriberGrowth);
-router.get("/funnel",    auth, params, qparams, analyticsController.getReferralFunnel);
-router.get("/kfactor",   auth, params, qparams, analyticsController.getViralKFactor);
-router.get("/confirmation", auth, params, qparams, analyticsController.getConfirmationRate);
-router.get("/referrers", auth, params, qparams, analyticsController.getTopReferrers);
-router.get("/waitlists", auth, params, qparams, analyticsController.getWaitlistComparison);
-router.get("/cohorts",   auth, params, qparams, analyticsController.getCohortRetention);
-router.get("/revenue",   auth, params, qparams, analyticsController.getRevenue);
-router.get("/feedback",  auth, params, qparams, analyticsController.getFeedbackActivity);
+router.get("/summary",   auth, params, /*qparams,*/ analyticsController.getSummary);
+router.get("/growth",    auth, params, /*qparams,*/ analyticsController.getSubscriberGrowth);
+router.get("/funnel",    auth, params, /*qparams,*/ analyticsController.getReferralFunnel);
+router.get("/kfactor",   auth, params, /*qparams,*/ analyticsController.getViralKFactor);
+router.get("/confirmation", auth, params, /*qparams,*/ analyticsController.getConfirmationRate);
+router.get("/referrers", auth, params, /*qparams,*/ analyticsController.getTopReferrers);
+router.get("/waitlists", auth, params, /*qparams,*/ analyticsController.getWaitlistComparison);
+router.get("/cohorts",   auth, params, /*qparams,*/ analyticsController.getCohortRetention);
+router.get("/revenue",   auth, params, /*qparams,*/ analyticsController.getRevenue);
+router.get("/feedback",  auth, params, /*qparams,*/ analyticsController.getFeedbackActivity);
 
 export const analyticsRouter = router;

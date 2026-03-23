@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search, TrendingUp, TrendingDown, RefreshCw,
@@ -14,6 +14,7 @@ import { Badge }  from "@/src/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
 import { cn } from "@/src/lib/utils";
 import { getRecentTransactions } from "../_lib/revenue-data";
+import { clientHttpClient } from "@/src/lib/axios/clientHttpClient";
 import type { RecentTransaction } from "../_lib/revenue-data";
 
 const TYPE_CONFIG: Record<RecentTransaction["type"], {
@@ -53,14 +54,25 @@ const TYPE_TABS: { id: TypeFilter; label: string }[] = [
   { id: "refund",    label: "Refunds"   },
 ];
 
-export function TransactionsTable() {
+export function TransactionsTable({ allTx }: { allTx: RecentTransaction[] }) {
   const [search,     setSearch]     = useState("");
   const [typeFilter, setTypeFilter] = useState<TypeFilter>("all");
+  const [localTx, setLocalTx] = useState<RecentTransaction[]>(allTx ?? []);
 
-  const allTx   = getRecentTransactions();
+  // Fetch transactions on mount if none provided
+  useEffect(() => {
+    if (!allTx || allTx.length === 0) {
+      clientHttpClient
+        .get<{ data: RecentTransaction[] }>("/admin/revenue/transactions", { params: { type: "all", page: "1", limit: "20" } })
+        .then((res) => setLocalTx(res.data.data ?? []))
+        .catch(console.error);
+    }
+  }, []);
+
+  const data = allTx && allTx.length > 0 ? allTx : localTx;
 
   const filtered = useMemo(() => {
-    let list = allTx;
+    let list = data;
     if (typeFilter !== "all") list = list.filter((t) => t.type === typeFilter);
     if (search.trim()) {
       const q = search.toLowerCase();
@@ -72,7 +84,7 @@ export function TransactionsTable() {
       );
     }
     return list;
-  }, [allTx, search, typeFilter]);
+  }, [data, search, typeFilter]);
 
   const totalRevenue = filtered
     .filter((t) => t.status === "paid")
@@ -83,7 +95,7 @@ export function TransactionsTable() {
 
   return (
     <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/25 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-emerald-500/25 to-transparent" />
 
       {/* Toolbar */}
       <div className="flex flex-col gap-3 border-b border-zinc-800/60 bg-zinc-900/60 p-4">
@@ -166,7 +178,7 @@ export function TransactionsTable() {
               >
                 {/* Avatar */}
                 <Avatar className="h-7 w-7 shrink-0 rounded-lg">
-                  <AvatarFallback className={cn("rounded-lg bg-gradient-to-br text-[9px] font-bold text-white", grad)}>
+                  <AvatarFallback className={cn("rounded-lg bg-linear-to-br text-[9px] font-bold text-white", grad)}>
                     {initials}
                   </AvatarFallback>
                 </Avatar>

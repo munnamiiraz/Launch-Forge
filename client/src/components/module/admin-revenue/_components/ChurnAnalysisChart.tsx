@@ -9,7 +9,7 @@ import { Badge } from "@/src/components/ui/badge";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/src/components/ui/chart";
 import { TrendingDown } from "lucide-react";
 import { cn } from "@/src/lib/utils";
-import { getChurnData } from "../_lib/revenue-data";
+import { getChurnData, ChurnDataPoint } from "../_lib/revenue-data";
 
 const churnConfig = {
   churned:   { label: "Churned users",  color: "hsl(var(--chart-5))" },
@@ -17,8 +17,7 @@ const churnConfig = {
   churnRate: { label: "Churn rate %",   color: "hsl(var(--chart-1))" },
 };
 
-export function ChurnAnalysisChart() {
-  const data        = getChurnData();
+export function ChurnAnalysisChart({ data }: { data: ChurnDataPoint[] }) {
   const latestRate  = data[data.length - 1].churnRate;
   const prevRate    = data[data.length - 2].churnRate;
   const delta       = parseFloat((latestRate - prevRate).toFixed(1));
@@ -28,7 +27,7 @@ export function ChurnAnalysisChart() {
 
   return (
     <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/25 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-red-500/25 to-transparent" />
       <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
         <div className="flex items-start justify-between gap-4">
           <div>

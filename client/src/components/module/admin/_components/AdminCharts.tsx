@@ -11,7 +11,11 @@ import { Button } from "@/src/components/ui/button";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/src/components/ui/chart";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/src/lib/utils";
-import { getRevenueTrend, getUserGrowth } from "../_lib/data";
+import {
+  AdminKpis, AdminUser, RevenuePoint, UserGrowthPoint,
+  SignupSourcePoint, PlanBreakdownItem, AdminActivity,
+  SystemHealth, TopWaitlist,
+} from "../_types";
 
 /* ── MRR / Revenue chart ─────────────────────────────────────────── */
 
@@ -22,15 +26,15 @@ const mrrConfig = {
   upgrades: { label: "Upgrades", color: "hsl(var(--chart-3))" },
 };
 
-export function AdminRevenueChart() {
-  const data    = getRevenueTrend();
+export function AdminRevenueChart({ data }: { data: RevenuePoint[] }) {
+  if (!data || data.length === 0) return null;
   const current = data[data.length - 1].mrr;
-  const prev    = data[data.length - 2].mrr;
-  const pct     = Math.round(((current - prev) / prev) * 100);
+  const prev    = data.length > 1 ? data[data.length - 2].mrr : current;
+  const pct     = prev !== 0 ? Math.round(((current - prev) / prev) * 100) : 0;
 
   return (
     <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-emerald-500/20 to-transparent" />
       <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <div>
@@ -42,7 +46,7 @@ export function AdminRevenueChart() {
               ${(current / 1000).toFixed(1)}k
             </p>
             <Badge className="gap-1 border-emerald-500/25 bg-emerald-500/10 text-[10px] text-emerald-400">
-              <ArrowUpRight size={9} />+{pct}%
+              <ArrowUpRight size={9} />{pct >= 0 ? "+" : ""}{pct}%
             </Badge>
           </div>
         </div>
@@ -108,14 +112,14 @@ const RANGES: { id: RangeId; label: string; days: number }[] = [
   { id: "90d", label: "90D", days: 90 },
 ];
 
-export function AdminUserGrowthChart() {
+export function AdminUserGrowthChart({ data: allData }: { data: Record<RangeId, UserGrowthPoint[]> }) {
   const [range, setRange] = useState<RangeId>("30d");
-  const data = getUserGrowth(RANGES.find((r) => r.id === range)?.days ?? 30);
+  const data = allData[range];
   const last = data[data.length - 1];
 
   return (
     <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-indigo-500/20 to-transparent" />
       <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
         <div className="flex items-start justify-between">
           <div>

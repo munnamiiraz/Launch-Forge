@@ -1,3 +1,11 @@
 .env
 generated
 node_modules
+
+dist
+find_id.js
+find_id.ts
+test.js
+test.ts
+check_db.js
+debug_ids.js

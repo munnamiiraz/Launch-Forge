@@ -51,7 +51,7 @@ export const PLAN_MRR: Record<string, number> = {
 } as const;
 
 export const PLAN_META: Record<string, { label: string; fill: string }> = {
-  FREE:           { label: "Free",           fill: "hsl(240 4% 30%)"      },
+  FREE:           { label: "Free",           fill: "hsl(240 5% 55%)"      },
   PRO_MONTHLY:    { label: "Pro Monthly",    fill: "hsl(var(--chart-1))"  },
   PRO_YEARLY:     { label: "Pro Yearly",     fill: "hsl(var(--chart-2))"  },
   GROWTH_MONTHLY: { label: "Growth Monthly", fill: "hsl(var(--chart-3))"  },
