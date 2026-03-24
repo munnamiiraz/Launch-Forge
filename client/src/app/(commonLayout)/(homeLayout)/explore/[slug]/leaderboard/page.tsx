@@ -88,7 +88,7 @@ export default async function PublicLeaderboardPage({ params }: Props) {
       console.error("[Leaderboard Page] Error fetching waitlist:", e);
       return null;
     }),
-    fetchLeaderboardBySlug(slug, { limit: 50 }).catch((e) => {
+    fetchLeaderboardBySlug(slug, { limit: 10, page: 1 }).catch((e) => {
       console.error("[Leaderboard Page] Error fetching leaderboard:", e);
       return null;
     }),

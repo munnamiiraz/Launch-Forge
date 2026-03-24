@@ -110,7 +110,7 @@ export async function fetchLeaderboard(
   });
   if (params.search) queryParams.set("search", params.search);
 
-  const url = `${BACKEND}/workspaces/${workspaceId}/waitlists/${waitlistId}/leaderboard?${queryParams}`;
+  const url = `${BACKEND}/workspaces/${workspaceId}/waitlists/${waitlistId}/leaderboard/full?${queryParams}`;
   console.log(`[Action] Fetching leaderboard: ${url}`);
 
   const res = await authFetch(url);

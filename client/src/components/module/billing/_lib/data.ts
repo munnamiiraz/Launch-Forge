@@ -2,6 +2,7 @@ import type {
   PlanDefinition, BillingPageData, ActiveSubscription,
   Invoice, UsageItem,
 } from "../_types";
+import { getPaymentStatusAction, getInvoicesAction } from "@/src/services/billing/_lib/billing.actions";
 
 /* ─────────────────────────────────────────────────────────────────
    Plan definitions — single source of truth
@@ -99,53 +100,25 @@ export const PLANS: PlanDefinition[] = [
    ──────────────────────────────────────────────────────────────── */
 
 export async function getBillingData(): Promise<BillingPageData> {
-  /**
-   * Real:
-   * const [paymentStatus, invoices] = await Promise.all([
-   *   fetch(`${BACKEND}/api/payment/status`, { credentials: "include" }).then(r => r.json()),
-   *   fetch(`${BACKEND}/api/payment/invoices`, { credentials: "include" }).then(r => r.json()),
-   * ]);
-   */
+  const [statusRes, invoicesRes] = await Promise.all([
+    getPaymentStatusAction(),
+    getInvoicesAction(),
+  ]);
 
-  const subscription: ActiveSubscription = {
-    planTier:      "PRO",
-    billingMode:   "MONTHLY",
-    status:        "active",
-    amount:        19,
-    currency:      "USD",
-    nextBillingAt: new Date(Date.now() + 18 * 86_400_000).toISOString(),
-    cancelAt:      null,
-    trialEndsAt:   null,
-    transactionId: "sub_1QxBv3CkJ2eZvKYwXhNlPdqR",
-    startedAt:     new Date(Date.now() - 47 * 86_400_000).toISOString(),
-  };
+  const subscription: ActiveSubscription | null = statusRes.data?.subscription ?? null;
 
-  const invoices: Invoice[] = [
-    {
-      id: "inv_001", date: new Date(Date.now() - 0  * 86_400_000).toISOString(),
-      amount: 19, currency: "USD", status: "paid",
-      description: "LaunchForge Pro — Monthly", pdfUrl: "#",
-    },
-    {
-      id: "inv_002", date: new Date(Date.now() - 31 * 86_400_000).toISOString(),
-      amount: 19, currency: "USD", status: "paid",
-      description: "LaunchForge Pro — Monthly", pdfUrl: "#",
-    },
-    {
-      id: "inv_003", date: new Date(Date.now() - 62 * 86_400_000).toISOString(),
-      amount: 19, currency: "USD", status: "paid",
-      description: "LaunchForge Pro — Monthly", pdfUrl: "#",
-    },
-  ];
+  const invoices: Invoice[] = invoicesRes.data ?? [];
 
+  // TODO: Add real usage data when implemented in backend
   const usage: UsageItem[] = [
-    { label: "Waitlists",        used: 4,     limit: null,   unit: "waitlists"   },
-    { label: "Subscribers",      used: 2_847, limit: 10_000, unit: "subscribers" },
-    { label: "Team members",     used: 2,     limit: 5,      unit: "members"     },
-    { label: "Active prizes",    used: 6,     limit: 10,     unit: "prizes"      },
-    { label: "Feedback boards",  used: 1,     limit: null,   unit: "boards"      },
-    { label: "API calls (30d)",  used: 12_480,limit: null,   unit: "calls"       },
+    { label: "Waitlists",        used: 0,     limit: null,   unit: "waitlists"   },
+    { label: "Subscribers",      used: 0,     limit: 10_000, unit: "subscribers" },
+    { label: "Team members",     used: 0,     limit: 5,      unit: "members"     },
+    { label: "Active prizes",    used: 0,     limit: 10,     unit: "prizes"      },
+    { label: "Feedback boards",  used: 0,     limit: null,   unit: "boards"      },
+    { label: "API calls (30d)",  used: 0,     limit: null,   unit: "calls"       },
   ];
 
   return { subscription, invoices, usage };
+
 }

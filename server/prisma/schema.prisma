@@ -149,6 +149,7 @@ model Waitlist {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
+  endDate     DateTime?
 
   workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   subscribers Subscriber[]

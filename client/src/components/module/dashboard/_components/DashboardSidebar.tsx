@@ -46,15 +46,15 @@ const NAV_GROUPS = [
     items: [
       { label: "All Waitlists",  href: "/dashboard/waitlists",              icon: Users },
       { label: "Leaderboard",    href: "/dashboard/leaderboard",            icon: Trophy },
-      { label: "Prizes",         href: "/dashboard/prizes",                 icon: Gift,   badge: "New" },
+      { label: "Prizes",         href: "/dashboard/prizes",                 icon: Gift },
     ],
   },
   {
     label: "Engagement",
     items: [
-      { label: "Feedback",   href: "/dashboard/feedback",  icon: MessageSquare },
-      { label: "Roadmap",    href: "/dashboard/roadmap",   icon: Map },
-      { label: "Changelog",  href: "/dashboard/changelog", icon: Megaphone },
+      { label: "Feedback",   href: "",  icon: MessageSquare, badge: "Coming" },
+      { label: "Roadmap",    href: "",   icon: Map, badge: "Coming" },
+      { label: "Changelog",  href: "", icon: Megaphone, badge: "Coming" },
     ],
   },
   {
@@ -342,8 +342,35 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                 const isActive = pathname === item.href ||
                   (item.href !== "/dashboard" && pathname.startsWith(item.href));
                 const Icon = item.icon;
+                const isDisabled = !item.href || item.href === "";
 
-                const link = (
+                const link = isDisabled ? (
+                  <div
+                    className={cn(
+                      "group flex cursor-not-allowed items-center gap-2.5 rounded-lg px-2 py-2 text-sm transition-all duration-150",
+                      "text-muted-foreground/50",
+                      collapsed && "justify-center px-0"
+                    )}
+                  >
+                    <Icon
+                      size={15}
+                      className={cn(
+                        "shrink-0 transition-colors",
+                        "text-muted-foreground/40"
+                      )}
+                    />
+                    {!collapsed && (
+                      <>
+                        <span className="flex-1 truncate">{item.label}</span>
+                        {"badge" in item && item.badge && (
+                          <Badge className="h-4 rounded-full border-amber-500/30 bg-amber-500/12 px-1.5 py-0 text-[9px] font-semibold text-amber-400">
+                            {item.badge}
+                          </Badge>
+                        )}
+                      </>
+                    )}
+                  </div>
+                ) : (
                   <Link
                     key={item.href}
                     href={item.href}

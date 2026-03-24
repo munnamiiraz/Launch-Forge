@@ -35,7 +35,7 @@ export async function generateMetadata(
 }
 
 const DEFAULT_PARAMS = {
-  page: 1, limit: 15, tier: "all" as const,
+  page: 1, limit: 10, tier: "all" as const,
   search: "", countMode: "all" as const,
 };
 

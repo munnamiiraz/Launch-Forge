@@ -60,6 +60,7 @@ export const publicWaitlistService = {
     ]);
 
     return {
+      id:               waitlist.id,
       name:             waitlist.name,
       slug:             waitlist.slug,
       description:      waitlist.description,

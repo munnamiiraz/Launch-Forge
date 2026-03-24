@@ -26,7 +26,7 @@ import type {
   LeaderboardResponse,
 } from "../_types";
 
-const PAGE_SIZE = 15;
+const PAGE_SIZE = 10;
 
 interface WaitlistLeaderboardClientProps {
   waitlistId:       string;
@@ -41,7 +41,7 @@ export function WaitlistLeaderboardClient({
   /* ── Query params state ─────────────────────────────────────── */
   const [params, setParams] = useState<LeaderboardQueryParams>({
     page:      1,
-    limit:     PAGE_SIZE,
+    limit:     10,
     tier:      "all",
     search:    "",
     countMode: "all",

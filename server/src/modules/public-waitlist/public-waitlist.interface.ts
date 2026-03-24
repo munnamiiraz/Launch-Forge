@@ -34,6 +34,8 @@ export interface SubscriberPositionResult {
  * sign-up page needs to render.
  */
 export interface PublicWaitlistPageData {
+  /** Waitlist ID for fetching related data like prizes */
+  id:               string;
   name:             string;
   slug:             string;
   description:      string | null;

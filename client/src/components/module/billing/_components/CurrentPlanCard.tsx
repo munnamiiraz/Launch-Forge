@@ -12,7 +12,7 @@ import { Badge }   from "@/src/components/ui/badge";
 import { Button }  from "@/src/components/ui/button";
 import { Separator } from "@/src/components/ui/separator";
 import { cn }      from "@/src/lib/utils";
-import { createPortalAction } from "@/src/services/billing/billing.actions";
+import { createPortalAction } from "@/src/services/billing/_lib/billing.actions";
 import { PLANS }   from "@/src/components/module/billing/_lib/data";
 import type { ActiveSubscription } from "@/src/components/module/billing/_types";
 

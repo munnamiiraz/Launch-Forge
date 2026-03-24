@@ -13,7 +13,7 @@ import { Switch }  from "@/src/components/ui/switch";
 import { Separator } from "@/src/components/ui/separator";
 import { cn }      from "@/src/lib/utils";
 import { PLANS }   from "@/src/components/module/billing/_lib/data";
-import { createCheckoutAction } from "@/src/services/billing/billing.actions";
+import { createCheckoutAction } from "@/src/services/billing/_lib/billing.actions";
 import type { PlanTier, BillingMode } from "@/src/components/module/billing/_types";
 
 interface PlanCardsProps {

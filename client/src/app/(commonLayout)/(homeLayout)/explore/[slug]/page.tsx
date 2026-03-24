@@ -24,7 +24,7 @@ interface Props {
   params: Promise<{ slug: string }>;
 }
 
-function mapToPublicWaitlist(data: any): PublicWaitlistData {
+function mapToPublicWaitlist(data: any, prizes: any[] = []): PublicWaitlistData {
   const getInitials = (n: string) => n.split(" ").map(x => x[0]).join("").toUpperCase().slice(0, 2);
   
   return {
@@ -47,12 +47,12 @@ function mapToPublicWaitlist(data: any): PublicWaitlistData {
     expiresAt: null,
     ownerName: "Founder",
     ownerAvatarInitials: "F",
-    prizes: [],
-    leaderboard: data.topReferrers?.map((r: any) => ({
-      rank: r.rank,
+    prizes: prizes,
+    leaderboard: data.topReferrers?.map((r: any, idx: number) => ({
+      rank: r.rank ?? idx + 1,
       maskedName: r.maskedName,
       referralCount: r.referralCount,
-      isTop3: r.rank <= 3
+      isTop3: (r.rank ?? idx + 1) <= 3
     })) || []
   };
 }
@@ -87,13 +87,33 @@ function StatPill({ icon, value, label }: { icon: React.ReactNode; value: string
 
 export default async function PublicWaitlistPage({ params }: Props) {
   const { slug } = await params;
+  
+  // Fetch waitlist data first (we need the ID to fetch prizes)
   const wlRaw = await fetchPublicWaitlist(slug);
   
   if (!wlRaw) {
     notFound();
   }
 
-  const wl = mapToPublicWaitlist(wlRaw);
+  // Fetch prizes using the waitlist ID from the API response
+  const prizes = await fetchPublicPrizes(wlRaw.id);
+  
+  // Transform prizes to match the expected format
+  const transformedPrizes = prizes.map((p: any) => ({
+    id: p.id,
+    rankFrom: p.rankFrom,
+    rankTo: p.rankTo,
+    rankLabel: p.rankLabel,
+    title: p.title,
+    description: p.description,
+    prizeType: p.prizeType,
+    value: p.value,
+    currency: p.currency,
+    emoji: p.prizeType === "PRODUCT" ? "📦" : p.prizeType === "CASH" ? "💵" : p.prizeType === "GIFT_CARD" ? "🎁" : "🏆",
+    expiresAt: p.expiresAt,
+  }));
+
+  const wl = mapToPublicWaitlist(wlRaw, transformedPrizes);
 
   const hasPrizes  = wl.prizes.length > 0;
   const expiryDate = wl.expiresAt
@@ -187,19 +207,43 @@ export default async function PublicWaitlistPage({ params }: Props) {
                             <h2 className="text-lg font-bold">Prizes</h2>
                           </div>
                           {hasPrizes ? (
-                            <div className="flex flex-col gap-2">
-                              {wl.prizes.map((prize, idx) => (
-                                <div
-                                  key={idx}
-                                  className="flex items-center gap-3 rounded-xl border border-border/60 bg-card/40 p-3"
-                                >
-                                  <span className="text-xl">{prize.emoji}</span>
-                                  <div className="flex-1">
-                                    <p className="text-sm font-semibold text-foreground">{prize.title}</p>
-                                    <p className="text-xs text-muted-foreground">{prize.rank}</p>
+                            <div className="flex flex-col gap-3">
+                              {wl.prizes.map((prize, idx) => {
+                                const isTop = prize.rankFrom === 1;
+                                return (
+                                  <div
+                                    key={idx}
+                                    className={`flex items-start gap-3 rounded-xl border p-4 ${
+                                      isTop ? 'border-amber-500/25 bg-amber-500/8' : 'border-border/60 bg-card/40'
+                                    }`}
+                                  >
+                                    <span className="text-2xl">{isTop ? '🥇' : prize.emoji}</span>
+                                    <div className="flex-1">
+                                      <div className="flex items-center gap-1.5 mb-1">
+                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                          isTop 
+                                            ? 'border-amber-500/40 bg-amber-500/15 text-amber-300'
+                                            : 'border-zinc-700/60 bg-muted/40 text-muted-foreground'
+                                        }`}>
+                                          {prize.rankLabel} place
+                                        </span>
+                                      </div>
+                                      <p className="text-sm font-semibold text-foreground">{prize.title}</p>
+                                      {prize.description && (
+                                        <p className="text-xs text-muted-foreground mt-1">{prize.description}</p>
+                                      )}
+                                      {prize.value && (
+                                        <p className="text-sm font-bold text-emerald-300 mt-1">
+                                          {prize.prizeType === 'DISCOUNT' 
+                                            ? `${prize.value}% off`
+                                            : `${prize.currency ?? ""}${prize.value.toLocaleString()}`
+                                          }
+                                        </p>
+                                      )}
+                                    </div>
                                   </div>
-                                </div>
-                              ))}
+                                );
+                              })}
                             </div>
                           ) : (
                             <p className="text-sm text-muted-foreground">No prizes available for this waitlist.</p>
@@ -303,15 +347,15 @@ export default async function PublicWaitlistPage({ params }: Props) {
             {hasPrizes && (
               <>
                 <Separator className="bg-muted/60" />
-                <PrizePoolSection prizes={wl.prizes.map((p, i) => ({ id: String(i), rankFrom: i + 1, rankTo: i + 1, rankLabel: p.rank, title: p.title, description: null, prizeType: "CUSTOM" as const, value: null, currency: null, emoji: p.emoji, expiresAt: null }))} />
+                <PrizePoolSection prizes={wl.prizes.map((p, i) => ({ id: String(i), rankFrom: p.rankFrom, rankTo: p.rankTo, rankLabel: p.rankLabel, title: p.title, description: p.description, prizeType: p.prizeType as any, value: p.value, currency: p.currency, emoji: p.emoji, expiresAt: p.expiresAt }))} />
               </>
             )}
 
             {/* ── Public leaderboard ────────────────────── */}
             <Separator className="bg-muted/60" />
             <PublicLeaderboard
-              entries={(wl.leaderboard || wl.topReferrers.map((r, i) => ({ rank: r.rank, maskedName: r.maskedName, referralCount: r.referralCount, prizeWon: null, isTop3: r.rank <= 3 }))) as any}
-              prizes={wl.prizes.map((p, i) => ({ id: String(i), rankFrom: i + 1, rankTo: i + 1, rankLabel: p.rank, title: p.title, description: null, prizeType: "CUSTOM" as const, value: null, currency: null, emoji: p.emoji, expiresAt: null }))}
+              entries={wl.leaderboard as any}
+              prizes={wl.prizes.map((p, i) => ({ id: p.id || String(i), rankFrom: p.rankFrom, rankTo: p.rankTo, rankLabel: p.rankLabel, title: p.title, description: p.description, prizeType: p.prizeType as any, value: p.value, currency: p.currency, emoji: p.emoji, expiresAt: p.expiresAt }))}
               waitlistName={wl.name}
             />
 

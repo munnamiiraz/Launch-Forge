@@ -59,7 +59,7 @@ async function authFetch(url: string, options: RequestInit = {}) {
       Cookie: cookieHeader,
       "Content-Type": "application/json",
     },
-    cache: "no-store",
+    next: { revalidate: 60 },
   });
 }
 
