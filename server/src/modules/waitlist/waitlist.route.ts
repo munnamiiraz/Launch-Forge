@@ -6,6 +6,7 @@ import {
 } from "../../middlewares/validateRequest";
 import { validateParams } from "../../middlewares/validateParams";
 import { checkAuth } from "../../middlewares/checkAuth";
+import { multerUpload } from "../../config/multer.config";
 import { 
   createWaitlistSchema, 
   getWaitlistsQuerySchema,
@@ -35,6 +36,8 @@ router
   .post(
     checkAuth(Role.OWNER, Role.ADMIN),
     validateParams(workspaceIdParamSchema),
+    // Optional logo upload (multipart/form-data). If not multipart, multer skips.
+    multerUpload.single("logo"),
     validateRequest(createWaitlistSchema),
     waitlistController.createWaitlist,
   )

@@ -21,7 +21,6 @@ import { CreateWaitlistApiResponse, CreateWaitlistFormValues } from "@/src/compo
  *         name:        values.name,
  *         slug:        values.slug,
  *         description: values.description || undefined,
- *         logoUrl:     values.logoUrl     || undefined,
  *         isOpen:      values.isOpen,
  *       }),
  *     },
@@ -34,25 +33,33 @@ import { cookies } from "next/headers";
 export async function createWaitlistAction(
   values:      CreateWaitlistFormValues,
   workspaceId: string,
+  logoFile?:   File | null,
 ): Promise<CreateWaitlistApiResponse> {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
     const cookieStore = await cookies();
     const cookieHeader = cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ");
 
+    const formData = new FormData();
+    formData.append("data", JSON.stringify({
+      name: values.name,
+      slug: values.slug,
+      description: values.description || undefined,
+      isOpen: values.isOpen,
+      endDate: values.endDate || undefined,
+    }));
+
+    if (logoFile) {
+      formData.append("logo", logoFile);
+    }
+
     const res = await fetch(`${baseUrl}/waitlists/${workspaceId}`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Cookie: cookieHeader,
       },
-      body: JSON.stringify({
-        name: values.name,
-        slug: values.slug,
-        description: values.description || undefined,
-        logoUrl: values.logoUrl || undefined,
-        isOpen: values.isOpen,
-      }),
+      body: formData,
+      cache: "no-store",
     });
 
     const data = await res.json();

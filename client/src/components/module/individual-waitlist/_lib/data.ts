@@ -10,6 +10,7 @@ export interface PublicWaitlistData {
   tagline:         string;
   description:     string;
   ownerMessage:    string | null;   // personal note from the owner
+  logoUrl:         string | null;
   logoInitials:    string;
   logoGradient:    string;
   websiteUrl:      string | null;
@@ -91,6 +92,7 @@ export function getWaitlistBySlug(slug: string): PublicWaitlistData | null {
         "Product Alpha reimagines team collaboration with AI at its core. Real-time document editing, smart task automation, and an AI assistant that actually understands your workflow. Built for teams who ship fast and hate pointless meetings.",
       ownerMessage:
         "Hey — I'm Sarah, the founder. We've been building Product Alpha for 18 months and we're finally ready to open the doors. Every person on this list gets early access before the public launch, and the top referrers are going to walk away with some serious rewards. Share your link, climb the board, and let's build something great together. 🚀",
+      logoUrl:       null,
       logoInitials: "PA",
       logoGradient: "from-indigo-500 to-violet-600",
       websiteUrl:   "https://productalpha.io",
@@ -159,6 +161,7 @@ export function getWaitlistBySlug(slug: string): PublicWaitlistData | null {
       tagline: "The simplest way to learn your ABCs",
       description: "ABC Product is a revolutionary platform for early childhood education. Interactive lessons, playful animations, and a progress tracker that parents love.",
       ownerMessage: "Hi, I'm John! We're building the future of learning.",
+      logoUrl:       null,
       logoInitials: "AB",
       logoGradient: "from-violet-500 to-purple-600",
       websiteUrl:   "https://abc.edu",

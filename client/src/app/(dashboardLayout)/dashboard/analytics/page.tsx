@@ -154,6 +154,7 @@ export default function AnalyticsPage() {
         </section>
 
         {/* ── Engagement ────────────────────────────────────────── */}
+        {/*
         <SectionDivider>
           <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
             Engagement
@@ -167,6 +168,7 @@ export default function AnalyticsPage() {
           />
           <FeedbackActivityChart />
         </section>
+        */}
 
       </div>
     </div>

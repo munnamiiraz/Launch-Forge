@@ -12,7 +12,7 @@ import { Card } from "@/src/components/ui/card";
 import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
-import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuTrigger,
@@ -85,14 +85,22 @@ export function WaitlistsTable({ waitlists }: WaitlistsTableProps) {
                 {/* Name */}
                 <div className="flex items-center gap-3 min-w-0">
                   <Avatar className="h-8 w-8 shrink-0 rounded-lg">
-                    <AvatarFallback
-                      className={cn(
-                        "rounded-lg bg-gradient-to-br text-xs font-bold text-white",
-                        GRADIENT_COLORS[i % GRADIENT_COLORS.length]
-                      )}
-                    >
-                      {wl.name.slice(0, 2).toUpperCase()}
-                    </AvatarFallback>
+                    {wl.logoUrl ? (
+                      <AvatarImage 
+                        src={wl.logoUrl} 
+                        alt={wl.name} 
+                        className="rounded-lg"
+                      />
+                    ) : (
+                      <AvatarFallback
+                        className={cn(
+                          "rounded-lg bg-gradient-to-br text-xs font-bold text-white",
+                          GRADIENT_COLORS[i % GRADIENT_COLORS.length]
+                        )}
+                      >
+                        {wl.name.slice(0, 2).toUpperCase()}
+                      </AvatarFallback>
+                    )}
                   </Avatar>
                   <div className="min-w-0">
                     <p className="truncate text-sm font-medium text-foreground/90 group-hover:text-foreground transition-colors">

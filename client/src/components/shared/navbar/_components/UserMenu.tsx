@@ -6,12 +6,9 @@ import {
   LayoutDashboard,
   Settings,
   CreditCard,
-  Users,
   LifeBuoy,
   LogOut,
   ChevronDown,
-  Sparkles,
-  Bell,
   ExternalLink,
 } from "lucide-react";
 
@@ -25,7 +22,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
 import { PlanBadge } from "@/src/components/shared/navbar/_components/PlanBadge";
 import type { NavUser } from "@/src/components/shared/navbar/_types";
@@ -59,6 +56,7 @@ export function UserMenu({ user }: UserMenuProps) {
         >
           {/* Avatar */}
           <Avatar className="h-7 w-7 rounded-lg">
+            <AvatarImage src={user.avatar} alt={user.name} className="object-cover" />
             <AvatarFallback
               className={cn(
                 "rounded-lg bg-gradient-to-br text-[11px] font-bold text-white",
@@ -92,6 +90,7 @@ export function UserMenu({ user }: UserMenuProps) {
         <DropdownMenuLabel className="px-2 py-2">
           <div className="flex items-center gap-3">
             <Avatar className="h-9 w-9 rounded-xl">
+              <AvatarImage src={user.avatar} alt={user.name} className="object-cover" />
               <AvatarFallback
                 className={cn(
                   "rounded-xl bg-gradient-to-br text-sm font-bold text-white",
@@ -138,24 +137,6 @@ export function UserMenu({ user }: UserMenuProps) {
               <DropdownMenuShortcut className="text-muted-foreground/40">⌘D</DropdownMenuShortcut>
             </Link>
           </DropdownMenuItem>
-
-          <DropdownMenuItem asChild className="cursor-pointer rounded-md px-2 py-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60 focus:text-foreground">
-            <Link href="/dashboard/waitlists" className="flex items-center gap-2.5">
-              <Users size={13} className="text-muted-foreground/80" />
-              My Waitlists
-            </Link>
-          </DropdownMenuItem>
-
-          <DropdownMenuItem asChild className="cursor-pointer rounded-md px-2 py-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60 focus:text-foreground">
-            <Link href="/dashboard/notifications" className="flex items-center gap-2.5">
-              <Bell size={13} className="text-muted-foreground/80" />
-              Notifications
-              {/* Unread dot */}
-              <span className="ml-auto flex h-4 w-4 items-center justify-center rounded-full bg-indigo-600 text-[9px] font-bold text-white">
-                3
-              </span>
-            </Link>
-          </DropdownMenuItem>
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator className="my-1 bg-muted/60" />
@@ -177,17 +158,7 @@ export function UserMenu({ user }: UserMenuProps) {
             </Link>
           </DropdownMenuItem>
 
-          {user.plan === "free" && (
-            <DropdownMenuItem asChild className="cursor-pointer rounded-md px-2 py-2 text-xs focus:bg-indigo-500/10 focus:text-indigo-300">
-              <Link
-                href="/settings/billing"
-                className="flex items-center gap-2.5 text-indigo-400 hover:text-indigo-300"
-              >
-                <Sparkles size={13} className="text-indigo-500" />
-                Upgrade to Pro
-              </Link>
-            </DropdownMenuItem>
-          )}
+
         </DropdownMenuGroup>
 
         <DropdownMenuSeparator className="my-1 bg-muted/60" />
@@ -203,7 +174,7 @@ export function UserMenu({ user }: UserMenuProps) {
 
           <DropdownMenuItem
             onClick={handleSignOut}
-            className="cursor-pointer rounded-md px-2 py-2 text-xs text-muted-foreground hover:bg-red-500/8 hover:text-red-400 focus:bg-red-500/8 focus:text-red-400"
+            className="cursor-pointer rounded-md px-2 py-2 text-xs bg-red-500/10 text-red-400 hover:bg-red-500/20 focus:bg-red-500/20"
           >
             <div className="flex w-full items-center gap-2.5">
               <LogOut size={13} />

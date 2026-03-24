@@ -68,6 +68,7 @@ export const waitlistService = {
         logoUrl:     data.logoUrl,
         theme:       data.theme,
         isOpen:      data.isOpen ?? true,
+        endDate:     data.endDate,
       },
       select: {
         id:          true,
@@ -293,6 +294,7 @@ export const waitlistByIdService = {
         id:          true,
         workspaceId: true,
         name:        true,
+        logoUrl:     true,
         _count: { select: { subscribers: { where: { deletedAt: null } } } },
       },
     });
@@ -325,6 +327,16 @@ export const waitlistByIdService = {
       where: { id: waitlistId },
       data:  { deletedAt },
     });
+
+    // Best-effort cleanup for Cloudinary logo.
+    if (waitlist.logoUrl && waitlist.logoUrl.includes("cloudinary")) {
+      try {
+        const { deleteFileFromCloudinary } = await import("../../config/cloudinary.config");
+        await deleteFileFromCloudinary(waitlist.logoUrl);
+      } catch {
+        // Don't fail the request if cleanup fails.
+      }
+    }
 
     return {
       id:        waitlist.id,

@@ -173,8 +173,12 @@ export function HeroVisual() {
         transition={{ delay: 1.3, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className="absolute -bottom-4 -left-6 flex items-center gap-2.5 rounded-xl border border-border/80 bg-background/95 px-4 py-3 shadow-xl backdrop-blur-xl"
       >
-        <div className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-xs font-bold text-white">
-          AK
+        <div className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full">
+          <img
+            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face"
+            alt="Alex K."
+            className="h-8 w-8 rounded-full object-cover"
+          />
           <span className="absolute -right-0.5 -top-0.5 flex h-2.5 w-2.5">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-500" />

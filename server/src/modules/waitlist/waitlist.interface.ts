@@ -9,6 +9,7 @@ export interface CreateWaitlistInput {
   logoUrl?: string;
   theme?: string;
   isOpen?: boolean;
+  endDate?: Date;
 }
 
 export interface GetWaitlistsQuery {

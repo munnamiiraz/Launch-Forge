@@ -29,4 +29,5 @@ export interface RecentSignup {
   name: string;
   location: string;
   timeAgo: string;
+  avatar?: string;
 }

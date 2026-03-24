@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   User, Mail, Globe, Clock, Camera,
@@ -13,13 +13,13 @@ import { Input }     from "@/src/components/ui/input";
 import { Label }     from "@/src/components/ui/label";
 import { Textarea }  from "@/src/components/ui/textarea";
 import { Separator } from "@/src/components/ui/separator";
-import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import {
   Select, SelectContent, SelectItem,
   SelectTrigger, SelectValue,
 } from "@/src/components/ui/select";
 import { cn }    from "@/src/lib/utils";
-import { updateProfileAction, changePasswordAction } from "@/src/services/settings/settings.actions";
+import { updateProfileAction, changePasswordAction, uploadAvatarAction } from "@/src/services/settings/settings.actions";
 import { TIMEZONES } from "@/src/components/module/settings/_types";
 import type { ProfileForm } from "@/src/components/module/settings/_types";
 
@@ -91,6 +91,8 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
   const [success,   setSuccess] = useState(false);
   const [error,     setError]   = useState<string | null>(null);
   const [isPending, startTx]    = useTransition();
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Password section
   const [pwForm,     setPwForm]    = useState({ current: "", next: "", confirm: "" });
@@ -100,9 +102,54 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
   const [pwPending,  startPwTx]   = useTransition();
 
   const set = (k: keyof ProfileForm, v: string) => {
+    if (k === "email") return; // email changes are not supported
     setForm((f) => ({ ...f, [k]: v }));
     setDirty(true);
     setSuccess(false);
+  };
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      setError("Please select an image file (JPG, PNG, or GIF)");
+      return;
+    }
+
+    // Validate file size (max 10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      setError("Image must be less than 10MB");
+      return;
+    }
+
+    setError(null);
+    setIsUploading(true);
+
+    try {
+      console.log("[Avatar] Starting upload for file:", file.name, file.size);
+      const result = await uploadAvatarAction(file);
+      console.log("[Avatar] Upload result:", result);
+      
+      if (result.success && result.imageUrl) {
+        setForm((f) => ({ ...f, image: result.imageUrl }));
+        setSuccess(true);
+        setTimeout(() => setSuccess(false), 3000);
+      } else {
+        console.error("[Avatar] Upload failed:", result.message);
+        setError(result.message);
+      }
+    } catch (err) {
+      console.error("[Avatar] Upload error:", err);
+      setError("Failed to upload image. Please try again.");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleSave = () => {
@@ -146,18 +193,37 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
           <div className="flex items-center gap-4">
             <div className="relative">
               <Avatar className="h-16 w-16 rounded-2xl">
+                {form.image ? (
+                  <AvatarImage src={form.image} alt={form.name} className="object-cover" />
+                ) : null}
                 <AvatarFallback className="rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-600 text-lg font-black text-white">
                   {initials}
                 </AvatarFallback>
               </Avatar>
-              <button className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border border-zinc-700 bg-zinc-800 text-muted-foreground hover:bg-zinc-700 transition-colors">
-                <Camera size={11} />
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/gif"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={handleAvatarClick}
+                disabled={isUploading}
+                className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border border-zinc-700 bg-zinc-800 text-muted-foreground hover:bg-zinc-700 transition-colors disabled:opacity-50"
+              >
+                {isUploading ? (
+                  <Loader2 size={11} className="animate-spin" />
+                ) : (
+                  <Camera size={11} />
+                )}
               </button>
             </div>
             <div>
               <p className="text-sm font-medium text-foreground/80">{form.name || "Your name"}</p>
               <p className="text-xs text-muted-foreground/60">{form.email}</p>
-              <p className="mt-1 text-[10px] text-muted-foreground/40">JPG, PNG or GIF. Max 2MB.</p>
+              <p className="mt-1 text-[10px] text-muted-foreground/40">JPG, PNG or GIF. Max 10MB.</p>
             </div>
           </div>
 
@@ -174,6 +240,7 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
               id="email" label="Email address" icon={<Mail size={12} />}
               value={form.email} onChange={(v) => set("email", v)}
               placeholder="ada@example.com" type="email"
+              disabled
             />
           </div>
 
@@ -340,11 +407,11 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
 /* ── Sub-components ──────────────────────────────────────────────── */
 
 function Field({
-  id, label, icon, value, onChange, placeholder, type = "text",
+  id, label, icon, value, onChange, placeholder, type = "text", disabled = false,
 }: {
   id: string; label: string; icon: React.ReactNode;
   value: string; onChange: (v: string) => void;
-  placeholder: string; type?: string;
+  placeholder: string; type?: string; disabled?: boolean;
 }) {
   return (
     <div className="flex flex-col gap-1.5">
@@ -355,7 +422,8 @@ function Field({
       <Input
         id={id} type={type} value={value} placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="border-zinc-800 bg-card/60 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
+        disabled={disabled}
+        className="border-zinc-800 bg-card/60 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40 disabled:cursor-not-allowed disabled:opacity-60"
       />
     </div>
   );

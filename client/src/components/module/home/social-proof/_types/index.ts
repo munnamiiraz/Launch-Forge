@@ -6,6 +6,8 @@ export interface Testimonial {
   company: string;
   avatarInitials: string;
   avatarGradient: string;
+  /** optional avatar image URL */
+  avatar?: string;
   /** star rating out of 5 */
   rating: number;
   /** platform the review came from */

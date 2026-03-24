@@ -29,14 +29,12 @@ export const createWaitlistFormSchema = z.object({
     .optional()
     .or(z.literal("")),
 
-  logoUrl: z
+  isOpen: z.boolean().default(true),
+
+  endDate: z
     .string()
-    .trim()
-    .url("Logo URL must be a valid URL.")
     .optional()
     .or(z.literal("")),
-
-  isOpen: z.boolean().default(true),
 });
 
 export type CreateWaitlistFormSchema = z.infer<typeof createWaitlistFormSchema>;

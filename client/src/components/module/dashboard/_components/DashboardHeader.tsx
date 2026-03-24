@@ -87,6 +87,7 @@ export function DashboardHeader({ title, subtitle, children }: DashboardHeaderPr
         <ThemeToggle />
 
         {/* Notifications */}
+        {/*
         <Popover>
           <PopoverTrigger asChild>
             <Button
@@ -141,6 +142,7 @@ export function DashboardHeader({ title, subtitle, children }: DashboardHeaderPr
             </div>
           </PopoverContent>
         </Popover>
+        */}
       </div>
     </header>
   );

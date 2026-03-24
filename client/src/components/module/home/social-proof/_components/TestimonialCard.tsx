@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Quote } from "lucide-react";
 import { Card, CardContent } from "@/src/components/ui/card";
 import { Badge } from "@/src/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import type { Testimonial } from "../_types";
 import { cn } from "@/src/lib/utils";
 
@@ -108,6 +108,7 @@ function FeaturedCard({ testimonial: t, index }: TestimonialCardProps) {
           {/* Author */}
           <div className="flex items-center gap-3 border-t border-border/60 pt-5">
             <Avatar className="h-10 w-10 rounded-xl">
+              <AvatarImage src={t.avatar} alt={t.name} className="object-cover" />
               <AvatarFallback className={cn("rounded-xl bg-gradient-to-br text-sm font-bold text-white", t.avatarGradient)}>
                 {t.avatarInitials}
               </AvatarFallback>
@@ -170,6 +171,7 @@ function StandardCard({ testimonial: t, index }: TestimonialCardProps) {
           {/* Author */}
           <div className="flex items-center gap-2.5 border-t border-border/60 pt-4">
             <Avatar className="h-8 w-8 rounded-lg">
+              <AvatarImage src={t.avatar} alt={t.name} className="object-cover" />
               <AvatarFallback className={cn("rounded-lg bg-gradient-to-br text-[11px] font-bold text-white", t.avatarGradient)}>
                 {t.avatarInitials}
               </AvatarFallback>

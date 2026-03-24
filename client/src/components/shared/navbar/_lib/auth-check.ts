@@ -100,12 +100,15 @@ export async function getNavAuthState(): Promise<AuthCheckResult> {
     const userData = data.data;
 
     // Map the API response to NavUser
+    // Plan can be FREE, PRO, or GROWTH - normalize to match NavUser type
+    const userPlan = userData.plan?.toLowerCase() || "free";
     const navUser: NavUser = {
       name: userData.name || "User",
       email: userData.email || "",
+      avatar: userData.image || undefined, // Avatar URL from the user profile
       avatarInitials: getInitials(userData.name || "User"),
       avatarColor: pickAvatarColor(userData.email || "user@example.com"),
-      plan: "free", // Default plan, can be fetched from workspace if needed
+      plan: userPlan as NavUser["plan"],
     };
 
     return { isAuthenticated: true, user: navUser };

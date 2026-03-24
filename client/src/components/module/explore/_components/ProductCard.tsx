@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import { Badge }   from "@/src/components/ui/badge";
 import { Button }  from "@/src/components/ui/button";
-import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/src/components/ui/avatar";
 import { cn }      from "@/src/lib/utils";
 import type { PublicProduct } from "../_lib/data";
 
@@ -65,12 +65,20 @@ export function ProductCard({ product, index, onJoin, onDetail }: ProductCardPro
             <div className="flex items-start gap-3 min-w-0">
               {/* Logo */}
               <Avatar className="h-11 w-11 shrink-0 rounded-xl">
-                <AvatarFallback className={cn(
-                  "rounded-xl bg-gradient-to-br text-sm font-black text-white",
-                  product.logoGradient,
-                )}>
-                  {product.logoInitials}
-                </AvatarFallback>
+                {product.logoUrl ? (
+                  <AvatarImage 
+                    src={product.logoUrl} 
+                    alt={product.name} 
+                    className="object-cover rounded-xl"
+                  />
+                ) : (
+                  <AvatarFallback className={cn(
+                    "rounded-xl bg-gradient-to-br text-sm font-black text-white",
+                    product.logoGradient,
+                  )}>
+                    {product.logoInitials}
+                  </AvatarFallback>
+                )}
               </Avatar>
 
               <div className="min-w-0">

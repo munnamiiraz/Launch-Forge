@@ -1,6 +1,11 @@
 import multer from "multer";
 import { CloudinaryStorage } from "multer-storage-cloudinary";
 import { cloudinaryUpload } from "./cloudinary.config";
+import AppError from "../errorHelpers/AppError";
+import status from "http-status";
+
+const MAX_AVATAR_MB = Number(process.env.AVATAR_MAX_MB ?? 10);
+const MAX_AVATAR_BYTES = Math.max(1, Math.floor(MAX_AVATAR_MB * 1024 * 1024));
 
 const storage = new CloudinaryStorage({
     cloudinary: cloudinaryUpload,
@@ -28,7 +33,7 @@ const storage = new CloudinaryStorage({
 
 
         return {
-            folder : `ph-healthcare/${folder}`,
+            folder : `launchforge/${folder}`,
             public_id: uniqueName,
             resource_type : "auto"
         }
@@ -36,4 +41,14 @@ const storage = new CloudinaryStorage({
 
 })
 
-export const multerUpload = multer({storage})
+export const multerUpload = multer({
+    storage,
+    // Avatar upload size limit (in bytes). Adjust with AVATAR_MAX_MB env var.
+    limits: { fileSize: MAX_AVATAR_BYTES },
+    fileFilter: (req, file, cb) => {
+        if (!file.mimetype?.startsWith("image/")) {
+            return cb(new AppError(status.BAD_REQUEST, "Only image files are allowed."));
+        }
+        cb(null, true);
+    },
+});

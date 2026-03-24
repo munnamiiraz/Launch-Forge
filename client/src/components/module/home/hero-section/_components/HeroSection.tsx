@@ -153,18 +153,18 @@ function HeroContent({ initialStats, initialRecent }: HeroSectionProps) {
             {/* Avatar stack */}
             <div className="flex -space-x-2">
               {[
-                "from-indigo-500 to-violet-600",
-                "from-violet-500 to-purple-600",
-                "from-emerald-500 to-teal-600",
-                "from-amber-500 to-orange-600",
-                "from-pink-500 to-rose-600",
-              ].map((g, i) => (
-                <div
+                { img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face", alt: "Alex K." },
+                { img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face", alt: "Sarah R." },
+                { img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face", alt: "James L." },
+                { img: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face", alt: "Maria P." },
+                { img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face", alt: "Nathan B." },
+              ].map((user, i) => (
+                <img
                   key={i}
-                  className={`flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br ${g} ring-2 ring-zinc-950 text-[11px] font-bold text-white`}
-                >
-                  {["AK","SR","JL","MP","NB"][i]}
-                </div>
+                  src={user.img}
+                  alt={user.alt}
+                  className="h-8 w-8 rounded-full object-cover ring-2 ring-zinc-950"
+                />
               ))}
             </div>
             <div>

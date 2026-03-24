@@ -4,6 +4,9 @@
    FeatureRequest, Vote, Comment, Roadmap, RoadmapItem, Changelog
    ──────────────────────────────────────────────────────────────── */
 
+// Note: For server-side fetching, use direct fetch in the page component
+// import { httpClient } from "@/src/lib/axios/httpClient";
+
 /* ── Platform engagement ─────────────────────────────────────────── */
 export interface EngagementPoint {
   date:   string;

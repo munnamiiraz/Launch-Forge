@@ -15,11 +15,14 @@ export const waitlistController = {
     try {
       const workspaceId       = req.params.workspaceId as string;
       const requestingUserId  = req.user!.id;
+      const uploadedLogoUrl   = (req as any).file?.path as string | undefined;
+      const logoUrl           = uploadedLogoUrl ?? (req.body as any)?.logoUrl;
       
       const waitlist = await waitlistService.createWaitlist({
         workspaceId,
         requestingUserId,
         ...req.body,
+        logoUrl,
       });
 
       res.status(status.CREATED).json({

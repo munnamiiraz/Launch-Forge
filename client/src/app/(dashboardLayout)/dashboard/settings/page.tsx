@@ -1,4 +1,5 @@
 import { type Metadata } from "next";
+import { notFound } from "next/navigation";
 
 import { DashboardHeader }       from "@/src/components/module/dashboard/_components/DashboardHeader";
 import { SettingsNav }           from "@/src/components/module/settings/_components/SettingsNav";
@@ -6,8 +7,9 @@ import { ProfileSection }        from "@/src/components/module/settings/_compone
 import { WorkspaceSection }      from "@/src/components/module/settings/_components/WorkspaceSection";
 import { NotificationsSection }  from "@/src/components/module/settings/_components/NotificationsSection";
 import { SecuritySection }       from "@/src/components/module/settings/_components/SecuritySection";
-import { ThemeToggle }          from "@/src/components/shared/theme-toggle";
+// import { ThemeToggle }          from "@/src/components/shared/theme-toggle";
 import type { SettingsPageData } from "@/src/components/module/settings/_types";
+import { fetchProfileAction }   from "@/src/services/settings/settings.actions";
 
 export const metadata: Metadata = {
   title:       "Settings — LaunchForge",
@@ -15,18 +17,15 @@ export const metadata: Metadata = {
 };
 
 /* ─────────────────────────────────────────────────────────────────
-   Server data — replace with real session / DB reads
+   Server data — fetch from API
    ──────────────────────────────────────────────────────────────── */
 
 async function getSettingsData(): Promise<SettingsPageData> {
-  return {
-    profile: {
-      name:     "Ada Lovelace",
-      email:    "ada@example.com",
-      bio:      "Building the future, one waitlist at a time.",
-      website:  "https://example.com",
-      timezone: "Asia/Dhaka",
-    },
+  // Fetch profile from API
+  const profileData = await fetchProfileAction();
+  
+  // Default mock data for other sections (to be replaced with real API calls)
+  const mockData = {
     workspace: {
       name:        "Acme Corp",
       slug:        "acme-corp",
@@ -83,13 +82,32 @@ async function getSettingsData(): Promise<SettingsPageData> {
     ],
     hasTwoFactor: false,
   };
+
+  if (!profileData) {
+    return {
+      profile: {
+        name:     "",
+        email:    "",
+        bio:      "",
+        website:  "",
+        timezone: "UTC",
+        image:    undefined,
+      },
+      ...mockData,
+    };
+  }
+
+  return {
+    profile: profileData,
+    ...mockData,
+  };
 }
 
 export default async function SettingsPage() {
   const data = await getSettingsData();
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col overflow-hidden">
 
       {/* ── Sticky header ───────────────────────────────────── */}
       <DashboardHeader
@@ -97,7 +115,7 @@ export default async function SettingsPage() {
         subtitle="Manage your profile, workspace, and security"
       />
 
-      <div className="flex gap-8 p-6">
+      <div className="flex gap-8 p-6 overflow-hidden">
 
         {/* ── Left: sticky tab nav (desktop only) ─────────── */}
         <SettingsNav />
@@ -106,6 +124,7 @@ export default async function SettingsPage() {
         <div className="flex flex-1 flex-col gap-10 min-w-0">
           <ProfileSection       profile={data.profile}               />
           <WorkspaceSection     workspace={data.workspace}            />
+          {/*
           <section className="space-y-4">
             <div>
               <h3 className="text-lg font-semibold">Appearance</h3>
@@ -123,6 +142,7 @@ export default async function SettingsPage() {
             apiKeys={data.apiKeys}
             hasTwoFactor={data.hasTwoFactor}
           />
+          */}
         </div>
       </div>
     </div>

@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   LayoutDashboard, Users, DollarSign, BarChart3,
-  Settings, Shield, ChevronLeft, ChevronRight,
+  Shield, ChevronLeft, ChevronRight,
   Bell, LogOut,
 } from "lucide-react";
 
@@ -23,7 +23,6 @@ const NAV = [
   { href: "/admin/users",    label: "Users",     icon: Users           },
   { href: "/admin/revenue",  label: "Revenue",   icon: DollarSign      },
   { href: "/admin/analytics",label: "Analytics", icon: BarChart3       },
-  { href: "/admin/settings", label: "Settings",  icon: Settings        },
 ];
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {

@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output = "../generated/client"
+  output   = "../generated/client"
 }
 
 datasource db {
@@ -13,6 +13,9 @@ model User {
   email              String    @unique
   emailVerified      Boolean   @default(false)
   image              String?
+  bio                String?
+  website            String?
+  timezone           String?   @default("UTC")
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
   role               String    @default("USER")
@@ -26,8 +29,8 @@ model User {
   newsLadderId       String?   @unique
 
   workspaceMemberships WorkspaceMember[]
-  ownedWorkspaces  Workspace[]       @relation("WorkspaceOwner")
-  payments           Payment[]
+  ownedWorkspaces      Workspace[]       @relation("WorkspaceOwner")
+  payments             Payment[]
 
   @@map("user")
 }
@@ -85,7 +88,7 @@ model Verification {
 model Workspace {
   id        String    @id @default(cuid())
   name      String
-  slug      String    @unique          // used in subdomain: slug.launchforge.com
+  slug      String    @unique // used in subdomain: slug.launchforge.com
   logo      String?
   ownerId   String
   plan      Plan      @default(FREE)
@@ -93,12 +96,12 @@ model Workspace {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  owner    User              @relation("WorkspaceOwner", fields: [ownerId], references: [id])
-  members  WorkspaceMember[]
-  waitlists Waitlist[]
+  owner          User              @relation("WorkspaceOwner", fields: [ownerId], references: [id])
+  members        WorkspaceMember[]
+  waitlists      Waitlist[]
   feedbackBoards FeedbackBoard[]
-  roadmaps Roadmap[]
-  changelogs Changelog[]
+  roadmaps       Roadmap[]
+  changelogs     Changelog[]
 
   @@index([ownerId])
   @@index([slug])
@@ -114,17 +117,17 @@ enum Plan {
 }
 
 model WorkspaceMember {
-  id          String          @id @default(cuid())
+  id          String        @id @default(cuid())
   workspaceId String
   userId      String
-  role        WorkspaceRole   @default(MEMBER)
-  joinedAt    DateTime        @default(now())
+  role        WorkspaceRole @default(MEMBER)
+  joinedAt    DateTime      @default(now())
   deletedAt   DateTime?
 
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@unique([workspaceId, userId])          // one membership per user per workspace
+  @@unique([workspaceId, userId]) // one membership per user per workspace
   @@index([userId])
   @@index([workspaceId])
   @@index([deletedAt])
@@ -136,22 +139,21 @@ enum WorkspaceRole {
   MEMBER
 }
 
-
 model Waitlist {
   id          String    @id @default(cuid())
   workspaceId String
   name        String
-  slug        String                    // product.launchforge.com/{slug}
+  slug        String // product.launchforge.com/{slug}
   description String?
   logoUrl     String?
-  theme       String?                   // JSON blob or enum later
+  theme       String? // JSON blob or enum later
   isOpen      Boolean   @default(true)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
   endDate     DateTime?
 
-  workspace   Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspace   Workspace          @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   subscribers Subscriber[]
   prizes      LeaderboardPrize[]
 
@@ -166,9 +168,9 @@ model Subscriber {
   waitlistId     String
   name           String
   email          String
-  referralCode   String    @unique       // launchforge.com/ref/{referralCode}
-  referredById   String?                 // subscriber who referred this person
-  referralsCount Int       @default(0)  // denormalised counter — updated via trigger/job
+  referralCode   String    @unique // launchforge.com/ref/{referralCode}
+  referredById   String? // subscriber who referred this person
+  referralsCount Int       @default(0) // denormalised counter — updated via trigger/job
   // Queue position is derived: ORDER BY referralsCount DESC, createdAt ASC
   isConfirmed    Boolean   @default(false)
   createdAt      DateTime  @default(now())
@@ -179,11 +181,11 @@ model Subscriber {
   referredBy Subscriber?  @relation("Referrals", fields: [referredById], references: [id])
   referrals  Subscriber[] @relation("Referrals")
 
-  @@unique([waitlistId, email])           // no duplicate emails per waitlist
+  @@unique([waitlistId, email]) // no duplicate emails per waitlist
   @@index([waitlistId])
   @@index([referralCode])
   @@index([referredById])
-  @@index([waitlistId, referralsCount])   // leaderboard queries
+  @@index([waitlistId, referralsCount]) // leaderboard queries
   @@index([deletedAt])
   @@map("subscriber")
 }
@@ -199,7 +201,7 @@ model FeedbackBoard {
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
 
-  workspace       Workspace       @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspace       Workspace        @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   featureRequests FeatureRequest[]
 
   @@unique([workspaceId, slug])
@@ -209,17 +211,17 @@ model FeedbackBoard {
 }
 
 model FeatureRequest {
-  id            String              @id @default(cuid())
-  boardId       String
-  title         String
-  description   String?
-  status        FeatureRequestStatus @default(UNDER_REVIEW)
-  votesCount    Int                 @default(0)  // denormalised — updated on vote insert/delete
-  authorEmail   String?                          // nullable: public users may not be registered
-  authorName    String?
-  createdAt     DateTime            @default(now())
-  updatedAt     DateTime            @updatedAt
-  deletedAt     DateTime?
+  id          String               @id @default(cuid())
+  boardId     String
+  title       String
+  description String?
+  status      FeatureRequestStatus @default(UNDER_REVIEW)
+  votesCount  Int                  @default(0) // denormalised — updated on vote insert/delete
+  authorEmail String? // nullable: public users may not be registered
+  authorName  String?
+  createdAt   DateTime             @default(now())
+  updatedAt   DateTime             @updatedAt
+  deletedAt   DateTime?
 
   board    FeedbackBoard @relation(fields: [boardId], references: [id], onDelete: Cascade)
   votes    Vote[]
@@ -227,7 +229,7 @@ model FeatureRequest {
 
   @@index([boardId])
   @@index([boardId, status])
-  @@index([boardId, votesCount])              // sort by popularity
+  @@index([boardId, votesCount]) // sort by popularity
   @@index([deletedAt])
   @@map("feature_request")
 }
@@ -243,12 +245,12 @@ enum FeatureRequestStatus {
 model Vote {
   id               String   @id @default(cuid())
   featureRequestId String
-  voterEmail       String   // anonymous voters identified by email
+  voterEmail       String // anonymous voters identified by email
   createdAt        DateTime @default(now())
 
   featureRequest FeatureRequest @relation(fields: [featureRequestId], references: [id], onDelete: Cascade)
 
-  @@unique([featureRequestId, voterEmail])    // one vote per email per request
+  @@unique([featureRequestId, voterEmail]) // one vote per email per request
   @@index([featureRequestId])
   @@map("vote")
 }
@@ -281,7 +283,7 @@ model Roadmap {
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
 
-  workspace Workspace    @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspace Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   items     RoadmapItem[]
 
   @@unique([workspaceId, slug])
@@ -291,15 +293,15 @@ model Roadmap {
 }
 
 model RoadmapItem {
-  id          String           @id @default(cuid())
+  id          String        @id @default(cuid())
   roadmapId   String
   title       String
   description String?
-  status      RoadmapStatus    @default(PLANNED)
-  sortOrder   Int              @default(0)       // manual drag-and-drop ordering
+  status      RoadmapStatus @default(PLANNED)
+  sortOrder   Int           @default(0) // manual drag-and-drop ordering
   eta         DateTime?
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   deletedAt   DateTime?
 
   roadmap Roadmap @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
@@ -319,10 +321,10 @@ enum RoadmapStatus {
 model Changelog {
   id          String    @id @default(cuid())
   workspaceId String
-  version     String?                           // e.g. "v1.2"
+  version     String? // e.g. "v1.2"
   title       String
-  body        String                            // markdown
-  publishedAt DateTime?                         // null = draft
+  body        String // markdown
+  publishedAt DateTime? // null = draft
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
   deletedAt   DateTime?
@@ -336,47 +338,47 @@ model Changelog {
 }
 
 model Payment {
-    id                 String        @id @default(uuid(7))
-    amount             Float
-    transactionId      String        @unique
-    stripeEventId       String?         @unique
-    status             PaymentStatus @default(UNPAID)
-    paymentGatewayData Json?
-    createdAt          DateTime      @default(now())
-    updatedAt          DateTime      @updatedAt
-    planMode           PaymentMode   @default(MONTHLY)
-    planType           PaymentType   @default(PRO)
+  id                 String        @id @default(uuid(7))
+  amount             Float
+  transactionId      String        @unique
+  stripeEventId      String?       @unique
+  status             PaymentStatus @default(UNPAID)
+  paymentGatewayData Json?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  planMode           PaymentMode   @default(MONTHLY)
+  planType           PaymentType   @default(PRO)
 
-    userId  String @unique
-    user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@index([userId])
-    @@index([transactionId])
-    @@map("payments")
+  @@index([userId])
+  @@index([transactionId])
+  @@map("payments")
 }
 
 model LeaderboardPrize {
-  id          String      @id @default(cuid())
-  waitlistId  String
+  id         String @id @default(cuid())
+  waitlistId String
 
   title       String
   description String?
-  prizeType   PrizeType   @default(CUSTOM)
-  value       Float?                          // monetary value if applicable
-  currency    String?                         // ISO 4217, e.g. "USD"
+  prizeType   PrizeType @default(CUSTOM)
+  value       Float? // monetary value if applicable
+  currency    String? // ISO 4217, e.g. "USD"
 
-  rankFrom    Int                             // inclusive lower bound — e.g. 1
-  rankTo      Int                             // inclusive upper bound — e.g. 3
+  rankFrom Int // inclusive lower bound — e.g. 1
+  rankTo   Int // inclusive upper bound — e.g. 3
 
-  imageUrl    String?
-  status      PrizeStatus @default(ACTIVE)
-  expiresAt   DateTime?                       // null = never expires
+  imageUrl  String?
+  status    PrizeStatus @default(ACTIVE)
+  expiresAt DateTime? // null = never expires
 
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  deletedAt   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
-  waitlist    Waitlist    @relation(fields: [waitlistId], references: [id], onDelete: Cascade)
+  waitlist Waitlist @relation(fields: [waitlistId], references: [id], onDelete: Cascade)
 
   // Unique: a waitlist can't have two active prizes for the same exact rank band.
   // Overlap detection is enforced at the application layer (hasRankOverlap util).
@@ -400,7 +402,6 @@ enum PrizeStatus {
   AWARDED
   CANCELLED
 }
-
 
 enum PaymentStatus {
   PAID

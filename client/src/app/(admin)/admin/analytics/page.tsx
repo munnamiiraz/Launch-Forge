@@ -1,4 +1,5 @@
 import { type Metadata } from "next";
+import { cookies } from "next/headers";
 import { BarChart3 } from "lucide-react";
 
 import { AnalyticsKpiRow }         from "@/src/components/module/admin-analytics/_components/AnalyticsKpiRow";
@@ -17,7 +18,30 @@ import {
   WorkspaceHeatmap,
   ChangelogChart,
 }                                   from "@/src/components/module/admin-analytics/_components/WorkspaceHeatmap";
-import { getEngagementStats }       from "@/src/components/module/admin-analytics/_lib/analytics-data";
+import { getEngagementStats, type EngagementStats }       from "@/src/components/module/admin-analytics/_lib/analytics-data";
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
+
+async function fetchAnalyticsData<T>(endpoint: string): Promise<T> {
+  const cookieStore = await cookies();
+  const cookieHeader = cookieStore.getAll().map(c => `${c.name}=${c.value}`).join('; ');
+  
+  try {
+    const res = await fetch(`${API_BASE_URL}${endpoint}`, {
+      headers: { Cookie: cookieHeader },
+      cache: "no-store",
+    });
+    if (!res.ok) {
+      console.error(`Failed to fetch ${endpoint}:`, res.status);
+      return null as T;
+    }
+    const json = await res.json();
+    return json.data as T;
+  } catch (error) {
+    console.error(`Error fetching ${endpoint}:`, error);
+    return null as T;
+  }
+}
 
 export const metadata: Metadata = {
   title:       "Analytics — Admin · LaunchForge",
@@ -38,7 +62,11 @@ function Divider({ title, sub }: { title: string; sub: string }) {
 }
 
 export default async function AdminAnalyticsPage() {
-  const engStats = getEngagementStats();
+  // Fetch real data from API
+  const engStats = await fetchAnalyticsData<EngagementStats>("/admin/analytics/engagement");
+  
+  // Fallback to mock data if API fails
+  const stats = engStats ?? getEngagementStats();
 
   return (
     <div className="flex flex-col gap-8 p-6">
@@ -82,7 +110,7 @@ export default async function AdminAnalyticsPage() {
       {/* ── Engagement KPIs ─────────────────────────────── */}
       <section className="flex flex-col gap-4">
         <Divider title="Engagement" sub="DAU · WAU · MAU · stickiness — from Session model" />
-        <AnalyticsKpiRow stats={engStats} />
+        <AnalyticsKpiRow stats={stats} />
         <EngagementChart />
       </section>
 

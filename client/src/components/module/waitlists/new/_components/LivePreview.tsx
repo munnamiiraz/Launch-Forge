@@ -12,11 +12,11 @@ interface LivePreviewProps {
   name:        string;
   slug:        string;
   description: string;
-  logoUrl:     string;
+  logoSrc?:    string | null;
   isOpen:      boolean;
 }
 
-export function LivePreview({ name, slug, description, isOpen }: LivePreviewProps) {
+export function LivePreview({ name, slug, description, isOpen, logoSrc }: LivePreviewProps) {
   const displayName = name.trim()        || "Your Waitlist Name";
   const displaySlug = slug.trim()        || "your-waitlist";
   const displayDesc = description.trim() || "Your waitlist description will appear here, telling visitors what you're building and why they should join.";
@@ -79,7 +79,16 @@ export function LivePreview({ name, slug, description, isOpen }: LivePreviewProp
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
               className="flex h-12 w-12 items-center justify-center rounded-xl border border-indigo-500/30 bg-indigo-500/15"
             >
-              <Zap size={20} className="text-indigo-400" />
+              {logoSrc ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={logoSrc}
+                  alt="Logo"
+                  className="h-9 w-9 rounded-lg object-cover"
+                />
+              ) : (
+                <Zap size={20} className="text-indigo-400" />
+              )}
             </motion.div>
 
             {/* Status badge */}

@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   Search, MoreHorizontal, CheckCircle2, XCircle,
-  UserX, ShieldAlert, Users, ExternalLink,
+  UserX, Users, ExternalLink,
   Ban, Globe, MinusCircle,
 } from "lucide-react";
 
@@ -140,9 +140,6 @@ export function AdminUsersTable({ users: initialUsers }: AdminUsersTableProps) {
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
                 <p className="truncate text-sm font-medium text-foreground/90">{user.name}</p>
-                {user.role === "ADMIN" && (
-                  <ShieldAlert size={11} className="shrink-0 text-red-400" />
-                )}
                 {user.role === "OWNER" && (
                   <Badge variant="outline" className="border-red-500/20 bg-red-500/10 px-1 py-0 text-[8px] font-bold text-red-400 uppercase">Owner</Badge>
                 )}

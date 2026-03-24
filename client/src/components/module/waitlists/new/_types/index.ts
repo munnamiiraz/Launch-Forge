@@ -2,8 +2,8 @@ export interface CreateWaitlistFormValues {
   name:        string;
   slug:        string;
   description: string;
-  logoUrl:     string;
   isOpen:      boolean;
+  endDate?:    string;
 }
 
 export interface CreateWaitlistApiResponse {
@@ -24,7 +24,7 @@ export interface CreateWaitlistApiResponse {
 export const FIELD_LIMITS = {
   NAME_MIN:        2,
   NAME_MAX:        120,
-  DESCRIPTION_MAX: 1000,
+  DESCRIPTION_MAX: 5000,
   SLUG_MIN:        2,
   SLUG_MAX:        60,
   SLUG_PATTERN:    /^[a-z0-9]+(?:-[a-z0-9]+)*$/,

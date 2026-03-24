@@ -9,7 +9,7 @@ import {
 import { Badge }    from "@/src/components/ui/badge";
 import { Button }   from "@/src/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/src/components/ui/dialog";
-import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { Separator } from "@/src/components/ui/separator";
 import { cn }       from "@/src/lib/utils";
 
@@ -34,6 +34,7 @@ function mapToPublicWaitlist(data: any, prizes: any[] = []): PublicWaitlistData 
     tagline: data.description?.split(".")[0] || "Early access joining soon",
     description: data.description || "",
     ownerMessage: null,
+    logoUrl: data.logoUrl || null,
     logoInitials: getInitials(data.name),
     logoGradient: "from-indigo-500 to-violet-600",
     websiteUrl: null,
@@ -147,12 +148,20 @@ export default async function PublicWaitlistPage({ params }: Props) {
               {/* Logo + name */}
               <div className="flex items-start gap-4">
                 <Avatar className="h-16 w-16 shrink-0 rounded-2xl shadow-xl shadow-black/30">
-                  <AvatarFallback className={cn(
-                    "rounded-2xl bg-gradient-to-br text-xl font-black text-white",
-                    wl.logoGradient,
-                  )}>
-                    {wl.logoInitials}
-                  </AvatarFallback>
+                  {wl.logoUrl ? (
+                    <AvatarImage 
+                      src={wl.logoUrl} 
+                      alt={wl.name} 
+                      className="rounded-2xl"
+                    />
+                  ) : (
+                    <AvatarFallback className={cn(
+                      "rounded-2xl bg-gradient-to-br text-xl font-black text-white",
+                      wl.logoGradient,
+                    )}>
+                      {wl.logoInitials}
+                    </AvatarFallback>
+                  )}
                 </Avatar>
 
                 <div className="min-w-0">

@@ -33,6 +33,7 @@ type ApiWaitlist = {
   id: string;
   name?: string;
   slug?: string;
+  logoUrl?: string | null;
   isOpen?: boolean;
   subscribers?: number;
   totalReferrals?: number;
@@ -81,6 +82,7 @@ export default function DashboardPage() {
         id:          w.id,
         name:        w.name ?? "",
         slug:        w.slug ?? "",
+        logoUrl:     w.logoUrl ?? null,
         isOpen:      Boolean(w.isOpen),
         subscribers: Number(w.subscribers ?? w._count?.subscribers ?? 0),
         referrals:   Number(w.totalReferrals ?? w.referrals ?? 0),
@@ -174,7 +176,7 @@ export default function DashboardPage() {
               />
               <StatCard
                 label="Conversion Rate"
-                value={`${stats.conversionRate}%`}
+                value={`${stats.conversionRate.toFixed(2)}%`}
                 delta="0pp"
                 deltaType="neutral"
                 subtext="vs industry avg"
@@ -187,7 +189,7 @@ export default function DashboardPage() {
             {/* ── Chart + Activity ──────────────────────────────────── */}
             <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
               <GrowthChart />
-              <RecentActivityFeed />
+              {/* <RecentActivityFeed /> */}
             </div>
 
             {/* ── Waitlists table ───────────────────────────────────── */}

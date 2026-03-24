@@ -196,6 +196,7 @@ export const workspaceService = {
          id: true,
          name: true,
          slug: true,
+         logoUrl: true,
          isOpen: true,
          createdAt: true,
          _count: {
@@ -256,6 +257,7 @@ export const workspaceService = {
           id: w.id,
           name: w.name,
           slug: w.slug,
+          logoUrl: w.logoUrl,
           isOpen: w.isOpen,
           subscribers: w._count.subscribers,
           totalReferrals: s.totalReferrals,

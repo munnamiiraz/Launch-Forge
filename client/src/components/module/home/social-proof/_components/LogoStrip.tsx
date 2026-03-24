@@ -3,15 +3,17 @@
 import { motion } from "framer-motion";
 import { LOGO_COMPANIES } from "../_lib/social-proof-data";
 
-/** Renders a single logo pill — text-based since we have no real assets */
-function LogoPill({ name }: { name: string }) {
+/** Renders a single logo pill with company logo image */
+function LogoPill({ company }: { company: { name: string; logo: string } }) {
   return (
     <div className="flex shrink-0 items-center gap-2 rounded-lg border border-border/60 bg-card/40 px-4 py-2.5">
-      {/* Decorative monogram dot */}
-      <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded bg-zinc-800 text-[8px] font-bold text-muted-foreground/80">
-        {name[0]}
-      </div>
-      <span className="text-xs font-medium text-muted-foreground/60">{name}</span>
+      {/* Company logo */}
+      <img
+        src={company.logo}
+        alt={company.name}
+        className="h-5 w-5 shrink-0 rounded object-cover"
+      />
+      <span className="text-xs font-medium text-muted-foreground/60">{company.name}</span>
     </div>
   );
 }
@@ -42,8 +44,8 @@ export function LogoStrip() {
         className="flex animate-[ticker_30s_linear_infinite] gap-3 will-change-transform"
         style={{ width: "max-content" }}
       >
-        {items.map((name, i) => (
-          <LogoPill key={`${name}-${i}`} name={name} />
+        {items.map((company, i) => (
+          <LogoPill key={`${company.name}-${i}`} company={company} />
         ))}
       </div>
     </motion.div>

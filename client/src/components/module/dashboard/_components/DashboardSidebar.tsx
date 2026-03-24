@@ -12,7 +12,7 @@ import {
   Gift, ChevronDown, Building2, Check, Edit, Trash2
 } from "lucide-react";
 
-import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
 import {
@@ -432,6 +432,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                 )}
               >
                 <Avatar className="h-7 w-7 shrink-0 rounded-lg">
+                  {user.avatar && <AvatarImage src={user.avatar} alt={user.name} className="object-cover" />}
                   <AvatarFallback
                     className={cn(
                       "rounded-lg bg-gradient-to-br text-[11px] font-bold text-white",
@@ -462,6 +463,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
               <DropdownMenuLabel className="px-3 py-2.5">
                 <div className="flex items-center gap-2.5">
                   <Avatar className="h-8 w-8 rounded-lg">
+                    {user.avatar && <AvatarImage src={user.avatar} alt={user.name} className="object-cover" />}
                     <AvatarFallback className={cn("rounded-lg bg-gradient-to-br text-sm font-bold text-white", user.avatarColor)}>
                       {user.avatarInitials}
                     </AvatarFallback>

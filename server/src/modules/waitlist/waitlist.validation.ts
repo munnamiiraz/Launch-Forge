@@ -37,6 +37,11 @@ export const createWaitlistSchema = z.object({
   isOpen: z
     .boolean()
     .default(true),
+
+  endDate: z
+    .string()
+    .optional()
+    .transform((val) => (val ? new Date(val) : undefined)),
 });
 
 /* ── GET /api/waitlists — query params ──────────────────────────── */

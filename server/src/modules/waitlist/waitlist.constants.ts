@@ -42,7 +42,7 @@ export const WAITLIST_SLUG = {
 export const WAITLIST_FIELD = {
   NAME_MIN:        2,
   NAME_MAX:        120,
-  DESCRIPTION_MAX: 1000,
+  DESCRIPTION_MAX: 5000,
 } as const;
 
 /* ── Messages specific to /:id operations ───────────────────────── */

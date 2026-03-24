@@ -42,6 +42,7 @@ export async function DashboardLayout({ children }: DashboardLayoutProps) {
         id:             resJson.data.id,
         name:           resJson.data.name,
         email:          resJson.data.email,
+        avatar:         resJson.data.image,
         avatarInitials: initials,
         avatarColor:    "from-indigo-500 to-violet-600",
         plan:           resJson.data.plan || "free",

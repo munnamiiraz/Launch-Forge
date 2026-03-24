@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
 import { useRecentSignups } from "../../../../../hooks/hero-section/useWaitlist";
-import type { RecentSignup } from "../../_types";
+import type { RecentSignup } from "../_types";
 
 const AVATAR_COLORS = [
   "from-indigo-500 to-violet-600",
@@ -15,6 +15,18 @@ const AVATAR_COLORS = [
   "from-emerald-500 to-teal-600",
   "from-amber-500 to-orange-600",
   "from-pink-500 to-rose-600",
+];
+
+// Fallback profile images for the ticker
+const FALLBACK_AVATARS = [
+  "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face",
+  "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop&crop=face",
+  "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+  "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face",
+  "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face",
+  "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face",
+  "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop&crop=face",
+  "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=100&h=100&fit=crop&crop=face",
 ];
 
 interface RecentSignupsTickerProps {
@@ -62,14 +74,16 @@ function TickerCard({
   signup: RecentSignup;
   index: number;
 }) {
+  const avatarUrl = signup.avatar || FALLBACK_AVATARS[index % FALLBACK_AVATARS.length];
+  
   return (
     <div className="flex shrink-0 items-center gap-2.5 rounded-xl border border-border/60 bg-zinc-900/50 px-3.5 py-2.5 backdrop-blur-sm">
       {/* Avatar */}
-      <div
-        className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${AVATAR_COLORS[index % AVATAR_COLORS.length]} text-[10px] font-bold text-white`}
-      >
-        {signup.initials}
-      </div>
+      <img
+        src={avatarUrl}
+        alt={signup.name}
+        className="h-7 w-7 shrink-0 rounded-full object-cover"
+      />
 
       {/* Info */}
       <div>

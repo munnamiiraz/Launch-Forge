@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Loader2, AlertCircle, Globe, Lock, Zap, ArrowRight,
-  CheckCircle2, ImageIcon, ChevronDown, ChevronUp, Info,
+  CheckCircle2, ImageIcon, ChevronDown, ChevronUp, Info, Calendar,
 } from "lucide-react";
 
 import { Button }   from "@/src/components/ui/button";
@@ -54,10 +54,19 @@ export function CreateWaitlistForm() {
   const [success, setSuccess]         = useState(false);
   const [slugEdited, setSlugEdited]   = useState(false);
   const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreviewUrl, setLogoPreviewUrl] = useState<string | null>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    return () => {
+      if (logoPreviewUrl) URL.revokeObjectURL(logoPreviewUrl);
+    };
+  }, [logoPreviewUrl]);
 
   const form = useForm<CreateWaitlistFormSchema>({
     resolver:      zodResolver(createWaitlistFormSchema),
-    defaultValues: { name: "", slug: "", description: "", logoUrl: "", isOpen: true },
+    defaultValues: { name: "", slug: "", description: "", isOpen: true, endDate: "" },
     mode:          "onChange",
   });
 
@@ -79,6 +88,38 @@ export function CreateWaitlistForm() {
     setValue("slug", slugify(e.target.value), { shouldValidate: true });
   };
 
+  const openLogoPicker = () => {
+    logoInputRef.current?.click();
+  };
+
+  const removeLogo = () => {
+    setLogoFile(null);
+    if (logoPreviewUrl) URL.revokeObjectURL(logoPreviewUrl);
+    setLogoPreviewUrl(null);
+    if (logoInputRef.current) logoInputRef.current.value = "";
+  };
+
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      setGlobalError("Please select an image file.");
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      setGlobalError("Logo must be less than 10MB.");
+      return;
+    }
+
+    setGlobalError(null);
+
+    if (logoPreviewUrl) URL.revokeObjectURL(logoPreviewUrl);
+    setLogoFile(file);
+    setLogoPreviewUrl(URL.createObjectURL(file));
+  };
+
   const onSubmit = async (values: CreateWaitlistFormSchema) => {
     if (!activeWorkspace) {
       setGlobalError("No workspace selected.");
@@ -91,10 +132,11 @@ export function CreateWaitlistForm() {
         name:        values.name,
         slug:        values.slug,
         description: values.description ?? "",
-        logoUrl:     values.logoUrl     ?? "",
         isOpen:      values.isOpen,
+        endDate:     values.endDate ?? "",
       },
       activeWorkspace.id,
+      logoFile,
     );
 
     if (!result.success) {
@@ -231,9 +273,9 @@ export function CreateWaitlistForm() {
                       <Info size={11} className="cursor-help text-muted-foreground/40 hover:text-muted-foreground/80 transition-colors" />
                     </TooltipTrigger>
                     <TooltipContent side="right" className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80 max-w-xs">
-                      The URL path for your public waitlist page.
-                      Only lowercase letters, numbers, and hyphens.
-                      Auto-generated from your name — you can customise it.
+                      This is your waitlist's unique URL — like your product's domain name. 
+                      Your public page will be at launchforge.app/[slug]. 
+                      Use lowercase letters, numbers, and hyphens only.
                     </TooltipContent>
                   </Tooltip>
                 </div>
@@ -251,7 +293,7 @@ export function CreateWaitlistForm() {
                     value={watchedValues.slug ?? ""}
                     onChange={handleSlugChange}
                     disabled={isSubmitting}
-                    placeholder="product-alpha"
+                    placeholder="your-product-name"
                     className="flex-1 bg-transparent px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none"
                   />
                   {watchedValues.slug && !errors.slug && dirtyFields.slug && (
@@ -298,7 +340,7 @@ export function CreateWaitlistForm() {
                   id="description"
                   rows={3}
                   disabled={isSubmitting}
-                  placeholder="What are you building? Tell visitors why they should join early."
+                  placeholder="Describe your product in detail. Include what problem it solves, who it's for, key features, and any early access benefits. The more info you provide, the more likely people are to join! Also mention your website/domain if you have one."
                   {...register("description")}
                   className={cn(
                     "resize-none border-zinc-800 bg-card/60 text-sm text-foreground placeholder:text-muted-foreground/60",
@@ -389,45 +431,104 @@ export function CreateWaitlistForm() {
                     <div className="flex flex-col gap-1.5">
                       <div className="flex items-center gap-1.5">
                         <Label
-                          htmlFor="logoUrl"
+                          htmlFor="logo"
                           className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
                         >
-                          Logo URL
+                          Logo (optional)
                         </Label>
                         <Tooltip>
                           <TooltipTrigger asChild>
                             <Info size={11} className="cursor-help text-muted-foreground/40 hover:text-muted-foreground/80 transition-colors" />
                           </TooltipTrigger>
                           <TooltipContent side="right" className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80">
-                            A public image URL for your product logo.
-                            Displayed on the public sign-up page.
+                            Upload a logo image (PNG/JPG). Displayed on the public sign-up page.
                           </TooltipContent>
                         </Tooltip>
                       </div>
-                      <Input
-                        id="logoUrl"
-                        placeholder="https://example.com/logo.png"
+
+                      <input
+                        ref={logoInputRef}
+                        id="logo"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleLogoChange}
+                        className="hidden"
+                      />
+
+                      {logoPreviewUrl ? (
+                        <div className="flex items-center gap-3 rounded-lg border border-zinc-800 bg-card/60 p-3">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img
+                            src={logoPreviewUrl}
+                            alt="Logo preview"
+                            className="h-10 w-10 rounded-lg object-cover"
+                          />
+                          <div className="flex flex-1 flex-col">
+                            <span className="text-xs font-medium text-foreground/80">
+                              {logoFile?.name ?? "logo"}
+                            </span>
+                            <span className="text-[10px] text-muted-foreground/60">
+                              {(logoFile?.size ? Math.round(logoFile.size / 1024) : 0)} KB â€¢ Max 10MB
+                            </span>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={removeLogo}
+                            disabled={isSubmitting}
+                            className="border-zinc-700/60 bg-transparent text-xs text-muted-foreground hover:bg-muted/40"
+                          >
+                            Remove
+                          </Button>
+                        </div>
+                      ) : (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={openLogoPicker}
+                          disabled={isSubmitting}
+                          className="w-fit border-zinc-700/60 bg-transparent text-xs text-muted-foreground hover:bg-muted/40"
+                        >
+                          Upload logo
+                        </Button>
+                      )}
+                    </div>
+
+                    {/* End Date */}
+                    <div className="mt-4 flex flex-col gap-1.5 border-t border-zinc-800/60 pt-4">
+                      <div className="flex items-center gap-1.5">
+                        <Label
+                          htmlFor="endDate"
+                          className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                        >
+                          End Date (optional)
+                        </Label>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <Info size={11} className="cursor-help text-muted-foreground/40 hover:text-muted-foreground/80 transition-colors" />
+                          </TooltipTrigger>
+                          <TooltipContent side="right" className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80">
+                            Set a deadline for your waitlist. After this date, the waitlist will close 
+                            and the top referrers will be awarded. Leave empty for no deadline.
+                          </TooltipContent>
+                        </Tooltip>
+                      </div>
+                      <input
+                        id="endDate"
+                        type="date"
                         disabled={isSubmitting}
-                        {...register("logoUrl")}
+                        {...register("endDate")}
                         className={cn(
-                          "border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60",
-                          "focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/50 transition-all",
-                          errors.logoUrl && "border-red-500/60"
+                          "rounded-lg border bg-card/60 px-3 py-2 text-sm text-foreground transition-all duration-200",
+                          "border-zinc-800 placeholder:text-muted-foreground/60",
+                          "focus-visible:border-zinc-600 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-zinc-600/50",
+                          errors.endDate && "border-red-500/60"
                         )}
                       />
-                      <AnimatePresence>
-                        {errors.logoUrl && (
-                          <motion.p
-                            initial={{ opacity: 0, y: -4 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0 }}
-                            className="flex items-center gap-1 text-xs text-red-400"
-                          >
-                            <span className="inline-block h-1 w-1 rounded-full bg-red-400" />
-                            {errors.logoUrl.message}
-                          </motion.p>
-                        )}
-                      </AnimatePresence>
+                      {errors.endDate && (
+                        <p className="text-xs text-red-400">{errors.endDate.message}</p>
+                      )}
                     </div>
                   </div>
                 </motion.div>

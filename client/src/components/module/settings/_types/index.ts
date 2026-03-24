@@ -5,6 +5,7 @@ export interface ProfileForm {
   bio:      string;
   website:  string;
   timezone: string;
+  image?:   string;
 }
 
 /* ── Workspace ───────────────────────────────────────────────────── */

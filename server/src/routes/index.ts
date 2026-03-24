@@ -15,6 +15,8 @@ import { analyticsRouter } from "../modules/owner-analytics/owner-analytics.rout
 import { adminOverviewRouter } from "../modules/admin-overview/admin-overview.routes";
 import { adminUsersRouter } from "../modules/admin-user/admin-user.routes";
 import { adminRevenueRouter } from "../modules/admin-review/admin-review.routes";
+import { adminAnalyticsRouter } from "../modules/admin-analytics/admin-analytics.route";
+import { userRouter } from "../modules/user/user.route";
 
 const router = Router();
 
@@ -66,5 +68,7 @@ router.use("/newsletter", newsletterRouter);
 router.use("/admin/overview", adminOverviewRouter);
 router.use("/admin/users", adminUsersRouter);
 router.use("/admin/revenue", adminRevenueRouter);
+router.use("/admin/analytics", adminAnalyticsRouter);
+router.use("/user", userRouter);
 
 export const IndexRoutes = router;

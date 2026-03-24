@@ -56,6 +56,19 @@ export const globalErrorHandler = async (err: any, req: Request, res: Response, 
         errorSources = [...simplifiedError.errorSources]
         stack = err.stack;
 
+    } else if (err?.name === "MulterError") {
+        // Common: LIMIT_FILE_SIZE (file too large)
+        statusCode = err.code === "LIMIT_FILE_SIZE" ? status.PAYLOAD_TOO_LARGE : status.BAD_REQUEST;
+
+        const maxMb = Number(process.env.AVATAR_MAX_MB ?? 10);
+        message =
+            err.code === "LIMIT_FILE_SIZE"
+                ? `File too large. Max size is ${maxMb}MB.`
+                : (err.message ?? "Invalid upload.");
+
+        errorSources = [{ path: "", message }];
+        stack = err.stack;
+
     } else if (err instanceof AppError) {
         statusCode = err.statusCode;
         message = err.message;

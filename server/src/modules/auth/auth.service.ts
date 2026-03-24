@@ -152,6 +152,7 @@ const getMe = async (user : IRequestUser) => {
             id : true,
             name : true,
             email : true,
+            image : true,
             role : true,
             status : true,
             isDeleted : true,
@@ -165,7 +166,23 @@ const getMe = async (user : IRequestUser) => {
         throw new AppError(status.NOT_FOUND, "User not found");
     }
 
-    return isUserExists;
+    // Get the user's workspace to fetch the plan
+    const workspace = await prisma.workspace.findFirst({
+        where: {
+            ownerId: user.id,
+            deletedAt: null,
+        },
+        select: {
+            plan: true,
+        },
+    });
+
+    const plan = workspace?.plan || "FREE";
+
+    return {
+        ...isUserExists,
+        plan,
+    };
 }
 
 const getNewToken = async (refreshToken : string, sessionToken : string) => {
