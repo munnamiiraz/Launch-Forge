@@ -6,6 +6,8 @@ import {
   JoinWaitlistPayload,
   PublicWaitlistPageData,
   JoinConfirmation,
+  GetSubscriberPositionPayload,
+  SubscriberPositionResult,
 } from "./public-waitlist.interface";
 import { PUBLIC_WAITLIST_MESSAGES } from "./public-waitlist.constants";
 import {
@@ -211,6 +213,70 @@ export const publicWaitlistService = {
       referralUrl:   buildReferralUrl(waitlist.slug, newSubscriber.referralCode),
       totalInQueue:  totalSubscribers,
       alreadyJoined: false,
+    };
+  },
+
+  /* ── GET /api/public/waitlist/:slug/position ────────────────────── */
+
+  async getSubscriberPosition(
+    payload: GetSubscriberPositionPayload,
+  ): Promise<SubscriberPositionResult | null> {
+    const { slug, email } = payload;
+
+    /* 1. Find waitlist by slug */
+    const waitlist = await prisma.waitlist.findFirst({
+      where: { slug, deletedAt: null },
+      select: { id: true, slug: true },
+    });
+
+    if (!waitlist) {
+      return null;
+    }
+
+    /* 2. Find subscriber by email */
+    const subscriber = await prisma.subscriber.findFirst({
+      where: {
+        waitlistId: waitlist.id,
+        email: email.toLowerCase(),
+        deletedAt: null,
+      },
+      select: {
+        id: true,
+        referralCode: true,
+        referralsCount: true,
+        createdAt: true,
+      },
+    });
+
+    if (!subscriber) {
+      return null;
+    }
+
+    /* 3. Get total subscribers count */
+    const totalSubscribers = await prisma.subscriber.count({
+      where: { waitlistId: waitlist.id, deletedAt: null },
+    });
+
+    /* 4. Get position by counting subscribers with more referrals */
+    const position = await prisma.subscriber.count({
+      where: {
+        waitlistId: waitlist.id,
+        deletedAt: null,
+        OR: [
+          { referralsCount: { gt: subscriber.referralsCount } },
+          {
+            referralsCount: { equals: subscriber.referralsCount },
+            createdAt: { lt: subscriber.createdAt },
+          },
+        ],
+      },
+    }) + 1;
+
+    return {
+      position,
+      referralCount: subscriber.referralsCount,
+      referralUrl: buildReferralUrl(waitlist.slug, subscriber.referralCode),
+      totalInQueue: totalSubscribers,
     };
   },
 };

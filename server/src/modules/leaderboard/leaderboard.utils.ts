@@ -119,10 +119,10 @@ export function calcSharePercent(
  * Apply the optional tier filter to an already-ranked slice.
  * "all" is a no-op. All other tiers filter by rank boundaries.
  */
-export function filterByTier(
-  entries: LeaderboardEntry[],
+export function filterByTier<T extends { rank: number }>(
+  entries: T[],
   tier: LeaderboardTier | undefined,
-): LeaderboardEntry[] {
+): T[] {
   if (!tier || tier === "all") return entries;
 
   const bounds: Record<string, { min: number; max: number | null }> = {
@@ -136,7 +136,7 @@ export function filterByTier(
   if (!b) return entries;
 
   return entries.filter(
-    (e) => e.rank >= b.min && (b.max === null || e.rank <= b.max),
+    e => e.rank >= b.min && (b.max === null || e.rank <= b.max),
   );
 }
 
@@ -207,3 +207,29 @@ export function buildSummary(
     newestSubscriberAt,
   };
 }
+
+/* ── Email masker (public leaderboard) ───────────────────────────── */
+
+/**
+ * Masks an email address for public display.
+ *
+ * "john.doe@gmail.com"  →  "j***@gmail.com"
+ * "ab@x.co"             →  "a***@x.co"
+ * "a@b.co"              →  "***@b.co"
+ */
+export function maskEmail(email: string): string {
+  const [local, domain] = email.split("@");
+  if (!domain) return "***";
+
+  const visible = local.length > 1 ? local[0] : "";
+  return `${visible}***@${domain}`;
+}
+/* ── Tier filtering ──────────────────────────────────────────────── */
+
+/**
+ * Apply the optional tier filter to an already-ranked slice.
+ * "all" is a no-op. All other tiers filter by rank boundaries.
+ *
+ * Generic so it works for both LeaderboardEntry and PublicLeaderboardEntry
+ * without widening either type.
+ */

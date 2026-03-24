@@ -14,6 +14,18 @@ export interface JoinWaitlistPayload {
   referralCode?: string;
 }
 
+export interface GetSubscriberPositionPayload {
+  slug: string;
+  email: string;
+}
+
+export interface SubscriberPositionResult {
+  position: number;
+  referralCount: number;
+  referralUrl: string;
+  totalInQueue: number;
+}
+
 /* ── Response shapes ─────────────────────────────────────────────── */
 
 /**

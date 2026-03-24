@@ -58,4 +58,46 @@ export const publicWaitlistController = {
       next(error);
     }
   },
+
+  /* ── GET /api/public/waitlist/:slug/position ────────────────────── */
+
+  async getSubscriberPosition(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { slug } = req.params;
+      const { email } = req.query;
+
+      if (!email || typeof email !== "string") {
+        res.status(status.BAD_REQUEST).json({
+          success: false,
+          message: "Email is required",
+        });
+        return;
+      }
+
+      const result = await publicWaitlistService.getSubscriberPosition({
+        slug: slug as string,
+        email: email as string,
+      });
+
+      if (!result) {
+        res.status(status.NOT_FOUND).json({
+          success: false,
+          message: "Subscriber not found",
+        });
+        return;
+      }
+
+      res.status(status.OK).json({
+        success: true,
+        message: "Position found",
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 };

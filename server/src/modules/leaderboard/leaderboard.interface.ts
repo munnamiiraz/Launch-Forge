@@ -25,6 +25,53 @@ export interface GetLeaderboardPayload {
   query:            GetLeaderboardQuery;
 }
 
+export interface GetLeaderboardPayloadWithSlug {
+  waitlistSlug:     string;
+  requestingUserId: string;
+  query:            GetLeaderboardQuery;
+}
+
+export interface GetPublicLeaderboardPayload {
+  waitlistSlug: string;
+  query:       GetPublicLeaderboardQuery;
+}
+
+export interface GetPublicLeaderboardPayload {
+  waitlistSlug: string;
+  query:       GetPublicLeaderboardQuery;
+}
+
+export interface GetPublicLeaderboardQuery {
+  page?:  number;
+  limit?: number;
+  tier?:  LeaderboardTier;
+  search?: string;
+}
+
+export interface PaginatedPublicLeaderboard {
+  data:    PublicLeaderboardEntry[];
+  meta:    LeaderboardPaginationMeta;
+  summary: LeaderboardSummary;
+}
+
+export interface PublicLeaderboardEntry {
+  rank:           number;
+  tier:           LeaderboardTier;
+  id:             string;
+  name:           string;
+  email:          string;
+  referralCode:  string;
+  referralUrl:   string;
+  directReferrals: number;
+  chainReferrals:  number;
+  sharePercent:    number;
+  queuePosition:   number;
+  isConfirmed:    boolean;
+  joinedAt:       Date;
+  referredBy:     any;
+  referralPreview: any[];
+}
+
 /* ── Per-entry shapes ────────────────────────────────────────────── */
 
 export interface LeaderboardEntry {
@@ -57,6 +104,19 @@ export interface LeaderboardEntry {
 
   /** Up to 3 direct referrals shown as a preview chain */
   referralPreview:   ReferralPreviewEntry[];
+}
+
+/** Minimal leaderboard entry for /:waitlistSlug route */
+export interface MinimalLeaderboardEntry {
+  rank:            number;
+  tier:             LeaderboardTier;
+  id:              string;
+  name:            string;
+  email:           string;
+  directReferrals: number;
+  chainReferrals:  number;
+  sharePercent:   number;
+  queuePosition:  number;
 }
 
 export interface ReferredByInfo {

@@ -110,7 +110,7 @@ export async function fetchLeaderboard(
   });
   if (params.search) queryParams.set("search", params.search);
 
-  const url = `${BACKEND}/workspaces/${workspaceId}/waitlists/${waitlistId}/leaderboard/full?${queryParams}`;
+  const url = `${BACKEND}/workspaces/${workspaceId}/waitlists/${waitlistId}/leaderboard?${queryParams}`;
   console.log(`[Action] Fetching leaderboard: ${url}`);
 
   const res = await authFetch(url);
@@ -181,4 +181,40 @@ export async function fetchLeaderboardCards(workspaceId?: string): Promise<Waitl
       joinedAt: r.joinedAt,
     })),
   }));
+}
+
+/**
+ * 6. Fetch leaderboard using waitlistId and waitlistSlug
+ * Endpoint: GET /workspaces/:workspaceId/waitlists/:waitlistId/leaderboard/:waitlistSlug
+ */
+export async function fetchLeaderboardBySlug(
+  waitlistId: string,
+  waitlistSlug: string,
+  params: LeaderboardQueryParams,
+): Promise<LeaderboardResponse> {
+  // Resolve the waitlist's workspaceId (required by the leaderboard route)
+  const waitlistInfo = await fetchWaitlistInfo(waitlistId);
+  const workspaceId = waitlistInfo.workspaceId;
+
+  const queryParams = new URLSearchParams({
+    page:      params.page.toString(),
+    limit:     params.limit.toString(),
+    tier:      params.tier,
+    countMode: params.countMode,
+  });
+  if (params.search) queryParams.set("search", params.search);
+
+  const url = `${BACKEND}/workspaces/${workspaceId}/waitlists/${waitlistId}/leaderboard/${waitlistSlug}?${queryParams}`;
+  console.log(`[Action] Fetching leaderboard by slug: ${url}`);
+
+  const res = await authFetch(url);
+  const json = await res.json();
+
+  if (!res.ok) throw new Error(json.message || "Failed to fetch leaderboard");
+
+  return {
+    data: json.data,
+    meta: json.meta,
+    summary: json.summary,
+  };
 }

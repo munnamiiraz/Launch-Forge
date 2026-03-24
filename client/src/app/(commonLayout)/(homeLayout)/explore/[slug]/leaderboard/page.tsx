@@ -15,26 +15,108 @@ import { cn }       from "@/src/lib/utils";
 import { PodiumSection }      from "@/src/components/module/public-leaderboard/_components/PodiumSection";
 import { LeaderboardTable }   from "@/src/components/module/public-leaderboard/_components/LeaderboardTable";
 import { FindMyRankWidget }   from "@/src/components/module/public-leaderboard/_components/FindMyRankWidget";
-import { getLeaderboardPage } from "@/src/components/module/public-leaderboard/_lib/data";
+import { fetchLeaderboardBySlug, fetchWaitlistBySlug } from "@/src/services/leaderboard/leaderboard-public.action";
+import type { FullLeaderboardEntry } from "@/src/components/module/public-leaderboard/_lib/data";
+import type { PublicWaitlistData, PublicPrize } from "@/src/components/module/individual-waitlist/_lib/data";
 
 interface Props { params: Promise<{ slug: string }> }
 
+/**
+ * Transform API response to component expected format
+ */
+function transformLeaderboardEntries(entries: any[]): FullLeaderboardEntry[] {
+  return entries.map((entry) => ({
+    rank: entry.rank,
+    maskedName: entry.name, // Use full name from API
+    referralCount: entry.directReferrals,
+    joinedAt: "recently", // API doesn't provide this, use placeholder
+    tier: entry.tier,
+    sharePercent: entry.sharePercent,
+    isConfirmed: true, // API doesn't provide this
+  }));
+}
+
+/**
+ * Transform waitlist API response to component expected format
+ */
+function transformWaitlistData(data: any): PublicWaitlistData {
+  const getInitials = (n: string) => n.split(" ").map(x => x[0]).join("").toUpperCase().slice(0, 2);
+  
+  return {
+    id: data.slug,
+    slug: data.slug,
+    name: data.name,
+    tagline: data.description?.split(".")[0] || "Early access joining soon",
+    description: data.description || "",
+    ownerMessage: null,
+    logoInitials: getInitials(data.name),
+    logoGradient: "from-indigo-500 to-violet-600",
+    websiteUrl: null,
+    category: "Other",
+    tags: [],
+    isOpen: data.isOpen,
+    totalSubscribers: data.totalSubscribers || 0,
+    recentJoins: 0,
+    referralCount: data.topReferrers?.reduce((acc: number, r: any) => acc + r.referralCount, 0) || 0,
+    viralScore: 0,
+    expiresAt: null,
+    ownerName: "Founder",
+    ownerAvatarInitials: "F",
+    prizes: [],
+    leaderboard: []
+  };
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const data = getLeaderboardPage(slug);
-  if (!data) return { title: "Not found" };
+  const waitlist = await fetchWaitlistBySlug(slug);
+  if (!waitlist) return { title: "Not found" };
   return {
-    title:       `Leaderboard — ${data.waitlist.name}`,
-    description: `See the top referrers for ${data.waitlist.name} and find your place in the queue.`,
+    title:       `Leaderboard — ${waitlist.name}`,
+    description: `See the top referrers for ${waitlist.name} and find your place in the queue.`,
   };
 }
 
 export default async function PublicLeaderboardPage({ params }: Props) {
   const { slug } = await params;
-  const data = getLeaderboardPage(slug);
-  if (!data) notFound();
-
-  const { waitlist, entries } = data;
+  
+  // Fetch waitlist info and leaderboard data from API
+  console.log("[Leaderboard Page] Fetching data for slug:", slug);
+  
+  const [waitlistData, leaderboardData] = await Promise.all([
+    fetchWaitlistBySlug(slug).catch((e) => {
+      console.error("[Leaderboard Page] Error fetching waitlist:", e);
+      return null;
+    }),
+    fetchLeaderboardBySlug(slug, { limit: 50 }).catch((e) => {
+      console.error("[Leaderboard Page] Error fetching leaderboard:", e);
+      return null;
+    }),
+  ]);
+  
+  console.log("[Leaderboard Page] Waitlist data:", waitlistData);
+  console.log("[Leaderboard Page] Leaderboard data:", leaderboardData);
+  
+  if (!waitlistData) {
+    console.log("[Leaderboard Page] Waitlist not found, calling notFound()");
+    notFound();
+  }
+  
+  const waitlist = transformWaitlistData(waitlistData);
+  
+  // Handle case where leaderboardData might be null or have no data
+  const entries = leaderboardData?.data 
+    ? transformLeaderboardEntries(leaderboardData.data) 
+    : [];
+    
+  console.log("[Leaderboard Page] Transformed entries:", entries);
+  
+  const summary = leaderboardData?.summary;
+  
+  // Use API summary for stats
+  const totalSubscribers = summary?.totalSubscribers || waitlistData.totalSubscribers || 0;
+  const referralCount = summary?.totalReferrals || 0;
+  
   const top3     = entries.slice(0, 3);
   const hasPrizes= waitlist.prizes.length > 0;
   const totalCash= waitlist.prizes
@@ -55,36 +137,6 @@ export default async function PublicLeaderboardPage({ params }: Props) {
       {/* Ambient blobs */}
       <div aria-hidden className="pointer-events-none fixed -left-40 top-0 h-[500px] w-[500px] rounded-full bg-indigo-500/6 blur-[120px]" />
       <div aria-hidden className="pointer-events-none fixed -right-40 bottom-0 h-[400px] w-[400px] rounded-full bg-amber-500/5 blur-[100px]" />
-
-      {/* ── Top nav ──────────────────────────────────────── */}
-      <nav className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/50 bg-[#070707]/90 px-4 backdrop-blur-xl sm:px-6">
-        <Link
-          href={`/explore/${slug}`}
-          className="flex items-center gap-1.5 text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
-        >
-          <ArrowLeft size={13} />
-          Back to waitlist
-        </Link>
-
-        <div className="flex items-center gap-1.5">
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-600">
-            <Zap size={12} className="text-white" />
-          </div>
-          <span className="text-xs font-black tracking-tight text-foreground/80">LaunchForge</span>
-        </div>
-
-        {waitlist.websiteUrl && (
-          <a
-            href={waitlist.websiteUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
-          >
-            <ExternalLink size={12} />
-            Product site
-          </a>
-        )}
-      </nav>
 
       {/* ── Hero banner ──────────────────────────────────── */}
       <div className="relative overflow-hidden border-b border-border/60">
@@ -124,12 +176,12 @@ export default async function PublicLeaderboardPage({ params }: Props) {
                 <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground/60">
                   <span className="flex items-center gap-1.5">
                     <Users  size={12} className="text-indigo-400" />
-                    <span className="font-semibold text-muted-foreground">{waitlist.totalSubscribers.toLocaleString()}</span>
+                    <span className="font-semibold text-muted-foreground">{totalSubscribers.toLocaleString()}</span>
                     in queue
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Share2 size={12} className="text-violet-400" />
-                    <span className="font-semibold text-muted-foreground">{waitlist.referralCount.toLocaleString()}</span>
+                    <span className="font-semibold text-muted-foreground">{referralCount.toLocaleString()}</span>
                     referrals
                   </span>
                   <span className="flex items-center gap-1.5">

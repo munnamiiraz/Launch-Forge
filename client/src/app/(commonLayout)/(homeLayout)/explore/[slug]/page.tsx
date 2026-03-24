@@ -8,6 +8,7 @@ import {
 
 import { Badge }    from "@/src/components/ui/badge";
 import { Button }   from "@/src/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/src/components/ui/dialog";
 import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
 import { Separator } from "@/src/components/ui/separator";
 import { cn }       from "@/src/lib/utils";
@@ -16,6 +17,7 @@ import { JoinSection }        from "@/src/components/module/individual-waitlist/
 import { PrizePoolSection }   from "@/src/components/module/individual-waitlist/_components/PrizePoolSection";
 import { PublicLeaderboard }  from "@/src/components/module/individual-waitlist/_components/PublicLeaderboard";
 import { fetchPublicWaitlist } from "@/src/services/public-waitlist/public-waitlist.services";
+import { fetchPublicPrizes }   from "@/src/services/prizes/prizes.service";
 import type { PublicWaitlistData } from "@/src/components/module/individual-waitlist/_lib/data";
 
 interface Props {
@@ -111,33 +113,6 @@ export default async function PublicWaitlistPage({ params }: Props) {
       <div aria-hidden className="pointer-events-none fixed -left-40 top-0 h-[500px] w-[500px] rounded-full bg-indigo-500/6 blur-[120px]" />
       <div aria-hidden className="pointer-events-none fixed -right-40 bottom-0 h-[400px] w-[400px] rounded-full bg-violet-500/5 blur-[100px]" />
 
-      {/* ── Top nav bar ──────────────────────────────────── */}
-      <nav className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/50 bg-[#070707]/90 px-4 backdrop-blur-xl sm:px-6">
-        <Link
-          href="/explore"
-          className="flex items-center gap-1.5 text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
-        >
-          <ArrowLeft size={13} />
-          Browse products
-        </Link>
-
-        {/* Branding */}
-        <div className="flex items-center gap-1.5">
-          <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-600">
-            <Zap size={12} className="text-white" />
-          </div>
-          <span className="text-xs font-black tracking-tight text-foreground/80">LaunchForge</span>
-        </div>
-
-        {/* Nav links */}
-        <div className="flex items-center gap-3 text-xs text-muted-foreground/60">
-          {hasPrizes && (
-            <a href="#prizes" className="hover:text-muted-foreground transition-colors">Prizes</a>
-          )}
-          <a href="#leaderboard" className="hover:text-muted-foreground transition-colors">Leaderboard</a>
-        </div>
-      </nav>
-
       <div className="relative mx-auto max-w-5xl px-4 py-10 sm:px-6">
         <div className="grid gap-10 lg:grid-cols-[1fr_380px]">
 
@@ -175,6 +150,64 @@ export default async function PublicWaitlistPage({ params }: Props) {
                     </Badge>
                   </div>
                   <p className="mt-1 text-base text-muted-foreground">{wl.tagline}</p>
+
+                  {/* Action buttons */}
+                  <div className="mt-4 flex items-center gap-2">
+                    {wl.websiteUrl && (
+                      <a
+                        href={wl.websiteUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 rounded-full border border-border/60 bg-card/40 px-4 py-2 text-xs font-medium text-muted-foreground/80 transition-colors hover:bg-muted/60 hover:text-foreground"
+                      >
+                        <ExternalLink size={14} />
+                        Visit product website
+                      </a>
+                    )}
+                    <Link
+                      href={`/explore/${wl.slug}/leaderboard`}
+                      className="flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-2 text-xs font-semibold text-amber-400 transition-colors hover:bg-amber-500/20"
+                    >
+                      <Trophy size={14} />
+                      Leaderboard
+                    </Link>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <button className="flex items-center gap-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-4 py-2 text-xs font-semibold text-indigo-400 transition-colors hover:bg-indigo-500/20">
+                          <Trophy size={14} />
+                          Prizes
+                        </button>
+                      </DialogTrigger>
+                      <DialogContent className="sm:max-w-md">
+                        <div className="flex flex-col gap-4">
+                          <div className="flex items-center gap-2">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/20">
+                              <Trophy size={16} className="text-amber-400" />
+                            </div>
+                            <h2 className="text-lg font-bold">Prizes</h2>
+                          </div>
+                          {hasPrizes ? (
+                            <div className="flex flex-col gap-2">
+                              {wl.prizes.map((prize, idx) => (
+                                <div
+                                  key={idx}
+                                  className="flex items-center gap-3 rounded-xl border border-border/60 bg-card/40 p-3"
+                                >
+                                  <span className="text-xl">{prize.emoji}</span>
+                                  <div className="flex-1">
+                                    <p className="text-sm font-semibold text-foreground">{prize.title}</p>
+                                    <p className="text-xs text-muted-foreground">{prize.rank}</p>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <p className="text-sm text-muted-foreground">No prizes available for this waitlist.</p>
+                          )}
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
 
                   {/* Category + tags */}
                   <div className="mt-3 flex flex-wrap gap-1.5">
@@ -331,15 +364,6 @@ export default async function PublicWaitlistPage({ params }: Props) {
 
                 {/* Join section */}
                 <JoinSection waitlist={wl as unknown as PublicWaitlistData} />
-
-                {/* Leaderboard link */}
-                <a
-                  href={`/explore/${wl.slug}/leaderboard`}
-                  className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
-                >
-                  <Trophy size={11} />
-                  View full leaderboard
-                </a>
               </div>
             </div>
           </div>

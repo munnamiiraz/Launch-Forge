@@ -1,3 +1,6 @@
+"use client"
+
+import { useState, useEffect } from "react";
 import { type Metadata } from "next";
 import Link from "next/link";
 import {
@@ -16,11 +19,6 @@ import {
 } from "@/src/components/ui/accordion";
 import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
 import { cn } from "@/src/lib/utils";
-
-export const metadata: Metadata = {
-  title:       "How to Earn on LaunchForge — Complete Guide",
-  description: "Join waitlists, refer friends, climb the leaderboard, and win real money. Everything you need to know about earning on LaunchForge.",
-};
 
 /* ─────────────────────────────────────────────────────────────────
    Small reusable layout atoms
@@ -87,6 +85,17 @@ function GlowCard({ children, color = "indigo", className }: {
    ──────────────────────────────────────────────────────────────── */
 
 export default function HowToEarnPage() {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 300);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll(); // Check initial state
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
 
@@ -99,29 +108,7 @@ export default function HowToEarnPage() {
       <div aria-hidden className="pointer-events-none fixed left-0 top-0 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-500/6 blur-[120px]" />
       <div aria-hidden className="pointer-events-none fixed bottom-0 right-0 h-[500px] w-[500px] translate-x-1/2 translate-y-1/2 rounded-full bg-violet-500/5 blur-[100px]" />
 
-      {/* ── Navbar ──────────────────────────────────────── */}
-      <nav className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/50 bg-background/90 px-4 backdrop-blur-xl sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-1.5">
-          <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600">
-            <Zap size={13} className="text-white" />
-          </div>
-          <span className="text-sm font-black tracking-tight text-foreground/90">LaunchForge</span>
-        </Link>
-        <div className="hidden items-center gap-6 text-xs text-muted-foreground/80 sm:flex">
-          <a href="#how-it-works" className="hover:text-foreground/80 transition-colors">How it works</a>
-          <a href="#prizes"       className="hover:text-foreground/80 transition-colors">Prizes</a>
-          <a href="#strategy"     className="hover:text-foreground/80 transition-colors">Strategy</a>
-          <a href="#faq"          className="hover:text-foreground/80 transition-colors">FAQ</a>
-        </div>
-        <Link href="/explore">
-          <Button size="sm" className="gap-1.5 bg-indigo-600 text-xs font-bold text-white hover:bg-indigo-500">
-            Browse products <ArrowRight size={12} />
-          </Button>
-        </Link>
-      </nav>
 
-      {/* ═══════════════════════════════════════════════════════════
-          HERO
           ═══════════════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden border-b border-border/50">
         <div className="mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:px-8">

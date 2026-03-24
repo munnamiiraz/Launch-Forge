@@ -58,3 +58,4 @@ export const TIER_RANK_RANGES: Record<string, TierRankRange> = {
   rising:   { min: 26, max: null },
   all:      { min: 1,  max: null },
 } as const;
+

@@ -40,4 +40,15 @@ router
     publicWaitlistController.joinWaitlist,
   );
 
+/**
+ * Get subscriber's position in the waitlist by email
+ * GET /api/public/waitlist/:slug/position?email=user@example.com
+ */
+router
+  .route("/:slug/position")
+  .get(
+    validateParams(publicWaitlistSlugParamSchema),
+    publicWaitlistController.getSubscriberPosition,
+  );
+
 export const publicWaitlistRouter = router;

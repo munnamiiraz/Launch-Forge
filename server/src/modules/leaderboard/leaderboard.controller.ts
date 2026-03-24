@@ -1,8 +1,9 @@
+// controller
 import { Request, Response, NextFunction } from "express";
 import status from "http-status";
 import { leaderboardService }   from "./leaderboard.service";
 import { LEADERBOARD_MESSAGES } from "./leaderboard.constants";
-import { GetLeaderboardQuery }  from "./leaderboard.interface";
+import { GetLeaderboardQuery, GetPublicLeaderboardQuery } from "./leaderboard.interface";
 
 export const leaderboardController = {
 
@@ -39,4 +40,87 @@ export const leaderboardController = {
       next(error);
     }
   },
+  async getPublicLeaderboard(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { waitlistSlug } = req.params;
+      const query = req.query as unknown as GetPublicLeaderboardQuery;
+
+      const result = await leaderboardService.getPublicLeaderboard({
+        waitlistSlug: waitlistSlug as string,
+        query,
+      });
+
+      res.status(status.OK).json({
+        success: true,
+        message: LEADERBOARD_MESSAGES.FETCHED,
+        data:    result.data,
+        meta:    result.meta,
+        summary: result.summary,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+  async getLeaderboardBySlug(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { waitlistSlug } = req.params;
+      const requestingUserId = req.user!.id;
+      const query = req.query as unknown as GetLeaderboardQuery;
+
+      const result = await leaderboardService.getLeaderboardBySlug({
+        waitlistSlug: waitlistSlug as string,
+        requestingUserId,
+        query,
+      });
+
+      res.status(status.OK).json({
+        success: true,
+        message: LEADERBOARD_MESSAGES.FETCHED,
+        data:    result.data,
+        meta:    result.meta,
+        summary: result.summary,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /* ── GET /api/workspaces/:workspaceId/waitlists/:id/leaderboard/:waitlistSlug (minimal) ─ */
+
+  async getLeaderboardMinimal(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { waitlistSlug } = req.params;
+      const requestingUserId = req.user!.id;
+      const query = req.query as unknown as GetLeaderboardQuery;
+
+      const result = await leaderboardService.getMinimalLeaderboard({
+        waitlistSlug: waitlistSlug as string,
+        requestingUserId,
+        query,
+      });
+
+      res.status(status.OK).json({
+        success: true,
+        message: LEADERBOARD_MESSAGES.FETCHED,
+        data:    result.data,
+        meta:    result.meta,
+        summary: result.summary,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
 };

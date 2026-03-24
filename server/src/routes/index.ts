@@ -63,6 +63,7 @@ router.use("/invites", inviteRouter);
 router.use("/public/waitlist", publicWaitlistRouter);
 router.use("/prizes", prizeRouter);
 router.use("/explore", exploreRouter);
+router.use("/leaderboard", LeaderboardRoutes);
 router.use("/newsletter", newsletterRouter);
 router.use("/admin/overview", adminOverviewRouter);
 router.use("/admin/users", adminUsersRouter);

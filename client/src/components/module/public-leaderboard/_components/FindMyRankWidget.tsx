@@ -18,22 +18,23 @@ interface RankResult {
   totalInQueue:  number;
 }
 
-async function lookupRank(_slug: string, email: string): Promise<RankResult | null> {
-  /**
-   * Real:
-   * const res = await fetch(`/api/public/waitlist/${slug}/position?email=${email}`);
-   * if (!res.ok) return null;
-   * return res.json();
-   */
-  await new Promise((r) => setTimeout(r, 700));
-  if (!email.includes("@")) return null;
-  const code = Math.random().toString(36).slice(2, 10).toUpperCase();
-  return {
-    position:      Math.floor(Math.random() * 200) + 10,
-    referralCount: Math.floor(Math.random() * 8),
-    referralUrl:   `https://launchforge.app/ref/${code}`,
-    totalInQueue:  12_430,
-  };
+async function lookupRank(slug: string, email: string): Promise<RankResult | null> {
+  try {
+    const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
+    const res = await fetch(`${BASE_URL}/public/waitlist/${slug}/position?email=${encodeURIComponent(email)}`);
+    if (!res.ok) return null;
+    const json = await res.json();
+    if (!json.success || !json.data) return null;
+    return {
+      position: json.data.position,
+      referralCount: json.data.referralCount,
+      referralUrl: json.data.referralUrl,
+      totalInQueue: json.data.totalInQueue,
+    };
+  } catch (error) {
+    console.error("Error looking up rank:", error);
+    return null;
+  }
 }
 
 interface FindMyRankWidgetProps {
