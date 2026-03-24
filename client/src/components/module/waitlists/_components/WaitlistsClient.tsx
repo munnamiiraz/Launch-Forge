@@ -92,14 +92,14 @@ export function WaitlistsClient({ waitlists }: WaitlistsClientProps) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            <Card className="overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+            <Card className="overflow-hidden border-border/80 bg-card/40">
               {/* List header */}
-              <div className="hidden grid-cols-[auto_1fr_auto_auto_auto_auto] gap-4 border-b border-zinc-800/60 bg-zinc-900/60 px-5 py-2.5 sm:grid">
+              <div className="hidden grid-cols-[auto_1fr_auto_auto_auto_auto] gap-4 border-b border-border/60 bg-card/60 px-5 py-2.5 sm:grid">
                 <div className="w-8" />
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">Waitlist</p>
-                <p className="hidden w-24 text-right text-[10px] font-semibold uppercase tracking-widest text-zinc-600 sm:block">Subscribers</p>
-                <p className="hidden w-20 text-right text-[10px] font-semibold uppercase tracking-widest text-zinc-600 md:block">Referrals</p>
-                <p className="hidden text-[10px] font-semibold uppercase tracking-widest text-zinc-600 lg:block">Viral</p>
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Waitlist</p>
+                <p className="hidden w-24 text-right text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 sm:block">Subscribers</p>
+                <p className="hidden w-20 text-right text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 md:block">Referrals</p>
+                <p className="hidden text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 lg:block">Viral</p>
                 <div className="w-32" />
               </div>
               {filtered.map((wl, i) => (
@@ -117,7 +117,7 @@ export function WaitlistsClient({ waitlists }: WaitlistsClientProps) {
 
       {/* Result count */}
       {filtered.length > 0 && (
-        <p className="text-center text-[11px] text-zinc-700">
+        <p className="text-center text-[11px] text-muted-foreground/40">
           Showing {filtered.length} of {waitlists.length} waitlist{waitlists.length !== 1 ? "s" : ""}
         </p>
       )}

@@ -24,12 +24,12 @@ interface UsageGaugesProps {
 
 export function UsageGauges({ usage }: UsageGaugesProps) {
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
 
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
-        <p className="text-sm font-semibold text-zinc-200">Current usage</p>
-        <p className="text-[11px] text-zinc-600">Your resource consumption this billing period</p>
+      <CardHeader className="border-b border-border/60 px-5 py-4">
+        <p className="text-sm font-semibold text-foreground/90">Current usage</p>
+        <p className="text-[11px] text-muted-foreground/60">Your resource consumption this billing period</p>
       </CardHeader>
 
       <CardContent className="flex flex-col gap-4 p-5">
@@ -48,15 +48,15 @@ export function UsageGauges({ usage }: UsageGaugesProps) {
               className="flex flex-col gap-2"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-medium text-zinc-400">{item.label}</span>
+                <span className="text-xs font-medium text-muted-foreground">{item.label}</span>
                 <div className="flex items-center gap-2">
                   <span className={cn(
                     "text-xs font-bold tabular-nums",
-                    isHigh ? "text-red-400" : isWarn ? "text-amber-400" : "text-zinc-300",
+                    isHigh ? "text-red-400" : isWarn ? "text-amber-400" : "text-foreground/80",
                   )}>
                     {item.used.toLocaleString()}
                     {item.limit !== null && (
-                      <span className="font-normal text-zinc-600">
+                      <span className="font-normal text-muted-foreground/60">
                         {" "}/ {item.limit.toLocaleString()}
                       </span>
                     )}
@@ -69,7 +69,7 @@ export function UsageGauges({ usage }: UsageGaugesProps) {
                   {!isUnlim && (
                     <span className={cn(
                       "text-[10px] tabular-nums",
-                      isHigh ? "text-red-400" : isWarn ? "text-amber-400" : "text-zinc-600",
+                      isHigh ? "text-red-400" : isWarn ? "text-amber-400" : "text-muted-foreground/60",
                     )}>
                       {p}%
                     </span>

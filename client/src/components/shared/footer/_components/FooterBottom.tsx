@@ -17,15 +17,15 @@ export function FooterBottom({ year }: FooterBottomProps) {
       viewport={{ once: true }}
       transition={{ delay: 0.5, duration: 0.5 }}
     >
-      <Separator className="bg-zinc-800/60" />
+      <Separator className="bg-muted/60" />
 
       <div className="flex flex-col items-center justify-between gap-4 py-6 sm:flex-row">
         {/* Copyright */}
-        <p className="text-xs text-zinc-600">
+        <p className="text-xs text-muted-foreground/60">
           © {year}{" "}
           <Link
             href="#"
-            className="text-zinc-500 transition-colors hover:text-zinc-300"
+            className="text-muted-foreground/80 transition-colors hover:text-foreground/80"
           >
             LaunchForge, Inc.
           </Link>{" "}
@@ -34,11 +34,11 @@ export function FooterBottom({ year }: FooterBottomProps) {
 
         {/* Bottom nav links */}
         <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-          {FOOTER_BOTTOM_LINKS.map((link) => (
+          {FOOTER_BOTTOM_LINKS.map((link, i) => (
             <Link
-              key={link.href}
+              key={i}
               href={link.href}
-              className="text-xs text-zinc-600 transition-colors hover:text-zinc-400"
+              className="text-xs text-muted-foreground/60 transition-colors hover:text-muted-foreground"
             >
               {link.label}
             </Link>
@@ -46,7 +46,7 @@ export function FooterBottom({ year }: FooterBottomProps) {
         </div>
 
         {/* Made with tag */}
-        <p className="text-xs text-zinc-700">
+        <p className="text-xs text-muted-foreground/40">
           Built with{" "}
           <span className="text-red-500/70">♥</span>{" "}
           for founders

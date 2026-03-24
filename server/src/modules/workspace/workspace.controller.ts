@@ -73,9 +73,11 @@ export const workspaceController = {
   ): Promise<void> {
     try {
       const requestingUserId = req.user!.id;
+      const { workspaceId }  = req.query;
 
       const overview = await workspaceService.getDashboardOverview({
         requestingUserId,
+        workspaceId: workspaceId as string,
       });
 
       res.status(status.OK).json({

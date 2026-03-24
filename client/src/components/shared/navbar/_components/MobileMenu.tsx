@@ -72,7 +72,7 @@ export function MobileMenu({ isAuthenticated, user }: MobileMenuProps) {
         <Button
           variant="ghost"
           size="icon"
-          className="md:hidden h-9 w-9 rounded-lg border border-zinc-800/60 bg-zinc-900/40 text-zinc-400 hover:border-zinc-700 hover:bg-zinc-800/60 hover:text-zinc-200"
+          className="md:hidden h-9 w-9 rounded-lg border border-border/60 bg-card/40 text-muted-foreground hover:border-zinc-700 hover:bg-muted/60 hover:text-foreground/90"
           aria-label="Toggle menu"
         >
           {open ? <X size={16} /> : <Menu size={16} />}
@@ -81,10 +81,10 @@ export function MobileMenu({ isAuthenticated, user }: MobileMenuProps) {
 
       <SheetContent
         side="right"
-        className="flex w-[300px] flex-col border-zinc-800/80 bg-zinc-950/98 p-0 backdrop-blur-xl sm:w-[340px]"
+        className="flex w-[300px] flex-col border-border/80 bg-background/98 p-0 backdrop-blur-xl sm:w-[340px]"
       >
         {/* Header */}
-        <SheetHeader className="border-b border-zinc-800/60 px-5 py-4">
+        <SheetHeader className="border-b border-border/60 px-5 py-4">
           <SheetTitle asChild>
             <Link
               href="/"
@@ -94,7 +94,7 @@ export function MobileMenu({ isAuthenticated, user }: MobileMenuProps) {
               <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/15">
                 <Zap size={13} className="text-indigo-400" />
               </div>
-              <span className="text-sm font-semibold text-zinc-100">
+              <span className="text-sm font-semibold text-foreground">
                 LaunchForge
               </span>
             </Link>
@@ -106,7 +106,7 @@ export function MobileMenu({ isAuthenticated, user }: MobileMenuProps) {
           {isAuthenticated && user && (
             <>
               <div className="px-4 py-4">
-                <div className="flex items-center gap-3 rounded-xl border border-zinc-800/60 bg-zinc-900/50 p-3">
+                <div className="flex items-center gap-3 rounded-xl border border-border/60 bg-zinc-900/50 p-3">
                   <Avatar className="h-10 w-10 rounded-xl">
                     <AvatarFallback
                       className={cn(
@@ -118,10 +118,10 @@ export function MobileMenu({ isAuthenticated, user }: MobileMenuProps) {
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-                    <span className="truncate text-sm font-semibold text-zinc-100">
+                    <span className="truncate text-sm font-semibold text-foreground">
                       {user.name}
                     </span>
-                    <span className="truncate text-[11px] text-zinc-500">
+                    <span className="truncate text-[11px] text-muted-foreground/80">
                       {user.email}
                     </span>
                   </div>
@@ -129,7 +129,7 @@ export function MobileMenu({ isAuthenticated, user }: MobileMenuProps) {
                 </div>
               </div>
 
-              <Separator className="bg-zinc-800/60" />
+              <Separator className="bg-muted/60" />
 
               {/* Authenticated links */}
               <nav className="flex flex-col gap-0.5 px-3 py-3">
@@ -145,12 +145,12 @@ export function MobileMenu({ isAuthenticated, user }: MobileMenuProps) {
                         "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm transition-colors",
                         isActive
                           ? "bg-indigo-500/10 text-indigo-300"
-                          : "text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200"
+                          : "text-muted-foreground hover:bg-zinc-800/50 hover:text-foreground/90"
                       )}
                     >
-                      <Icon size={15} className={isActive ? "text-indigo-400" : "text-zinc-600"} />
+                      <Icon size={15} className={isActive ? "text-indigo-400" : "text-muted-foreground/60"} />
                       {link.label}
-                      <ChevronRight size={13} className="ml-auto text-zinc-700" />
+                      <ChevronRight size={13} className="ml-auto text-muted-foreground/40" />
                     </Link>
                   );
                 })}
@@ -175,7 +175,7 @@ export function MobileMenu({ isAuthenticated, user }: MobileMenuProps) {
           {/* ── Guest navigation ──────────────────────────── */}
           {!isAuthenticated && (
             <nav className="flex flex-col gap-0.5 px-3 py-4">
-              <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+              <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
                 Navigation
               </p>
               {PUBLIC_LINKS.map((link) => {
@@ -188,12 +188,12 @@ export function MobileMenu({ isAuthenticated, user }: MobileMenuProps) {
                     className={cn(
                       "flex items-center justify-between rounded-lg px-3 py-2.5 text-sm transition-colors",
                       isActive
-                        ? "bg-zinc-800/60 text-zinc-100"
-                        : "text-zinc-400 hover:bg-zinc-800/50 hover:text-zinc-200"
+                        ? "bg-muted/60 text-foreground"
+                        : "text-muted-foreground hover:bg-zinc-800/50 hover:text-foreground/90"
                     )}
                   >
                     {link.label}
-                    <ChevronRight size={13} className="text-zinc-700" />
+                    <ChevronRight size={13} className="text-muted-foreground/40" />
                   </Link>
                 );
               })}
@@ -202,11 +202,11 @@ export function MobileMenu({ isAuthenticated, user }: MobileMenuProps) {
         </div>
 
         {/* ── Footer CTA / sign-out ──────────────────────── */}
-        <div className="border-t border-zinc-800/60 p-4">
+        <div className="border-t border-border/60 p-4">
           {isAuthenticated ? (
             <button
               onClick={handleSignOut}
-              className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-zinc-400 transition-colors hover:bg-red-500/8 hover:text-red-400"
+              className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2.5 text-sm text-muted-foreground transition-colors hover:bg-red-500/8 hover:text-red-400"
             >
               <LogOut size={14} />
               Sign out
@@ -216,7 +216,7 @@ export function MobileMenu({ isAuthenticated, user }: MobileMenuProps) {
               <Button
                 asChild
                 variant="outline"
-                className="w-full border-zinc-800 bg-transparent text-zinc-300 hover:border-zinc-700 hover:bg-zinc-800/60 hover:text-zinc-100"
+                className="w-full border-zinc-800 bg-transparent text-foreground/80 hover:border-zinc-700 hover:bg-muted/60 hover:text-foreground"
               >
                 <Link href="/login" onClick={close}>Sign in</Link>
               </Button>

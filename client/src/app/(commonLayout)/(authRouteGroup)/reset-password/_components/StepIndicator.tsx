@@ -43,7 +43,7 @@ export function StepIndicator({ currentStep }: StepIndicatorProps) {
                   "flex h-6 w-6 items-center justify-center rounded-full border text-xs font-medium",
                   isDone && "text-indigo-400",
                   isActive && "text-indigo-300",
-                  !isDone && !isActive && "text-zinc-600"
+                  !isDone && !isActive && "text-muted-foreground/60"
                 )}
               >
                 {isDone ? (
@@ -62,7 +62,7 @@ export function StepIndicator({ currentStep }: StepIndicatorProps) {
               <span
                 className={cn(
                   "text-[10px] font-medium tracking-wide",
-                  isActive ? "text-zinc-400" : "text-zinc-600"
+                  isActive ? "text-muted-foreground" : "text-muted-foreground/60"
                 )}
               >
                 {step.label}

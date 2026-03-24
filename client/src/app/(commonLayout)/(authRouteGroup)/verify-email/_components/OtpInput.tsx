@@ -32,7 +32,7 @@ export function OtpInput({ value, onChange, disabled, hasError }: OtpInputProps)
             className={cn(
               // base
               "relative h-12 w-11 rounded-xl border text-base font-semibold",
-              "bg-zinc-900/60 text-zinc-100 transition-all duration-200",
+              "bg-card/60 text-foreground transition-all duration-200",
               // idle
               "border-zinc-800",
               // focused slot — via group / data attrs
@@ -47,7 +47,7 @@ export function OtpInput({ value, onChange, disabled, hasError }: OtpInputProps)
         ))}
       </InputOTPGroup>
 
-      <InputOTPSeparator className="text-zinc-700">
+      <InputOTPSeparator className="text-muted-foreground/40">
         <span className="mx-0.5 block h-px w-3 rounded-full bg-zinc-700" />
       </InputOTPSeparator>
 
@@ -58,7 +58,7 @@ export function OtpInput({ value, onChange, disabled, hasError }: OtpInputProps)
             index={i}
             className={cn(
               "relative h-12 w-11 rounded-xl border text-base font-semibold",
-              "bg-zinc-900/60 text-zinc-100 transition-all duration-200",
+              "bg-card/60 text-foreground transition-all duration-200",
               "border-zinc-800",
               "data-[active=true]:border-indigo-500 data-[active=true]:ring-2 data-[active=true]:ring-indigo-500/20",
               "data-[filled=true]:border-zinc-600 data-[filled=true]:bg-zinc-900",

@@ -82,13 +82,13 @@ export function LeaderboardsClient({ leaderboards }: LeaderboardsClientProps) {
         <div className="relative max-w-xs flex-1">
           <Search
             size={13}
-            className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-600"
+            className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/60"
           />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search leaderboards…"
-            className="h-9 border-zinc-800 bg-zinc-900/60 pl-8 text-xs text-zinc-100 placeholder:text-zinc-600 focus-visible:border-zinc-600 focus-visible:ring-0"
+            className="h-9 border-zinc-800 bg-card/60 pl-8 text-xs text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-0"
           />
         </div>
 
@@ -98,7 +98,7 @@ export function LeaderboardsClient({ leaderboards }: LeaderboardsClientProps) {
             <Button
               variant="outline"
               size="sm"
-              className="h-9 gap-2 border-zinc-800 bg-zinc-900/60 text-xs text-zinc-400 hover:border-zinc-700 hover:bg-zinc-800/60 hover:text-zinc-200"
+              className="h-9 gap-2 border-zinc-800 bg-card/60 text-xs text-muted-foreground hover:border-zinc-700 hover:bg-muted/60 hover:text-foreground/90"
             >
               <ArrowDownUp size={12} />
               Sort: {activeSortLabel}
@@ -106,7 +106,7 @@ export function LeaderboardsClient({ leaderboards }: LeaderboardsClientProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-44 border-zinc-800 bg-zinc-950/95 backdrop-blur-xl"
+            className="w-44 border-zinc-800 bg-background/95 backdrop-blur-xl"
           >
             {SORT_OPTIONS.map((opt) => (
               <DropdownMenuItem
@@ -116,10 +116,10 @@ export function LeaderboardsClient({ leaderboards }: LeaderboardsClientProps) {
                   "cursor-pointer gap-2 text-xs",
                   sortBy === opt.id
                     ? "bg-indigo-500/10 text-indigo-300 focus:bg-indigo-500/10 focus:text-indigo-300"
-                    : "text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60",
+                    : "text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60",
                 )}
               >
-                <span className={sortBy === opt.id ? "text-indigo-400" : "text-zinc-600"}>
+                <span className={sortBy === opt.id ? "text-indigo-400" : "text-muted-foreground/60"}>
                   {opt.icon}
                 </span>
                 {opt.label}
@@ -143,16 +143,16 @@ export function LeaderboardsClient({ leaderboards }: LeaderboardsClientProps) {
             transition={{ duration: 0.25 }}
             className="flex flex-col items-center gap-4 py-24 text-center"
           >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900/60">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-zinc-800 bg-card/60">
               <Trophy size={26} className="text-zinc-800" />
             </div>
             <div>
-              <p className="text-sm font-medium text-zinc-400">
+              <p className="text-sm font-medium text-muted-foreground">
                 {hasFilters
                   ? "No leaderboards match your search"
                   : "No leaderboards yet"}
               </p>
-              <p className="mt-1 text-xs text-zinc-600">
+              <p className="mt-1 text-xs text-muted-foreground/60">
                 {hasFilters
                   ? "Try a different name or slug."
                   : "Create a waitlist to start tracking referrals."}
@@ -177,7 +177,7 @@ export function LeaderboardsClient({ leaderboards }: LeaderboardsClientProps) {
 
       {/* ── Result count ────────────────────────────────────────── */}
       {filtered.length > 0 && (
-        <p className="text-center text-[11px] text-zinc-700">
+        <p className="text-center text-[11px] text-muted-foreground/40">
           Showing {filtered.length} of {leaderboards.length}{" "}
           leaderboard{leaderboards.length !== 1 ? "s" : ""}
         </p>

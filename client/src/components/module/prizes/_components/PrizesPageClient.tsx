@@ -114,7 +114,7 @@ export function PrizesPageClient() {
       />
 
       <div className="flex flex-col gap-6 p-6">
-        <div className="relative overflow-hidden rounded-2xl border border-amber-500/20 bg-zinc-900/30 px-6 py-5">
+        <div className="relative overflow-hidden rounded-2xl border border-amber-500/20 bg-card/30 px-6 py-5">
           <div aria-hidden className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-amber-500/8 blur-3xl" />
           <div aria-hidden className="pointer-events-none absolute -left-8 bottom-0 h-32 w-64 rounded-full bg-indigo-500/5 blur-3xl" />
 
@@ -123,34 +123,18 @@ export function PrizesPageClient() {
               <Trophy size={20} className="text-amber-400" />
             </div>
             <div className="flex-1">
-              <h1 className="text-base font-bold text-zinc-100">Prize pool management</h1>
-              <p className="mt-1 max-w-xl text-xs leading-relaxed text-zinc-500">
+              <h1 className="text-base font-bold text-foreground">Prize pool management</h1>
+              <p className="mt-1 max-w-xl text-xs leading-relaxed text-muted-foreground/80">
                 Announce monetary rewards, gift cards, lifetime access, or custom prizes for top
                 referrers on each waitlist. Prizes appear on the public leaderboard to motivate
                 sharing â€” the more you offer, the more your subscribers will recruit.
               </p>
-              <div className="mt-3 flex flex-wrap gap-2">
-                {[
-                  { emoji: "ðŸ’µ", label: "Cash rewards" },
-                  { emoji: "ðŸŽ", label: "Gift cards" },
-                  { emoji: "â™¾ï¸", label: "Lifetime access" },
-                  { emoji: "ðŸ·ï¸", label: "Discount codes" },
-                  { emoji: "âœ¨", label: "Custom prizes" },
-                ].map((f) => (
-                  <span
-                    key={f.label}
-                    className="rounded-full border border-zinc-800/60 bg-zinc-900/40 px-2.5 py-1 text-[10px] text-zinc-500"
-                  >
-                    {f.emoji} {f.label}
-                  </span>
-                ))}
-              </div>
             </div>
           </div>
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-20 text-zinc-500">
+          <div className="flex items-center justify-center py-20 text-muted-foreground/80">
             <Loader2 size={20} className="mr-2 animate-spin" />
             <span className="text-sm">Loading prizesâ€¦</span>
           </div>
@@ -161,7 +145,7 @@ export function PrizesPageClient() {
               size="sm"
               variant="ghost"
               onClick={fetchData}
-              className="mt-4 gap-2 text-zinc-500 hover:text-zinc-300"
+              className="mt-4 gap-2 text-muted-foreground/80 hover:text-foreground/80"
             >
               <RefreshCw size={13} /> Retry
             </Button>

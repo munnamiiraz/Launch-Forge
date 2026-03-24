@@ -12,13 +12,13 @@ function Cell({ value, isFeatured }: { value: boolean | string; isFeatured?: boo
       <span
         className={cn(
           "inline-flex h-5 w-5 items-center justify-center rounded-full",
-          isFeatured ? "bg-indigo-500/20 text-indigo-400" : "bg-zinc-800 text-zinc-400"
+          isFeatured ? "bg-indigo-500/20 text-indigo-400" : "bg-zinc-800 text-muted-foreground"
         )}
       >
         <Check size={11} strokeWidth={2.5} />
       </span>
     ) : (
-      <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-zinc-900 text-zinc-700">
+      <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-zinc-900 text-muted-foreground/40">
         <Minus size={11} strokeWidth={2} />
       </span>
     );
@@ -28,7 +28,7 @@ function Cell({ value, isFeatured }: { value: boolean | string; isFeatured?: boo
     <span
       className={cn(
         "text-xs font-medium",
-        isFeatured ? "text-indigo-300" : "text-zinc-400"
+        isFeatured ? "text-indigo-300" : "text-muted-foreground"
       )}
     >
       {value}
@@ -48,10 +48,10 @@ export function FeatureTable() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      className="w-full overflow-hidden rounded-2xl border border-zinc-800/80"
+      className="w-full overflow-hidden rounded-2xl border border-border/80"
     >
       {/* Table header */}
-      <div className="grid grid-cols-[1fr_repeat(3,_minmax(0,_160px))] items-center border-b border-zinc-800/80 bg-zinc-900/60 px-6 py-4">
+      <div className="grid grid-cols-[1fr_repeat(3,_minmax(0,_160px))] items-center border-b border-border/80 bg-card/60 px-6 py-4">
         {/* Empty feature label col */}
         <div />
 
@@ -61,7 +61,7 @@ export function FeatureTable() {
             <span
               className={cn(
                 "text-xs font-semibold uppercase tracking-widest",
-                plan.featured ? "text-indigo-300" : "text-zinc-500"
+                plan.featured ? "text-indigo-300" : "text-muted-foreground/80"
               )}
             >
               {plan.name}
@@ -82,8 +82,8 @@ export function FeatureTable() {
         return (
           <div key={category}>
             {/* Category label row */}
-            <div className="border-b border-zinc-800/40 bg-zinc-900/30 px-6 py-2.5">
-              <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+            <div className="border-b border-border/40 bg-card/30 px-6 py-2.5">
+              <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
                 {category}
               </span>
             </div>
@@ -101,12 +101,12 @@ export function FeatureTable() {
                   viewport={{ once: true }}
                   transition={{ delay: rowIdx * 0.03, duration: 0.3 }}
                   className={cn(
-                    "grid grid-cols-[1fr_repeat(3,_minmax(0,_160px))] items-center px-6 py-3.5 transition-colors hover:bg-zinc-900/40",
+                    "grid grid-cols-[1fr_repeat(3,_minmax(0,_160px))] items-center px-6 py-3.5 transition-colors hover:bg-card/40",
                     !isLast && "border-b border-zinc-800/30"
                   )}
                 >
                   {/* Feature label */}
-                  <span className="text-sm text-zinc-400">{feature.label}</span>
+                  <span className="text-sm text-muted-foreground">{feature.label}</span>
 
                   {/* Cells */}
                   {[

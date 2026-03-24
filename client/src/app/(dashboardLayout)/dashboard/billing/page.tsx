@@ -18,11 +18,11 @@ export const metadata: Metadata = {
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="h-px flex-1 bg-zinc-800/60" />
-      <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-700">
+      <div className="h-px flex-1 bg-muted/60" />
+      <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
         {children}
       </span>
-      <div className="h-px flex-1 bg-zinc-800/60" />
+      <div className="h-px flex-1 bg-muted/60" />
     </div>
   );
 }
@@ -48,7 +48,7 @@ export default async function BillingPage() {
           <Button
             size="sm"
             variant="outline"
-            className="gap-1.5 border-zinc-700/80 bg-transparent text-xs text-zinc-400 hover:border-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-200"
+            className="gap-1.5 border-zinc-700/80 bg-transparent text-xs text-muted-foreground hover:border-zinc-600 hover:bg-muted/60 hover:text-foreground/90"
             asChild
           >
             <a href="mailto:support@launchforge.app">
@@ -90,16 +90,16 @@ export default async function BillingPage() {
         </section>
 
         {/* ── Footer contact strip ───────────────────────────── */}
-        <div className="flex flex-col items-center gap-2 rounded-2xl border border-zinc-800/60 bg-zinc-900/20 py-6 text-center">
-          <CreditCard size={20} className="text-zinc-700" />
-          <p className="text-sm font-medium text-zinc-400">Questions about your bill?</p>
-          <p className="text-xs text-zinc-600">
+        <div className="flex flex-col items-center gap-2 rounded-2xl border border-border/60 bg-zinc-900/20 py-6 text-center">
+          <CreditCard size={20} className="text-muted-foreground/40" />
+          <p className="text-sm font-medium text-muted-foreground">Questions about your bill?</p>
+          <p className="text-xs text-muted-foreground/60">
             Our team is happy to help with invoices, refunds, or plan questions.
           </p>
           <Button
             size="sm"
             variant="outline"
-            className="mt-1 gap-1.5 border-zinc-700/80 bg-transparent text-xs text-zinc-400 hover:border-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-200"
+            className="mt-1 gap-1.5 border-zinc-700/80 bg-transparent text-xs text-muted-foreground hover:border-zinc-600 hover:bg-muted/60 hover:text-foreground/90"
             asChild
           >
             <a href="mailto:support@launchforge.app">

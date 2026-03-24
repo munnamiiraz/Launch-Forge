@@ -128,8 +128,11 @@ export async function fetchLeaderboard(
 /**
  * 4. Fetch overview stats for the entire leaderboard dashboard (all waitlists)
  */
-export async function fetchLeaderboardDashboardStats(): Promise<LeaderboardPageStats> {
-  const res = await authFetch(`${BACKEND}/workspaces/dashboard/overview`);
+export async function fetchLeaderboardDashboardStats(workspaceId?: string): Promise<LeaderboardPageStats> {
+  const url = workspaceId 
+    ? `${BACKEND}/workspaces/dashboard/overview?workspaceId=${workspaceId}` 
+    : `${BACKEND}/workspaces/dashboard/overview`;
+  const res = await authFetch(url);
   const json = (await res.json()) as { data?: DashboardOverview; message?: string };
   
   if (!res.ok) throw new Error(json.message || "Failed to fetch stats");
@@ -146,8 +149,11 @@ export async function fetchLeaderboardDashboardStats(): Promise<LeaderboardPageS
 /**
  * 5. Fetch a list of leaderboard summary cards for all waitlists
  */
-export async function fetchLeaderboardCards(): Promise<WaitlistLeaderboardCard[]> {
-  const res = await authFetch(`${BACKEND}/workspaces/dashboard/overview`);
+export async function fetchLeaderboardCards(workspaceId?: string): Promise<WaitlistLeaderboardCard[]> {
+  const url = workspaceId 
+    ? `${BACKEND}/workspaces/dashboard/overview?workspaceId=${workspaceId}` 
+    : `${BACKEND}/workspaces/dashboard/overview`;
+  const res = await authFetch(url);
   const json = (await res.json()) as { data?: DashboardOverview; message?: string };
   
   if (!res.ok) throw new Error(json.message || "Failed to fetch cards");

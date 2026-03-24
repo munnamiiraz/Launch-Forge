@@ -180,7 +180,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
         transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
         className={cn(
           "relative flex h-screen flex-col overflow-hidden",
-          "border-r border-zinc-800/60 bg-zinc-950",
+          "border-r border-border/60 bg-background",
           "shrink-0"
         )}
       >
@@ -188,7 +188,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
 
         {/* ── Logo / workspace switcher ─────────────────────────── */}
-        <div className="flex h-14 items-center justify-between border-b border-zinc-800/60 px-3">
+        <div className="flex h-14 items-center justify-between border-b border-border/60 px-3">
           <AnimatePresence mode="wait">
             {!collapsed ? (
               <motion.div
@@ -206,52 +206,52 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                         <Zap size={12} className="text-indigo-400" />
                       </div>
                       <div className="flex min-w-0 flex-1 items-center justify-between">
-                        <span className="truncate text-sm font-semibold text-zinc-100">
+                        <span className="truncate text-sm font-semibold text-foreground">
                           {activeWorkspace ? activeWorkspace.name : "Select Workspace"}
                         </span>
-                        <ChevronDown size={13} className="ml-1 shrink-0 text-zinc-600" />
+                        <ChevronDown size={13} className="ml-1 shrink-0 text-muted-foreground/60" />
                       </div>
                     </button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="start"
-                    className="w-52 border-zinc-800 bg-zinc-950/95 backdrop-blur-xl"
+                    className="w-52 border-zinc-800 bg-background/95 backdrop-blur-xl"
                   >
-                    <DropdownMenuLabel className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+                    <DropdownMenuLabel className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
                       Workspaces
                     </DropdownMenuLabel>
-                    <DropdownMenuSeparator className="bg-zinc-800/60" />
+                    <DropdownMenuSeparator className="bg-muted/60" />
                     {initialWorkspaces.map((ws) => (
                       <DropdownMenuItem
                         key={ws.id}
                         onClick={() => handleSetActive(ws)}
-                        className="cursor-pointer gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60 focus:text-zinc-100"
+                        className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60 focus:text-foreground"
                       >
-                        <Building2 size={13} className="text-zinc-600" />
+                        <Building2 size={13} className="text-muted-foreground/60" />
                         <span className="flex-1">{ws.name}</span>
-                        <span className="text-[10px] text-zinc-600 capitalize">{ws.plan}</span>
+                        <span className="text-[10px] text-muted-foreground/60 capitalize">{ws.plan}</span>
                         {activeWorkspace?.id === ws.id && (
                           <Check size={11} className="text-indigo-400" />
                         )}
                       </DropdownMenuItem>
                     ))}
                     {initialWorkspaces.length === 0 && (
-                      <div className="py-2 px-3 text-xs text-zinc-500">No workspaces found</div>
+                      <div className="py-2 px-3 text-xs text-muted-foreground/80">No workspaces found</div>
                     )}
-                    <DropdownMenuSeparator className="bg-zinc-800/60" />
+                    <DropdownMenuSeparator className="bg-muted/60" />
                     <DropdownMenuItem 
                       onSelect={() => setShowNewWsDialog(true)}
-                      className="cursor-pointer gap-2 text-xs text-zinc-500 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60"
+                      className="cursor-pointer gap-2 text-xs text-muted-foreground/80 hover:bg-muted/60 hover:text-foreground focus:bg-muted/60"
                     >
                       <Plus size={13} />
                       New workspace
                     </DropdownMenuItem>
                     {activeWorkspace && (
                       <>
-                        <DropdownMenuSeparator className="bg-zinc-800/60" />
+                        <DropdownMenuSeparator className="bg-muted/60" />
                         <DropdownMenuItem 
                           onSelect={() => setShowEditWsDialog(true)} 
-                          className="cursor-pointer gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60"
+                          className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60"
                         >
                           <Edit size={13} />
                           Edit workspace
@@ -287,7 +287,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
             variant="ghost"
             size="icon"
             onClick={() => setCollapsed((v) => !v)}
-            className="ml-1 h-6 w-6 shrink-0 rounded-md text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-400"
+            className="ml-1 h-6 w-6 shrink-0 rounded-md text-muted-foreground/60 hover:bg-muted/60 hover:text-muted-foreground"
           >
             {collapsed
               ? <ChevronRight size={13} />
@@ -310,7 +310,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                   </Button>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right" className="border-zinc-800 bg-zinc-900 text-xs text-zinc-300">
+              <TooltipContent side="right" className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80">
                 Create waitlist
               </TooltipContent>
             </Tooltip>
@@ -333,7 +333,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
           {NAV_GROUPS.map((group) => (
             <div key={group.label} className="mb-4">
               {!collapsed && (
-                <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-700">
+                <p className="mb-1 px-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
                   {group.label}
                 </p>
               )}
@@ -351,7 +351,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                       "group flex items-center gap-2.5 rounded-lg px-2 py-2 text-sm transition-all duration-150",
                       isActive
                         ? "bg-indigo-500/12 text-indigo-300"
-                        : "text-zinc-500 hover:bg-zinc-800/50 hover:text-zinc-300",
+                        : "text-muted-foreground/80 hover:bg-zinc-800/50 hover:text-foreground/80",
                       collapsed && "justify-center px-0"
                     )}
                   >
@@ -359,7 +359,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                       size={15}
                       className={cn(
                         "shrink-0 transition-colors",
-                        isActive ? "text-indigo-400" : "text-zinc-600 group-hover:text-zinc-400"
+                        isActive ? "text-indigo-400" : "text-muted-foreground/60 group-hover:text-muted-foreground"
                       )}
                     />
                     {!collapsed && (
@@ -381,7 +381,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                 return collapsed ? (
                   <Tooltip key={item.href}>
                     <TooltipTrigger asChild>{link}</TooltipTrigger>
-                    <TooltipContent side="right" className="border-zinc-800 bg-zinc-900 text-xs text-zinc-300">
+                    <TooltipContent side="right" className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80">
                       {item.label}
                     </TooltipContent>
                   </Tooltip>
@@ -392,7 +392,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
         </nav>
 
         {/* ── User footer ───────────────────────────────────────── */}
-        <div className="border-t border-zinc-800/60 p-2">
+        <div className="border-t border-border/60 p-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button
@@ -414,10 +414,10 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                 </Avatar>
                 {!collapsed && (
                   <div className="flex min-w-0 flex-1 flex-col text-left">
-                    <span className="truncate text-xs font-medium text-zinc-300">
+                    <span className="truncate text-xs font-medium text-foreground/80">
                       {user.name}
                     </span>
-                    <span className="truncate text-[10px] text-zinc-600">
+                    <span className="truncate text-[10px] text-muted-foreground/60">
                       {user.email}
                     </span>
                   </div>
@@ -428,7 +428,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
               align="start"
               side="top"
               sideOffset={8}
-              className="w-56 border-zinc-800 bg-zinc-950/95 backdrop-blur-xl"
+              className="w-56 border-zinc-800 bg-background/95 backdrop-blur-xl"
             >
               <DropdownMenuLabel className="px-3 py-2.5">
                 <div className="flex items-center gap-2.5">
@@ -438,16 +438,16 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-xs font-semibold text-zinc-100">{user.name}</p>
-                    <p className="text-[10px] text-zinc-500">{user.email}</p>
+                    <p className="text-xs font-semibold text-foreground">{user.name}</p>
+                    <p className="text-[10px] text-muted-foreground/80">{user.email}</p>
                   </div>
                 </div>
               </DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-zinc-800/60" />
-              <DropdownMenuItem asChild className="cursor-pointer gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60">
+              <DropdownMenuSeparator className="bg-muted/60" />
+              <DropdownMenuItem asChild className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60">
                 <Link href="/dashboard/settings"><Settings size={13} />Settings</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild className="cursor-pointer gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60">
+              <DropdownMenuItem asChild className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60">
                 <Link href="/dashboard/billing"><CreditCard size={13} />Billing & Plan</Link>
               </DropdownMenuItem>
               {user.plan === "free" && (
@@ -455,10 +455,10 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                   <Link href="/pricing"><Sparkles size={13} />Upgrade to Pro</Link>
                 </DropdownMenuItem>
               )}
-              <DropdownMenuSeparator className="bg-zinc-800/60" />
+              <DropdownMenuSeparator className="bg-muted/60" />
               <DropdownMenuItem
                 onClick={handleSignOut}
-                className="cursor-pointer gap-2 text-xs text-zinc-400 hover:bg-red-500/8 hover:text-red-400 focus:bg-red-500/8 focus:text-red-400"
+                className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-red-500/8 hover:text-red-400 focus:bg-red-500/8 focus:text-red-400"
               >
                 <LogOut size={13} />Sign out
               </DropdownMenuItem>
@@ -469,10 +469,10 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
 
       {/* ── Create Workspace Modal ── */}
       <Dialog open={showNewWsDialog} onOpenChange={setShowNewWsDialog}>
-        <DialogContent className="border-zinc-800 bg-zinc-950 text-zinc-100">
+        <DialogContent className="border-zinc-800 bg-background text-foreground">
           <DialogHeader>
             <DialogTitle>Create Workspace</DialogTitle>
-            <DialogDescription className="text-zinc-400">
+            <DialogDescription className="text-muted-foreground">
               Add a new workspace to manage a new product or team.
             </DialogDescription>
           </DialogHeader>
@@ -486,7 +486,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
               <Input id="ws-slug" placeholder="acme" className="border-zinc-800 bg-zinc-900 focus-visible:ring-indigo-500" required />
             </div>
             <DialogFooter>
-              <Button type="button" variant="ghost" onClick={() => setShowNewWsDialog(false)} className="hover:bg-zinc-800 hover:text-zinc-100">Cancel</Button>
+              <Button type="button" variant="ghost" onClick={() => setShowNewWsDialog(false)} className="hover:bg-zinc-800 hover:text-foreground">Cancel</Button>
               <Button type="submit" className="bg-indigo-600 hover:bg-indigo-500 text-white">Create Workspace</Button>
             </DialogFooter>
           </form>
@@ -495,10 +495,10 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
 
       {/* ── Edit Workspace Modal ── */}
       <Dialog open={showEditWsDialog} onOpenChange={setShowEditWsDialog}>
-        <DialogContent className="border-zinc-800 bg-zinc-950 text-zinc-100">
+        <DialogContent className="border-zinc-800 bg-background text-foreground">
           <DialogHeader>
             <DialogTitle>Edit Workspace</DialogTitle>
-            <DialogDescription className="text-zinc-400">
+            <DialogDescription className="text-muted-foreground">
               Update your workspace&#39;s name and slug.
             </DialogDescription>
           </DialogHeader>
@@ -512,7 +512,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
               <Input id="edit-ws-slug" defaultValue={activeWorkspace?.slug} className="border-zinc-800 bg-zinc-900 focus-visible:ring-indigo-500" required />
             </div>
             <DialogFooter>
-              <Button type="button" variant="ghost" onClick={() => setShowEditWsDialog(false)} className="hover:bg-zinc-800 hover:text-zinc-100">Cancel</Button>
+              <Button type="button" variant="ghost" onClick={() => setShowEditWsDialog(false)} className="hover:bg-zinc-800 hover:text-foreground">Cancel</Button>
               <Button type="submit" className="bg-indigo-600 hover:bg-indigo-500 text-white">Save Changes</Button>
             </DialogFooter>
           </form>

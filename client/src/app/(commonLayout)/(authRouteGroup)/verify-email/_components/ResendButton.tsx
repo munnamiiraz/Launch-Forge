@@ -61,7 +61,7 @@ export function ResendButton({ email, initialCooldown = 60 }: ResendButtonProps)
         disabled={isDisabled}
         className={cn(
           "h-auto gap-1.5 px-3 py-1.5 text-xs font-medium",
-          "text-zinc-500 hover:bg-transparent hover:text-zinc-300",
+          "text-muted-foreground/80 hover:bg-transparent hover:text-foreground/80",
           "disabled:pointer-events-none disabled:opacity-50",
           "transition-all duration-200"
         )}
@@ -80,7 +80,7 @@ export function ResendButton({ email, initialCooldown = 60 }: ResendButtonProps)
           <>
             <RefreshCw size={12} />
             Resend in{" "}
-            <span className="tabular-nums text-zinc-400">
+            <span className="tabular-nums text-muted-foreground">
               {String(Math.floor(cooldown / 60)).padStart(2, "0")}:
               {String(cooldown % 60).padStart(2, "0")}
             </span>

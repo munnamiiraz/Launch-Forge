@@ -47,14 +47,14 @@ export function PricingCard({ plan, cycle, index }: PricingCardProps) {
           "group relative flex h-full flex-col overflow-hidden transition-all duration-300",
           isFeatured
             ? "border-indigo-500/50 bg-gradient-to-b from-indigo-500/10 via-zinc-900/80 to-zinc-900/60 shadow-2xl shadow-indigo-500/10 hover:border-indigo-500/70 hover:shadow-indigo-500/15"
-            : "border-zinc-800/80 bg-zinc-900/40 hover:border-zinc-700/70 hover:bg-zinc-900/60 hover:shadow-xl hover:shadow-black/20"
+            : "border-border/80 bg-card/40 hover:border-zinc-700/70 hover:bg-card/60 hover:shadow-xl hover:shadow-black/20"
         )}
       >
         {/* Top accent line */}
         <div
           className={cn(
             "absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent",
-            isFeatured ? "via-indigo-400/80" : "via-zinc-700/50 group-hover:via-zinc-600/50"
+            isFeatured ? "via-indigo-400/80" : "via-border group-hover:via-zinc-600/50"
           )}
         />
 
@@ -66,7 +66,7 @@ export function PricingCard({ plan, cycle, index }: PricingCardProps) {
         <CardHeader className="relative flex flex-col gap-4 p-7 pb-5">
           {/* Badge row */}
           <div className="flex items-start justify-between">
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
               {plan.name}
             </span>
 
@@ -81,7 +81,7 @@ export function PricingCard({ plan, cycle, index }: PricingCardProps) {
           {/* Price */}
           <div className="flex items-end gap-1.5">
             {!isFree && (
-              <span className="text-sm font-medium text-zinc-500 mb-1.5">$</span>
+              <span className="text-sm font-medium text-muted-foreground/80 mb-1.5">$</span>
             )}
             <AnimatePresence mode="wait">
               <motion.span
@@ -92,21 +92,21 @@ export function PricingCard({ plan, cycle, index }: PricingCardProps) {
                 transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
                 className={cn(
                   "text-5xl font-black tracking-tighter",
-                  isFeatured ? "text-white" : "text-zinc-100"
+                  isFeatured ? "text-white" : "text-foreground"
                 )}
               >
                 {isFree ? "Free" : price}
               </motion.span>
             </AnimatePresence>
             {!isFree && (
-              <span className="mb-1.5 text-sm text-zinc-500">
+              <span className="mb-1.5 text-sm text-muted-foreground/80">
                 / {isYearly ? "mo, billed yearly" : "month"}
               </span>
             )}
           </div>
 
           {/* Tagline */}
-          <p className="text-sm leading-relaxed text-zinc-500">{plan.tagline}</p>
+          <p className="text-sm leading-relaxed text-muted-foreground/80">{plan.tagline}</p>
 
           {/* Yearly savings callout */}
           {isYearly && !isFree && (
@@ -125,10 +125,10 @@ export function PricingCard({ plan, cycle, index }: PricingCardProps) {
           )}
         </CardHeader>
 
-        <Separator className="mx-7 w-auto bg-zinc-800/60" />
+        <Separator className="mx-7 w-auto bg-muted/60" />
 
         <CardContent className="relative flex flex-1 flex-col gap-3 p-7 pt-5">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600 mb-1">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 mb-1">
             What's included
           </p>
 
@@ -148,13 +148,13 @@ export function PricingCard({ plan, cycle, index }: PricingCardProps) {
                       "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full",
                       isFeatured
                         ? "bg-indigo-500/20 text-indigo-400"
-                        : "bg-zinc-800 text-zinc-400"
+                        : "bg-zinc-800 text-muted-foreground"
                     )}
                   >
                     <Check size={10} strokeWidth={2.5} />
                   </span>
                 ) : (
-                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-zinc-900 text-zinc-700">
+                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-zinc-900 text-muted-foreground/40">
                     <Minus size={10} strokeWidth={2} />
                   </span>
                 )}
@@ -162,8 +162,8 @@ export function PricingCard({ plan, cycle, index }: PricingCardProps) {
                   className={cn(
                     "text-sm leading-relaxed",
                     feature.included
-                      ? isFeatured ? "text-zinc-300" : "text-zinc-400"
-                      : "text-zinc-700"
+                      ? isFeatured ? "text-foreground/80" : "text-muted-foreground"
+                      : "text-muted-foreground/40"
                   )}
                 >
                   {feature.label}
@@ -180,7 +180,7 @@ export function PricingCard({ plan, cycle, index }: PricingCardProps) {
               "group/btn relative w-full overflow-hidden font-semibold transition-all duration-200",
               isFeatured
                 ? "bg-indigo-600 text-white hover:bg-indigo-500"
-                : "border-zinc-600 bg-zinc-800 text-zinc-100 hover:border-zinc-500 hover:bg-zinc-700"
+                : "border-zinc-600 bg-zinc-800 text-foreground hover:border-zinc-500 hover:bg-zinc-700"
             )}
             variant={isFeatured ? "default" : "outline"}
             size="lg"

@@ -50,7 +50,7 @@ export function ResetPasswordForm() {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className={cn(
-          "relative rounded-2xl border border-zinc-800/80 bg-zinc-950/90",
+          "relative rounded-2xl border border-border/80 bg-background/90",
           "p-8 shadow-2xl shadow-black/60 backdrop-blur-xl",
           "before:absolute before:inset-0 before:-z-10 before:rounded-2xl",
           "before:bg-gradient-to-b before:from-zinc-800/10 before:to-transparent"
@@ -66,7 +66,7 @@ export function ResetPasswordForm() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/15">
             <Zap size={15} className="text-indigo-400" />
           </div>
-          <span className="text-sm font-semibold tracking-tight text-zinc-100">
+          <span className="text-sm font-semibold tracking-tight text-foreground">
             LaunchForge
           </span>
         </motion.div>
@@ -144,7 +144,7 @@ export function ResetPasswordForm() {
           >
             <Link
               href="/login"
-              className="flex items-center gap-1.5 text-sm text-zinc-600 transition-colors hover:text-zinc-400"
+              className="flex items-center gap-1.5 text-sm text-muted-foreground/60 transition-colors hover:text-muted-foreground"
             >
               <ArrowLeft size={13} />
               Back to sign in

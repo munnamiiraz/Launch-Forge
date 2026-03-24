@@ -11,14 +11,14 @@ export function FeatureAdoptionChart() {
   const data = getFeatureAdoption();
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/30 to-transparent" />
 
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
-        <p className="text-sm font-semibold text-zinc-200">Feature adoption</p>
-        <p className="text-[11px] text-zinc-600">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
+        <p className="text-sm font-semibold text-foreground/90">Feature adoption</p>
+        <p className="text-[11px] text-muted-foreground/60">
           % of workspaces actively using each feature — sourced from{" "}
-          <code className="text-zinc-500">Workspace</code> + feature model relations
+          <code className="text-muted-foreground/80">Workspace</code> + feature model relations
         </p>
       </CardHeader>
 
@@ -33,7 +33,7 @@ export function FeatureAdoptionChart() {
           >
             {/* Feature name */}
             <div className="w-36 shrink-0">
-              <p className="text-xs font-medium text-zinc-300 truncate">{item.feature}</p>
+              <p className="text-xs font-medium text-foreground/80 truncate">{item.feature}</p>
             </div>
 
             {/* Progress bar */}
@@ -51,14 +51,14 @@ export function FeatureAdoptionChart() {
 
             {/* Pct + delta */}
             <div className="flex shrink-0 items-center gap-2 w-28 justify-end">
-              <span className="text-xs font-bold tabular-nums text-zinc-300">
+              <span className="text-xs font-bold tabular-nums text-foreground/80">
                 {item.pct.toFixed(1)}%
               </span>
               <Badge className={cn(
                 "gap-0.5 rounded-full px-1.5 py-0 text-[9px] font-semibold",
                 item.deltaWoW > 0
                   ? "border-emerald-500/20 bg-emerald-500/8 text-emerald-400"
-                  : "border-zinc-700 bg-zinc-800/40 text-zinc-600",
+                  : "border-zinc-700 bg-muted/40 text-muted-foreground/60",
               )}>
                 {item.deltaWoW > 0 && <TrendingUp size={8} />}
                 {item.deltaWoW > 0 ? `+${item.deltaWoW}` : "—"}
@@ -67,7 +67,7 @@ export function FeatureAdoptionChart() {
           </motion.div>
         ))}
 
-        <p className="mt-1 text-center text-[10px] text-zinc-700">
+        <p className="mt-1 text-center text-[10px] text-muted-foreground/40">
           WoW delta = week-over-week change in adoption percentage points
         </p>
       </CardContent>

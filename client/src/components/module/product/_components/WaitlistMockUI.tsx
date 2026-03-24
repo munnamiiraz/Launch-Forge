@@ -19,7 +19,7 @@ const STATUS_CONFIG: Record<string, { label: string; classes: string }> = {
   early_access: { label: "Early Access", classes: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400" },
   top_referrer: { label: "Top Referrer", classes: "border-amber-500/30 bg-amber-500/10 text-amber-400" },
   active:       { label: "Active",       classes: "border-indigo-500/20 bg-indigo-500/8 text-indigo-400" },
-  new:          { label: "New",          classes: "border-zinc-700/60 bg-zinc-800/40 text-zinc-500" },
+  new:          { label: "New",          classes: "border-zinc-700/60 bg-muted/40 text-muted-foreground/80" },
 };
 
 const NOTIFICATION_ITEMS = [
@@ -30,22 +30,22 @@ const NOTIFICATION_ITEMS = [
 
 export function WaitlistMockUI() {
   return (
-    <div className="relative w-full overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-950/95 shadow-2xl shadow-black/60 backdrop-blur-xl">
+    <div className="relative w-full overflow-hidden rounded-2xl border border-border/80 bg-background/95 shadow-2xl shadow-black/60 backdrop-blur-xl">
       {/* Top accent line */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
 
       {/* Window chrome */}
-      <div className="flex items-center gap-2 border-b border-zinc-800/60 px-4 py-2.5">
+      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-2.5">
         <div className="flex gap-1.5">
           {[0,1,2].map(i => <div key={i} className="h-2 w-2 rounded-full bg-zinc-700" />)}
         </div>
-        <div className="mx-auto flex items-center gap-1.5 rounded-md border border-zinc-800 bg-zinc-900/60 px-3 py-0.5">
+        <div className="mx-auto flex items-center gap-1.5 rounded-md border border-zinc-800 bg-card/60 px-3 py-0.5">
           <div className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-          <span className="text-[10px] text-zinc-500">launchforge.app/waitlist</span>
+          <span className="text-[10px] text-muted-foreground/80">launchforge.app/waitlist</span>
         </div>
         {/* Notification bell with badge */}
         <div className="relative">
-          <Bell size={13} className="text-zinc-600" />
+          <Bell size={13} className="text-muted-foreground/60" />
           <span className="absolute -right-0.5 -top-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-indigo-600 text-[8px] font-bold text-white">3</span>
         </div>
       </div>
@@ -54,23 +54,23 @@ export function WaitlistMockUI() {
         {/* Header row */}
         <div className="flex items-center justify-between">
           <div>
-            <h4 className="text-xs font-semibold text-zinc-100">Subscriber list</h4>
-            <p className="text-[10px] text-zinc-600">2,847 total · 143 joined today</p>
+            <h4 className="text-xs font-semibold text-foreground">Subscriber list</h4>
+            <p className="text-[10px] text-muted-foreground/60">2,847 total · 143 joined today</p>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="flex h-6 w-6 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/60 text-zinc-600 hover:text-zinc-300 transition-colors cursor-pointer">
+            <div className="flex h-6 w-6 items-center justify-center rounded-lg border border-zinc-800 bg-card/60 text-muted-foreground/60 hover:text-foreground/80 transition-colors cursor-pointer">
               <Search size={11} />
             </div>
-            <div className="flex h-6 w-6 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/60 text-zinc-600 hover:text-zinc-300 transition-colors cursor-pointer">
+            <div className="flex h-6 w-6 items-center justify-center rounded-lg border border-zinc-800 bg-card/60 text-muted-foreground/60 hover:text-foreground/80 transition-colors cursor-pointer">
               <Filter size={11} />
             </div>
           </div>
         </div>
 
         {/* Table */}
-        <div className="overflow-hidden rounded-xl border border-zinc-800/60">
+        <div className="overflow-hidden rounded-xl border border-border/60">
           {/* Header */}
-          <div className="grid grid-cols-[auto_1fr_auto_auto] gap-3 border-b border-zinc-800/60 bg-zinc-900/60 px-3 py-2 text-[9px] font-semibold uppercase tracking-widest text-zinc-600">
+          <div className="grid grid-cols-[auto_1fr_auto_auto] gap-3 border-b border-border/60 bg-card/60 px-3 py-2 text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/60">
             <span className="w-7">#</span>
             <span>Subscriber</span>
             <span className="hidden sm:block">Referrals</span>
@@ -87,10 +87,10 @@ export function WaitlistMockUI() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 + i * 0.07, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                className="grid grid-cols-[auto_1fr_auto_auto] items-center gap-3 border-b border-zinc-800/40 px-3 py-2.5 last:border-0 hover:bg-zinc-900/40 transition-colors"
+                className="grid grid-cols-[auto_1fr_auto_auto] items-center gap-3 border-b border-border/40 px-3 py-2.5 last:border-0 hover:bg-card/40 transition-colors"
               >
                 {/* Position */}
-                <span className="w-7 text-[10px] font-bold text-zinc-600">
+                <span className="w-7 text-[10px] font-bold text-muted-foreground/60">
                   #{sub.pos}
                 </span>
 
@@ -100,15 +100,15 @@ export function WaitlistMockUI() {
                     {sub.initials}
                   </div>
                   <div className="min-w-0">
-                    <p className="truncate text-[11px] font-medium text-zinc-300">{sub.name}</p>
-                    <p className="truncate text-[9px] text-zinc-600">{sub.email}</p>
+                    <p className="truncate text-[11px] font-medium text-foreground/80">{sub.name}</p>
+                    <p className="truncate text-[9px] text-muted-foreground/60">{sub.email}</p>
                   </div>
                 </div>
 
                 {/* Referrals */}
                 <div className="hidden items-center gap-1 sm:flex">
-                  <Share2 size={9} className="text-zinc-700" />
-                  <span className="text-[10px] text-zinc-500">{sub.refs}</span>
+                  <Share2 size={9} className="text-muted-foreground/40" />
+                  <span className="text-[10px] text-muted-foreground/80">{sub.refs}</span>
                 </div>
 
                 {/* Status chip */}
@@ -126,10 +126,10 @@ export function WaitlistMockUI() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.55, duration: 0.45 }}
-          className="rounded-xl border border-zinc-800/60 bg-zinc-900/40 p-3"
+          className="rounded-xl border border-border/60 bg-card/40 p-3"
         >
           <div className="mb-2.5 flex items-center justify-between">
-            <p className="text-[10px] font-semibold text-zinc-500">Live activity</p>
+            <p className="text-[10px] font-semibold text-muted-foreground/80">Live activity</p>
             <span className="flex items-center gap-1 text-[9px] text-emerald-400">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
@@ -151,8 +151,8 @@ export function WaitlistMockUI() {
                 <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900">
                   {item.icon}
                 </div>
-                <span className="flex-1 text-[10px] text-zinc-400">{item.text}</span>
-                <span className="text-[9px] text-zinc-700">{item.time}</span>
+                <span className="flex-1 text-[10px] text-muted-foreground">{item.text}</span>
+                <span className="text-[9px] text-muted-foreground/40">{item.time}</span>
               </motion.div>
             ))}
           </div>

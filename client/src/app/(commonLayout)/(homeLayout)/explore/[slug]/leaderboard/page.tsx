@@ -57,10 +57,10 @@ export default async function PublicLeaderboardPage({ params }: Props) {
       <div aria-hidden className="pointer-events-none fixed -right-40 bottom-0 h-[400px] w-[400px] rounded-full bg-amber-500/5 blur-[100px]" />
 
       {/* ── Top nav ──────────────────────────────────────── */}
-      <nav className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-zinc-800/50 bg-[#070707]/90 px-4 backdrop-blur-xl sm:px-6">
+      <nav className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/50 bg-[#070707]/90 px-4 backdrop-blur-xl sm:px-6">
         <Link
           href={`/explore/${slug}`}
-          className="flex items-center gap-1.5 text-xs text-zinc-600 hover:text-zinc-400 transition-colors"
+          className="flex items-center gap-1.5 text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
         >
           <ArrowLeft size={13} />
           Back to waitlist
@@ -70,7 +70,7 @@ export default async function PublicLeaderboardPage({ params }: Props) {
           <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-600">
             <Zap size={12} className="text-white" />
           </div>
-          <span className="text-xs font-black tracking-tight text-zinc-300">LaunchForge</span>
+          <span className="text-xs font-black tracking-tight text-foreground/80">LaunchForge</span>
         </div>
 
         {waitlist.websiteUrl && (
@@ -78,7 +78,7 @@ export default async function PublicLeaderboardPage({ params }: Props) {
             href={waitlist.websiteUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-1.5 text-xs text-zinc-600 hover:text-zinc-400 transition-colors"
+            className="flex items-center gap-1.5 text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
           >
             <ExternalLink size={12} />
             Product site
@@ -87,7 +87,7 @@ export default async function PublicLeaderboardPage({ params }: Props) {
       </nav>
 
       {/* ── Hero banner ──────────────────────────────────── */}
-      <div className="relative overflow-hidden border-b border-zinc-800/60">
+      <div className="relative overflow-hidden border-b border-border/60">
         <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-b from-amber-500/4 via-transparent to-transparent" />
 
         <div className="relative mx-auto max-w-5xl px-4 py-10 sm:px-6">
@@ -106,41 +106,41 @@ export default async function PublicLeaderboardPage({ params }: Props) {
 
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h1 className="text-2xl font-black tracking-tight text-zinc-100 sm:text-3xl">
+                  <h1 className="text-2xl font-black tracking-tight text-foreground sm:text-3xl">
                     {waitlist.name}
                   </h1>
                   <Badge className={cn(
                     "gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold",
                     waitlist.isOpen
                       ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
-                      : "border-zinc-700/60 bg-zinc-800/40 text-zinc-500",
+                      : "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",
                   )}>
                     {waitlist.isOpen ? <><Globe size={9} />Open</> : <><Lock size={9} />Closed</>}
                   </Badge>
                 </div>
-                <p className="mt-1 text-sm text-zinc-500">{waitlist.tagline}</p>
+                <p className="mt-1 text-sm text-muted-foreground/80">{waitlist.tagline}</p>
 
                 {/* Stats strip */}
-                <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-zinc-600">
+                <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground/60">
                   <span className="flex items-center gap-1.5">
                     <Users  size={12} className="text-indigo-400" />
-                    <span className="font-semibold text-zinc-400">{waitlist.totalSubscribers.toLocaleString()}</span>
+                    <span className="font-semibold text-muted-foreground">{waitlist.totalSubscribers.toLocaleString()}</span>
                     in queue
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Share2 size={12} className="text-violet-400" />
-                    <span className="font-semibold text-zinc-400">{waitlist.referralCount.toLocaleString()}</span>
+                    <span className="font-semibold text-muted-foreground">{waitlist.referralCount.toLocaleString()}</span>
                     referrals
                   </span>
                   <span className="flex items-center gap-1.5">
                     <Zap    size={12} className="text-amber-400" />
-                    <span className="font-semibold text-zinc-400">{waitlist.viralScore}×</span>
+                    <span className="font-semibold text-muted-foreground">{waitlist.viralScore}×</span>
                     viral score
                   </span>
                   {expiryDate && (
                     <span className="flex items-center gap-1.5">
                       <Calendar size={12} className="text-rose-400" />
-                      Closes <span className="font-semibold text-zinc-400">{expiryDate}</span>
+                      Closes <span className="font-semibold text-muted-foreground">{expiryDate}</span>
                     </span>
                   )}
                 </div>
@@ -153,7 +153,7 @@ export default async function PublicLeaderboardPage({ params }: Props) {
                 <div className="flex items-center gap-2 rounded-2xl border border-amber-500/25 bg-amber-500/8 px-4 py-3">
                   <Trophy size={16} className="text-amber-400" />
                   <div>
-                    <p className="text-[10px] text-zinc-600">Prize pool</p>
+                    <p className="text-[10px] text-muted-foreground/60">Prize pool</p>
                     {totalCash > 0
                       ? <p className="text-lg font-black text-amber-300">${totalCash.toLocaleString()}</p>
                       : <p className="text-sm font-bold text-amber-300">{waitlist.prizes.length} prizes</p>
@@ -188,17 +188,17 @@ export default async function PublicLeaderboardPage({ params }: Props) {
                     <Trophy size={14} className="text-amber-400" />
                   </div>
                   <div>
-                    <h2 className="text-base font-black text-zinc-100">Top 3 referrers</h2>
-                    <p className="text-[11px] text-zinc-600">The leaders competing for prizes</p>
+                    <h2 className="text-base font-black text-foreground">Top 3 referrers</h2>
+                    <p className="text-[11px] text-muted-foreground/60">The leaders competing for prizes</p>
                   </div>
                 </div>
-                <div className="rounded-2xl border border-zinc-800/60 bg-zinc-900/20 p-6">
+                <div className="rounded-2xl border border-border/60 bg-zinc-900/20 p-6">
                   <PodiumSection top3={top3} prizes={waitlist.prizes} />
                 </div>
               </section>
             )}
 
-            <Separator className="bg-zinc-800/60" />
+            <Separator className="bg-muted/60" />
 
             {/* Full board */}
             <section className="flex flex-col gap-4">
@@ -208,13 +208,13 @@ export default async function PublicLeaderboardPage({ params }: Props) {
                     <Users size={14} className="text-indigo-400" />
                   </div>
                   <div>
-                    <h2 className="text-base font-black text-zinc-100">Full leaderboard</h2>
-                    <p className="text-[11px] text-zinc-600">
+                    <h2 className="text-base font-black text-foreground">Full leaderboard</h2>
+                    <p className="text-[11px] text-muted-foreground/60">
                       {entries.length} referrers — updated every 5 minutes
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-1.5 text-[10px] text-zinc-600">
+                <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground/60">
                   <span className="relative flex h-1.5 w-1.5">
                     <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
                     <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
@@ -235,26 +235,26 @@ export default async function PublicLeaderboardPage({ params }: Props) {
 
             {/* Prize pool summary */}
             {hasPrizes && (
-              <div className="flex flex-col gap-3 rounded-2xl border border-zinc-800/60 bg-zinc-900/30 p-5">
+              <div className="flex flex-col gap-3 rounded-2xl border border-border/60 bg-card/30 p-5">
                 <div className="flex items-center gap-2">
                   <Trophy size={14} className="text-amber-400" />
-                  <p className="text-sm font-semibold text-zinc-200">Prize pool</p>
+                  <p className="text-sm font-semibold text-foreground/90">Prize pool</p>
                 </div>
                 <div className="flex flex-col gap-2">
                   {waitlist.prizes.map((prize) => (
                     <div
                       key={prize.id}
-                      className="flex items-center justify-between gap-3 rounded-xl border border-zinc-800/50 bg-zinc-900/40 px-3 py-2.5"
+                      className="flex items-center justify-between gap-3 rounded-xl border border-border/50 bg-card/40 px-3 py-2.5"
                     >
                       <div className="flex items-center gap-2 min-w-0">
                         <span className="text-base shrink-0">{prize.emoji}</span>
                         <div className="min-w-0">
-                          <p className="truncate text-xs font-medium text-zinc-300">{prize.title}</p>
-                          <p className="text-[10px] text-zinc-600">{prize.rankLabel}</p>
+                          <p className="truncate text-xs font-medium text-foreground/80">{prize.title}</p>
+                          <p className="text-[10px] text-muted-foreground/60">{prize.rankLabel}</p>
                         </div>
                       </div>
                       {prize.value && (
-                        <span className="shrink-0 text-xs font-black tabular-nums text-zinc-300">
+                        <span className="shrink-0 text-xs font-black tabular-nums text-foreground/80">
                           {prize.prizeType === "DISCOUNT" ? `${prize.value}% off` : `$${prize.value.toLocaleString()}`}
                         </span>
                       )}
@@ -273,18 +273,18 @@ export default async function PublicLeaderboardPage({ params }: Props) {
             )}
 
             {/* How it works */}
-            <div className="flex flex-col gap-3 rounded-2xl border border-zinc-800/60 bg-zinc-900/20 p-5">
-              <p className="text-xs font-semibold text-zinc-400">How prizes are awarded</p>
+            <div className="flex flex-col gap-3 rounded-2xl border border-border/60 bg-zinc-900/20 p-5">
+              <p className="text-xs font-semibold text-muted-foreground">How prizes are awarded</p>
               {[
                 { n: "1", text: "Join the waitlist to get your referral link" },
                 { n: "2", text: "Share your link — every signup moves you up" },
                 { n: "3", text: "Top referrers when the waitlist closes win prizes" },
               ].map((s) => (
                 <div key={s.n} className="flex items-start gap-2.5">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-zinc-800 bg-zinc-900 text-[10px] font-bold text-zinc-500">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-zinc-800 bg-zinc-900 text-[10px] font-bold text-muted-foreground/80">
                     {s.n}
                   </span>
-                  <p className="text-xs leading-relaxed text-zinc-500">{s.text}</p>
+                  <p className="text-xs leading-relaxed text-muted-foreground/80">{s.text}</p>
                 </div>
               ))}
             </div>
@@ -294,10 +294,10 @@ export default async function PublicLeaderboardPage({ params }: Props) {
       </div>
 
       {/* Footer */}
-      <footer className="relative mt-10 border-t border-zinc-800/50 px-4 py-8 text-center">
-        <p className="text-xs text-zinc-700">
+      <footer className="relative mt-10 border-t border-border/50 px-4 py-8 text-center">
+        <p className="text-xs text-muted-foreground/40">
           Powered by{" "}
-          <Link href="#" className="font-semibold text-zinc-500 hover:text-zinc-400 transition-colors">
+          <Link href="#" className="font-semibold text-muted-foreground/80 hover:text-muted-foreground transition-colors">
             LaunchForge
           </Link>{" "}
           · The viral waitlist platform

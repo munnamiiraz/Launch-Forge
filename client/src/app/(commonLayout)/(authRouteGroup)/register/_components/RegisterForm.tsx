@@ -1,4 +1,4 @@
-"use client";
+ "use client";
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
@@ -9,7 +9,6 @@ import { toast } from "sonner";
 
 import { registerAction } from "../_actions/register.action";
 import { FormField } from "./FormField";
-import { SocialAuth } from "./SocialAuth";
 import { PasswordStrength } from "./PasswordStrength";
 import { cn } from "@/src/lib/utils";
 
@@ -57,16 +56,6 @@ export function RegisterForm() {
     });
   };
 
-  const handleSocialAuth = async (provider: "github" | "google") => {
-    try {
-      const BASE = process.env.NEXT_PUBLIC_API_BASE_URL?.replace("/api/v1", "") ?? "http://localhost:5000";
-      window.location.href = `${BASE}/api/auth/sign-in/social?provider=${provider}&callbackURL=/dashboard`;
-    } catch (err) {
-      console.error(err);
-      toast.error(`Failed to sign in with ${provider}`);
-    }
-  };
-
   return (
     <div className="relative w-full max-w-md">
       {/* Decorative background glow behind the card */}
@@ -77,7 +66,7 @@ export function RegisterForm() {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className={cn(
-          "relative overflow-hidden rounded-2xl border border-zinc-800/50 bg-zinc-950/80",
+          "relative overflow-hidden rounded-2xl border border-border/50 bg-background/80",
           "p-8 shadow-[0_0_50px_-12px_rgba(0,0,0,0.8)] backdrop-blur-2xl px-6 sm:px-10",
         )}
       >
@@ -104,7 +93,7 @@ export function RegisterForm() {
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-500/10 border border-indigo-500/30 shadow-[0_0_15px_-3px_rgba(99,102,241,0.3)]">
             <Zap size={18} className="text-indigo-400 fill-indigo-400/20" />
           </div>
-          <span className="text-base font-bold tracking-tight text-zinc-100 uppercase">
+          <span className="text-base font-bold tracking-tight text-foreground uppercase">
             LaunchForge
           </span>
         </motion.div>
@@ -114,7 +103,7 @@ export function RegisterForm() {
           <h1 className="text-2xl font-bold tracking-tight text-white mb-2">
             Create your account
           </h1>
-          <p className="text-zinc-500 text-sm leading-relaxed">
+          <p className="text-muted-foreground/80 text-sm leading-relaxed">
             Join the elite builders crafting the next generation of viral waitlists.
           </p>
         </motion.div>
@@ -133,25 +122,17 @@ export function RegisterForm() {
               </div>
               <div className="space-y-2">
                 <p className="text-lg font-semibold text-white tracking-tight">Check your email</p>
-                <p className="text-sm text-zinc-400 leading-relaxed px-4">
+                <p className="text-sm text-muted-foreground leading-relaxed px-4">
                   We've sent a verification link to your email. Please verify your account to continue.
                 </p>
               </div>
-              <div className="mt-4 flex items-center gap-2 text-xs text-zinc-500 animate-pulse">
+              <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground/80 animate-pulse">
                 <Loader2 size={12} className="animate-spin" />
                 Redirecting to verification page...
               </div>
             </motion.div>
           ) : (
             <motion.div key="form" className="flex flex-col gap-6">
-              {/* Social auth */}
-              <motion.div custom={2} variants={fadeUp} initial="hidden" animate="visible">
-                <SocialAuth
-                  onGithub={() => handleSocialAuth("github")}
-                  onGoogle={() => handleSocialAuth("google")}
-                />
-              </motion.div>
-
               {/* Divider */}
               <motion.div
                 custom={3}
@@ -161,7 +142,7 @@ export function RegisterForm() {
                 className="flex items-center gap-4"
               >
                 <div className="h-px flex-1 bg-gradient-to-r from-transparent to-zinc-800" />
-                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-600">or use email</span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">or use email</span>
                 <div className="h-px flex-1 bg-gradient-to-l from-transparent to-zinc-800" />
               </motion.div>
 
@@ -262,14 +243,14 @@ export function RegisterForm() {
                   variants={fadeUp}
                   initial="hidden"
                   animate="visible"
-                  className="flex items-center justify-center gap-4 text-[11px] text-zinc-600"
+                  className="flex items-center justify-center gap-4 text-[11px] text-muted-foreground/60"
                 >
                   <div className="flex items-center gap-1">
-                    <ShieldCheck size={12} className="text-zinc-500" />
+                    <ShieldCheck size={12} className="text-muted-foreground/80" />
                     Secure encryption
                   </div>
                   <div className="h-1 w-1 rounded-full bg-zinc-800" />
-                  <Link href="/terms" className="hover:text-zinc-400 transition-colors">Terms of Service</Link>
+                  <Link href="/terms" className="hover:text-muted-foreground transition-colors">Terms of Service</Link>
                 </motion.div>
               </form>
             </motion.div>
@@ -283,7 +264,7 @@ export function RegisterForm() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8, duration: 0.4 }}
-          className="mt-6 text-center text-sm text-zinc-500"
+          className="mt-6 text-center text-sm text-muted-foreground/80"
         >
           Already part of the forge?{" "}
           <Link

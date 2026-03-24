@@ -18,12 +18,12 @@ export function WaitlistsEmptyState({ hasFilters }: WaitlistsEmptyStateProps) {
         transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
         className="flex flex-col items-center gap-3 py-20 text-center"
       >
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900/60">
-          <Users size={22} className="text-zinc-700" />
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-zinc-800 bg-card/60">
+          <Users size={22} className="text-muted-foreground/40" />
         </div>
         <div>
-          <p className="text-sm font-medium text-zinc-400">No waitlists match your search</p>
-          <p className="mt-0.5 text-xs text-zinc-600">Try adjusting your filters or search terms.</p>
+          <p className="text-sm font-medium text-muted-foreground">No waitlists match your search</p>
+          <p className="mt-0.5 text-xs text-muted-foreground/60">Try adjusting your filters or search terms.</p>
         </div>
       </motion.div>
     );
@@ -51,10 +51,10 @@ export function WaitlistsEmptyState({ hasFilters }: WaitlistsEmptyStateProps) {
 
       {/* Copy */}
       <div className="flex flex-col gap-2">
-        <h3 className="text-lg font-semibold tracking-tight text-zinc-100">
+        <h3 className="text-lg font-semibold tracking-tight text-foreground">
           No waitlists yet
         </h3>
-        <p className="max-w-sm text-sm leading-relaxed text-zinc-500">
+        <p className="max-w-sm text-sm leading-relaxed text-muted-foreground/80">
           Create your first waitlist and start building an audience before you launch.
           Viral referrals, real-time leaderboards — all ready in 2 minutes.
         </p>
@@ -69,7 +69,7 @@ export function WaitlistsEmptyState({ hasFilters }: WaitlistsEmptyStateProps) {
         ].map((f) => (
           <div
             key={f.text}
-            className="flex items-center gap-1.5 rounded-full border border-zinc-800/60 bg-zinc-900/40 px-3 py-1.5 text-xs text-zinc-500"
+            className="flex items-center gap-1.5 rounded-full border border-border/60 bg-card/40 px-3 py-1.5 text-xs text-muted-foreground/80"
           >
             <span className="text-indigo-400">{f.icon}</span>
             {f.text}

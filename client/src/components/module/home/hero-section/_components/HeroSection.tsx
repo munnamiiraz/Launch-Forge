@@ -6,7 +6,6 @@ import { ArrowRight } from "lucide-react";
 import { Badge } from "@/src/components/ui/badge";
 
 import { LiveStatsBadge } from "./LiveStatsBadge";
-import { WaitlistForm } from "./WaitlistForm";
 import { FeaturePills } from "./FeaturePills";
 import { HeroVisual } from "./HeroVisual";
 import { RecentSignupsTicker } from "./RecentSignupsTicker";
@@ -41,7 +40,7 @@ export function HeroSection({ initialStats, initialRecent }: HeroSectionProps) {
 
 function HeroContent({ initialStats, initialRecent }: HeroSectionProps) {
   return (
-    <section className="relative w-full overflow-hidden -mt-8 bg-zinc-950">
+    <section className="relative w-full overflow-hidden -mt-8 bg-background">
 
       {/* ── Ambient layers ──────────────────────────────────────── */}
       {/* Primary top-left glow */}
@@ -99,7 +98,7 @@ function HeroContent({ initialStats, initialRecent }: HeroSectionProps) {
             animate="visible"
             className="space-y-4"
           >
-            <h1 className="text-5xl font-bold leading-[1.08] tracking-tight text-zinc-100 lg:text-6xl xl:text-7xl">
+            <h1 className="text-5xl font-bold leading-[1.08] tracking-tight text-foreground lg:text-6xl xl:text-7xl">
               Build waitlists
               <br />
               <span className="relative inline-block">
@@ -116,7 +115,7 @@ function HeroContent({ initialStats, initialRecent }: HeroSectionProps) {
               </span>
             </h1>
 
-            <p className="max-w-lg text-lg leading-relaxed text-zinc-500">
+            <p className="max-w-lg text-lg leading-relaxed text-muted-foreground/80">
               LaunchForge turns signups into a growth engine. Viral referral loops, 
               real-time leaderboards, and AI-powered insights — launch with momentum,
               not just a list.
@@ -126,7 +125,7 @@ function HeroContent({ initialStats, initialRecent }: HeroSectionProps) {
           {/* Feature pills */}
           <FeaturePills />
 
-          {/* Waitlist form */}
+          {/* CTA Button */}
           <motion.div
             custom={4}
             variants={fadeUp}
@@ -134,7 +133,13 @@ function HeroContent({ initialStats, initialRecent }: HeroSectionProps) {
             animate="visible"
             className="w-full"
           >
-            <WaitlistForm />
+            <Link
+              href="/register"
+              className="inline-flex h-12 items-center justify-center rounded-xl bg-indigo-600 px-8 text-sm font-semibold text-white transition-all hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/25"
+            >
+              Create a waitlist — it's free
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Link>
           </motion.div>
 
           {/* Social proof — avatar stack + count */}
@@ -163,8 +168,8 @@ function HeroContent({ initialStats, initialRecent }: HeroSectionProps) {
               ))}
             </div>
             <div>
-              <p className="text-sm font-medium text-zinc-300">
-                2,847 founders waiting
+              <p className="text-sm font-medium text-foreground/80">
+                {initialStats.totalSignups.toLocaleString()} founders created their waitlists
               </p>
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
@@ -172,7 +177,7 @@ function HeroContent({ initialStats, initialRecent }: HeroSectionProps) {
                     <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                   </svg>
                 ))}
-                <span className="ml-1 text-xs text-zinc-600">4.9/5 satisfaction</span>
+                <span className="ml-1 text-xs text-muted-foreground/60">4.9/5 satisfaction</span>
               </div>
             </div>
           </motion.div>
@@ -185,8 +190,8 @@ function HeroContent({ initialStats, initialRecent }: HeroSectionProps) {
       </div>
 
       {/* ── Social proof ticker ─────────────────────────────────── */}
-      <div className="relative z-10 mx-auto max-w-7xl border-t border-zinc-800/50 py-5 px-6 xl:px-12">
-        <div className="mb-3 flex items-center justify-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-700">
+      <div className="relative z-10 mx-auto max-w-7xl border-t border-border/50 py-5 px-6 xl:px-12">
+        <div className="mb-3 flex items-center justify-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
           <div className="h-px w-12 bg-zinc-800" />
           Recent signups
           <div className="h-px w-12 bg-zinc-800" />

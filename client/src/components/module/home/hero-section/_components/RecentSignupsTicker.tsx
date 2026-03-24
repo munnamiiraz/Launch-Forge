@@ -63,7 +63,7 @@ function TickerCard({
   index: number;
 }) {
   return (
-    <div className="flex shrink-0 items-center gap-2.5 rounded-xl border border-zinc-800/60 bg-zinc-900/50 px-3.5 py-2.5 backdrop-blur-sm">
+    <div className="flex shrink-0 items-center gap-2.5 rounded-xl border border-border/60 bg-zinc-900/50 px-3.5 py-2.5 backdrop-blur-sm">
       {/* Avatar */}
       <div
         className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${AVATAR_COLORS[index % AVATAR_COLORS.length]} text-[10px] font-bold text-white`}
@@ -73,8 +73,8 @@ function TickerCard({
 
       {/* Info */}
       <div>
-        <p className="text-xs font-medium text-zinc-300">{signup.name}</p>
-        <div className="flex items-center gap-1 text-[10px] text-zinc-600">
+        <p className="text-xs font-medium text-foreground/80">{signup.name}</p>
+        <div className="flex items-center gap-1 text-[10px] text-muted-foreground/60">
           <MapPin size={9} />
           <span>{signup.location}</span>
           <span className="mx-0.5 text-zinc-800">·</span>

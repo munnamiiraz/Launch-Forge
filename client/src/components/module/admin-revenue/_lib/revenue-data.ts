@@ -166,11 +166,11 @@ export async function getRevenueByCountry(): Promise<RevenueByCountry[]> {
 
 export async function getRecentTransactions(): Promise<RecentTransaction[]> {
   try {
-    const response = await httpClient.get<{ data: RecentTransaction[] }>(
+    const response = await httpClient.get<RecentTransaction[]>(
       "/admin/revenue/transactions",
       { params: { type: "all", page: "1", limit: "20" } }
     );
-    return response.data.data;
+    return response.data ?? [];
   } catch (error) {
     console.error("Failed to fetch recent transactions:", error);
     return fallbackTransactions;

@@ -49,11 +49,11 @@ export function WaitlistsSummaryBar({ stats }: WaitlistsSummaryBarProps) {
         >
           <div className="shrink-0">{item.icon}</div>
           <div className="min-w-0">
-            <p className="text-[10px] text-zinc-600">{item.label}</p>
-            <p className="text-base font-black tracking-tight text-zinc-100 tabular-nums">
+            <p className="text-[10px] text-muted-foreground/60">{item.label}</p>
+            <p className="text-base font-black tracking-tight text-foreground tabular-nums">
               {item.value}
             </p>
-            <p className="text-[10px] text-zinc-600">{item.sub}</p>
+            <p className="text-[10px] text-muted-foreground/60">{item.sub}</p>
           </div>
         </div>
       ))}

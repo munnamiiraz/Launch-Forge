@@ -60,13 +60,13 @@ export function FooterLogo({ delay = 0 }: FooterLogoProps) {
               className="text-indigo-400 transition-transform duration-200 group-hover:scale-110"
             />
           </div>
-          <span className="text-sm font-semibold tracking-tight text-zinc-100 transition-colors duration-200 group-hover:text-white">
+          <span className="text-sm font-semibold tracking-tight text-foreground transition-colors duration-200 group-hover:text-white">
             LaunchForge
           </span>
         </Link>
 
         {/* Tagline */}
-        <p className="max-w-[240px] text-sm leading-relaxed text-zinc-500">
+        <p className="max-w-[240px] text-sm leading-relaxed text-muted-foreground/80">
           Build waitlists that go viral. Turn signups into a compounding growth engine.
         </p>
 
@@ -82,9 +82,9 @@ export function FooterLogo({ delay = 0 }: FooterLogoProps) {
                   aria-label={social.label}
                   className={cn(
                     "flex h-8 w-8 items-center justify-center rounded-lg",
-                    "border border-transparent text-zinc-600",
+                    "border border-transparent text-muted-foreground/60",
                     "transition-all duration-150",
-                    "hover:border-zinc-800 hover:bg-zinc-900/60 hover:text-zinc-300"
+                    "hover:border-zinc-800 hover:bg-card/60 hover:text-foreground/80"
                   )}
                 >
                   {social.icon}
@@ -92,7 +92,7 @@ export function FooterLogo({ delay = 0 }: FooterLogoProps) {
               </TooltipTrigger>
               <TooltipContent
                 side="top"
-                className="border-zinc-800 bg-zinc-900 text-xs text-zinc-300"
+                className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80"
               >
                 {social.label}
               </TooltipContent>

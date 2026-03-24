@@ -20,10 +20,10 @@ const AVATAR_GRADIENTS = [
 
 const RANK_STYLES: Record<number, { num: string; row: string }> = {
   1: { num: "text-amber-400 text-base font-black",  row: "border-amber-500/15 bg-amber-500/5"  },
-  2: { num: "text-zinc-300  text-sm  font-bold",    row: "border-zinc-800/60 bg-zinc-900/20"   },
-  3: { num: "text-orange-400 text-sm font-bold",    row: "border-zinc-800/60 bg-zinc-900/20"   },
+  2: { num: "text-foreground/80  text-sm  font-bold",    row: "border-border/60 bg-zinc-900/20"   },
+  3: { num: "text-orange-400 text-sm font-bold",    row: "border-border/60 bg-zinc-900/20"   },
 };
-const DEFAULT_RANK = { num: "text-zinc-600 text-sm font-medium", row: "hover:bg-zinc-900/20" };
+const DEFAULT_RANK = { num: "text-muted-foreground/60 text-sm font-medium", row: "hover:bg-zinc-900/20" };
 
 function getPrizeForRank(rank: number, prizes: PublicPrize[]): PublicPrize | null {
   return prizes.find((p) => rank >= p.rankFrom && rank <= p.rankTo) ?? null;
@@ -46,30 +46,30 @@ export function PublicLeaderboard({ entries, prizes, waitlistName }: PublicLeade
           <Trophy size={16} className="text-indigo-400" />
         </div>
         <div>
-          <h2 className="text-lg font-black tracking-tight text-zinc-100">Leaderboard</h2>
-          <p className="text-xs text-zinc-600">
+          <h2 className="text-lg font-black tracking-tight text-foreground">Leaderboard</h2>
+          <p className="text-xs text-muted-foreground/60">
             Top referrers on {waitlistName} — updated live
           </p>
         </div>
       </div>
 
       {entries.length === 0 ? (
-        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-zinc-800/60 py-12 text-center">
+        <div className="flex flex-col items-center gap-3 rounded-2xl border border-dashed border-border/60 py-12 text-center">
           <Trophy size={28} className="text-zinc-800" />
-          <p className="text-sm text-zinc-600">No referrals yet — be the first!</p>
+          <p className="text-sm text-muted-foreground/60">No referrals yet — be the first!</p>
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-zinc-800/60">
+        <div className="overflow-hidden rounded-2xl border border-border/60">
 
           {/* Column header */}
-          <div className="grid grid-cols-[40px_1fr_auto] gap-3 border-b border-zinc-800/60 bg-zinc-900/60 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+          <div className="grid grid-cols-[40px_1fr_auto] gap-3 border-b border-border/60 bg-card/60 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
             <span className="text-center">#</span>
             <span>Referrer</span>
             <span className="text-right">Referrals</span>
           </div>
 
           {/* Rows */}
-          <div className="divide-y divide-zinc-800/40">
+          <div className="divide-y divide-border/40">
             {entries.map((entry, i) => {
               const style      = RANK_STYLES[entry.rank] ?? DEFAULT_RANK;
               const initials   = entry.maskedName.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
@@ -105,7 +105,7 @@ export function PublicLeaderboard({ entries, prizes, waitlistName }: PublicLeade
                           {initials}
                         </AvatarFallback>
                       </Avatar>
-                      <span className="truncate text-sm font-medium text-zinc-300">
+                      <span className="truncate text-sm font-medium text-foreground/80">
                         {entry.maskedName}
                       </span>
                       {prize && (
@@ -113,7 +113,7 @@ export function PublicLeaderboard({ entries, prizes, waitlistName }: PublicLeade
                           "shrink-0 rounded-full px-1.5 py-0 text-[9px]",
                           entry.rank === 1
                             ? "border-amber-500/30 bg-amber-500/12 text-amber-300"
-                            : "border-zinc-700/60 bg-zinc-800/40 text-zinc-500",
+                            : "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",
                         )}>
                           {prize.emoji} {prize.rankLabel}
                         </Badge>
@@ -138,11 +138,11 @@ export function PublicLeaderboard({ entries, prizes, waitlistName }: PublicLeade
 
                   {/* Referral count */}
                   <div className="flex flex-col items-end gap-0.5">
-                    <div className="flex items-center gap-1 text-xs font-bold tabular-nums text-zinc-200">
-                      <Share2 size={10} className="text-zinc-700" />
+                    <div className="flex items-center gap-1 text-xs font-bold tabular-nums text-foreground/90">
+                      <Share2 size={10} className="text-muted-foreground/40" />
                       {entry.referralCount}
                     </div>
-                    <span className="text-[9px] text-zinc-700">
+                    <span className="text-[9px] text-muted-foreground/40">
                       {entry.referralCount === 1 ? "referral" : "referrals"}
                     </span>
                   </div>
@@ -152,7 +152,7 @@ export function PublicLeaderboard({ entries, prizes, waitlistName }: PublicLeade
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between border-t border-zinc-800/60 bg-zinc-900/30 px-4 py-3 text-[11px] text-zinc-600">
+          <div className="flex items-center justify-between border-t border-border/60 bg-card/30 px-4 py-3 text-[11px] text-muted-foreground/60">
             <span className="flex items-center gap-1.5">
               <Users size={11} />
               {entries.length} top referrers shown

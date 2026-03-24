@@ -34,7 +34,7 @@ export function PreviewPanelLayout({ panel, mockUI, index }: PreviewPanelProps) 
       </Badge>
 
       {/* Headline */}
-      <h2 className="text-3xl font-bold leading-tight tracking-tight text-zinc-100 md:text-4xl xl:text-5xl">
+      <h2 className="text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl xl:text-5xl">
         {panel.title}
         {panel.titleHighlight && (
           <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-indigo-300 bg-clip-text text-transparent">
@@ -44,11 +44,11 @@ export function PreviewPanelLayout({ panel, mockUI, index }: PreviewPanelProps) 
       </h2>
 
       {/* Description */}
-      <p className="text-base leading-relaxed text-zinc-500 max-w-lg">
+      <p className="text-base leading-relaxed text-muted-foreground/80 max-w-lg">
         {panel.description}
       </p>
 
-      <Separator className="bg-zinc-800/60" />
+      <Separator className="bg-muted/60" />
 
       {/* Bullets */}
       <ul className="flex flex-col gap-4">
@@ -65,7 +65,7 @@ export function PreviewPanelLayout({ panel, mockUI, index }: PreviewPanelProps) 
             <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-indigo-500/25 bg-indigo-500/10 text-indigo-400">
               {bullet.icon}
             </span>
-            <span className="text-sm leading-relaxed text-zinc-400">{bullet.text}</span>
+            <span className="text-sm leading-relaxed text-muted-foreground">{bullet.text}</span>
           </motion.li>
         ))}
       </ul>

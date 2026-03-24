@@ -13,7 +13,7 @@ const MOCK_UIS = [<AnalyticsMockUI key="analytics" />, <WaitlistMockUI key="wait
 
 export function ProductPreviewSection() {
   return (
-    <section className="relative w-full overflow-hidden bg-zinc-950 py-24 md:py-32">
+    <section className="relative w-full overflow-hidden bg-background py-24 md:py-32">
 
       {/* ── Ambient layers ───────────────────────────────────── */}
       <div aria-hidden className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-indigo-600/6 blur-[150px]" />
@@ -39,14 +39,14 @@ export function ProductPreviewSection() {
             Product Preview
           </Badge>
 
-          <h2 className="max-w-3xl text-4xl font-bold tracking-tight text-zinc-100 md:text-5xl">
+          <h2 className="max-w-3xl text-4xl font-bold tracking-tight text-foreground md:text-5xl">
             See exactly{" "}
             <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-indigo-300 bg-clip-text text-transparent">
               what you're getting
             </span>
           </h2>
 
-          <p className="max-w-xl text-base leading-relaxed text-zinc-500">
+          <p className="max-w-xl text-base leading-relaxed text-muted-foreground/80">
             No blurry screenshots or marketing mockups. This is the real product — the exact
             dashboard your subscribers see from day one.
           </p>
@@ -70,7 +70,7 @@ export function ProductPreviewSection() {
                 transition={{ delay: 0.2, duration: 0.4 }}
                 className="mt-24 md:mt-32"
               >
-                <Separator className="bg-zinc-800/40" />
+                <Separator className="bg-muted/40" />
               </motion.div>
             )}
           </div>

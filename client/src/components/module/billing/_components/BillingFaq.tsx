@@ -37,22 +37,22 @@ export function BillingFaq() {
   const [open, setOpen] = useState<number | null>(null);
 
   return (
-    <Card className="border-zinc-800/80 bg-zinc-900/40">
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
-        <p className="text-sm font-semibold text-zinc-200">Frequently asked questions</p>
+    <Card className="border-border/80 bg-card/40">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
+        <p className="text-sm font-semibold text-foreground/90">Frequently asked questions</p>
       </CardHeader>
-      <CardContent className="divide-y divide-zinc-800/40 p-0">
+      <CardContent className="divide-y divide-border/40 p-0">
         {FAQ_ITEMS.map((item, i) => (
           <div key={i}>
             <button
               onClick={() => setOpen(open === i ? null : i)}
-              className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-zinc-900/30"
+              className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-card/30"
             >
-              <span className="text-sm font-medium text-zinc-300">{item.q}</span>
+              <span className="text-sm font-medium text-foreground/80">{item.q}</span>
               <ChevronDown
                 size={14}
                 className={cn(
-                  "shrink-0 text-zinc-600 transition-transform duration-200",
+                  "shrink-0 text-muted-foreground/60 transition-transform duration-200",
                   open === i && "rotate-180",
                 )}
               />
@@ -66,7 +66,7 @@ export function BillingFaq() {
                   transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
                   className="overflow-hidden"
                 >
-                  <p className="border-t border-zinc-800/40 bg-zinc-900/20 px-5 py-4 text-xs leading-relaxed text-zinc-500">
+                  <p className="border-t border-border/40 bg-zinc-900/20 px-5 py-4 text-xs leading-relaxed text-muted-foreground/80">
                     {item.a}
                   </p>
                 </motion.div>

@@ -29,7 +29,7 @@ export function PricingToggle({ cycle, onChange }: PricingToggleProps) {
         htmlFor="billing-toggle"
         className={cn(
           "cursor-pointer text-sm font-medium transition-colors duration-200",
-          !isYearly ? "text-zinc-200" : "text-zinc-500"
+          !isYearly ? "text-foreground/90" : "text-muted-foreground/80"
         )}
       >
         Monthly
@@ -49,7 +49,7 @@ export function PricingToggle({ cycle, onChange }: PricingToggleProps) {
           htmlFor="billing-toggle"
           className={cn(
             "cursor-pointer text-sm font-medium transition-colors duration-200",
-            isYearly ? "text-zinc-200" : "text-zinc-500"
+            isYearly ? "text-foreground/90" : "text-muted-foreground/80"
           )}
         >
           Yearly

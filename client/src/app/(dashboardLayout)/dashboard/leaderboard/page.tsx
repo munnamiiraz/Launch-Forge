@@ -1,5 +1,6 @@
 import { type Metadata } from "next";
-import { Trophy } from "lucide-react";
+import { cookies }      from "next/headers";
+import { Trophy }        from "lucide-react";
 
 import { DashboardHeader }          from "@/src/components/module/dashboard/_components/DashboardHeader";
 import { LeaderboardSummaryStrip }  from "@/src/components/module/leaderboard/_components/LeaderboardSummaryStrip";
@@ -11,10 +12,14 @@ export const metadata: Metadata = {
   description: "Track top referrers across all your waitlists.",
 };
 
+
 export default async function LeaderboardPage() {
+  const cookieStore = await cookies();
+  const activeWorkspaceId = cookieStore.get("activeWorkspaceId")?.value;
+
   const [leaderboards, stats] = await Promise.all([
-    fetchLeaderboardCards().catch(() => []),
-    fetchLeaderboardDashboardStats().catch(() => ({
+    fetchLeaderboardCards(activeWorkspaceId).catch(() => []),
+    fetchLeaderboardDashboardStats(activeWorkspaceId).catch(() => ({
       totalWaitlists: 0,
       totalReferrals: 0,
       totalReferrers: 0,
@@ -35,7 +40,7 @@ export default async function LeaderboardPage() {
       <div className="flex flex-col gap-6 p-6">
 
         {/* Page title block with ambient glow */}
-        <div className="relative overflow-hidden rounded-2xl border border-zinc-800/60 bg-zinc-900/30 px-6 py-5">
+        <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card/30 px-6 py-5">
           {/* Ambient */}
           <div
             aria-hidden
@@ -51,10 +56,10 @@ export default async function LeaderboardPage() {
               <Trophy size={18} className="text-amber-400" />
             </div>
             <div>
-              <h1 className="text-base font-bold tracking-tight text-zinc-100">
+              <h1 className="text-base font-bold tracking-tight text-foreground">
                 All leaderboards
               </h1>
-              <p className="mt-0.5 text-xs text-zinc-500">
+              <p className="mt-0.5 text-xs text-muted-foreground/80">
                 Each card shows your top 5 referrers per waitlist.
                 Click{" "}
                 <span className="text-indigo-400">View waitlist</span>{" "}

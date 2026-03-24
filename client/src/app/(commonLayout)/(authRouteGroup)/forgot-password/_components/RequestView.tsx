@@ -65,8 +65,8 @@ export function RequestView({ onSuccess }: RequestViewProps) {
           />
         </div>
         <div>
-          <h1 className="text-xl font-semibold tracking-tight text-zinc-100">Forgot your password?</h1>
-          <p className="mt-1 text-sm leading-relaxed text-zinc-500">
+          <h1 className="text-xl font-semibold tracking-tight text-foreground">Forgot your password?</h1>
+          <p className="mt-1 text-sm leading-relaxed text-muted-foreground/80">
             Enter your email and we'll send you a 6-digit OTP to reset it.
           </p>
         </div>
@@ -74,9 +74,9 @@ export function RequestView({ onSuccess }: RequestViewProps) {
 
       {/* What happens next */}
       <motion.div custom={1} variants={fadeUp} initial="hidden" animate="visible" className="mb-6">
-        <Card className="border-zinc-800/70 bg-zinc-900/40">
+        <Card className="border-zinc-800/70 bg-card/40">
           <CardContent className="px-4 py-3">
-            <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+            <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
               What happens next
             </p>
             <ol className="flex flex-col gap-2">
@@ -85,8 +85,8 @@ export function RequestView({ onSuccess }: RequestViewProps) {
                 "Enter the OTP — it's valid for 10 minutes",
                 "Choose a new password and sign back in",
               ].map((step, i) => (
-                <li key={i} className="flex items-start gap-2.5 text-xs text-zinc-500">
-                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-zinc-700/80 bg-zinc-800/60 text-[10px] font-semibold text-zinc-400">
+                <li key={i} className="flex items-start gap-2.5 text-xs text-muted-foreground/80">
+                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border border-zinc-700/80 bg-muted/60 text-[10px] font-semibold text-muted-foreground">
                     {i + 1}
                   </span>
                   {step}
@@ -106,7 +106,7 @@ export function RequestView({ onSuccess }: RequestViewProps) {
         className="flex flex-col gap-4"
       >
         <motion.div custom={2} variants={fadeUp} initial="hidden" animate="visible" className="flex flex-col gap-1.5">
-          <Label htmlFor="email" className="text-xs font-medium uppercase tracking-wide text-zinc-400">
+          <Label htmlFor="email" className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
             Email address
           </Label>
           <form.Field
@@ -123,7 +123,7 @@ export function RequestView({ onSuccess }: RequestViewProps) {
             {(field) => (
               <div className="flex flex-col gap-1.5">
                 <div className="relative">
-                  <Mail size={14} className="pointer-events-none absolute inset-y-0 left-3 my-auto text-zinc-600" />
+                  <Mail size={14} className="pointer-events-none absolute inset-y-0 left-3 my-auto text-muted-foreground/60" />
                   <Input
                     id="email"
                     type="email"
@@ -135,7 +135,7 @@ export function RequestView({ onSuccess }: RequestViewProps) {
                     onChange={(e) => field.handleChange(e.target.value)}
                     onBlur={field.handleBlur}
                     className={cn(
-                      "border-zinc-800 bg-zinc-900/60 pl-9 text-zinc-100 placeholder:text-zinc-600",
+                      "border-zinc-800 bg-card/60 pl-9 text-foreground placeholder:text-muted-foreground/60",
                       "focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/50 transition-all duration-200",
                       field.state.meta.errors.length > 0 &&
                         "border-red-500/60 focus-visible:border-red-500 focus-visible:ring-red-500/20"

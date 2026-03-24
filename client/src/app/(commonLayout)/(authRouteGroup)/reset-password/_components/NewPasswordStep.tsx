@@ -80,10 +80,10 @@ export function NewPasswordStep({
             <KeyRound size={18} className="text-indigo-400" />
           </div>
           <div>
-            <h1 className="text-xl font-semibold tracking-tight text-zinc-100">
+            <h1 className="text-xl font-semibold tracking-tight text-foreground">
               Set new password
             </h1>
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-muted-foreground/80">
               Choose something strong and unique.
             </p>
           </div>
@@ -101,7 +101,7 @@ export function NewPasswordStep({
             <div className="flex items-center gap-1.5">
               <Label
                 htmlFor="password"
-                className="text-xs font-medium uppercase tracking-wide text-zinc-400"
+                className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
               >
                 New password
               </Label>
@@ -109,12 +109,12 @@ export function NewPasswordStep({
                 <TooltipTrigger asChild>
                   <ShieldCheck
                     size={12}
-                    className="cursor-help text-zinc-600 hover:text-zinc-400 transition-colors"
+                    className="cursor-help text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                   />
                 </TooltipTrigger>
                 <TooltipContent
                   side="right"
-                  className="border-zinc-800 bg-zinc-900 text-xs text-zinc-300"
+                  className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80"
                 >
                   Min. 8 chars, 1 uppercase, 1 number.
                 </TooltipContent>
@@ -148,7 +148,7 @@ export function NewPasswordStep({
           >
             <Label
               htmlFor="confirmPassword"
-              className="text-xs font-medium uppercase tracking-wide text-zinc-400"
+              className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
             >
               Confirm password
             </Label>

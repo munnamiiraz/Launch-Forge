@@ -20,12 +20,12 @@ const STATUS_CONFIG = {
   active:    { label: "Active",    classes: "border-emerald-500/25 bg-emerald-500/10 text-emerald-400", icon: <CheckCircle2 size={10} />, dot: "bg-emerald-400" },
   trialing:  { label: "Trial",     classes: "border-indigo-500/25 bg-indigo-500/10 text-indigo-400",   icon: <Clock        size={10} />, dot: "bg-indigo-400"  },
   past_due:  { label: "Past due",  classes: "border-red-500/25 bg-red-500/10 text-red-400",            icon: <AlertTriangle size={10}/>,dot: "bg-red-400"     },
-  cancelled: { label: "Cancelled", classes: "border-zinc-700/60 bg-zinc-800/40 text-zinc-500",         icon: <XCircle      size={10} />, dot: "bg-zinc-600"    },
-  none:      { label: "No plan",   classes: "border-zinc-700/60 bg-zinc-800/40 text-zinc-500",         icon: <XCircle      size={10} />, dot: "bg-zinc-600"    },
+  cancelled: { label: "Cancelled", classes: "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",         icon: <XCircle      size={10} />, dot: "bg-zinc-600"    },
+  none:      { label: "No plan",   classes: "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",         icon: <XCircle      size={10} />, dot: "bg-zinc-600"    },
 };
 
 const PLAN_ACCENT = {
-  FREE:   { bg: "from-zinc-800/80 to-zinc-900/60",             border: "border-zinc-700/60",         value: "text-zinc-300",   badge: "border-zinc-700 bg-zinc-800 text-zinc-400" },
+  FREE:   { bg: "from-zinc-800/80 to-zinc-900/60",             border: "border-zinc-700/60",         value: "text-foreground/80",   badge: "border-zinc-700 bg-zinc-800 text-muted-foreground" },
   PRO:    { bg: "from-indigo-950/80 via-zinc-900/80 to-zinc-950", border: "border-indigo-500/30",    value: "text-indigo-300", badge: "border-indigo-500/40 bg-indigo-500/15 text-indigo-300" },
   GROWTH: { bg: "from-violet-950/80 via-zinc-900/80 to-zinc-950", border: "border-violet-500/30",   value: "text-violet-300", badge: "border-violet-500/40 bg-violet-500/15 text-violet-300" },
 };
@@ -100,7 +100,7 @@ export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
               <div className="flex items-center gap-3">
                 <div className={cn(
                   "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border",
-                  plan === "FREE"   ? "border-zinc-700 bg-zinc-800/60 text-zinc-400" :
+                  plan === "FREE"   ? "border-zinc-700 bg-muted/60 text-muted-foreground" :
                   plan === "PRO"    ? "border-indigo-500/30 bg-indigo-500/15 text-indigo-400" :
                                       "border-violet-500/30 bg-violet-500/15 text-violet-400",
                 )}>
@@ -108,14 +108,14 @@ export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h2 className="text-xl font-black tracking-tight text-zinc-100">
+                    <h2 className="text-xl font-black tracking-tight text-foreground">
                       {planDef.name}
                     </h2>
                     <Badge className={cn("rounded-full px-2.5 py-0.5 text-xs font-semibold", accent.badge)}>
                       {planDef.tier}
                     </Badge>
                   </div>
-                  <p className="text-xs text-zinc-500">{planDef.tagline}</p>
+                  <p className="text-xs text-muted-foreground/80">{planDef.tagline}</p>
                 </div>
               </div>
 
@@ -125,7 +125,7 @@ export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
                   <span className={cn("text-4xl font-black tracking-tight tabular-nums", accent.value)}>
                     ${monthlyEquiv}
                   </span>
-                  <span className="text-sm text-zinc-600">/mo</span>
+                  <span className="text-sm text-muted-foreground/60">/mo</span>
                   {subscription.billingMode === "YEARLY" && (
                     <Badge className="ml-1 border-emerald-500/25 bg-emerald-500/10 text-[10px] text-emerald-400">
                       Billed yearly · Save 20%
@@ -134,8 +134,8 @@ export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
                 </div>
               ) : (
                 <div className="flex items-baseline gap-1">
-                  <span className="text-4xl font-black tracking-tight text-zinc-400">Free</span>
-                  <span className="text-sm text-zinc-600">forever</span>
+                  <span className="text-4xl font-black tracking-tight text-muted-foreground">Free</span>
+                  <span className="text-sm text-muted-foreground/60">forever</span>
                 </div>
               )}
 
@@ -146,7 +146,7 @@ export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
                   {statusCfg.label}
                 </Badge>
                 {subscription?.billingMode && (
-                  <Badge className="border-zinc-700/60 bg-zinc-800/40 text-[10px] text-zinc-500">
+                  <Badge className="border-zinc-700/60 bg-muted/40 text-[10px] text-muted-foreground/80">
                     {subscription.billingMode === "MONTHLY" ? "Monthly billing" : "Annual billing"}
                   </Badge>
                 )}
@@ -156,7 +156,7 @@ export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
             {/* Right: billing details + actions */}
             <div className="flex flex-col gap-3">
               {subscription && (
-                <div className="flex flex-col gap-1.5 rounded-xl border border-zinc-800/60 bg-zinc-900/40 px-4 py-3 text-xs">
+                <div className="flex flex-col gap-1.5 rounded-xl border border-border/60 bg-card/40 px-4 py-3 text-xs">
                   {startDate && (
                     <Row label="Member since"   value={startDate} />
                   )}
@@ -187,7 +187,7 @@ export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
                     onClick={openPortal}
                     disabled={isPending}
                     variant="outline"
-                    className="gap-2 border-zinc-700/80 bg-transparent text-sm text-zinc-300 hover:border-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-100"
+                    className="gap-2 border-zinc-700/80 bg-transparent text-sm text-foreground/80 hover:border-zinc-600 hover:bg-muted/60 hover:text-foreground"
                   >
                     {isPending
                       ? <><Loader2 size={14} className="animate-spin" />Opening portal…</>
@@ -212,7 +212,7 @@ export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
                     disabled={isPending}
                     variant="ghost"
                     size="sm"
-                    className="gap-1.5 text-xs text-zinc-600 hover:bg-zinc-800/40 hover:text-zinc-400"
+                    className="gap-1.5 text-xs text-muted-foreground/60 hover:bg-muted/40 hover:text-muted-foreground"
                   >
                     <RefreshCw size={11} />
                     Switch plan or cancel
@@ -229,7 +229,7 @@ export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
           {/* Cancellation warning */}
           {subscription?.cancelAt && (
             <>
-              <Separator className="my-4 bg-zinc-800/60" />
+              <Separator className="my-4 bg-muted/60" />
               <div className="flex items-start gap-2.5 rounded-xl border border-amber-500/20 bg-amber-500/8 px-4 py-3">
                 <AlertTriangle size={14} className="mt-0.5 shrink-0 text-amber-400" />
                 <p className="text-xs text-amber-300">
@@ -253,10 +253,10 @@ function Row({
 }) {
   return (
     <div className="flex items-center justify-between gap-4">
-      <span className="text-zinc-600">{label}</span>
+      <span className="text-muted-foreground/60">{label}</span>
       <span className={cn(
-        "font-medium text-zinc-300",
-        mono && "font-mono text-[10px] text-zinc-500",
+        "font-medium text-foreground/80",
+        mono && "font-mono text-[10px] text-muted-foreground/80",
         valueClass,
       )}>
         {value}

@@ -40,19 +40,19 @@ export function WorkspaceHeatmap() {
   const peak = cells.reduce((max, c) => c.value > max.value ? c : max, cells[0]);
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/25 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-zinc-200">Workspace activity heatmap</p>
-            <p className="text-[11px] text-zinc-600">
+            <p className="text-sm font-semibold text-foreground/90">Workspace activity heatmap</p>
+            <p className="text-[11px] text-muted-foreground/60">
               Platform usage intensity by day of week × hour — derived from{" "}
-              <code className="text-zinc-500">Session</code> timestamps
+              <code className="text-muted-foreground/80">Session</code> timestamps
             </p>
           </div>
-          <div className="text-right text-[10px] text-zinc-600">
-            Peak: <span className="font-semibold text-zinc-300">{peak.day} {HOURS[peak.hour]}</span>
+          <div className="text-right text-[10px] text-muted-foreground/60">
+            Peak: <span className="font-semibold text-foreground/80">{peak.day} {HOURS[peak.hour]}</span>
           </div>
         </div>
       </CardHeader>
@@ -65,7 +65,7 @@ export function WorkspaceHeatmap() {
             {HOURS.map((h, i) => (
               <div key={i} className="flex-1 text-center">
                 {i % 3 === 0 && (
-                  <span className="text-[8px] text-zinc-700">{h}</span>
+                  <span className="text-[8px] text-muted-foreground/40">{h}</span>
                 )}
               </div>
             ))}
@@ -74,7 +74,7 @@ export function WorkspaceHeatmap() {
           {/* Grid */}
           {DAYS.map((day) => (
             <div key={day} className="mb-0.5 flex items-center gap-0">
-              <div className="w-10 shrink-0 text-[10px] text-zinc-600">{day}</div>
+              <div className="w-10 shrink-0 text-[10px] text-muted-foreground/60">{day}</div>
               {(byDay[day] ?? []).map((val, hour) => (
                 <motion.div
                   key={hour}
@@ -94,11 +94,11 @@ export function WorkspaceHeatmap() {
 
           {/* Legend */}
           <div className="mt-3 flex items-center gap-2">
-            <span className="text-[10px] text-zinc-600">Low</span>
+            <span className="text-[10px] text-muted-foreground/60">Low</span>
             {[5, 15, 28, 42, 58, 72, 88].map((v) => (
               <div key={v} className={cn("h-3 w-5 rounded-sm", heatColor(v))} />
             ))}
-            <span className="text-[10px] text-zinc-600">High</span>
+            <span className="text-[10px] text-muted-foreground/60">High</span>
           </div>
         </div>
       </CardContent>
@@ -119,22 +119,22 @@ export function ChangelogChart() {
   const totalDrafts    = data.reduce((s, d) => s + d.drafts, 0);
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-zinc-200">Changelog publishing</p>
-            <p className="text-[11px] text-zinc-600">
-              <code className="text-zinc-500">Changelog</code> records — <code className="text-zinc-500">publishedAt</code> not null vs drafts
+            <p className="text-sm font-semibold text-foreground/90">Changelog publishing</p>
+            <p className="text-[11px] text-muted-foreground/60">
+              <code className="text-muted-foreground/80">Changelog</code> records — <code className="text-muted-foreground/80">publishedAt</code> not null vs drafts
             </p>
           </div>
-          <div className="flex items-center gap-3 text-[10px] text-zinc-600">
+          <div className="flex items-center gap-3 text-[10px] text-muted-foreground/60">
             <span>
               <span className="font-black text-cyan-300">{totalPublished.toLocaleString()}</span>{" "}published
             </span>
             <span>
-              <span className="font-black text-zinc-500">{totalDrafts.toLocaleString()}</span>{" "}drafts
+              <span className="font-black text-muted-foreground/80">{totalDrafts.toLocaleString()}</span>{" "}drafts
             </span>
           </div>
         </div>

@@ -17,7 +17,7 @@ export function PricingSection() {
   const [cycle, setCycle] = useState<BillingCycle>("monthly");
 
   return (
-    <section className="relative w-full overflow-hidden bg-zinc-950 py-24 md:py-32">
+    <section className="relative w-full overflow-hidden bg-background py-24 md:py-32">
 
       {/* ── Ambient layers ───────────────────────────────────── */}
       <div aria-hidden className="pointer-events-none absolute left-1/2 top-0 h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-indigo-600/7 blur-[150px]" />
@@ -44,13 +44,13 @@ export function PricingSection() {
           </Badge>
 
           <div className="flex flex-col gap-3">
-            <h1 className="text-4xl font-bold tracking-tight text-zinc-100 md:text-5xl xl:text-6xl">
+            <h1 className="text-4xl font-bold tracking-tight text-foreground md:text-5xl xl:text-6xl">
               Simple, transparent{" "}
               <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-indigo-300 bg-clip-text text-transparent">
                 pricing
               </span>
             </h1>
-            <p className="text-lg text-zinc-500">
+            <p className="text-lg text-muted-foreground/80">
               Start free. Scale as you grow.
             </p>
           </div>
@@ -75,10 +75,10 @@ export function PricingSection() {
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="flex flex-col items-center gap-3 text-center"
           >
-            <h2 className="text-2xl font-bold tracking-tight text-zinc-100 md:text-3xl">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
               Compare all features
             </h2>
-            <p className="max-w-md text-sm text-zinc-500">
+            <p className="max-w-md text-sm text-muted-foreground/80">
               A full breakdown of what's included in every plan.
             </p>
           </motion.div>

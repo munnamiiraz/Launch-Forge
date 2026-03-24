@@ -100,13 +100,13 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
   /* ── Closed state ────────────────────────────────────────────── */
   if (!waitlist.isOpen) {
     return (
-      <div className="flex flex-col items-center gap-4 rounded-3xl border border-zinc-800/60 bg-zinc-900/30 px-6 py-10 text-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900/60">
-          <Users size={20} className="text-zinc-600" />
+      <div className="flex flex-col items-center gap-4 rounded-3xl border border-border/60 bg-card/30 px-6 py-10 text-center">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-zinc-800 bg-card/60">
+          <Users size={20} className="text-muted-foreground/60" />
         </div>
         <div>
-          <p className="text-base font-bold text-zinc-400">Waitlist is closed</p>
-          <p className="mt-1 text-sm text-zinc-600">
+          <p className="text-base font-bold text-muted-foreground">Waitlist is closed</p>
+          <p className="mt-1 text-sm text-muted-foreground/60">
             {waitlist.name} is no longer accepting new signups.
           </p>
         </div>
@@ -138,25 +138,25 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
             </motion.div>
 
             <div>
-              <p className="text-2xl font-black tracking-tight text-zinc-100">You&apos;re in! 🎉</p>
-              <p className="mt-1 text-sm text-zinc-500">
+              <p className="text-2xl font-black tracking-tight text-foreground">You&apos;re in! 🎉</p>
+              <p className="mt-1 text-sm text-muted-foreground/80">
                 {result.alreadyJoined ? "You were already on the list." : "Welcome to the waitlist."}
               </p>
             </div>
 
             {/* Position */}
             <div className="flex w-full items-stretch gap-3">
-              <div className="flex flex-1 flex-col items-center gap-1 rounded-2xl border border-zinc-800/60 bg-zinc-900/40 py-3">
+              <div className="flex flex-1 flex-col items-center gap-1 rounded-2xl border border-border/60 bg-card/40 py-3">
                 <p className="text-3xl font-black tabular-nums text-indigo-300">
                   #{result.position.toLocaleString()}
                 </p>
-                <p className="text-[11px] text-zinc-600">your position</p>
+                <p className="text-[11px] text-muted-foreground/60">your position</p>
               </div>
-              <div className="flex flex-1 flex-col items-center gap-1 rounded-2xl border border-zinc-800/60 bg-zinc-900/40 py-3">
-                <p className="text-3xl font-black tabular-nums text-zinc-300">
+              <div className="flex flex-1 flex-col items-center gap-1 rounded-2xl border border-border/60 bg-card/40 py-3">
+                <p className="text-3xl font-black tabular-nums text-foreground/80">
                   {result.totalInQueue.toLocaleString()}
                 </p>
-                <p className="text-[11px] text-zinc-600">total in queue</p>
+                <p className="text-[11px] text-muted-foreground/60">total in queue</p>
               </div>
             </div>
           </div>
@@ -167,7 +167,7 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
           <ChevronUp size={16} className="mt-0.5 shrink-0 text-emerald-400" />
           <div>
             <p className="text-sm font-semibold text-emerald-300">Refer friends to move up</p>
-            <p className="mt-0.5 text-xs text-zinc-500">
+            <p className="mt-0.5 text-xs text-muted-foreground/80">
               Every person who joins using your link moves you one spot higher.
               {hasPrizes && " Top referrers win prizes — see the prize pool below."}
             </p>
@@ -176,12 +176,12 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
 
         {/* Referral link */}
         <div className="flex flex-col gap-2">
-          <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+          <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
             Your referral link
           </p>
-          <div className="flex items-center gap-2 overflow-hidden rounded-xl border border-zinc-800/80 bg-zinc-900/60 px-3 py-2.5">
-            <Link2 size={13} className="shrink-0 text-zinc-700" />
-            <code className="flex-1 truncate text-xs text-zinc-400">{result.referralUrl}</code>
+          <div className="flex items-center gap-2 overflow-hidden rounded-xl border border-border/80 bg-card/60 px-3 py-2.5">
+            <Link2 size={13} className="shrink-0 text-muted-foreground/40" />
+            <code className="flex-1 truncate text-xs text-muted-foreground">{result.referralUrl}</code>
             <Button
               size="sm"
               onClick={copyLink}
@@ -204,7 +204,7 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
           <Button
             onClick={shareOnTwitter}
             variant="outline"
-            className="flex-1 gap-2 border-zinc-800/80 bg-transparent text-xs text-zinc-400 hover:border-zinc-700 hover:bg-zinc-800/40 hover:text-zinc-200"
+            className="flex-1 gap-2 border-border/80 bg-transparent text-xs text-muted-foreground hover:border-zinc-700 hover:bg-muted/40 hover:text-foreground/90"
           >
             <Twitter size={13} />
             Share on X
@@ -216,7 +216,7 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
               window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
             }}
             variant="outline"
-            className="flex-1 gap-2 border-zinc-800/80 bg-transparent text-xs text-zinc-400 hover:border-zinc-700 hover:bg-zinc-800/40 hover:text-zinc-200"
+            className="flex-1 gap-2 border-border/80 bg-transparent text-xs text-muted-foreground hover:border-zinc-700 hover:bg-muted/40 hover:text-foreground/90"
           >
             <Mail size={13} />
             Share via email
@@ -249,7 +249,7 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
       {/* Form */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="join-name" className="text-xs font-medium text-zinc-400">
+          <Label htmlFor="join-name" className="text-xs font-medium text-muted-foreground">
             Full name <span className="text-indigo-500">*</span>
           </Label>
           <Input
@@ -259,12 +259,12 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
             placeholder="Your name"
             disabled={isPending}
             autoFocus
-            className="h-11 border-zinc-800 bg-zinc-900/60 text-zinc-100 placeholder:text-zinc-600 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
+            className="h-11 border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
           />
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="join-email" className="text-xs font-medium text-zinc-400">
+          <Label htmlFor="join-email" className="text-xs font-medium text-muted-foreground">
             Email address <span className="text-indigo-500">*</span>
           </Label>
           <Input
@@ -274,13 +274,13 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
             disabled={isPending}
-            className="h-11 border-zinc-800 bg-zinc-900/60 text-zinc-100 placeholder:text-zinc-600 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
+            className="h-11 border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
           />
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <Label htmlFor="join-referral" className="text-xs font-medium text-zinc-400">
-            Referral code <span className="text-zinc-600">(optional)</span>
+          <Label htmlFor="join-referral" className="text-xs font-medium text-muted-foreground">
+            Referral code <span className="text-muted-foreground/60">(optional)</span>
           </Label>
           <Input
             id="join-referral"
@@ -290,9 +290,9 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
             disabled={isPending}
             inputMode="text"
             autoCapitalize="characters"
-            className="h-11 border-zinc-800 bg-zinc-900/60 text-zinc-100 placeholder:text-zinc-600 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
+            className="h-11 border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
           />
-          <p className="text-[11px] text-zinc-600">
+          <p className="text-[11px] text-muted-foreground/60">
             Have a referral code? Enter it to help your referrer move up the queue.
           </p>
         </div>
@@ -324,15 +324,15 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
       </form>
 
       {/* Social proof counter */}
-      <div className="flex items-center justify-center gap-2 text-xs text-zinc-600">
+      <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground/60">
         <Users size={12} />
         <span>
-          <span className="font-semibold text-zinc-400">{waitlist.totalSubscribers.toLocaleString()}</span>{" "}
+          <span className="font-semibold text-muted-foreground">{waitlist.totalSubscribers.toLocaleString()}</span>{" "}
           people already in queue
         </span>
       </div>
 
-      <p className="text-center text-[10px] text-zinc-700">
+      <p className="text-center text-[10px] text-muted-foreground/40">
         No spam. We&apos;ll only email you about {waitlist.name}. Unsubscribe anytime.
       </p>
     </div>

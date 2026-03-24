@@ -33,7 +33,7 @@ export default function NewWaitlistPage() {
         {/* Breadcrumb */}
         <Link
           href="/dashboard/waitlists"
-          className="mb-8 flex w-fit items-center gap-1.5 text-xs text-zinc-600 transition-colors hover:text-zinc-400"
+          className="mb-8 flex w-fit items-center gap-1.5 text-xs text-muted-foreground/60 transition-colors hover:text-muted-foreground"
         >
           <ArrowLeft size={13} />
           Back to waitlists
@@ -45,10 +45,10 @@ export default function NewWaitlistPage() {
             <Zap size={20} className="text-indigo-400" />
           </div>
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-zinc-100">
+            <h1 className="text-xl font-bold tracking-tight text-foreground">
               New waitlist
             </h1>
-            <p className="mt-1 text-sm text-zinc-500">
+            <p className="mt-1 text-sm text-muted-foreground/80">
               Fill in the details below. Your waitlist will be live instantly — the preview
               on the right updates as you type.
             </p>

@@ -62,10 +62,10 @@ export function DoneStep() {
         animate="visible"
         className="space-y-1.5"
       >
-        <h2 className="text-lg font-semibold tracking-tight text-zinc-100">
+        <h2 className="text-lg font-semibold tracking-tight text-foreground">
           Password updated!
         </h2>
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-muted-foreground/80">
           Your password has been reset successfully.
           <br />
           You can now sign in with your new password.
@@ -105,7 +105,7 @@ export function DoneStep() {
         variants={fadeUp}
         initial="hidden"
         animate="visible"
-        className="flex items-center gap-1.5 text-xs text-zinc-600"
+        className="flex items-center gap-1.5 text-xs text-muted-foreground/60"
       >
         {countdown > 0 ? (
           <>
@@ -113,7 +113,7 @@ export function DoneStep() {
             Auto-redirecting in {countdown}s…
           </>
         ) : (
-          <Link href="/login" className="hover:text-zinc-400 transition-colors">
+          <Link href="/login" className="hover:text-muted-foreground transition-colors">
             Click here if you weren&apos;t redirected
           </Link>
         )}

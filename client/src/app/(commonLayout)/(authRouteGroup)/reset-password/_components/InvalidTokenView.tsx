@@ -33,10 +33,10 @@ export function InvalidTokenView() {
         animate="visible"
         className="space-y-1.5"
       >
-        <h2 className="text-lg font-semibold tracking-tight text-zinc-100">
+        <h2 className="text-lg font-semibold tracking-tight text-foreground">
           Link expired or invalid
         </h2>
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-muted-foreground/80">
           This reset link is no longer valid. Reset links
           <br />
           expire after 30 minutes and can only be used once.
@@ -68,7 +68,7 @@ export function InvalidTokenView() {
       <motion.div custom={3} variants={fadeUp} initial="hidden" animate="visible">
         <Link
           href="/login"
-          className="flex items-center gap-1.5 text-sm text-zinc-600 transition-colors hover:text-zinc-400"
+          className="flex items-center gap-1.5 text-sm text-muted-foreground/60 transition-colors hover:text-muted-foreground"
         >
           <ArrowLeft size={13} />
           Back to sign in

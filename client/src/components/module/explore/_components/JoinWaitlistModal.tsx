@@ -77,7 +77,7 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
-      <DialogContent className="overflow-hidden border-zinc-800/80 bg-[#0a0a0a] p-0 shadow-2xl shadow-black/80 sm:max-w-md">
+      <DialogContent className="overflow-hidden border-border/80 bg-[#0a0a0a] p-0 shadow-2xl shadow-black/80 sm:max-w-md">
 
         {/* Top accent */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent" />
@@ -95,7 +95,7 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
               {/* Close */}
               <button
                 onClick={handleClose}
-                className="absolute right-4 top-4 rounded-lg p-1.5 text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300 transition-colors"
+                className="absolute right-4 top-4 rounded-lg p-1.5 text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80 transition-colors"
               >
                 <X size={14} />
               </button>
@@ -116,32 +116,32 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
               </motion.div>
 
               <div className="flex flex-col gap-1.5">
-                <h2 className="text-xl font-black tracking-tight text-zinc-100">
+                <h2 className="text-xl font-black tracking-tight text-foreground">
                   You're in!
                 </h2>
-                <p className="text-sm text-zinc-500">
-                  You joined <span className="font-semibold text-zinc-300">{product.name}</span>
+                <p className="text-sm text-muted-foreground/80">
+                  You joined <span className="font-semibold text-foreground/80">{product.name}</span>
                 </p>
               </div>
 
               {/* Position card */}
-              <div className="flex w-full items-center justify-between rounded-2xl border border-zinc-800/60 bg-zinc-900/40 px-5 py-4">
+              <div className="flex w-full items-center justify-between rounded-2xl border border-border/60 bg-card/40 px-5 py-4">
                 <div className="flex flex-col items-start gap-0.5">
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">Queue position</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Queue position</p>
                   <p className="text-3xl font-black tracking-tight tabular-nums text-indigo-300">
                     #{result.position.toLocaleString()}
                   </p>
-                  <p className="text-[11px] text-zinc-600">
+                  <p className="text-[11px] text-muted-foreground/60">
                     of {result.totalInQueue.toLocaleString()} people
                   </p>
                 </div>
                 <div className="flex flex-col items-end gap-0.5">
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">Move up by</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Move up by</p>
                   <div className="flex items-center gap-1.5 text-sm font-semibold text-emerald-400">
                     <Share2 size={14} />
                     Referring friends
                   </div>
-                  <p className="text-[11px] text-zinc-600">Each referral = +1 spot</p>
+                  <p className="text-[11px] text-muted-foreground/60">Each referral = +1 spot</p>
                 </div>
               </div>
 
@@ -164,11 +164,11 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
 
               {/* Referral link */}
               <div className="w-full flex flex-col gap-2">
-                <p className="text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+                <p className="text-left text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
                   Your referral link
                 </p>
-                <div className="flex items-center gap-2 rounded-xl border border-zinc-800/80 bg-zinc-900/60 px-3 py-2.5">
-                  <code className="flex-1 truncate text-xs text-zinc-400">
+                <div className="flex items-center gap-2 rounded-xl border border-border/80 bg-card/60 px-3 py-2.5">
+                  <code className="flex-1 truncate text-xs text-muted-foreground">
                     {result.referralUrl}
                   </code>
                   <Button
@@ -184,7 +184,7 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
                     {copied ? <><CheckCircle2 size={12} />Copied!</> : <><Copy size={12} />Copy</>}
                   </Button>
                 </div>
-                <p className="text-[10px] text-zinc-700">
+                <p className="text-[10px] text-muted-foreground/40">
                   Share this link. Every person who joins through you moves you up the queue.
                 </p>
               </div>
@@ -192,7 +192,7 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
               <Button
                 onClick={handleClose}
                 variant="ghost"
-                className="text-xs text-zinc-600 hover:bg-zinc-800/40 hover:text-zinc-400"
+                className="text-xs text-muted-foreground/60 hover:bg-muted/40 hover:text-muted-foreground"
               >
                 Done
               </Button>
@@ -206,10 +206,10 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
               exit={{ opacity: 0 }}
             >
               {/* Header */}
-              <div className="relative border-b border-zinc-800/60 px-6 py-5">
+              <div className="relative border-b border-border/60 px-6 py-5">
                 <button
                   onClick={handleClose}
-                  className="absolute right-4 top-4 rounded-lg p-1.5 text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300 transition-colors"
+                  className="absolute right-4 top-4 rounded-lg p-1.5 text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80 transition-colors"
                 >
                   <X size={14} />
                 </button>
@@ -224,16 +224,16 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0">
-                    <h2 className="text-base font-bold text-zinc-100">{product.name}</h2>
-                    <p className="truncate text-xs text-zinc-500">{product.tagline}</p>
+                    <h2 className="text-base font-bold text-foreground">{product.name}</h2>
+                    <p className="truncate text-xs text-muted-foreground/80">{product.tagline}</p>
                   </div>
                 </div>
 
                 {/* Social proof */}
-                <div className="mt-4 flex items-center gap-3 text-[11px] text-zinc-600">
+                <div className="mt-4 flex items-center gap-3 text-[11px] text-muted-foreground/60">
                   <span className="flex items-center gap-1">
                     <Users size={11} className="text-indigo-400" />
-                    <span className="font-semibold text-zinc-400">{product.totalSubscribers.toLocaleString()}</span> joined
+                    <span className="font-semibold text-muted-foreground">{product.totalSubscribers.toLocaleString()}</span> joined
                   </span>
                   {product.recentJoins > 0 && (
                     <>
@@ -250,7 +250,7 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
               {/* Form body */}
               <form onSubmit={handleSubmit} className="flex flex-col gap-4 px-6 py-5">
                 <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="join-name" className="text-xs font-medium text-zinc-400">
+                  <Label htmlFor="join-name" className="text-xs font-medium text-muted-foreground">
                     Full name <span className="text-indigo-500">*</span>
                   </Label>
                   <Input
@@ -260,12 +260,12 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
                     placeholder="Ada Lovelace"
                     disabled={isPending}
                     autoFocus
-                    className="border-zinc-800 bg-zinc-900/60 text-zinc-100 placeholder:text-zinc-600 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
+                    className="border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
                   />
                 </div>
 
                 <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="join-email" className="text-xs font-medium text-zinc-400">
+                  <Label htmlFor="join-email" className="text-xs font-medium text-muted-foreground">
                     Email address <span className="text-indigo-500">*</span>
                   </Label>
                   <Input
@@ -275,7 +275,7 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="ada@example.com"
                     disabled={isPending}
-                    className="border-zinc-800 bg-zinc-900/60 text-zinc-100 placeholder:text-zinc-600 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
+                    className="border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
                   />
                 </div>
 
@@ -314,7 +314,7 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
                   }
                 </Button>
 
-                <p className="text-center text-[10px] text-zinc-700">
+                <p className="text-center text-[10px] text-muted-foreground/40">
                   By joining, you agree to receive updates about {product.name}.
                   No spam, unsubscribe anytime.
                 </p>

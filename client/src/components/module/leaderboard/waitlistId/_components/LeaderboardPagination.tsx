@@ -35,9 +35,9 @@ export function LeaderboardPagination({
   return (
     <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
       {/* Range label */}
-      <p className="text-xs text-zinc-600">
-        Showing <span className="font-semibold text-zinc-400">{from}–{to}</span>{" "}
-        of <span className="font-semibold text-zinc-400">{total}</span> referrers
+      <p className="text-xs text-muted-foreground/60">
+        Showing <span className="font-semibold text-muted-foreground">{from}–{to}</span>{" "}
+        of <span className="font-semibold text-muted-foreground">{total}</span> referrers
       </p>
 
       {/* Page buttons */}
@@ -47,7 +47,7 @@ export function LeaderboardPagination({
           size="icon"
           onClick={() => onPage(1)}
           disabled={disabled || page === 1}
-          className="h-7 w-7 rounded-md text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300 disabled:opacity-30"
+          className="h-7 w-7 rounded-md text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80 disabled:opacity-30"
         >
           <ChevronsLeft size={13} />
         </Button>
@@ -56,14 +56,14 @@ export function LeaderboardPagination({
           size="icon"
           onClick={() => onPage(page - 1)}
           disabled={disabled || page === 1}
-          className="h-7 w-7 rounded-md text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300 disabled:opacity-30"
+          className="h-7 w-7 rounded-md text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80 disabled:opacity-30"
         >
           <ChevronLeft size={13} />
         </Button>
 
         {pages.map((p, i) =>
           p === "…" ? (
-            <span key={`ellipsis-${i}`} className="px-1 text-xs text-zinc-700">…</span>
+            <span key={`ellipsis-${i}`} className="px-1 text-xs text-muted-foreground/40">…</span>
           ) : (
             <Button
               key={p}
@@ -75,7 +75,7 @@ export function LeaderboardPagination({
                 "h-7 w-7 rounded-md text-xs font-medium transition-all",
                 p === page
                   ? "bg-indigo-600 text-white hover:bg-indigo-500"
-                  : "text-zinc-500 hover:bg-zinc-800/60 hover:text-zinc-300",
+                  : "text-muted-foreground/80 hover:bg-muted/60 hover:text-foreground/80",
               )}
             >
               {p}
@@ -88,7 +88,7 @@ export function LeaderboardPagination({
           size="icon"
           onClick={() => onPage(page + 1)}
           disabled={disabled || page === totalPages}
-          className="h-7 w-7 rounded-md text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300 disabled:opacity-30"
+          className="h-7 w-7 rounded-md text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80 disabled:opacity-30"
         >
           <ChevronRight size={13} />
         </Button>
@@ -97,7 +97,7 @@ export function LeaderboardPagination({
           size="icon"
           onClick={() => onPage(totalPages)}
           disabled={disabled || page === totalPages}
-          className="h-7 w-7 rounded-md text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300 disabled:opacity-30"
+          className="h-7 w-7 rounded-md text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80 disabled:opacity-30"
         >
           <ChevronsRight size={13} />
         </Button>

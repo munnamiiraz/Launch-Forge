@@ -105,20 +105,20 @@ export function CreateWaitlistDialog({ trigger }: CreateWaitlistDialogProps) {
   return (
     <Dialog open={open} onOpenChange={(v) => { setOpen(v); if (!v) reset(); }}>
 
-      <DialogContent className="border-zinc-800/80 bg-zinc-950/98 p-0 shadow-2xl shadow-black/60 backdrop-blur-xl sm:max-w-lg">
+      <DialogContent className="border-border/80 bg-background/98 p-0 shadow-2xl shadow-black/60 backdrop-blur-xl sm:max-w-lg">
         {/* Top accent line */}
         <div className="absolute inset-x-0 top-0 h-px rounded-t-lg bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
 
-        <DialogHeader className="border-b border-zinc-800/60 px-6 py-5">
+        <DialogHeader className="border-b border-border/60 px-6 py-5">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-indigo-500/30 bg-indigo-500/15">
               <Zap size={16} className="text-indigo-400" />
             </div>
             <div>
-              <DialogTitle className="text-base font-semibold text-zinc-100">
+              <DialogTitle className="text-base font-semibold text-foreground">
                 Create a waitlist
               </DialogTitle>
-              <p className="mt-0.5 text-xs text-zinc-500">
+              <p className="mt-0.5 text-xs text-muted-foreground/80">
                 Go live in under 2 minutes.
               </p>
             </div>
@@ -142,8 +142,8 @@ export function CreateWaitlistDialog({ trigger }: CreateWaitlistDialogProps) {
                 <CheckCircle2 size={26} className="text-emerald-400" />
               </motion.div>
               <div>
-                <p className="text-base font-semibold text-zinc-100">Waitlist created!</p>
-                <p className="mt-1 text-sm text-zinc-500">Redirecting to your waitlist…</p>
+                <p className="text-base font-semibold text-foreground">Waitlist created!</p>
+                <p className="mt-1 text-sm text-muted-foreground/80">Redirecting to your waitlist…</p>
               </div>
             </motion.div>
           ) : (
@@ -154,7 +154,7 @@ export function CreateWaitlistDialog({ trigger }: CreateWaitlistDialogProps) {
             >
               {/* Name */}
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="wl-name" className="text-xs font-medium uppercase tracking-wide text-zinc-400">
+                <Label htmlFor="wl-name" className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                   Waitlist name <span className="text-red-500">*</span>
                 </Label>
                 <Input
@@ -163,17 +163,17 @@ export function CreateWaitlistDialog({ trigger }: CreateWaitlistDialogProps) {
                   onChange={(e) => handleNameChange(e.target.value)}
                   placeholder="Product Alpha"
                   disabled={isPending}
-                  className="border-zinc-800 bg-zinc-900/60 text-zinc-100 placeholder:text-zinc-600 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/50"
+                  className="border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/50"
                 />
               </div>
 
               {/* Slug */}
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="wl-slug" className="text-xs font-medium uppercase tracking-wide text-zinc-400">
+                <Label htmlFor="wl-slug" className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                   URL slug <span className="text-red-500">*</span>
                 </Label>
-                <div className="flex items-center overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/60 focus-within:border-zinc-600">
-                  <span className="border-r border-zinc-800 px-3 py-2 text-xs text-zinc-600 shrink-0">
+                <div className="flex items-center overflow-hidden rounded-lg border border-zinc-800 bg-card/60 focus-within:border-zinc-600">
+                  <span className="border-r border-zinc-800 px-3 py-2 text-xs text-muted-foreground/60 shrink-0">
                     launchforge.app/
                   </span>
                   <input
@@ -182,15 +182,15 @@ export function CreateWaitlistDialog({ trigger }: CreateWaitlistDialogProps) {
                     onChange={(e) => handleSlugChange(e.target.value)}
                     placeholder="product-alpha"
                     disabled={isPending}
-                    className="flex-1 bg-transparent px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-600 outline-none"
+                    className="flex-1 bg-transparent px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none"
                   />
                 </div>
               </div>
 
               {/* Description */}
               <div className="flex flex-col gap-1.5">
-                <Label htmlFor="wl-desc" className="text-xs font-medium uppercase tracking-wide text-zinc-400">
-                  Description <span className="text-zinc-700">(optional)</span>
+                <Label htmlFor="wl-desc" className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  Description <span className="text-muted-foreground/40">(optional)</span>
                 </Label>
                 <Textarea
                   id="wl-desc"
@@ -199,28 +199,28 @@ export function CreateWaitlistDialog({ trigger }: CreateWaitlistDialogProps) {
                   placeholder="What are you building? Tell people why they should join."
                   rows={3}
                   disabled={isPending}
-                  className="resize-none border-zinc-800 bg-zinc-900/60 text-sm text-zinc-100 placeholder:text-zinc-600 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/50"
+                  className="resize-none border-zinc-800 bg-card/60 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/50"
                 />
               </div>
 
-              <Separator className="bg-zinc-800/60" />
+              <Separator className="bg-muted/60" />
 
               {/* Open / Closed toggle */}
-              <div className="flex items-center justify-between rounded-xl border border-zinc-800/60 bg-zinc-900/30 p-4">
+              <div className="flex items-center justify-between rounded-xl border border-border/60 bg-card/30 p-4">
                 <div className="flex items-center gap-3">
                   <div className={cn(
                     "flex h-8 w-8 items-center justify-center rounded-lg border",
                     isOpen
                       ? "border-emerald-500/30 bg-emerald-500/12 text-emerald-400"
-                      : "border-zinc-700/60 bg-zinc-800/40 text-zinc-600"
+                      : "border-zinc-700/60 bg-muted/40 text-muted-foreground/60"
                   )}>
                     {isOpen ? <Globe size={14} /> : <Lock size={14} />}
                   </div>
                   <div>
-                    <p className="text-xs font-medium text-zinc-300">
+                    <p className="text-xs font-medium text-foreground/80">
                       {isOpen ? "Open for signups" : "Signups closed"}
                     </p>
-                    <p className="text-[10px] text-zinc-600">
+                    <p className="text-[10px] text-muted-foreground/60">
                       {isOpen
                         ? "Anyone can join via your public link"
                         : "Signups are paused — toggle to enable"}
@@ -254,7 +254,7 @@ export function CreateWaitlistDialog({ trigger }: CreateWaitlistDialogProps) {
                   variant="ghost"
                   size="sm"
                   onClick={() => setOpen(false)}
-                  className="flex-1 text-zinc-500 hover:bg-zinc-800/60 hover:text-zinc-300"
+                  className="flex-1 text-muted-foreground/80 hover:bg-muted/60 hover:text-foreground/80"
                 >
                   Cancel
                 </Button>

@@ -19,8 +19,8 @@ export const metadata: Metadata = {
 function SectionHeader({ title, description }: { title: string; description: string }) {
   return (
     <div className="flex flex-col gap-0.5">
-      <h2 className="text-sm font-bold tracking-tight text-zinc-200">{title}</h2>
-      <p className="text-xs text-zinc-600">{description}</p>
+      <h2 className="text-sm font-bold tracking-tight text-foreground/90">{title}</h2>
+      <p className="text-xs text-muted-foreground/60">{description}</p>
     </div>
   );
 }
@@ -28,9 +28,9 @@ function SectionHeader({ title, description }: { title: string; description: str
 function SectionDivider({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="h-px flex-1 bg-zinc-800/60" />
+      <div className="h-px flex-1 bg-muted/60" />
       <div>{children}</div>
-      <div className="h-px flex-1 bg-zinc-800/60" />
+      <div className="h-px flex-1 bg-muted/60" />
     </div>
   );
 }
@@ -47,7 +47,7 @@ export default function AnalyticsPage() {
         <Button
           size="sm"
           variant="outline"
-          className="gap-1.5 border-zinc-700/80 bg-transparent text-xs text-zinc-400 hover:border-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-200"
+          className="gap-1.5 border-zinc-700/80 bg-transparent text-xs text-muted-foreground hover:border-zinc-600 hover:bg-muted/60 hover:text-foreground/90"
         >
           <Download size={12} />
           Export CSV
@@ -67,7 +67,7 @@ export default function AnalyticsPage() {
 
         {/* ── Growth ────────────────────────────────────────────── */}
         <SectionDivider>
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-700">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
             Growth
           </span>
         </SectionDivider>
@@ -82,7 +82,7 @@ export default function AnalyticsPage() {
 
         {/* ── Referrals ─────────────────────────────────────────── */}
         <SectionDivider>
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-700">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
             Referrals
           </span>
         </SectionDivider>
@@ -104,7 +104,7 @@ export default function AnalyticsPage() {
 
         {/* ── Waitlist health ───────────────────────────────────── */}
         <SectionDivider>
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-700">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
             Waitlist health
           </span>
         </SectionDivider>
@@ -122,7 +122,7 @@ export default function AnalyticsPage() {
 
         {/* ── Retention ─────────────────────────────────────────── */}
         <SectionDivider>
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-700">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
             Retention
           </span>
         </SectionDivider>
@@ -137,7 +137,7 @@ export default function AnalyticsPage() {
 
         {/* ── Revenue ───────────────────────────────────────────── */}
         <SectionDivider>
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-700">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
             Revenue
           </span>
         </SectionDivider>
@@ -155,7 +155,7 @@ export default function AnalyticsPage() {
 
         {/* ── Engagement ────────────────────────────────────────── */}
         <SectionDivider>
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-700">
+          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
             Engagement
           </span>
         </SectionDivider>

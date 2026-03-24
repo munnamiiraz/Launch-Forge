@@ -32,7 +32,7 @@ export function PrizeTypeSelector({ value, onChange, disabled }: PrizeTypeSelect
               "group relative flex flex-col items-start gap-1.5 rounded-xl border p-3 text-left transition-all duration-200",
               selected
                 ? "border-indigo-500/50 bg-indigo-500/10 shadow-sm shadow-indigo-500/10"
-                : "border-zinc-800/80 bg-zinc-900/30 hover:border-zinc-700/60 hover:bg-zinc-900/50",
+                : "border-border/80 bg-card/30 hover:border-zinc-700/60 hover:bg-zinc-900/50",
               disabled && "cursor-not-allowed opacity-50",
             )}
           >
@@ -53,11 +53,11 @@ export function PrizeTypeSelector({ value, onChange, disabled }: PrizeTypeSelect
             <div>
               <p className={cn(
                 "text-xs font-semibold transition-colors",
-                selected ? "text-indigo-300" : "text-zinc-300",
+                selected ? "text-indigo-300" : "text-foreground/80",
               )}>
                 {meta.label}
               </p>
-              <p className="mt-0.5 text-[10px] leading-tight text-zinc-600">
+              <p className="mt-0.5 text-[10px] leading-tight text-muted-foreground/60">
                 {meta.description}
               </p>
             </div>

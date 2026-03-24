@@ -77,11 +77,11 @@ export function WorkspaceSection({ workspace }: WorkspaceSectionProps) {
     <div className="flex flex-col gap-6" id="workspace">
 
       {/* ── Workspace info ───────────────────────────────────── */}
-      <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+      <Card className="relative overflow-hidden border-border/80 bg-card/40">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/30 to-transparent" />
-        <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
-          <p className="text-sm font-semibold text-zinc-200">Workspace</p>
-          <p className="text-[11px] text-zinc-600">
+        <CardHeader className="border-b border-border/60 px-5 py-4">
+          <p className="text-sm font-semibold text-foreground/90">Workspace</p>
+          <p className="text-[11px] text-muted-foreground/60">
             Your workspace is shared with all team members.
           </p>
         </CardHeader>
@@ -90,23 +90,23 @@ export function WorkspaceSection({ workspace }: WorkspaceSectionProps) {
           {/* Name + slug */}
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="ws-name" className="flex items-center gap-1.5 text-xs font-medium text-zinc-400">
-                <Building2 size={12} className="text-zinc-600" />Workspace name
+              <Label htmlFor="ws-name" className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                <Building2 size={12} className="text-muted-foreground/60" />Workspace name
               </Label>
               <Input
                 id="ws-name"
                 value={form.name}
                 onChange={(e) => handleNameChange(e.target.value)}
                 placeholder="Acme Corp"
-                className="border-zinc-800 bg-zinc-900/60 text-sm text-zinc-100 placeholder:text-zinc-600 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
+                className="border-zinc-800 bg-card/60 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
               />
             </div>
             <div className="flex flex-col gap-1.5">
-              <Label htmlFor="ws-slug" className="flex items-center gap-1.5 text-xs font-medium text-zinc-400">
-                <Globe size={12} className="text-zinc-600" />Subdomain slug
+              <Label htmlFor="ws-slug" className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                <Globe size={12} className="text-muted-foreground/60" />Subdomain slug
               </Label>
-              <div className="flex overflow-hidden rounded-lg border border-zinc-800 bg-zinc-900/60 focus-within:border-zinc-600">
-                <span className="shrink-0 border-r border-zinc-800 px-2.5 py-2 text-[11px] text-zinc-600">
+              <div className="flex overflow-hidden rounded-lg border border-zinc-800 bg-card/60 focus-within:border-zinc-600">
+                <span className="shrink-0 border-r border-zinc-800 px-2.5 py-2 text-[11px] text-muted-foreground/60">
                   launchforge.app/
                 </span>
                 <input
@@ -116,7 +116,7 @@ export function WorkspaceSection({ workspace }: WorkspaceSectionProps) {
                     setSlugEdited(true);
                     set("slug", slugify(e.target.value));
                   }}
-                  className="flex-1 bg-transparent px-2.5 py-2 text-sm text-zinc-100 placeholder:text-zinc-600 outline-none"
+                  className="flex-1 bg-transparent px-2.5 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none"
                   placeholder="acme-corp"
                 />
               </div>
@@ -125,9 +125,9 @@ export function WorkspaceSection({ workspace }: WorkspaceSectionProps) {
 
           {/* Description */}
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="ws-desc" className="flex items-center gap-1.5 text-xs font-medium text-zinc-400">
-              <FileText size={12} className="text-zinc-600" />Description
-              <span className="text-zinc-700">(optional)</span>
+            <Label htmlFor="ws-desc" className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+              <FileText size={12} className="text-muted-foreground/60" />Description
+              <span className="text-muted-foreground/40">(optional)</span>
             </Label>
             <Textarea
               id="ws-desc"
@@ -135,28 +135,28 @@ export function WorkspaceSection({ workspace }: WorkspaceSectionProps) {
               onChange={(e) => set("description", e.target.value)}
               placeholder="What does your workspace do?"
               rows={2}
-              className="resize-none border-zinc-800 bg-zinc-900/60 text-sm text-zinc-100 placeholder:text-zinc-600 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
+              className="resize-none border-zinc-800 bg-card/60 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
             />
           </div>
 
           {/* Logo URL */}
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="ws-logo" className="flex items-center gap-1.5 text-xs font-medium text-zinc-400">
-              <ImageIcon size={12} className="text-zinc-600" />Logo URL
-              <span className="text-zinc-700">(optional)</span>
+            <Label htmlFor="ws-logo" className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+              <ImageIcon size={12} className="text-muted-foreground/60" />Logo URL
+              <span className="text-muted-foreground/40">(optional)</span>
             </Label>
             <Input
               id="ws-logo"
               value={form.logo}
               onChange={(e) => set("logo", e.target.value)}
               placeholder="https://example.com/logo.png"
-              className="border-zinc-800 bg-zinc-900/60 text-sm text-zinc-100 placeholder:text-zinc-600 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
+              className="border-zinc-800 bg-card/60 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
             />
           </div>
 
           {/* Save row */}
           {(dirty || success || error) && (
-            <div className="flex items-center justify-between border-t border-zinc-800/60 pt-4">
+            <div className="flex items-center justify-between border-t border-border/60 pt-4">
               {success && (
                 <span className="flex items-center gap-1.5 text-xs text-emerald-400">
                   <CheckCircle2 size={13} />Saved.
@@ -172,7 +172,7 @@ export function WorkspaceSection({ workspace }: WorkspaceSectionProps) {
                 <Button
                   variant="ghost" size="sm"
                   onClick={() => { setForm(workspace); setDirty(false); }}
-                  className="text-xs text-zinc-600 hover:bg-zinc-800/60"
+                  className="text-xs text-muted-foreground/60 hover:bg-muted/60"
                 >
                   Reset
                 </Button>
@@ -189,22 +189,22 @@ export function WorkspaceSection({ workspace }: WorkspaceSectionProps) {
       </Card>
 
       {/* ── Danger zone ──────────────────────────────────────── */}
-      <Card className="relative overflow-hidden border-red-500/20 bg-zinc-900/40">
+      <Card className="relative overflow-hidden border-red-500/20 bg-card/40">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/30 to-transparent" />
         <CardHeader className="border-b border-red-500/15 px-5 py-4">
           <div className="flex items-center gap-2">
             <AlertTriangle size={14} className="text-red-400" />
             <p className="text-sm font-semibold text-red-400">Danger zone</p>
           </div>
-          <p className="text-[11px] text-zinc-600">
+          <p className="text-[11px] text-muted-foreground/60">
             These actions are permanent and cannot be undone.
           </p>
         </CardHeader>
         <CardContent className="p-5">
           <div className="flex items-center justify-between rounded-xl border border-red-500/15 bg-red-500/5 px-4 py-3.5">
             <div>
-              <p className="text-sm font-medium text-zinc-200">Delete workspace</p>
-              <p className="text-xs text-zinc-600">
+              <p className="text-sm font-medium text-foreground/90">Delete workspace</p>
+              <p className="text-xs text-muted-foreground/60">
                 Permanently deletes all waitlists, subscribers, prizes, and analytics data.
               </p>
             </div>
@@ -222,27 +222,27 @@ export function WorkspaceSection({ workspace }: WorkspaceSectionProps) {
 
       {/* Confirm delete dialog */}
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <AlertDialogContent className="border-zinc-800 bg-zinc-950">
+        <AlertDialogContent className="border-zinc-800 bg-background">
           <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2 text-zinc-100">
+            <AlertDialogTitle className="flex items-center gap-2 text-foreground">
               <AlertTriangle size={16} className="text-red-400" />
               Delete workspace "{workspace.name}"?
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-zinc-500">
+            <AlertDialogDescription className="text-muted-foreground/80">
               This will permanently delete all waitlists, subscribers, leaderboards, prizes,
               feedback boards, and analytics data. This action is immediate and irreversible.
             </AlertDialogDescription>
           </AlertDialogHeader>
 
           <div className="flex flex-col gap-2 py-2">
-            <Label className="text-xs font-medium text-zinc-400">
-              Type <span className="font-mono text-zinc-300">delete my workspace</span> to confirm
+            <Label className="text-xs font-medium text-muted-foreground">
+              Type <span className="font-mono text-foreground/80">delete my workspace</span> to confirm
             </Label>
             <Input
               value={deleteText}
               onChange={(e) => setDeleteText(e.target.value)}
               placeholder="delete my workspace"
-              className="border-zinc-800 bg-zinc-900/60 text-sm text-zinc-100 focus-visible:border-red-500/50 focus-visible:ring-red-500/20"
+              className="border-zinc-800 bg-card/60 text-sm text-foreground focus-visible:border-red-500/50 focus-visible:ring-red-500/20"
             />
             {deleteError && (
               <p className="text-xs text-red-400">{deleteError}</p>
@@ -250,7 +250,7 @@ export function WorkspaceSection({ workspace }: WorkspaceSectionProps) {
           </div>
 
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-zinc-800 bg-transparent text-zinc-400 hover:bg-zinc-800/60">
+            <AlertDialogCancel className="border-zinc-800 bg-transparent text-muted-foreground hover:bg-muted/60">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction

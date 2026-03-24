@@ -138,36 +138,36 @@ export function VerifyView({ email, onBack, onSuccess }: VerifyViewProps) {
             />
           </div>
           <div>
-            <h2 className="text-xl font-semibold tracking-tight text-zinc-100">Check your inbox</h2>
-            <p className="mt-0.5 text-sm text-zinc-500">We sent a 6-digit OTP to</p>
+            <h2 className="text-xl font-semibold tracking-tight text-foreground">Check your inbox</h2>
+            <p className="mt-0.5 text-sm text-muted-foreground/80">We sent a 6-digit OTP to</p>
           </div>
         </motion.div>
 
         {/* Email badge + change */}
         <motion.div custom={1} variants={fadeUp} initial="hidden" animate="visible" className="flex items-center gap-2">
-          <Badge variant="outline" className="gap-1.5 border-zinc-700/80 bg-zinc-900/60 px-3 py-1.5 text-xs font-normal text-zinc-300">
+          <Badge variant="outline" className="gap-1.5 border-zinc-700/80 bg-card/60 px-3 py-1.5 text-xs font-normal text-foreground/80">
             <MailOpen size={11} className="text-indigo-400" />
             {maskedEmail}
           </Badge>
           <Tooltip>
             <TooltipTrigger asChild>
-              <button type="button" onClick={onBack} className="flex items-center gap-1 text-xs text-zinc-600 transition-colors hover:text-zinc-400">
+              <button type="button" onClick={onBack} className="flex items-center gap-1 text-xs text-muted-foreground/60 transition-colors hover:text-muted-foreground">
                 <Pencil size={11} />
                 Change
               </button>
             </TooltipTrigger>
-            <TooltipContent side="right" className="border-zinc-800 bg-zinc-900 text-xs text-zinc-300">
+            <TooltipContent side="right" className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80">
               Go back and use a different email
             </TooltipContent>
           </Tooltip>
         </motion.div>
 
-        <Separator className="bg-zinc-800/60" />
+        <Separator className="bg-muted/60" />
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           {/* OTP */}
           <motion.div custom={2} variants={fadeUp} initial="hidden" animate="visible" className="flex flex-col items-center gap-2">
-            <Label className="w-full text-xs font-medium uppercase tracking-wide text-zinc-400">
+            <Label className="w-full text-xs font-medium uppercase tracking-wide text-muted-foreground">
               6-digit OTP
             </Label>
             <motion.div
@@ -203,14 +203,14 @@ export function VerifyView({ email, onBack, onSuccess }: VerifyViewProps) {
           {/* New password */}
           <motion.div custom={3} variants={fadeUp} initial="hidden" animate="visible" className="flex flex-col gap-1.5">
             <div className="flex items-center gap-1.5">
-              <Label htmlFor="password" className="text-xs font-medium uppercase tracking-wide text-zinc-400">
+              <Label htmlFor="password" className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 New password
               </Label>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <ShieldCheck size={12} className="cursor-help text-zinc-600 hover:text-zinc-400 transition-colors" />
+                  <ShieldCheck size={12} className="cursor-help text-muted-foreground/60 hover:text-muted-foreground transition-colors" />
                 </TooltipTrigger>
-                <TooltipContent side="right" className="border-zinc-800 bg-zinc-900 text-xs text-zinc-300">
+                <TooltipContent side="right" className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80">
                   Min. 8 chars, 1 uppercase, 1 number.
                 </TooltipContent>
               </Tooltip>
@@ -244,7 +244,7 @@ export function VerifyView({ email, onBack, onSuccess }: VerifyViewProps) {
 
           {/* Confirm password */}
           <motion.div custom={4} variants={fadeUp} initial="hidden" animate="visible" className="flex flex-col gap-1.5">
-            <Label htmlFor="confirmPassword" className="text-xs font-medium uppercase tracking-wide text-zinc-400">
+            <Label htmlFor="confirmPassword" className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
               Confirm password
             </Label>
             <PasswordFieldWithToggle
@@ -287,10 +287,10 @@ export function VerifyView({ email, onBack, onSuccess }: VerifyViewProps) {
 
           {/* Security note */}
           <motion.div custom={5} variants={fadeUp} initial="hidden" animate="visible">
-            <div className="flex items-start gap-2 rounded-lg border border-zinc-800/60 bg-zinc-900/30 px-3 py-2.5">
-              <ShieldCheck size={13} className="mt-0.5 shrink-0 text-zinc-600" />
-              <p className="text-xs leading-relaxed text-zinc-600">
-                This OTP expires in <span className="text-zinc-500">10 minutes</span>. Never share it with anyone.
+            <div className="flex items-start gap-2 rounded-lg border border-border/60 bg-card/30 px-3 py-2.5">
+              <ShieldCheck size={13} className="mt-0.5 shrink-0 text-muted-foreground/60" />
+              <p className="text-xs leading-relaxed text-muted-foreground/60">
+                This OTP expires in <span className="text-muted-foreground/80">10 minutes</span>. Never share it with anyone.
               </p>
             </div>
           </motion.div>
@@ -319,7 +319,7 @@ export function VerifyView({ email, onBack, onSuccess }: VerifyViewProps) {
 
         {/* Resend OTP */}
         <motion.div custom={7} variants={fadeUp} initial="hidden" animate="visible" className="flex flex-col items-center gap-1.5">
-          <Separator className="bg-zinc-800/60" />
+          <Separator className="bg-muted/60" />
           <AnimatePresence>
             {resendMutation.data && !resendMutation.data.success && (
               <motion.p initial={{ opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
@@ -336,7 +336,7 @@ export function VerifyView({ email, onBack, onSuccess }: VerifyViewProps) {
             disabled={resendMutation.isPending || cooldown > 0}
             className={cn(
               "h-auto gap-1.5 px-3 py-1.5 text-xs font-medium",
-              "text-zinc-500 hover:bg-transparent hover:text-zinc-300",
+              "text-muted-foreground/80 hover:bg-transparent hover:text-foreground/80",
               "disabled:pointer-events-none disabled:opacity-50 transition-all duration-200"
             )}
           >
@@ -345,7 +345,7 @@ export function VerifyView({ email, onBack, onSuccess }: VerifyViewProps) {
             ) : justResent ? (
               <><MailCheck size={12} className="text-emerald-400" /><span className="text-emerald-400">OTP sent again!</span></>
             ) : cooldown > 0 ? (
-              <><RefreshCw size={12} />Resend in <span className="tabular-nums text-zinc-400">{mm}:{ss}</span></>
+              <><RefreshCw size={12} />Resend in <span className="tabular-nums text-muted-foreground">{mm}:{ss}</span></>
             ) : (
               <><RefreshCw size={12} />Resend OTP</>
             )}

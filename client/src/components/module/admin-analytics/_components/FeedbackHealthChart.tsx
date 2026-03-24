@@ -31,13 +31,13 @@ export function FeedbackHealthChart() {
     <div className="grid gap-4 lg:grid-cols-[300px_1fr]">
 
       {/* ── Donut ────────────────────────────────────────── */}
-      <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+      <Card className="relative overflow-hidden border-border/80 bg-card/40">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/25 to-transparent" />
-        <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
-          <p className="text-sm font-semibold text-zinc-200">Feedback request status</p>
-          <p className="text-[11px] text-zinc-600">
-            All <code className="text-zinc-500">FeatureRequest</code> records by{" "}
-            <code className="text-zinc-500">status</code>
+        <CardHeader className="border-b border-border/60 px-5 py-4">
+          <p className="text-sm font-semibold text-foreground/90">Feedback request status</p>
+          <p className="text-[11px] text-muted-foreground/60">
+            All <code className="text-muted-foreground/80">FeatureRequest</code> records by{" "}
+            <code className="text-muted-foreground/80">status</code>
           </p>
         </CardHeader>
         <CardContent className="flex flex-col gap-4 p-5">
@@ -51,9 +51,9 @@ export function FeedbackHealthChart() {
                 if (!active || !payload?.length) return null;
                 const d = payload[0].payload;
                 return (
-                  <div className="rounded-lg border border-zinc-800 bg-zinc-950/95 p-2.5 text-xs shadow-xl">
-                    <p className="font-semibold text-zinc-200">{d.status}</p>
-                    <p className="text-zinc-500">{d.count.toLocaleString()} · {d.pct}%</p>
+                  <div className="rounded-lg border border-zinc-800 bg-background/95 p-2.5 text-xs shadow-xl">
+                    <p className="font-semibold text-foreground/90">{d.status}</p>
+                    <p className="text-muted-foreground/80">{d.count.toLocaleString()} · {d.pct}%</p>
                   </div>
                 );
               }} />
@@ -65,11 +65,11 @@ export function FeedbackHealthChart() {
               <div key={d.status} className="flex items-center justify-between text-xs">
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 shrink-0 rounded-full" style={{ backgroundColor: d.fill }} />
-                  <span className="text-zinc-400">{d.status}</span>
+                  <span className="text-muted-foreground">{d.status}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] text-zinc-600">{d.pct}%</span>
-                  <span className="w-14 text-right font-semibold tabular-nums text-zinc-300">
+                  <span className="text-[10px] text-muted-foreground/60">{d.pct}%</span>
+                  <span className="w-14 text-right font-semibold tabular-nums text-foreground/80">
                     {d.count.toLocaleString()}
                   </span>
                 </div>
@@ -77,7 +77,7 @@ export function FeedbackHealthChart() {
             ))}
           </div>
 
-          <div className="grid grid-cols-2 gap-2 border-t border-zinc-800/60 pt-3">
+          <div className="grid grid-cols-2 gap-2 border-t border-border/60 pt-3">
             {[
               { icon: <MessageSquare size={11} className="text-rose-400"    />, label: "Boards",       value: stats.totalBoards.toLocaleString() },
               { icon: <ThumbsUp      size={11} className="text-indigo-400"  />, label: "Avg votes",    value: stats.avgVotesPerRequest.toFixed(1) },
@@ -87,8 +87,8 @@ export function FeedbackHealthChart() {
               <div key={s.label} className="flex items-center gap-1.5">
                 {s.icon}
                 <div>
-                  <p className="text-[9px] text-zinc-700">{s.label}</p>
-                  <p className="text-xs font-bold text-zinc-300">{s.value}</p>
+                  <p className="text-[9px] text-muted-foreground/40">{s.label}</p>
+                  <p className="text-xs font-bold text-foreground/80">{s.value}</p>
                 </div>
               </div>
             ))}
@@ -97,13 +97,13 @@ export function FeedbackHealthChart() {
       </Card>
 
       {/* ── 30-day activity bars ──────────────────────────── */}
-      <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+      <Card className="relative overflow-hidden border-border/80 bg-card/40">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
-        <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
-          <p className="text-sm font-semibold text-zinc-200">Feedback activity (30 days)</p>
-          <p className="text-[11px] text-zinc-600">
-            New <code className="text-zinc-500">FeatureRequest</code>, <code className="text-zinc-500">Vote</code>, and{" "}
-            <code className="text-zinc-500">Comment</code> records per day
+        <CardHeader className="border-b border-border/60 px-5 py-4">
+          <p className="text-sm font-semibold text-foreground/90">Feedback activity (30 days)</p>
+          <p className="text-[11px] text-muted-foreground/60">
+            New <code className="text-muted-foreground/80">FeatureRequest</code>, <code className="text-muted-foreground/80">Vote</code>, and{" "}
+            <code className="text-muted-foreground/80">Comment</code> records per day
           </p>
         </CardHeader>
         <CardContent className="p-5">
@@ -127,7 +127,7 @@ export function FeedbackHealthChart() {
             ].map((l) => (
               <div key={l.label} className="flex items-center gap-1.5">
                 <div className="h-2 w-2 rounded-full" style={{ backgroundColor: l.color }} />
-                <span className="text-[10px] text-zinc-600">{l.label}</span>
+                <span className="text-[10px] text-muted-foreground/60">{l.label}</span>
               </div>
             ))}
           </div>
@@ -145,15 +145,15 @@ export function RoadmapProgressChart() {
   const stats = getRoadmapStats();
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-zinc-200">Platform roadmap progress</p>
-            <p className="text-[11px] text-zinc-600">
-              All <code className="text-zinc-500">RoadmapItem</code> records by{" "}
-              <code className="text-zinc-500">RoadmapStatus</code> across {stats.totalRoadmaps.toLocaleString()} roadmaps
+            <p className="text-sm font-semibold text-foreground/90">Platform roadmap progress</p>
+            <p className="text-[11px] text-muted-foreground/60">
+              All <code className="text-muted-foreground/80">RoadmapItem</code> records by{" "}
+              <code className="text-muted-foreground/80">RoadmapStatus</code> across {stats.totalRoadmaps.toLocaleString()} roadmaps
             </p>
           </div>
           <Badge className="border-emerald-500/25 bg-emerald-500/10 text-[10px] text-emerald-400">
@@ -166,9 +166,9 @@ export function RoadmapProgressChart() {
         <div className="flex flex-col gap-3">
           {data.map((d) => (
             <div key={d.status} className="flex items-center gap-3">
-              <div className="w-28 shrink-0 text-xs text-zinc-400">{d.status}</div>
+              <div className="w-28 shrink-0 text-xs text-muted-foreground">{d.status}</div>
               <div className="flex-1">
-                <div className="h-5 overflow-hidden rounded-md bg-zinc-800/60">
+                <div className="h-5 overflow-hidden rounded-md bg-muted/60">
                   <div
                     className="h-full rounded-md flex items-center justify-end pr-2 transition-all duration-700"
                     style={{ width: `${d.pct}%`, backgroundColor: d.fill, opacity: 0.85 }}
@@ -177,22 +177,22 @@ export function RoadmapProgressChart() {
                   </div>
                 </div>
               </div>
-              <div className="w-20 shrink-0 text-right text-xs font-semibold tabular-nums text-zinc-300">
+              <div className="w-20 shrink-0 text-right text-xs font-semibold tabular-nums text-foreground/80">
                 {d.count.toLocaleString()}
               </div>
             </div>
           ))}
         </div>
 
-        <div className="mt-4 grid grid-cols-2 gap-2 border-t border-zinc-800/60 pt-4 sm:grid-cols-4">
+        <div className="mt-4 grid grid-cols-2 gap-2 border-t border-border/60 pt-4 sm:grid-cols-4">
           {[
-            { label: "Total roadmaps", value: stats.totalRoadmaps.toLocaleString(),  color: "text-zinc-300"   },
-            { label: "Total items",    value: stats.totalItems.toLocaleString(),      color: "text-zinc-300"   },
+            { label: "Total roadmaps", value: stats.totalRoadmaps.toLocaleString(),  color: "text-foreground/80"   },
+            { label: "Total items",    value: stats.totalItems.toLocaleString(),      color: "text-foreground/80"   },
             { label: "In progress",    value: `${stats.inProgressPct}%`,             color: "text-amber-300"  },
             { label: "Completed",      value: `${stats.completedPct}%`,              color: "text-emerald-300"},
           ].map((s) => (
-            <div key={s.label} className="rounded-lg border border-zinc-800/60 bg-zinc-900/40 px-3 py-2">
-              <p className="text-[10px] text-zinc-600">{s.label}</p>
+            <div key={s.label} className="rounded-lg border border-border/60 bg-card/40 px-3 py-2">
+              <p className="text-[10px] text-muted-foreground/60">{s.label}</p>
               <p className={cn("text-sm font-black tabular-nums", s.color)}>{s.value}</p>
             </div>
           ))}

@@ -156,10 +156,10 @@ export default async function ExplorePage({
   const stats = getHeroStats(products);
 
   return (
-    <div className="min-h-screen bg-[#080808]">
+    <div className="min-h-screen bg-background">
 
       {/* ── Hero header ──────────────────────────────────── */}
-      <div className="relative overflow-hidden border-b border-zinc-800/60">
+      <div className="relative overflow-hidden border-b border-border/60">
 
         {/* Background texture */}
         <div
@@ -184,13 +184,13 @@ export default async function ExplorePage({
 
             {/* Headline */}
             <div className="flex flex-col gap-3 max-w-2xl">
-              <h1 className="text-4xl font-black tracking-tight text-zinc-100 sm:text-5xl">
+              <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-5xl">
                 Be first in line for{" "}
                 <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
                   what's next
                 </span>
               </h1>
-              <p className="text-lg text-zinc-500 leading-relaxed">
+              <p className="text-lg text-muted-foreground/80 leading-relaxed">
                 Discover products launching on LaunchForge. Join waitlists, refer friends to move
                 up the queue, and win prizes from builders who reward early believers.
               </p>
@@ -206,8 +206,8 @@ export default async function ExplorePage({
               ].map((s) => (
                 <div key={s.label} className="flex items-center gap-2">
                   {s.icon}
-                  <span className="text-sm font-bold text-zinc-200">{s.value}</span>
-                  <span className="text-sm text-zinc-600">{s.label}</span>
+                  <span className="text-sm font-bold text-foreground/90">{s.value}</span>
+                  <span className="text-sm text-muted-foreground/60">{s.label}</span>
                 </div>
               ))}
             </div>

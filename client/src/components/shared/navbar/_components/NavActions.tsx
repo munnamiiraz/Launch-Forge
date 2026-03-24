@@ -19,7 +19,7 @@ export function NavActions({ isAuthenticated, user }: NavActionsProps) {
           asChild
           variant="ghost"
           size="sm"
-          className="hidden text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200 sm:flex"
+          className="hidden text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground/90 sm:flex"
         >
           <Link href="/dashboard">Dashboard</Link>
         </Button>
@@ -40,7 +40,7 @@ export function NavActions({ isAuthenticated, user }: NavActionsProps) {
         href="https://github.com/launchforge"
         target="_blank"
         rel="noopener noreferrer"
-        className="hidden items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm text-zinc-500 transition-all duration-150 hover:bg-zinc-800/50 hover:text-zinc-300 md:flex"
+        className="hidden items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm text-muted-foreground/80 transition-all duration-150 hover:bg-zinc-800/50 hover:text-foreground/80 md:flex"
         aria-label="Star LaunchForge on GitHub"
       >
         <Github size={14} />
@@ -53,7 +53,7 @@ export function NavActions({ isAuthenticated, user }: NavActionsProps) {
         asChild
         variant="ghost"
         size="sm"
-        className="text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200"
+        className="text-muted-foreground hover:bg-muted/60 hover:text-foreground/90"
       >
         <Link href="/login">Sign in</Link>
       </Button>

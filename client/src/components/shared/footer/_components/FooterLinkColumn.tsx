@@ -22,21 +22,21 @@ export function FooterLinkColumn({ group, delay = 0 }: FooterLinkColumnProps) {
       className="flex flex-col gap-4"
     >
       {/* Column heading */}
-      <h3 className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500">
+      <h3 className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground/80">
         {group.title}
       </h3>
 
       {/* Links */}
       <ul className="flex flex-col gap-2.5">
-        {group.links.map((link) => (
-          <li key={link.href}>
+        {group.links.map((link, i) => (
+          <li key={i}>
             <Link
               href={link.href}
               target={link.external ? "_blank" : undefined}
               rel={link.external ? "noopener noreferrer" : undefined}
               className={cn(
                 "group inline-flex items-center gap-1.5",
-                "text-sm text-zinc-500 transition-colors duration-150 hover:text-zinc-200"
+                "text-sm text-muted-foreground/80 transition-colors duration-150 hover:text-foreground/90"
               )}
             >
               <span className="relative">
@@ -48,7 +48,7 @@ export function FooterLinkColumn({ group, delay = 0 }: FooterLinkColumnProps) {
               {link.external && (
                 <ExternalLink
                   size={10}
-                  className="text-zinc-700 transition-colors group-hover:text-zinc-500"
+                  className="text-muted-foreground/40 transition-colors group-hover:text-muted-foreground/80"
                 />
               )}
 

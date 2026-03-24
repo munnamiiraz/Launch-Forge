@@ -101,21 +101,21 @@ export function NotificationsSection({ prefs }: NotificationsSectionProps) {
   const totalCount   = Object.keys(form).length;
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40" id="notifications">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40" id="notifications">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
 
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Bell size={15} className="text-amber-400" />
             <div>
-              <p className="text-sm font-semibold text-zinc-200">Email notifications</p>
-              <p className="text-[11px] text-zinc-600">
+              <p className="text-sm font-semibold text-foreground/90">Email notifications</p>
+              <p className="text-[11px] text-muted-foreground/60">
                 Choose which events trigger an email to your inbox.
               </p>
             </div>
           </div>
-          <Badge className="border-zinc-700/60 bg-zinc-800/40 text-[10px] text-zinc-500">
+          <Badge className="border-zinc-700/60 bg-muted/40 text-[10px] text-muted-foreground/80">
             {enabledCount}/{totalCount} enabled
           </Badge>
         </div>
@@ -124,7 +124,7 @@ export function NotificationsSection({ prefs }: NotificationsSectionProps) {
       <CardContent className="flex flex-col gap-0 p-0">
         {GROUPS.map((group, gi) => (
           <div key={group.label}>
-            {gi > 0 && <Separator className="bg-zinc-800/60" />}
+            {gi > 0 && <Separator className="bg-muted/60" />}
 
             {/* Group header */}
             <div className={cn("flex items-center gap-2 px-5 py-3 text-xs font-semibold", group.accent)}>
@@ -139,11 +139,11 @@ export function NotificationsSection({ prefs }: NotificationsSectionProps) {
                 initial={{ opacity: 0, x: -6 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: gi * 0.04 + ii * 0.03, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                className="flex items-center justify-between gap-4 border-t border-zinc-800/30 px-5 py-3 hover:bg-zinc-900/30 transition-colors"
+                className="flex items-center justify-between gap-4 border-t border-zinc-800/30 px-5 py-3 hover:bg-card/30 transition-colors"
               >
                 <div className="min-w-0">
-                  <p className="text-xs font-medium text-zinc-300">{item.label}</p>
-                  <p className="text-[11px] text-zinc-600">{item.description}</p>
+                  <p className="text-xs font-medium text-foreground/80">{item.label}</p>
+                  <p className="text-[11px] text-muted-foreground/60">{item.description}</p>
                 </div>
                 <Switch
                   checked={form[item.key]}
@@ -156,7 +156,7 @@ export function NotificationsSection({ prefs }: NotificationsSectionProps) {
         ))}
 
         {/* Save footer */}
-        <Separator className="bg-zinc-800/60" />
+        <Separator className="bg-muted/60" />
         <div className="flex items-center justify-between px-5 py-4">
           <AnimatePresence>
             {success && (

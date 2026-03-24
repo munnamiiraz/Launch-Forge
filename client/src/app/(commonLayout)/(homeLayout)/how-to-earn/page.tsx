@@ -37,8 +37,8 @@ function SectionBadge({ children }: { children: React.ReactNode }) {
 function SectionHeading({ children, sub }: { children: React.ReactNode; sub?: string }) {
   return (
     <div className="flex flex-col gap-3">
-      <h2 className="text-3xl font-black tracking-tight text-zinc-100 sm:text-4xl">{children}</h2>
-      {sub && <p className="max-w-2xl text-base leading-relaxed text-zinc-500">{sub}</p>}
+      <h2 className="text-3xl font-black tracking-tight text-foreground sm:text-4xl">{children}</h2>
+      {sub && <p className="max-w-2xl text-base leading-relaxed text-muted-foreground/80">{sub}</p>}
     </div>
   );
 }
@@ -46,7 +46,7 @@ function SectionHeading({ children, sub }: { children: React.ReactNode; sub?: st
 function Card({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
     <div className={cn(
-      "rounded-2xl border border-zinc-800/70 bg-zinc-900/40 p-6",
+      "rounded-2xl border border-zinc-800/70 bg-card/40 p-6",
       className,
     )}>
       {children}
@@ -88,7 +88,7 @@ function GlowCard({ children, color = "indigo", className }: {
 
 export default function HowToEarnPage() {
   return (
-    <div className="min-h-screen bg-[#080808] text-zinc-100">
+    <div className="min-h-screen bg-background text-foreground">
 
       {/* Background grid */}
       <div
@@ -100,18 +100,18 @@ export default function HowToEarnPage() {
       <div aria-hidden className="pointer-events-none fixed bottom-0 right-0 h-[500px] w-[500px] translate-x-1/2 translate-y-1/2 rounded-full bg-violet-500/5 blur-[100px]" />
 
       {/* ── Navbar ──────────────────────────────────────── */}
-      <nav className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-zinc-800/50 bg-[#080808]/90 px-4 backdrop-blur-xl sm:px-6 lg:px-8">
+      <nav className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/50 bg-background/90 px-4 backdrop-blur-xl sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-1.5">
           <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600">
             <Zap size={13} className="text-white" />
           </div>
-          <span className="text-sm font-black tracking-tight text-zinc-200">LaunchForge</span>
+          <span className="text-sm font-black tracking-tight text-foreground/90">LaunchForge</span>
         </Link>
-        <div className="hidden items-center gap-6 text-xs text-zinc-500 sm:flex">
-          <a href="#how-it-works" className="hover:text-zinc-300 transition-colors">How it works</a>
-          <a href="#prizes"       className="hover:text-zinc-300 transition-colors">Prizes</a>
-          <a href="#strategy"     className="hover:text-zinc-300 transition-colors">Strategy</a>
-          <a href="#faq"          className="hover:text-zinc-300 transition-colors">FAQ</a>
+        <div className="hidden items-center gap-6 text-xs text-muted-foreground/80 sm:flex">
+          <a href="#how-it-works" className="hover:text-foreground/80 transition-colors">How it works</a>
+          <a href="#prizes"       className="hover:text-foreground/80 transition-colors">Prizes</a>
+          <a href="#strategy"     className="hover:text-foreground/80 transition-colors">Strategy</a>
+          <a href="#faq"          className="hover:text-foreground/80 transition-colors">FAQ</a>
         </div>
         <Link href="/explore">
           <Button size="sm" className="gap-1.5 bg-indigo-600 text-xs font-bold text-white hover:bg-indigo-500">
@@ -123,7 +123,7 @@ export default function HowToEarnPage() {
       {/* ═══════════════════════════════════════════════════════════
           HERO
           ═══════════════════════════════════════════════════════════ */}
-      <section className="relative overflow-hidden border-b border-zinc-800/50">
+      <section className="relative overflow-hidden border-b border-border/50">
         <div className="mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center gap-8 text-center">
 
@@ -132,13 +132,13 @@ export default function HowToEarnPage() {
             </Badge>
 
             <div className="flex flex-col gap-4">
-              <h1 className="text-5xl font-black tracking-tight text-zinc-100 sm:text-6xl lg:text-7xl">
+              <h1 className="text-5xl font-black tracking-tight text-foreground sm:text-6xl lg:text-7xl">
                 Refer friends.{" "}
                 <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-indigo-400 bg-clip-text text-transparent">
                   Win prizes.
                 </span>
               </h1>
-              <p className="mx-auto max-w-2xl text-xl leading-relaxed text-zinc-500">
+              <p className="mx-auto max-w-2xl text-xl leading-relaxed text-muted-foreground/80">
                 LaunchForge is where product launches happen. Join waitlists for exciting new products,
                 share your referral link, climb the leaderboard, and earn real cash, gift cards, and
                 lifetime access — just by telling friends about products you believe in.
@@ -155,7 +155,7 @@ export default function HowToEarnPage() {
               ].map((s) => (
                 <div key={s.label} className="flex flex-col items-center gap-0.5">
                   <span className={cn("text-2xl font-black tabular-nums", s.color)}>{s.value}</span>
-                  <span className="text-zinc-600">{s.label}</span>
+                  <span className="text-muted-foreground/60">{s.label}</span>
                 </div>
               ))}
             </div>
@@ -167,7 +167,7 @@ export default function HowToEarnPage() {
                 </Button>
               </Link>
               <a href="#how-it-works">
-                <Button variant="outline" className="gap-2 border-zinc-700/80 bg-transparent px-6 py-3 text-sm text-zinc-400 hover:border-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-200">
+                <Button variant="outline" className="gap-2 border-zinc-700/80 bg-transparent px-6 py-3 text-sm text-muted-foreground hover:border-zinc-600 hover:bg-muted/60 hover:text-foreground/90">
                   See how it works <ChevronDown size={14} />
                 </Button>
               </a>
@@ -212,12 +212,12 @@ export default function HowToEarnPage() {
                 },
               ].map((c) => (
                 <div key={c.title} className={cn("flex flex-col gap-4 rounded-2xl border p-5", c.accent)}>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-800/60 bg-zinc-900/60">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-border/60 bg-card/60">
                     {c.icon}
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-zinc-200">{c.title}</p>
-                    <p className="mt-1.5 text-xs leading-relaxed text-zinc-500">{c.body}</p>
+                    <p className="text-sm font-bold text-foreground/90">{c.title}</p>
+                    <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground/80">{c.body}</p>
                   </div>
                 </div>
               ))}
@@ -229,7 +229,7 @@ export default function HowToEarnPage() {
                 <Shield size={16} className="mt-0.5 shrink-0 text-emerald-400" />
                 <div>
                   <p className="text-sm font-semibold text-emerald-300">100% free to participate. Always.</p>
-                  <p className="mt-1 text-xs leading-relaxed text-zinc-500">
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground/80">
                     LaunchForge is completely free for users. You will never be asked to pay anything, buy anything, or provide payment details to earn prizes. The product owners fund the prizes — your job is just to share.
                   </p>
                 </div>
@@ -238,7 +238,7 @@ export default function HowToEarnPage() {
           </div>
         </section>
 
-        <Separator className="bg-zinc-800/60" />
+        <Separator className="bg-muted/60" />
 
         {/* ═══════════════════════════════════════════════════════════
             HOW IT WORKS — STEP BY STEP
@@ -309,19 +309,19 @@ export default function HowToEarnPage() {
                     <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border", s.color)}>
                       {s.icon}
                     </div>
-                    {i < 5 && <div className="my-2 w-px flex-1 bg-zinc-800/60" />}
+                    {i < 5 && <div className="my-2 w-px flex-1 bg-muted/60" />}
                   </div>
 
                   {/* Content */}
                   <div className={cn("flex flex-col gap-2 pb-8", i === 5 && "pb-0")}>
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-700">Step {s.step}</span>
+                      <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">Step {s.step}</span>
                     </div>
-                    <h3 className="text-base font-bold text-zinc-100">{s.title}</h3>
-                    <p className="text-sm leading-relaxed text-zinc-500">{s.body}</p>
-                    <div className="mt-1 flex items-start gap-2 rounded-xl border border-zinc-800/40 bg-zinc-900/30 px-3 py-2">
+                    <h3 className="text-base font-bold text-foreground">{s.title}</h3>
+                    <p className="text-sm leading-relaxed text-muted-foreground/80">{s.body}</p>
+                    <div className="mt-1 flex items-start gap-2 rounded-xl border border-border/40 bg-card/30 px-3 py-2">
                       <Star size={11} className="mt-0.5 shrink-0 text-amber-500" />
-                      <p className="text-[11px] text-zinc-600">{s.tip}</p>
+                      <p className="text-[11px] text-muted-foreground/60">{s.tip}</p>
                     </div>
                   </div>
                 </div>
@@ -330,7 +330,7 @@ export default function HowToEarnPage() {
           </div>
         </section>
 
-        <Separator className="bg-zinc-800/60" />
+        <Separator className="bg-muted/60" />
 
         {/* ═══════════════════════════════════════════════════════════
             THE REFERRAL MECHANIC EXPLAINED
@@ -346,7 +346,7 @@ export default function HowToEarnPage() {
 
             <div className="grid gap-5 lg:grid-cols-2">
               <Card>
-                <h3 className="mb-4 text-sm font-bold text-zinc-200">How referrals are counted</h3>
+                <h3 className="mb-4 text-sm font-bold text-foreground/90">How referrals are counted</h3>
                 <div className="flex flex-col gap-3">
                   {[
                     { q: "What counts as a referral?", a: "Someone clicks your link AND completes the signup form with their name and email. Just clicking the link doesn't count." },
@@ -354,16 +354,16 @@ export default function HowToEarnPage() {
                     { q: "Do I earn referrals from their referrals?", a: "Yes — LaunchForge tracks chains up to 4 hops deep. If your referral refers someone, that also contributes to your chain score." },
                     { q: "When does my count update?", a: "Referral counts update in real-time. The leaderboard refreshes every 5 minutes to keep things fair." },
                   ].map((item) => (
-                    <div key={item.q} className="flex flex-col gap-1 border-t border-zinc-800/40 pt-3 first:border-0 first:pt-0">
-                      <p className="text-xs font-semibold text-zinc-300">{item.q}</p>
-                      <p className="text-xs leading-relaxed text-zinc-600">{item.a}</p>
+                    <div key={item.q} className="flex flex-col gap-1 border-t border-border/40 pt-3 first:border-0 first:pt-0">
+                      <p className="text-xs font-semibold text-foreground/80">{item.q}</p>
+                      <p className="text-xs leading-relaxed text-muted-foreground/60">{item.a}</p>
                     </div>
                   ))}
                 </div>
               </Card>
 
               <Card>
-                <h3 className="mb-4 text-sm font-bold text-zinc-200">Queue position explained</h3>
+                <h3 className="mb-4 text-sm font-bold text-foreground/90">Queue position explained</h3>
                 <div className="flex flex-col gap-3">
                   {[
                     { q: "How is my queue position calculated?", a: "Positions are ranked by referral count (most referrals = #1). Ties are broken by who joined earlier — so joining fast gives you a permanent tiebreaker advantage." },
@@ -371,9 +371,9 @@ export default function HowToEarnPage() {
                     { q: "What's the difference between queue position and leaderboard rank?", a: "Queue position is your spot in the overall signup list. Leaderboard rank is how you compare specifically among people who have referred others." },
                     { q: "Can I check my position anytime?", a: "Yes. Use the 'Find my rank' tool on the leaderboard page — enter your email to see your current position and referral count instantly." },
                   ].map((item) => (
-                    <div key={item.q} className="flex flex-col gap-1 border-t border-zinc-800/40 pt-3 first:border-0 first:pt-0">
-                      <p className="text-xs font-semibold text-zinc-300">{item.q}</p>
-                      <p className="text-xs leading-relaxed text-zinc-600">{item.a}</p>
+                    <div key={item.q} className="flex flex-col gap-1 border-t border-border/40 pt-3 first:border-0 first:pt-0">
+                      <p className="text-xs font-semibold text-foreground/80">{item.q}</p>
+                      <p className="text-xs leading-relaxed text-muted-foreground/60">{item.a}</p>
                     </div>
                   ))}
                 </div>
@@ -382,7 +382,7 @@ export default function HowToEarnPage() {
 
             {/* Visual example */}
             <GlowCard color="indigo">
-              <h3 className="mb-5 text-sm font-bold text-zinc-200">A real example: how 5 referrals can win $1,000</h3>
+              <h3 className="mb-5 text-sm font-bold text-foreground/90">A real example: how 5 referrals can win $1,000</h3>
               <div className="grid gap-4 sm:grid-cols-5">
                 {[
                   { label: "You join", icon: "👤", desc: "Position: #1,247" },
@@ -392,23 +392,23 @@ export default function HowToEarnPage() {
                   { label: "Waitlist closes", icon: "🏆", desc: "You win $300!" },
                 ].map((step, i) => (
                   <div key={i} className="flex flex-col items-center gap-2 text-center">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-zinc-800/60 bg-zinc-900/60 text-2xl">
+                    <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-border/60 bg-card/60 text-2xl">
                       {step.icon}
                     </div>
-                    <p className="text-xs font-semibold text-zinc-300">{step.label}</p>
-                    <p className="text-[10px] text-zinc-600">{step.desc}</p>
-                    {i < 4 && <ArrowRight size={14} className="hidden text-zinc-700 sm:block absolute" />}
+                    <p className="text-xs font-semibold text-foreground/80">{step.label}</p>
+                    <p className="text-[10px] text-muted-foreground/60">{step.desc}</p>
+                    {i < 4 && <ArrowRight size={14} className="hidden text-muted-foreground/40 sm:block absolute" />}
                   </div>
                 ))}
               </div>
-              <p className="mt-4 text-center text-[11px] text-zinc-600">
+              <p className="mt-4 text-center text-[11px] text-muted-foreground/60">
                 This is a simplified example. Actual results depend on the product's prize structure and how many other people are referring.
               </p>
             </GlowCard>
           </div>
         </section>
 
-        <Separator className="bg-zinc-800/60" />
+        <Separator className="bg-muted/60" />
 
         {/* ═══════════════════════════════════════════════════════════
             PRIZE TYPES
@@ -485,9 +485,9 @@ export default function HowToEarnPage() {
                     <Badge className={cn("rounded-full px-2 py-0.5 text-[10px]", p.badge)}>{p.type}</Badge>
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-zinc-200">{p.title}</p>
-                    <p className="mt-1.5 text-xs leading-relaxed text-zinc-500">{p.body}</p>
-                    <p className="mt-2 text-[10px] italic text-zinc-700">{p.example}</p>
+                    <p className="text-sm font-bold text-foreground/90">{p.title}</p>
+                    <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground/80">{p.body}</p>
+                    <p className="mt-2 text-[10px] italic text-muted-foreground/40">{p.example}</p>
                   </div>
                 </div>
               ))}
@@ -495,25 +495,25 @@ export default function HowToEarnPage() {
 
             {/* Prize tiers explained */}
             <Card>
-              <h3 className="mb-5 text-sm font-bold text-zinc-200">Understanding prize tiers</h3>
+              <h3 className="mb-5 text-sm font-bold text-foreground/90">Understanding prize tiers</h3>
               <div className="flex flex-col gap-3">
                 {[
                   { rank: "#1",        medal: "🥇", label: "Champion",    color: "border-amber-500/30 bg-amber-500/8 text-amber-300",   body: "The single highest referrer. Almost always gets the biggest prize — usually cash or the most valuable reward." },
-                  { rank: "#2 – #3",   medal: "🥈", label: "Top 3",       color: "border-zinc-600/40 bg-zinc-800/20 text-zinc-300",     body: "Second and third place. Often get significant prizes like gift cards or a large discount." },
+                  { rank: "#2 – #3",   medal: "🥈", label: "Top 3",       color: "border-zinc-600/40 bg-muted/20 text-foreground/80",     body: "Second and third place. Often get significant prizes like gift cards or a large discount." },
                   { rank: "#4 – #10",  medal: "🥉", label: "Top 10",      color: "border-orange-600/20 bg-orange-500/6 text-orange-300",body: "The next tier — usually lifetime access or a meaningful discount on the product." },
                   { rank: "#11 – #25", medal: "🌟", label: "Top 25",      color: "border-indigo-500/20 bg-indigo-500/6 text-indigo-300",body: "Still winning — typically discounts, early access perks, or smaller cash amounts." },
-                  { rank: "Everyone",  medal: "✨", label: "Participation", color: "border-zinc-800/50 bg-zinc-900/30 text-zinc-500",    body: "All waitlist members get early access to the product before the general public, regardless of rank." },
+                  { rank: "Everyone",  medal: "✨", label: "Participation", color: "border-border/50 bg-card/30 text-muted-foreground/80",    body: "All waitlist members get early access to the product before the general public, regardless of rank." },
                 ].map((tier) => (
-                  <div key={tier.rank} className={cn("flex items-start gap-4 rounded-xl border px-4 py-3", tier.color.split(" ").slice(0, 2).join(" ") + " border-zinc-800/40")}>
+                  <div key={tier.rank} className={cn("flex items-start gap-4 rounded-xl border px-4 py-3", tier.color.split(" ").slice(0, 2).join(" ") + " border-border/40")}>
                     <span className="text-xl shrink-0">{tier.medal}</span>
                     <div className="flex-1 min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
                         <Badge className={cn("rounded-full px-2.5 py-0.5 text-xs font-bold border", tier.color)}>
                           {tier.rank}
                         </Badge>
-                        <span className="text-xs font-semibold text-zinc-400">{tier.label}</span>
+                        <span className="text-xs font-semibold text-muted-foreground">{tier.label}</span>
                       </div>
-                      <p className="mt-1.5 text-xs leading-relaxed text-zinc-600">{tier.body}</p>
+                      <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground/60">{tier.body}</p>
                     </div>
                   </div>
                 ))}
@@ -522,7 +522,7 @@ export default function HowToEarnPage() {
           </div>
         </section>
 
-        <Separator className="bg-zinc-800/60" />
+        <Separator className="bg-muted/60" />
 
         {/* ═══════════════════════════════════════════════════════════
             WHERE TO SHARE
@@ -624,13 +624,13 @@ export default function HowToEarnPage() {
                   ],
                 },
               ].map((ch) => (
-                <div key={ch.channel} className={cn("flex flex-col gap-4 rounded-2xl border border-zinc-800/60 bg-zinc-900/30 p-5", ch.color)}>
+                <div key={ch.channel} className={cn("flex flex-col gap-4 rounded-2xl border border-border/60 bg-card/30 p-5", ch.color)}>
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                       {ch.icon}
-                      <span className="text-sm font-bold text-zinc-200">{ch.channel}</span>
+                      <span className="text-sm font-bold text-foreground/90">{ch.channel}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] text-zinc-600">
+                    <div className="flex items-center gap-2 text-[10px] text-muted-foreground/60">
                       <span>{ch.difficulty}</span>
                       <span>·</span>
                       <span>{ch.potential}</span>
@@ -638,7 +638,7 @@ export default function HowToEarnPage() {
                   </div>
                   <ul className="flex flex-col gap-1.5">
                     {ch.tips.map((tip, i) => (
-                      <li key={i} className="flex items-start gap-2 text-xs text-zinc-500">
+                      <li key={i} className="flex items-start gap-2 text-xs text-muted-foreground/80">
                         <CheckCircle2 size={11} className="mt-0.5 shrink-0 text-emerald-500/70" />
                         {tip}
                       </li>
@@ -655,15 +655,15 @@ export default function HowToEarnPage() {
                   <Star size={16} className="text-amber-400" />
                   <p className="text-base font-bold text-amber-300">The golden rule of referrals</p>
                 </div>
-                <p className="text-sm leading-relaxed text-zinc-400">
-                  <strong className="text-zinc-200">Only share products you genuinely believe in.</strong> People can tell when a recommendation is authentic vs. when you're just chasing a prize. Authentic recommendations from a trusted source convert at 5–10× the rate of generic "check this out" posts. The best referrers are people who would have talked about the product anyway — LaunchForge just rewards them for it.
+                <p className="text-sm leading-relaxed text-muted-foreground">
+                  <strong className="text-foreground/90">Only share products you genuinely believe in.</strong> People can tell when a recommendation is authentic vs. when you're just chasing a prize. Authentic recommendations from a trusted source convert at 5–10× the rate of generic "check this out" posts. The best referrers are people who would have talked about the product anyway — LaunchForge just rewards them for it.
                 </p>
               </div>
             </GlowCard>
 
             {/* Timing strategy */}
             <Card>
-              <h3 className="mb-5 text-sm font-bold text-zinc-200">Timing matters more than you think</h3>
+              <h3 className="mb-5 text-sm font-bold text-foreground/90">Timing matters more than you think</h3>
               <div className="grid gap-4 sm:grid-cols-3">
                 {[
                   {
@@ -687,8 +687,8 @@ export default function HowToEarnPage() {
                 ].map((p) => (
                   <div key={p.phase} className={cn("flex flex-col gap-2 rounded-xl border p-4", p.accent)}>
                     {p.icon}
-                    <p className="text-xs font-bold text-zinc-200">{p.phase}</p>
-                    <p className="text-xs leading-relaxed text-zinc-500">{p.body}</p>
+                    <p className="text-xs font-bold text-foreground/90">{p.phase}</p>
+                    <p className="text-xs leading-relaxed text-muted-foreground/80">{p.body}</p>
                   </div>
                 ))}
               </div>
@@ -696,7 +696,7 @@ export default function HowToEarnPage() {
           </div>
         </section>
 
-        <Separator className="bg-zinc-800/60" />
+        <Separator className="bg-muted/60" />
 
         {/* ═══════════════════════════════════════════════════════════
             GETTING PAID
@@ -712,7 +712,7 @@ export default function HowToEarnPage() {
 
             <div className="grid gap-5 lg:grid-cols-2">
               <div className="flex flex-col gap-4">
-                <h3 className="text-sm font-bold text-zinc-300">The prize delivery process</h3>
+                <h3 className="text-sm font-bold text-foreground/80">The prize delivery process</h3>
                 {[
                   { n: "1", title: "Waitlist closes", body: "The owner locks the leaderboard. Your final rank is recorded. This happens automatically on the expiry date or manually when the owner triggers it." },
                   { n: "2", title: "Winner verification", body: "The owner reviews the top referrers and confirms the winners. They may reach out via email to verify your identity and confirm prize details." },
@@ -720,12 +720,12 @@ export default function HowToEarnPage() {
                   { n: "4", title: "Prize delivered", body: "Cash prizes typically take 1–5 business days to land. Gift card codes arrive instantly. Lifetime access is granted through the product's account system." },
                 ].map((s) => (
                   <div key={s.n} className="flex gap-3">
-                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-zinc-800 bg-zinc-900 text-[10px] font-black text-zinc-500 mt-0.5">
+                    <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-zinc-800 bg-zinc-900 text-[10px] font-black text-muted-foreground/80 mt-0.5">
                       {s.n}
                     </div>
                     <div>
-                      <p className="text-xs font-semibold text-zinc-300">{s.title}</p>
-                      <p className="mt-0.5 text-xs leading-relaxed text-zinc-600">{s.body}</p>
+                      <p className="text-xs font-semibold text-foreground/80">{s.title}</p>
+                      <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground/60">{s.body}</p>
                     </div>
                   </div>
                 ))}
@@ -737,7 +737,7 @@ export default function HowToEarnPage() {
                     <Shield size={15} className="mt-0.5 shrink-0 text-rose-400" />
                     <div>
                       <p className="text-sm font-bold text-rose-300">Know your rights</p>
-                      <div className="mt-2 flex flex-col gap-2 text-xs leading-relaxed text-zinc-500">
+                      <div className="mt-2 flex flex-col gap-2 text-xs leading-relaxed text-muted-foreground/80">
                         <p>LaunchForge displays prizes exactly as the owner sets them. Prizes are funded and delivered by the product owner, not by LaunchForge.</p>
                         <p>If you win a prize and don't receive it within 7 days of the waitlist closing, contact LaunchForge support. We document prize commitments and can help mediate.</p>
                         <p>Never send money or personal financial details unless you've verified the request came from a legitimate product owner you trust.</p>
@@ -747,20 +747,20 @@ export default function HowToEarnPage() {
                 </GlowCard>
 
                 <Card>
-                  <h3 className="mb-3 text-xs font-bold text-zinc-400">Prize payment methods supported</h3>
+                  <h3 className="mb-3 text-xs font-bold text-muted-foreground">Prize payment methods supported</h3>
                   <div className="flex flex-wrap gap-2">
                     {["PayPal", "Wise", "Bank transfer", "Crypto", "Amazon gift card", "Apple gift card", "Google Play", "Direct coupon code"].map((m) => (
-                      <Badge key={m} className="border-zinc-700/60 bg-zinc-800/40 text-xs text-zinc-500">{m}</Badge>
+                      <Badge key={m} className="border-zinc-700/60 bg-muted/40 text-xs text-muted-foreground/80">{m}</Badge>
                     ))}
                   </div>
-                  <p className="mt-3 text-[10px] text-zinc-700">Payment method is agreed between you and the product owner. LaunchForge does not process payments.</p>
+                  <p className="mt-3 text-[10px] text-muted-foreground/40">Payment method is agreed between you and the product owner. LaunchForge does not process payments.</p>
                 </Card>
               </div>
             </div>
           </div>
         </section>
 
-        <Separator className="bg-zinc-800/60" />
+        <Separator className="bg-muted/60" />
 
         {/* ═══════════════════════════════════════════════════════════
             REAL NUMBERS
@@ -774,8 +774,8 @@ export default function HowToEarnPage() {
               </SectionHeading>
             </div>
 
-            <div className="overflow-hidden rounded-2xl border border-zinc-800/60">
-              <div className="grid grid-cols-4 border-b border-zinc-800/60 bg-zinc-900/60 px-5 py-3 text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+            <div className="overflow-hidden rounded-2xl border border-border/60">
+              <div className="grid grid-cols-4 border-b border-border/60 bg-card/60 px-5 py-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
                 <span>Referrals</span>
                 <span>Typical rank</span>
                 <span>Likely prize</span>
@@ -790,21 +790,21 @@ export default function HowToEarnPage() {
                 { refs: "35–50",  rank: "#2–#3",      prize: "$300+ gift card",         effort: "Community posts + email",  color: "" },
                 { refs: "50+",    rank: "#1",         prize: "$500–$2,000 cash",        effort: "Full campaign, audience",  color: "bg-amber-500/5" },
               ].map((row) => (
-                <div key={row.refs} className={cn("grid grid-cols-4 items-center border-b border-zinc-800/40 px-5 py-3.5 last:border-0", row.color)}>
-                  <span className="text-sm font-bold tabular-nums text-zinc-200">{row.refs}</span>
-                  <span className="text-xs text-zinc-400">{row.rank}</span>
-                  <span className="text-xs text-zinc-400">{row.prize}</span>
-                  <span className="text-xs text-zinc-600">{row.effort}</span>
+                <div key={row.refs} className={cn("grid grid-cols-4 items-center border-b border-border/40 px-5 py-3.5 last:border-0", row.color)}>
+                  <span className="text-sm font-bold tabular-nums text-foreground/90">{row.refs}</span>
+                  <span className="text-xs text-muted-foreground">{row.rank}</span>
+                  <span className="text-xs text-muted-foreground">{row.prize}</span>
+                  <span className="text-xs text-muted-foreground/60">{row.effort}</span>
                 </div>
               ))}
             </div>
-            <p className="text-center text-xs text-zinc-700">
+            <p className="text-center text-xs text-muted-foreground/40">
               These ranges are estimates based on typical waitlist competition. Results vary significantly by product popularity and how many other people are referring.
             </p>
           </div>
         </section>
 
-        <Separator className="bg-zinc-800/60" />
+        <Separator className="bg-muted/60" />
 
         {/* ═══════════════════════════════════════════════════════════
             FAQ
@@ -862,12 +862,12 @@ export default function HowToEarnPage() {
                 <AccordionItem
                   key={i}
                   value={`item-${i}`}
-                  className="rounded-2xl border border-zinc-800/60 bg-zinc-900/30 px-5"
+                  className="rounded-2xl border border-border/60 bg-card/30 px-5"
                 >
-                  <AccordionTrigger className="py-4 text-sm font-semibold text-zinc-200 hover:text-zinc-100 hover:no-underline [&[data-state=open]]:text-indigo-300">
+                  <AccordionTrigger className="py-4 text-sm font-semibold text-foreground/90 hover:text-foreground hover:no-underline [&[data-state=open]]:text-indigo-300">
                     {item.q}
                   </AccordionTrigger>
-                  <AccordionContent className="pb-4 text-sm leading-relaxed text-zinc-500">
+                  <AccordionContent className="pb-4 text-sm leading-relaxed text-muted-foreground/80">
                     {item.a}
                   </AccordionContent>
                 </AccordionItem>
@@ -876,7 +876,7 @@ export default function HowToEarnPage() {
           </div>
         </section>
 
-        <Separator className="bg-zinc-800/60" />
+        <Separator className="bg-muted/60" />
 
         {/* ═══════════════════════════════════════════════════════════
             CTA
@@ -889,10 +889,10 @@ export default function HowToEarnPage() {
               </div>
 
               <div className="flex flex-col gap-3">
-                <h2 className="text-3xl font-black tracking-tight text-zinc-100">
+                <h2 className="text-3xl font-black tracking-tight text-foreground">
                   Ready to start earning?
                 </h2>
-                <p className="mx-auto max-w-lg text-base leading-relaxed text-zinc-500">
+                <p className="mx-auto max-w-lg text-base leading-relaxed text-muted-foreground/80">
                   Browse live products, join the ones you're excited about, and start referring.
                   Your first referral is only one share away.
                 </p>
@@ -906,14 +906,14 @@ export default function HowToEarnPage() {
                   </Button>
                 </Link>
                 <Link href="/explore?filter=prizes">
-                  <Button variant="outline" className="gap-2 border-zinc-700/80 bg-transparent px-8 py-3 text-sm text-zinc-400 hover:border-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-200">
+                  <Button variant="outline" className="gap-2 border-zinc-700/80 bg-transparent px-8 py-3 text-sm text-muted-foreground hover:border-zinc-600 hover:bg-muted/60 hover:text-foreground/90">
                     <Trophy size={14} className="text-amber-400" />
                     View prize pools
                   </Button>
                 </Link>
               </div>
 
-              <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-zinc-600">
+              <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-muted-foreground/60">
                 {[
                   "✓ Free forever",
                   "✓ No credit card",
@@ -929,23 +929,23 @@ export default function HowToEarnPage() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-zinc-800/50 bg-[#080808] px-4 py-10 sm:px-6">
+      <footer className="border-t border-border/50 bg-background px-4 py-10 sm:px-6">
         <div className="mx-auto max-w-5xl flex flex-col items-center gap-4 text-center">
           <div className="flex items-center gap-1.5">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-600">
               <Zap size={13} className="text-white" />
             </div>
-            <span className="text-sm font-black tracking-tight text-zinc-300">LaunchForge</span>
+            <span className="text-sm font-black tracking-tight text-foreground/80">LaunchForge</span>
           </div>
-          <p className="text-xs text-zinc-600 max-w-sm">
+          <p className="text-xs text-muted-foreground/60 max-w-sm">
             The viral waitlist platform for product launches. Helping founders grow and early believers earn since 2025.
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-zinc-700">
-            <Link href="#"          className="hover:text-zinc-500 transition-colors">Explore</Link>
-            <Link href="#"      className="hover:text-zinc-500 transition-colors">How to earn</Link>
-            <Link href="#"          className="hover:text-zinc-500 transition-colors">Privacy</Link>
-            <Link href="#"            className="hover:text-zinc-500 transition-colors">Terms</Link>
-            <a href="mailto:support@launchforge.app" className="hover:text-zinc-500 transition-colors">Support</a>
+          <div className="flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground/40">
+            <Link href="#"          className="hover:text-muted-foreground/80 transition-colors">Explore</Link>
+            <Link href="#"      className="hover:text-muted-foreground/80 transition-colors">How to earn</Link>
+            <Link href="#"          className="hover:text-muted-foreground/80 transition-colors">Privacy</Link>
+            <Link href="#"            className="hover:text-muted-foreground/80 transition-colors">Terms</Link>
+            <a href="mailto:support@launchforge.app" className="hover:text-muted-foreground/80 transition-colors">Support</a>
           </div>
         </div>
       </footer>

@@ -37,12 +37,12 @@ export function StatsRow() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      className="relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/40 backdrop-blur-sm"
+      className="relative overflow-hidden rounded-2xl border border-border/80 bg-card/40 backdrop-blur-sm"
     >
       {/* Top gradient line */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
 
-      <div className="grid grid-cols-2 divide-x divide-y divide-zinc-800/60 md:grid-cols-4 md:divide-y-0">
+      <div className="grid grid-cols-2 divide-x divide-y divide-border/60 md:grid-cols-4 md:divide-y-0">
         {STATS.map((stat, i) => (
           <motion.div
             key={stat.label}
@@ -65,9 +65,9 @@ export function StatsRow() {
 
             {/* Label */}
             <div className="flex flex-col gap-0.5">
-              <span className="text-sm font-medium text-zinc-300">{stat.label}</span>
+              <span className="text-sm font-medium text-foreground/80">{stat.label}</span>
               {stat.sublabel && (
-                <span className="text-xs text-zinc-600">{stat.sublabel}</span>
+                <span className="text-xs text-muted-foreground/60">{stat.sublabel}</span>
               )}
             </div>
 

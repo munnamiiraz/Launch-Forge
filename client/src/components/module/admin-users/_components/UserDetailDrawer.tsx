@@ -29,7 +29,7 @@ import {
 import type { AdminUser } from "@/src/components/module/admin/_types";
 
 const PLAN_BADGE: Record<string, string> = {
-  FREE:   "border-zinc-700/60 bg-zinc-800/40 text-zinc-500",
+  FREE:   "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",
   PRO:    "border-indigo-500/30 bg-indigo-500/12 text-indigo-400",
   GROWTH: "border-violet-500/30 bg-violet-500/12 text-violet-400",
 };
@@ -95,13 +95,13 @@ export function UserDetailDrawer({
       <Sheet open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
         <SheetContent
           side="right"
-          className="flex w-full flex-col gap-0 overflow-hidden border-zinc-800/80 bg-zinc-950 p-0 sm:max-w-[480px]"
+          className="flex w-full flex-col gap-0 overflow-hidden border-border/80 bg-background p-0 sm:max-w-[480px]"
         >
           {/* Top accent */}
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
 
           {/* Header */}
-          <SheetHeader className="border-b border-zinc-800/60 px-6 py-5">
+          <SheetHeader className="border-b border-border/60 px-6 py-5">
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
                 <Avatar className="h-11 w-11 rounded-xl">
@@ -111,7 +111,7 @@ export function UserDetailDrawer({
                 </Avatar>
                 <div>
                   <div className="flex items-center gap-2">
-                    <SheetTitle className="text-base font-semibold text-zinc-100">
+                    <SheetTitle className="text-base font-semibold text-foreground">
                       {user.name}
                     </SheetTitle>
                     {user.role === "ADMIN" && (
@@ -120,13 +120,13 @@ export function UserDetailDrawer({
                       </Badge>
                     )}
                   </div>
-                  <p className="text-xs text-zinc-600">{user.email}</p>
+                  <p className="text-xs text-muted-foreground/60">{user.email}</p>
                 </div>
               </div>
               <Button
                 variant="ghost" size="icon"
                 onClick={onClose}
-                className="h-7 w-7 shrink-0 rounded-lg text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300"
+                className="h-7 w-7 shrink-0 rounded-lg text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80"
               >
                 <X size={14} />
               </Button>
@@ -142,7 +142,7 @@ export function UserDetailDrawer({
               <Badge variant="outline" className={cn("rounded-full px-2 text-[10px] font-semibold", PLAN_BADGE[user.plan])}>
                 {user.plan}{user.planMode ? ` · ${user.planMode === "MONTHLY" ? "Monthly" : "Yearly"}` : ""}
               </Badge>
-              <Badge className="border-zinc-700/60 bg-zinc-800/40 text-[10px] text-zinc-500">
+              <Badge className="border-zinc-700/60 bg-muted/40 text-[10px] text-muted-foreground/80">
                 ID: {user.id}
               </Badge>
             </div>
@@ -176,47 +176,47 @@ export function UserDetailDrawer({
 
             {/* Account details */}
             <div className="flex flex-col gap-1">
-              <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-600">Account details</p>
+              <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Account details</p>
               {[
                 { icon: <Mail     size={12} />, label: "Email",         value: user.email             },
                 { icon: <Calendar size={12} />, label: "Joined",        value: fmtDate(user.createdAt) },
                 { icon: <Clock    size={12} />, label: "Last active",   value: user.lastActiveAt ? fmtDate(user.lastActiveAt) : "Never" },
                 { icon: <Shield   size={12} />, label: "Role",          value: user.role              },
               ].map((row) => (
-                <div key={row.label} className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-zinc-900/30 transition-colors">
-                  <span className="text-zinc-700 shrink-0">{row.icon}</span>
-                  <span className="w-28 shrink-0 text-xs text-zinc-600">{row.label}</span>
-                  <span className="text-xs font-medium text-zinc-300">{row.value}</span>
+                <div key={row.label} className="flex items-center gap-3 rounded-lg px-3 py-2.5 hover:bg-card/30 transition-colors">
+                  <span className="text-muted-foreground/40 shrink-0">{row.icon}</span>
+                  <span className="w-28 shrink-0 text-xs text-muted-foreground/60">{row.label}</span>
+                  <span className="text-xs font-medium text-foreground/80">{row.value}</span>
                 </div>
               ))}
             </div>
 
-            <Separator className="bg-zinc-800/60" />
+            <Separator className="bg-muted/60" />
 
             {/* Usage stats */}
             <div>
-              <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-zinc-600">Usage</p>
+              <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Usage</p>
               <div className="grid grid-cols-3 gap-2">
                 {[
                   { icon: <Globe         size={13} className="text-cyan-400"    />, label: "Waitlists",   value: user.waitlists },
                   { icon: <Users         size={13} className="text-indigo-400"  />, label: "Subscribers", value: user.subscribers.toLocaleString() },
                   { icon: <Share2        size={13} className="text-violet-400"  />, label: "Referrals",   value: "—" },
                 ].map((s) => (
-                  <div key={s.label} className="flex flex-col gap-1 rounded-xl border border-zinc-800/60 bg-zinc-900/40 px-3 py-2.5">
+                  <div key={s.label} className="flex flex-col gap-1 rounded-xl border border-border/60 bg-card/40 px-3 py-2.5">
                     <div className="flex items-center gap-1.5">{s.icon}</div>
-                    <p className="text-sm font-black tabular-nums text-zinc-200">{s.value}</p>
-                    <p className="text-[10px] text-zinc-600">{s.label}</p>
+                    <p className="text-sm font-black tabular-nums text-foreground/90">{s.value}</p>
+                    <p className="text-[10px] text-muted-foreground/60">{s.label}</p>
                   </div>
                 ))}
               </div>
             </div>
 
-            <Separator className="bg-zinc-800/60" />
+            <Separator className="bg-muted/60" />
 
             {/* Billing */}
             <div>
-              <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-zinc-600">Billing</p>
-              <div className="flex flex-col gap-2 rounded-xl border border-zinc-800/60 bg-zinc-900/30 px-4 py-3">
+              <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Billing</p>
+              <div className="flex flex-col gap-2 rounded-xl border border-border/60 bg-card/30 px-4 py-3">
                 {[
                   { label: "Plan",       value: user.plan },
                   { label: "Billing",    value: user.planMode ?? "—" },
@@ -227,18 +227,18 @@ export function UserDetailDrawer({
                                               : "$0" },
                 ].map((r) => (
                   <div key={r.label} className="flex items-center justify-between text-xs">
-                    <span className="text-zinc-600">{r.label}</span>
-                    <span className="font-semibold text-zinc-300">{r.value}</span>
+                    <span className="text-muted-foreground/60">{r.label}</span>
+                    <span className="font-semibold text-foreground/80">{r.value}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <Separator className="bg-zinc-800/60" />
+            <Separator className="bg-muted/60" />
 
             {/* Actions */}
             <div>
-              <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-zinc-600">Actions</p>
+              <p className="mb-3 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Actions</p>
               <div className="flex flex-col gap-2">
                 {/* Suspend / Reactivate */}
                 {user.status !== "DELETED" && (
@@ -275,7 +275,7 @@ export function UserDetailDrawer({
                       size="sm"
                       disabled={isPending}
                       onClick={() => act(() => promoteToAdminAction(user.id), { role: "ADMIN" })}
-                      className="justify-start gap-2 border-zinc-700/60 bg-transparent text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200"
+                      className="justify-start gap-2 border-zinc-700/60 bg-transparent text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground/90"
                     >
                       {isPending ? <Loader2 size={13} className="animate-spin" /> : <Crown size={13} />}
                       Promote to admin
@@ -286,7 +286,7 @@ export function UserDetailDrawer({
                       size="sm"
                       disabled={isPending}
                       onClick={() => act(() => demoteFromAdminAction(user.id), { role: "USER" })}
-                      className="justify-start gap-2 border-zinc-700/60 bg-transparent text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200"
+                      className="justify-start gap-2 border-zinc-700/60 bg-transparent text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground/90"
                     >
                       {isPending ? <Loader2 size={13} className="animate-spin" /> : <UserMinus size={13} />}
                       Remove admin role
@@ -314,16 +314,16 @@ export function UserDetailDrawer({
 
       {/* Delete confirmation */}
       <AlertDialog open={confirmDel} onOpenChange={setConfirmDel}>
-        <AlertDialogContent className="border-zinc-800 bg-zinc-950">
+        <AlertDialogContent className="border-zinc-800 bg-background">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-zinc-100">Delete {user.name}?</AlertDialogTitle>
-            <AlertDialogDescription className="text-zinc-500">
+            <AlertDialogTitle className="text-foreground">Delete {user.name}?</AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground/80">
               This permanently deletes the account and all associated data — workspaces,
               waitlists, subscribers, and payments. This cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-zinc-800 bg-transparent text-zinc-400 hover:bg-zinc-800/60">
+            <AlertDialogCancel className="border-zinc-800 bg-transparent text-muted-foreground hover:bg-muted/60">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction

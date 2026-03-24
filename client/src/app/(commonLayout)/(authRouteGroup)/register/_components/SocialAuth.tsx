@@ -56,8 +56,8 @@ function SocialButton({ provider, onClick }: SocialButtonProps) {
       disabled={loading}
       className={cn(
         "flex flex-1 items-center justify-center gap-2 rounded-lg border border-zinc-800",
-        "bg-zinc-900/60 px-4 py-2.5 text-sm font-medium text-zinc-300",
-        "transition-all duration-150 hover:border-zinc-700 hover:bg-zinc-800/80 hover:text-zinc-100",
+        "bg-card/60 px-4 py-2.5 text-sm font-medium text-foreground/80",
+        "transition-all duration-150 hover:border-zinc-700 hover:bg-zinc-800/80 hover:text-foreground",
         "disabled:pointer-events-none disabled:opacity-50"
       )}
     >

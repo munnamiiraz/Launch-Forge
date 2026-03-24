@@ -13,6 +13,7 @@ const outfit = Outfit({
 
 import type { Metadata } from "next";
 import { QueryProvider } from "@/src/provider/QueryProvider";
+import { ThemeProvider } from "@/src/provider/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "LaunchForge",
@@ -25,9 +26,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${outfit.variable} ${inter.variable}`} suppressHydrationWarning={true}>
+    <html lang="en" className={`${outfit.variable} ${inter.variable} dark`} suppressHydrationWarning={true}>
       <body className="font-inter antialiased">
-        <QueryProvider>{children}</QueryProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <QueryProvider>{children}</QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

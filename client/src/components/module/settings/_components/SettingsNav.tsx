@@ -46,7 +46,7 @@ export function SettingsNav() {
 
   return (
     <nav className="sticky top-20 hidden w-48 shrink-0 flex-col gap-1 lg:flex">
-      <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-widest text-zinc-700">
+      <p className="mb-2 px-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
         Settings
       </p>
       {TABS.map(({ id, label, icon: Icon }) => {
@@ -57,7 +57,7 @@ export function SettingsNav() {
             onClick={() => scrollTo(id)}
             className={cn(
               "relative flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium transition-all duration-150 text-left",
-              isActive ? "text-zinc-100" : "text-zinc-500 hover:text-zinc-300",
+              isActive ? "text-foreground" : "text-muted-foreground/80 hover:text-foreground/80",
             )}
           >
             {isActive && (
@@ -69,7 +69,7 @@ export function SettingsNav() {
             )}
             <Icon
               size={14}
-              className={cn("relative shrink-0", isActive ? "text-indigo-400" : "text-zinc-600")}
+              className={cn("relative shrink-0", isActive ? "text-indigo-400" : "text-muted-foreground/60")}
             />
             <span className="relative">{label}</span>
             {isActive && (

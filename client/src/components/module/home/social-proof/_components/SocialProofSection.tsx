@@ -14,7 +14,7 @@ export function SocialProofSection() {
   const supporting = TESTIMONIALS.filter((t) => !t.featured);
 
   return (
-    <section className="relative w-full overflow-hidden bg-zinc-950 py-24 md:py-32">
+    <section className="relative w-full overflow-hidden bg-background py-24 md:py-32">
 
       {/* ── Ambient layers (consistent system) ──────────────── */}
       <div aria-hidden className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[900px] -translate-x-1/2 rounded-full bg-indigo-600/6 blur-[150px]" />
@@ -40,14 +40,14 @@ export function SocialProofSection() {
             Social Proof
           </Badge>
 
-          <h2 className="max-w-3xl text-4xl font-bold tracking-tight text-zinc-100 md:text-5xl">
+          <h2 className="max-w-3xl text-4xl font-bold tracking-tight text-foreground md:text-5xl">
             Founders who launched{" "}
             <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-indigo-300 bg-clip-text text-transparent">
               with momentum
             </span>
           </h2>
 
-          <p className="max-w-xl text-base leading-relaxed text-zinc-500">
+          <p className="max-w-xl text-base leading-relaxed text-muted-foreground/80">
             Over 2,800 founders have used LaunchForge to turn cold waitlists into
             warm, growing communities before writing a single line of product code.
           </p>

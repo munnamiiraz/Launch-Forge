@@ -24,7 +24,7 @@ export function PasswordFieldWithToggle({
         {...props}
         type={show ? "text" : "password"}
         className={cn(
-          "border-zinc-800 bg-zinc-900/60 pr-10 text-zinc-100 placeholder:text-zinc-600",
+          "border-zinc-800 bg-card/60 pr-10 text-foreground placeholder:text-muted-foreground/60",
           "focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/50",
           "transition-all duration-200",
           hasError &&
@@ -38,7 +38,7 @@ export function PasswordFieldWithToggle({
         size="icon"
         tabIndex={-1}
         onClick={() => setShow((v) => !v)}
-        className="absolute inset-y-0 right-0 h-full w-9 rounded-l-none text-zinc-500 hover:bg-transparent hover:text-zinc-300"
+        className="absolute inset-y-0 right-0 h-full w-9 rounded-l-none text-muted-foreground/80 hover:bg-transparent hover:text-foreground/80"
       >
         {show ? <EyeOff size={14} /> : <Eye size={14} />}
       </Button>

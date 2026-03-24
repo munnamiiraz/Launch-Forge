@@ -41,11 +41,11 @@ interface KpiProps {
 function KpiCard({ label, value, delta, deltaType, icon, iconClass, index }: KpiProps) {
   return (
     <motion.div custom={index} variants={fadeUp} initial="hidden" animate="visible">
-      <Card className="group relative overflow-hidden border-zinc-800/80 bg-zinc-900/40 transition-all duration-300 hover:bg-zinc-900/60 hover:shadow-lg hover:shadow-black/20">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent transition-all duration-300 group-hover:via-indigo-500/30" />
+      <Card className="group relative overflow-hidden border-border/80 bg-card/40 transition-all duration-300 hover:bg-card/60 hover:shadow-lg hover:shadow-black/20">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-indigo-500/30" />
         <CardContent className="p-4">
           <div className="mb-2.5 flex items-center justify-between">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
               {label}
             </p>
             <div
@@ -57,7 +57,7 @@ function KpiCard({ label, value, delta, deltaType, icon, iconClass, index }: Kpi
               {icon}
             </div>
           </div>
-          <p className="text-2xl font-black tracking-tight text-zinc-100 tabular-nums">{value}</p>
+          <p className="text-2xl font-black tracking-tight text-foreground tabular-nums">{value}</p>
           <div className="mt-1.5 flex items-center gap-1">
             <Badge
               className={cn(
@@ -66,12 +66,12 @@ function KpiCard({ label, value, delta, deltaType, icon, iconClass, index }: Kpi
                   ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
                   : deltaType === "down"
                     ? "border-red-500/25 bg-red-500/10 text-red-400"
-                    : "border-zinc-700/60 bg-zinc-800/40 text-zinc-500",
+                    : "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",
               )}
             >
               {delta}
             </Badge>
-            <span className="text-[10px] text-zinc-700">vs last period</span>
+            <span className="text-[10px] text-muted-foreground/40">vs last period</span>
           </div>
         </CardContent>
       </Card>
@@ -167,8 +167,8 @@ export function AnalyticsKpiStrip() {
         </div>
       )}
       {isLoading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-zinc-950/40">
-          <div className="flex items-center gap-2 text-xs text-zinc-400">
+        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-background/40">
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
             <Loader2 size={14} className="animate-spin" />
             Loading analytics…
           </div>

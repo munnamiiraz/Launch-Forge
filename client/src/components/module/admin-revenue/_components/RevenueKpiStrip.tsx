@@ -28,11 +28,11 @@ function KpiCard({ label, value, sub, icon, accent, value_c, badge, index }: Kpi
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
     >
-      <Card className="group relative overflow-hidden border-zinc-800/80 bg-zinc-900/40 transition-all duration-300 hover:bg-zinc-900/60 hover:shadow-lg hover:shadow-black/20">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent transition-all duration-300 group-hover:via-emerald-500/20" />
+      <Card className="group relative overflow-hidden border-border/80 bg-card/40 transition-all duration-300 hover:bg-card/60 hover:shadow-lg hover:shadow-black/20">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-emerald-500/20" />
         <CardContent className="p-4">
           <div className="mb-2 flex items-center justify-between">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">{label}</p>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{label}</p>
             <div className={cn("flex h-7 w-7 items-center justify-center rounded-lg border transition-transform duration-300 group-hover:scale-110", accent)}>
               {icon}
             </div>
@@ -49,10 +49,10 @@ function KpiCard({ label, value, sub, icon, accent, value_c, badge, index }: Kpi
                 {badge.up ? <ArrowUpRight size={9} /> : <TrendingDown size={9} />}
                 {badge.text}
               </Badge>
-              <span className="text-[10px] text-zinc-700">{sub}</span>
+              <span className="text-[10px] text-muted-foreground/40">{sub}</span>
             </div>
           ) : (
-            <p className="mt-1 text-[10px] text-zinc-600">{sub}</p>
+            <p className="mt-1 text-[10px] text-muted-foreground/60">{sub}</p>
           )}
         </CardContent>
       </Card>
@@ -125,17 +125,17 @@ export function RevenueKpiStrip({ kpis }: { kpis: RevenueKpis }) {
       label:   "Avg LTV",
       value:   `$${kpis.ltv}`,
       sub:     "avg customer lifetime value",
-      icon:    <Clock size={13} className="text-zinc-400" />,
+      icon:    <Clock size={13} className="text-muted-foreground" />,
       accent:  "border-zinc-700/60 bg-zinc-800/30",
-      value_c: "text-zinc-300",
+      value_c: "text-foreground/80",
     },
     {
       label:   "Avg sub length",
       value:   `${kpis.avgSubLengthMonths}mo`,
       sub:     "avg months before churn",
-      icon:    <Clock size={13} className="text-zinc-400" />,
+      icon:    <Clock size={13} className="text-muted-foreground" />,
       accent:  "border-zinc-700/60 bg-zinc-800/30",
-      value_c: "text-zinc-300",
+      value_c: "text-foreground/80",
     },
   ];
 

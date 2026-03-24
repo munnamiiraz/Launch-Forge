@@ -13,7 +13,7 @@ export function FooterCTA() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-      className="relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/40 px-8 py-12 text-center md:px-16"
+      className="relative overflow-hidden rounded-2xl border border-border/80 bg-card/40 px-8 py-12 text-center md:px-16"
     >
       {/* Background accent glow */}
       <div
@@ -35,10 +35,10 @@ export function FooterCTA() {
 
         {/* Headline */}
         <div className="space-y-3">
-          <h2 className="text-3xl font-bold tracking-tight text-zinc-100 md:text-4xl">
+          <h2 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
             Ready to launch with momentum?
           </h2>
-          <p className="mx-auto max-w-md text-base text-zinc-500">
+          <p className="mx-auto max-w-md text-base text-muted-foreground/80">
             Join 2,847 founders already using LaunchForge to build waitlists
             that compound. Start free, scale as you grow.
           </p>
@@ -67,7 +67,7 @@ export function FooterCTA() {
             asChild
             variant="ghost"
             size="lg"
-            className="px-6 text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200"
+            className="px-6 text-muted-foreground hover:bg-muted/60 hover:text-foreground/90"
           >
             <Link href="/pricing">View pricing</Link>
           </Button>
@@ -80,7 +80,7 @@ export function FooterCTA() {
             "No credit card required",
             "2-minute setup",
           ].map((text) => (
-            <span key={text} className="flex items-center gap-1.5 text-xs text-zinc-600">
+            <span key={text} className="flex items-center gap-1.5 text-xs text-muted-foreground/60">
               <span className="h-1 w-1 rounded-full bg-zinc-700" />
               {text}
             </span>

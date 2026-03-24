@@ -31,7 +31,7 @@ const TIER_TABS: { id: TierFilter; label: string; icon: React.ReactNode }[] = [
 
 const TIER_BADGE: Record<FullLeaderboardEntry["tier"], string> = {
   champion: "border-amber-500/35 bg-amber-500/12 text-amber-300",
-  top10:    "border-zinc-600/40 bg-zinc-700/20 text-zinc-300",
+  top10:    "border-zinc-600/40 bg-zinc-700/20 text-foreground/80",
   top25:    "border-orange-600/30 bg-orange-600/10 text-orange-400",
   rising:   "border-indigo-500/25 bg-indigo-500/10 text-indigo-400",
 };
@@ -78,7 +78,7 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
       <div className="flex flex-col gap-3">
 
         {/* Tier tabs */}
-        <div className="flex items-center gap-0.5 overflow-x-auto rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-1">
+        <div className="flex items-center gap-0.5 overflow-x-auto rounded-xl border border-border/80 bg-card/40 p-1">
           {TIER_TABS.map(({ id, label, icon }) => {
             const active = tier === id;
             const count  = id === "all"
@@ -91,7 +91,7 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
                 onClick={() => handleTier(id)}
                 className={cn(
                   "relative flex shrink-0 items-center gap-1.5 rounded-lg px-3 py-2 text-xs font-medium transition-all duration-150",
-                  active ? "text-zinc-100" : "text-zinc-500 hover:text-zinc-300",
+                  active ? "text-foreground" : "text-muted-foreground/80 hover:text-foreground/80",
                 )}
               >
                 {active && (
@@ -106,7 +106,7 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
                   {label}
                   <span className={cn(
                     "rounded-full px-1.5 py-0 text-[9px] font-bold tabular-nums",
-                    active ? "bg-zinc-700 text-zinc-300" : "bg-zinc-800/60 text-zinc-600",
+                    active ? "bg-zinc-700 text-foreground/80" : "bg-muted/60 text-muted-foreground/60",
                   )}>
                     {count}
                   </span>
@@ -118,17 +118,17 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
 
         {/* Search */}
         <div className="relative max-w-sm">
-          <Search size={13} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-600" />
+          <Search size={13} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/60" />
           <Input
             value={search}
             onChange={(e) => handleSearch(e.target.value)}
             placeholder="Search by name…"
-            className="h-9 border-zinc-800/80 bg-zinc-900/60 pl-8 text-sm text-zinc-100 placeholder:text-zinc-600 focus-visible:border-indigo-500/40 focus-visible:ring-1 focus-visible:ring-indigo-500/20"
+            className="h-9 border-border/80 bg-card/60 pl-8 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/40 focus-visible:ring-1 focus-visible:ring-indigo-500/20"
           />
           {search && (
             <button
               onClick={() => handleSearch("")}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-600 hover:text-zinc-400 transition-colors"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-muted-foreground transition-colors"
             >
               <X size={13} />
             </button>
@@ -137,10 +137,10 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
       </div>
 
       {/* ── Table ───────────────────────────────────────── */}
-      <div className="overflow-hidden rounded-2xl border border-zinc-800/60">
+      <div className="overflow-hidden rounded-2xl border border-border/60">
 
         {/* Column headers */}
-        <div className="grid grid-cols-[44px_1fr_80px_80px] gap-3 border-b border-zinc-800/60 bg-zinc-900/60 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-widest text-zinc-600 sm:grid-cols-[44px_1fr_auto_80px_80px]">
+        <div className="grid grid-cols-[44px_1fr_80px_80px] gap-3 border-b border-border/60 bg-card/60 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 sm:grid-cols-[44px_1fr_auto_80px_80px]">
           <span className="text-center">#</span>
           <span>Referrer</span>
           <span className="hidden text-center sm:block">Tier</span>
@@ -149,7 +149,7 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
         </div>
 
         {/* Rows */}
-        <div className="divide-y divide-zinc-800/40">
+        <div className="divide-y divide-border/40">
           <AnimatePresence mode="popLayout">
             {paginated.length === 0 ? (
               <motion.div
@@ -160,7 +160,7 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
                 className="flex flex-col items-center gap-3 py-14 text-center"
               >
                 <Trophy size={28} className="text-zinc-800" />
-                <p className="text-sm text-zinc-600">No entries match your filters.</p>
+                <p className="text-sm text-muted-foreground/60">No entries match your filters.</p>
               </motion.div>
             ) : paginated.map((entry, i) => {
               const globalIdx = (page - 1) * PAGE_SIZE + i;
@@ -171,13 +171,13 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
 
               const rankStyle =
                 entry.rank === 1 ? "text-amber-400 text-base font-black"  :
-                entry.rank === 2 ? "text-zinc-300  text-sm  font-bold"    :
+                entry.rank === 2 ? "text-foreground/80  text-sm  font-bold"    :
                 entry.rank === 3 ? "text-orange-400 text-sm font-bold"    :
-                                   "text-zinc-600   text-sm  font-medium";
+                                   "text-muted-foreground/60   text-sm  font-medium";
 
               const rowBg =
                 entry.rank === 1 ? "bg-amber-500/5 border-l-2 border-l-amber-500/40" :
-                entry.rank <= 3  ? "bg-zinc-900/30" :
+                entry.rank <= 3  ? "bg-card/30" :
                                    "hover:bg-zinc-900/20";
 
               return (
@@ -209,7 +209,7 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
                           {initials}
                         </AvatarFallback>
                       </Avatar>
-                      <span className="text-sm font-medium text-zinc-200">{entry.maskedName}</span>
+                      <span className="text-sm font-medium text-foreground/90">{entry.maskedName}</span>
                       {entry.isConfirmed && (
                         <CheckCircle2 size={11} className="shrink-0 text-emerald-500" />
                       )}
@@ -218,7 +218,7 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
                           "hidden shrink-0 rounded-full px-1.5 py-0 text-[9px] sm:inline-flex",
                           entry.rank === 1
                             ? "border-amber-500/30 bg-amber-500/12 text-amber-300"
-                            : "border-zinc-700/60 bg-zinc-800/40 text-zinc-500",
+                            : "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",
                         )}>
                           {prize.emoji}
                         </Badge>
@@ -253,18 +253,18 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
 
                   {/* Referral count */}
                   <div className="flex flex-col items-end gap-0.5">
-                    <div className="flex items-center gap-1 text-sm font-bold tabular-nums text-zinc-200">
-                      <Share2 size={10} className="text-zinc-700" />
+                    <div className="flex items-center gap-1 text-sm font-bold tabular-nums text-foreground/90">
+                      <Share2 size={10} className="text-muted-foreground/40" />
                       {entry.referralCount}
                     </div>
-                    <span className="text-[9px] text-zinc-700">
+                    <span className="text-[9px] text-muted-foreground/40">
                       {entry.referralCount === 1 ? "referral" : "referrals"}
                     </span>
                   </div>
 
                   {/* Share % */}
                   <div className="text-right">
-                    <span className="text-xs tabular-nums text-zinc-500">{entry.sharePercent}%</span>
+                    <span className="text-xs tabular-nums text-muted-foreground/80">{entry.sharePercent}%</span>
                   </div>
                 </motion.div>
               );
@@ -273,13 +273,13 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
         </div>
 
         {/* Pagination + count footer */}
-        <div className="flex items-center justify-between border-t border-zinc-800/60 bg-zinc-900/30 px-4 py-3">
-          <p className="text-[11px] text-zinc-600">
+        <div className="flex items-center justify-between border-t border-border/60 bg-card/30 px-4 py-3">
+          <p className="text-[11px] text-muted-foreground/60">
             Showing{" "}
-            <span className="font-semibold text-zinc-400">
+            <span className="font-semibold text-muted-foreground">
               {Math.min((page - 1) * PAGE_SIZE + 1, filtered.length)}–{Math.min(page * PAGE_SIZE, filtered.length)}
             </span>{" "}
-            of <span className="font-semibold text-zinc-400">{filtered.length}</span> referrers
+            of <span className="font-semibold text-muted-foreground">{filtered.length}</span> referrers
           </p>
 
           {totalPages > 1 && (
@@ -287,7 +287,7 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
               <Button
                 variant="ghost" size="icon" disabled={page <= 1}
                 onClick={() => setPage((p) => p - 1)}
-                className="h-7 w-7 rounded-md text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300 disabled:opacity-30"
+                className="h-7 w-7 rounded-md text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80 disabled:opacity-30"
               >
                 <ChevronLeft size={13} />
               </Button>
@@ -304,7 +304,7 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
                       "h-7 w-7 rounded-md text-xs font-medium",
                       p === page
                         ? "bg-indigo-600 text-white hover:bg-indigo-500"
-                        : "text-zinc-500 hover:bg-zinc-800/60 hover:text-zinc-300",
+                        : "text-muted-foreground/80 hover:bg-muted/60 hover:text-foreground/80",
                     )}
                   >
                     {p}
@@ -314,7 +314,7 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
               <Button
                 variant="ghost" size="icon" disabled={page >= totalPages}
                 onClick={() => setPage((p) => p + 1)}
-                className="h-7 w-7 rounded-md text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300 disabled:opacity-30"
+                className="h-7 w-7 rounded-md text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80 disabled:opacity-30"
               >
                 <ChevronRight size={13} />
               </Button>

@@ -38,7 +38,11 @@ export function WorkspaceProvider({ initialWorkspaces, children }: WorkspaceProv
     const stored = localStorage.getItem("activeWorkspaceId");
     if (stored) {
       const match = initialWorkspaces.find((ws) => ws.id === stored);
-      if (match) setActiveWorkspaceState(match);
+      if (match) {
+        setActiveWorkspaceState(match);
+        // Also sync the cookie
+        document.cookie = `activeWorkspaceId=${match.id}; path=/; max-age=31536000; SameSite=Lax`;
+      }
     }
   }, [initialWorkspaces]);
 
@@ -60,6 +64,8 @@ export function WorkspaceProvider({ initialWorkspaces, children }: WorkspaceProv
   const setActiveWorkspace = (ws: Workspace) => {
     setActiveWorkspaceState(ws);
     localStorage.setItem("activeWorkspaceId", ws.id);
+    // Set a cookie so Server Components/Actions can also see it
+    document.cookie = `activeWorkspaceId=${ws.id}; path=/; max-age=31536000; SameSite=Lax`;
   };
 
   return (

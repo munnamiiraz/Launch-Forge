@@ -101,7 +101,7 @@ export function VerifyEmailForm() {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className={cn(
-          "relative rounded-2xl border border-zinc-800/80 bg-zinc-950/90",
+          "relative rounded-2xl border border-border/80 bg-background/90",
           "p-8 shadow-2xl shadow-black/60 backdrop-blur-xl",
           "before:absolute before:inset-0 before:-z-10 before:rounded-2xl",
           "before:bg-gradient-to-b before:from-zinc-800/10 before:to-transparent"
@@ -118,7 +118,7 @@ export function VerifyEmailForm() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/15">
             <Zap size={15} className="text-indigo-400" />
           </div>
-          <span className="text-sm font-semibold tracking-tight text-zinc-100">
+          <span className="text-sm font-semibold tracking-tight text-foreground">
             LaunchForge
           </span>
         </motion.div>
@@ -153,15 +153,15 @@ export function VerifyEmailForm() {
               </motion.div>
 
               <div className="space-y-1">
-                <p className="text-base font-semibold text-zinc-100">
+                <p className="text-base font-semibold text-foreground">
                   Email verified!
                 </p>
-                <p className="text-sm text-zinc-500">
+                <p className="text-sm text-muted-foreground/80">
                   Your account is ready. Taking you to your dashboard…
                 </p>
               </div>
 
-              <div className="flex items-center gap-1.5 text-xs text-zinc-600">
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground/60">
                 <Loader2 size={11} className="animate-spin" />
                 Redirecting
               </div>
@@ -177,10 +177,10 @@ export function VerifyEmailForm() {
                 animate="visible"
                 className="mb-2"
               >
-                <h1 className="text-xl font-semibold tracking-tight text-zinc-100">
+                <h1 className="text-xl font-semibold tracking-tight text-foreground">
                   Check your email
                 </h1>
-                <p className="mt-1 text-sm text-zinc-500">
+                <p className="mt-1 text-sm text-muted-foreground/80">
                   We sent a 6-digit verification code to
                 </p>
               </motion.div>
@@ -195,7 +195,7 @@ export function VerifyEmailForm() {
               >
                 <Badge
                   variant="outline"
-                  className="gap-1.5 border-zinc-700/80 bg-zinc-900/60 px-3 py-1.5 text-xs font-normal text-zinc-300"
+                  className="gap-1.5 border-zinc-700/80 bg-card/60 px-3 py-1.5 text-xs font-normal text-foreground/80"
                 >
                   <Mail size={11} className="text-indigo-400" />
                   {maskedEmail}
@@ -233,7 +233,7 @@ export function VerifyEmailForm() {
                         initial={{ opacity: 0, y: -4 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0 }}
-                        className="flex items-center gap-1.5 text-xs text-zinc-500"
+                        className="flex items-center gap-1.5 text-xs text-muted-foreground/80"
                       >
                         <Loader2 size={11} className="animate-spin" />
                         Verifying…
@@ -312,7 +312,7 @@ export function VerifyEmailForm() {
                   <Separator className="bg-zinc-800" />
 
                   <div className="flex flex-col items-center gap-0.5">
-                    <p className="text-xs text-zinc-600">Didn't receive the email?</p>
+                    <p className="text-xs text-muted-foreground/60">Didn't receive the email?</p>
                     <ResendButton email={email} />
                   </div>
                 </motion.div>
@@ -324,11 +324,11 @@ export function VerifyEmailForm() {
                   initial="hidden"
                   animate="visible"
                 >
-                  <div className="flex items-start gap-2 rounded-lg border border-zinc-800/60 bg-zinc-900/30 px-3 py-2.5">
-                    <ShieldCheck size={13} className="mt-0.5 shrink-0 text-zinc-600" />
-                    <p className="text-xs leading-relaxed text-zinc-600">
+                  <div className="flex items-start gap-2 rounded-lg border border-border/60 bg-card/30 px-3 py-2.5">
+                    <ShieldCheck size={13} className="mt-0.5 shrink-0 text-muted-foreground/60" />
+                    <p className="text-xs leading-relaxed text-muted-foreground/60">
                       For security, this code expires in{" "}
-                      <span className="text-zinc-500">10 minutes</span>. Never share
+                      <span className="text-muted-foreground/80">10 minutes</span>. Never share
                       this code with anyone.
                     </p>
                   </div>
@@ -348,7 +348,7 @@ export function VerifyEmailForm() {
       >
         <Link
           href="/login"
-          className="flex items-center gap-1.5 text-sm text-zinc-600 transition-colors hover:text-zinc-400"
+          className="flex items-center gap-1.5 text-sm text-muted-foreground/60 transition-colors hover:text-muted-foreground"
         >
           <ArrowLeft size={13} />
           Back to sign in

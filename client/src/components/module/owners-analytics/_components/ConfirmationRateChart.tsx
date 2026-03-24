@@ -39,23 +39,23 @@ export function ConfirmationRateChart() {
   const current = points.length ? points[points.length - 1].rate : 0;
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-zinc-200">Email confirmation rate</p>
-            <p className="text-[11px] text-zinc-600">Confirmed vs unconfirmed subscribers</p>
+            <p className="text-sm font-semibold text-foreground/90">Email confirmation rate</p>
+            <p className="text-[11px] text-muted-foreground/60">Confirmed vs unconfirmed subscribers</p>
           </div>
           <div className="text-right">
             <p className="text-xl font-black tracking-tight tabular-nums text-emerald-300">{current}%</p>
-            <p className="text-[10px] text-zinc-600">current rate</p>
+            <p className="text-[10px] text-muted-foreground/60">current rate</p>
           </div>
         </div>
       </CardHeader>
       <CardContent className="p-5">
         {!workspaceId ? (
-          <div className="flex h-52 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-52 items-center justify-center text-xs text-muted-foreground/80">
             Select a workspace to view analytics.
           </div>
         ) : isError ? (
@@ -63,12 +63,12 @@ export function ConfirmationRateChart() {
             {(error as Error)?.message || "Failed to load confirmation rate."}
           </div>
         ) : isLoading ? (
-          <div className="flex h-52 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-52 items-center justify-center text-xs text-muted-foreground/80">
             <Loader2 size={16} className="mr-2 animate-spin" />
             Loading…
           </div>
         ) : points.length === 0 ? (
-          <div className="flex h-52 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-52 items-center justify-center text-xs text-muted-foreground/80">
             No data yet.
           </div>
         ) : (
@@ -138,15 +138,15 @@ export function TopReferrersChart() {
   const maxVal = rows.length ? Math.max(...rows.map((d) => d.direct + d.chain)) : 0;
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/30 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
-        <p className="text-sm font-semibold text-zinc-200">Top referrers</p>
-        <p className="text-[11px] text-zinc-600">Direct + chain referrals across all waitlists</p>
+      <CardHeader className="border-b border-border/60 px-5 py-4">
+        <p className="text-sm font-semibold text-foreground/90">Top referrers</p>
+        <p className="text-[11px] text-muted-foreground/60">Direct + chain referrals across all waitlists</p>
       </CardHeader>
       <CardContent className="flex flex-col gap-2.5 p-5">
         {!workspaceId ? (
-          <div className="flex h-40 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-40 items-center justify-center text-xs text-muted-foreground/80">
             Select a workspace to view analytics.
           </div>
         ) : isError ? (
@@ -154,12 +154,12 @@ export function TopReferrersChart() {
             {(error as Error)?.message || "Failed to load top referrers."}
           </div>
         ) : isLoading ? (
-          <div className="flex h-40 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-40 items-center justify-center text-xs text-muted-foreground/80">
             <Loader2 size={16} className="mr-2 animate-spin" />
             Loading…
           </div>
         ) : rows.length === 0 ? (
-          <div className="flex h-40 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-40 items-center justify-center text-xs text-muted-foreground/80">
             No data yet.
           </div>
         ) : (
@@ -171,7 +171,7 @@ export function TopReferrersChart() {
                 <span
                   className={cn(
                     "w-4 shrink-0 text-center text-xs tabular-nums font-bold",
-                    i === 0 ? "text-amber-400" : i === 1 ? "text-zinc-300" : i === 2 ? "text-orange-500" : "text-zinc-600",
+                    i === 0 ? "text-amber-400" : i === 1 ? "text-foreground/80" : i === 2 ? "text-orange-500" : "text-muted-foreground/60",
                   )}
                 >
                   {i + 1}
@@ -192,8 +192,8 @@ export function TopReferrersChart() {
                 </Avatar>
                 <div className="flex min-w-0 flex-1 flex-col gap-1">
                   <div className="flex items-center justify-between">
-                    <span className="truncate text-xs text-zinc-300">{r.name}</span>
-                    <span className="ml-2 shrink-0 text-xs font-bold tabular-nums text-zinc-200">{total}</span>
+                    <span className="truncate text-xs text-foreground/80">{r.name}</span>
+                    <span className="ml-2 shrink-0 text-xs font-bold tabular-nums text-foreground/90">{total}</span>
                   </div>
                   <div className="h-1.5 overflow-hidden rounded-full bg-zinc-800">
                     <div
@@ -202,7 +202,7 @@ export function TopReferrersChart() {
                     />
                   </div>
                 </div>
-                <Badge className="shrink-0 border-zinc-800 bg-zinc-900/60 px-1.5 text-[9px] text-zinc-600">
+                <Badge className="shrink-0 border-zinc-800 bg-card/60 px-1.5 text-[9px] text-muted-foreground/60">
                   {r.waitlist.split(" ")[0]}
                 </Badge>
               </div>

@@ -7,7 +7,7 @@ import { SectionCTA } from "./SectionCTA";
 
 export function HowItWorksSection() {
   return (
-    <section className="relative w-full overflow-hidden bg-zinc-950 py-24 md:py-32">
+    <section className="relative w-full overflow-hidden bg-background py-24 md:py-32">
 
       {/* ── Ambient background ──────────────────────────────── */}
       <div

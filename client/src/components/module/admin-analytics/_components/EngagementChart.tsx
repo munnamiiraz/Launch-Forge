@@ -28,15 +28,15 @@ export function EngagementChart() {
   const dauPct = Math.round(((last.dau - prev.dau) / prev.dau) * 100);
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/25 to-transparent" />
 
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold text-zinc-200">Daily active users (DAU)</p>
-            <p className="text-[11px] text-zinc-600">
-              Platform-wide user sessions derived from <code className="text-zinc-500">Session</code> model
+            <p className="text-sm font-semibold text-foreground/90">Daily active users (DAU)</p>
+            <p className="text-[11px] text-muted-foreground/60">
+              Platform-wide user sessions derived from <code className="text-muted-foreground/80">Session</code> model
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
@@ -58,7 +58,7 @@ export function EngagementChart() {
                   onClick={() => setRange(r)}
                   className={cn(
                     "h-6 rounded-md px-2 text-xs",
-                    range === r ? "bg-red-600 text-white" : "text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300",
+                    range === r ? "bg-red-600 text-white" : "text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80",
                   )}
                 >
                   {r}
@@ -100,7 +100,7 @@ export function EngagementChart() {
           ].map((l) => (
             <div key={l.label} className="flex items-center gap-1.5">
               <div className="h-2 w-2 rounded-full" style={{ backgroundColor: l.color }} />
-              <span className="text-[10px] text-zinc-600">{l.label}</span>
+              <span className="text-[10px] text-muted-foreground/60">{l.label}</span>
             </div>
           ))}
         </div>

@@ -42,16 +42,16 @@ export function PlanCards({ currentPlan }: PlanCardsProps) {
       {/* Toggle */}
       <div className="flex items-center justify-between">
         <div>
-          <h3 className="text-sm font-semibold text-zinc-200">Plans</h3>
-          <p className="text-xs text-zinc-600">
+          <h3 className="text-sm font-semibold text-foreground/90">Plans</h3>
+          <p className="text-xs text-muted-foreground/60">
             {currentPlan === "FREE"
               ? "Upgrade to unlock more waitlists, subscribers, and features."
               : "Switch plans or change billing cycle at any time."}
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 rounded-xl border border-zinc-800/80 bg-zinc-900/40 px-3.5 py-2">
-          <span className={cn("text-xs font-medium", !yearly ? "text-zinc-200" : "text-zinc-600")}>
+        <div className="flex items-center gap-2.5 rounded-xl border border-border/80 bg-card/40 px-3.5 py-2">
+          <span className={cn("text-xs font-medium", !yearly ? "text-foreground/90" : "text-muted-foreground/60")}>
             Monthly
           </span>
           <Switch
@@ -59,7 +59,7 @@ export function PlanCards({ currentPlan }: PlanCardsProps) {
             onCheckedChange={setYearly}
             className="data-[state=checked]:bg-indigo-600 data-[state=unchecked]:bg-zinc-700"
           />
-          <span className={cn("text-xs font-medium", yearly ? "text-zinc-200" : "text-zinc-600")}>
+          <span className={cn("text-xs font-medium", yearly ? "text-foreground/90" : "text-muted-foreground/60")}>
             Yearly
           </span>
           <AnimatePresence>
@@ -114,8 +114,8 @@ export function PlanCards({ currentPlan }: PlanCardsProps) {
                              : "border-zinc-700/60"
                   : isPopular  ? "border-indigo-500/30 hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/5"
                   : isGrowth   ? "border-violet-500/20 hover:border-violet-500/40"
-                               : "border-zinc-800/80 hover:border-zinc-700/60",
-                "bg-zinc-900/40",
+                               : "border-border/80 hover:border-zinc-700/60",
+                "bg-card/40",
                 isPopular && "mt-3",
               )}>
                 {/* Top accent line */}
@@ -134,7 +134,7 @@ export function PlanCards({ currentPlan }: PlanCardsProps) {
                         "text-sm font-bold",
                         isPro    ? "text-indigo-300" :
                         isGrowth ? "text-violet-300" :
-                                   "text-zinc-400",
+                                   "text-muted-foreground",
                       )}>
                         {plan.name}
                       </p>
@@ -143,13 +143,13 @@ export function PlanCards({ currentPlan }: PlanCardsProps) {
                           "rounded-full px-2 py-0 text-[9px] font-semibold",
                           isPro    ? "border-indigo-500/30 bg-indigo-500/15 text-indigo-400" :
                           isGrowth ? "border-violet-500/30 bg-violet-500/15 text-violet-400" :
-                                     "border-zinc-700 bg-zinc-800 text-zinc-500",
+                                     "border-zinc-700 bg-zinc-800 text-muted-foreground/80",
                         )}>
                           Current
                         </Badge>
                       )}
                     </div>
-                    <p className="mt-0.5 text-[11px] text-zinc-600">{plan.tagline}</p>
+                    <p className="mt-0.5 text-[11px] text-muted-foreground/60">{plan.tagline}</p>
                   </div>
 
                   {/* Price */}
@@ -165,14 +165,14 @@ export function PlanCards({ currentPlan }: PlanCardsProps) {
                           "text-3xl font-black tracking-tight tabular-nums",
                           isPro    ? "text-indigo-300" :
                           isGrowth ? "text-violet-300" :
-                                     "text-zinc-400",
+                                     "text-muted-foreground",
                         )}
                       >
                         {price === 0 ? "Free" : `$${price}`}
                       </motion.span>
                     </AnimatePresence>
                     {price > 0 && (
-                      <span className="text-xs text-zinc-600">
+                      <span className="text-xs text-muted-foreground/60">
                         /mo{yearly && <span className="text-[10px]"> · billed yearly</span>}
                       </span>
                     )}
@@ -187,7 +187,7 @@ export function PlanCards({ currentPlan }: PlanCardsProps) {
                           key={f.label}
                           className={cn(
                             "flex items-start gap-2 text-xs",
-                            included ? "text-zinc-400" : "text-zinc-700",
+                            included ? "text-muted-foreground" : "text-muted-foreground/40",
                           )}
                         >
                           {included
@@ -196,7 +196,7 @@ export function PlanCards({ currentPlan }: PlanCardsProps) {
                           }
                           <span className={cn(
                             "leading-tight",
-                            f.highlight && included ? "font-medium text-zinc-300" : "",
+                            f.highlight && included ? "font-medium text-foreground/80" : "",
                           )}>
                             {typeof f.included === "string" ? f.included : f.label}
                           </span>
@@ -212,9 +212,9 @@ export function PlanCards({ currentPlan }: PlanCardsProps) {
                     className={cn(
                       "w-full gap-2 font-semibold transition-all duration-200",
                       isCurrent
-                        ? "border border-zinc-700 bg-transparent text-zinc-600 cursor-default"
+                        ? "border border-zinc-700 bg-transparent text-muted-foreground/60 cursor-default"
                         : plan.tier === "FREE"
-                          ? "border border-zinc-700 bg-transparent text-zinc-600 cursor-default"
+                          ? "border border-zinc-700 bg-transparent text-muted-foreground/60 cursor-default"
                           : isPro
                             ? "bg-indigo-600 text-white hover:bg-indigo-500"
                             : "bg-violet-600 text-white hover:bg-violet-500",

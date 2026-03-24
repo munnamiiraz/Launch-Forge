@@ -37,7 +37,7 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
     <Sheet open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
       <SheetContent
         side="right"
-        className="flex w-full flex-col gap-0 overflow-hidden border-zinc-800/80 bg-[#0a0a0a] p-0 sm:max-w-[520px]"
+        className="flex w-full flex-col gap-0 overflow-hidden border-border/80 bg-[#0a0a0a] p-0 sm:max-w-[520px]"
       >
         {/* Gradient top accent */}
         <div className={cn(
@@ -49,7 +49,7 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
         <div className="pointer-events-none absolute -right-20 -top-20 h-64 w-64 rounded-full bg-indigo-500/6 blur-3xl" />
 
         {/* Sticky header */}
-        <div className="relative border-b border-zinc-800/60 px-6 py-5">
+        <div className="relative border-b border-border/60 px-6 py-5">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-start gap-3 min-w-0">
               <Avatar className="h-12 w-12 shrink-0 rounded-xl">
@@ -62,24 +62,24 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
               </Avatar>
               <div className="min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <h2 className="text-lg font-black tracking-tight text-zinc-100">
+                  <h2 className="text-lg font-black tracking-tight text-foreground">
                     {product.name}
                   </h2>
                   <Badge className={cn(
                     "gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold shrink-0",
                     product.isOpen
                       ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
-                      : "border-zinc-700/60 bg-zinc-800/40 text-zinc-500",
+                      : "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",
                   )}>
                     {product.isOpen ? <><Globe size={8} />Open</> : <><Lock size={8} />Closed</>}
                   </Badge>
                 </div>
-                <p className="mt-0.5 text-xs text-zinc-500 leading-snug">{product.tagline}</p>
+                <p className="mt-0.5 text-xs text-muted-foreground/80 leading-snug">{product.tagline}</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="shrink-0 rounded-lg p-1.5 text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300 transition-colors"
+              className="shrink-0 rounded-lg p-1.5 text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80 transition-colors"
             >
               <X size={14} />
             </button>
@@ -91,7 +91,7 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
               {product.category}
             </Badge>
             {product.tags.map((tag) => (
-              <Badge key={tag} className="border-zinc-800 bg-zinc-900/60 text-[10px] text-zinc-600">
+              <Badge key={tag} className="border-zinc-800 bg-card/60 text-[10px] text-muted-foreground/60">
                 {tag}
               </Badge>
             ))}
@@ -136,16 +136,16 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
 
             {/* Description */}
             <div className="flex flex-col gap-2">
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">About</p>
-              <p className="text-sm leading-relaxed text-zinc-400">{product.description}</p>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">About</p>
+              <p className="text-sm leading-relaxed text-muted-foreground">{product.description}</p>
             </div>
 
             {/* Prizes */}
             {product.prizes.length > 0 && (
               <>
-                <Separator className="bg-zinc-800/60" />
+                <Separator className="bg-muted/60" />
                 <div className="flex flex-col gap-3">
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
                     🏆 Prize pool
                   </p>
                   <div className="flex flex-col gap-2">
@@ -159,22 +159,22 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
                           "flex items-center justify-between gap-3 rounded-xl border px-4 py-3",
                           i === 0
                             ? "border-amber-500/30 bg-amber-500/8"
-                            : "border-zinc-800/60 bg-zinc-900/30",
+                            : "border-border/60 bg-card/30",
                         )}
                       >
                         <div className="flex items-center gap-2.5">
                           <span className="text-lg">{prize.emoji}</span>
                           <div>
-                            <p className={cn("text-xs font-semibold", i === 0 ? "text-amber-200" : "text-zinc-300")}>
+                            <p className={cn("text-xs font-semibold", i === 0 ? "text-amber-200" : "text-foreground/80")}>
                               {prize.title}
                             </p>
-                            <p className="text-[10px] text-zinc-600">{prize.rank} place</p>
+                            <p className="text-[10px] text-muted-foreground/60">{prize.rank} place</p>
                           </div>
                         </div>
                         {prize.value && (
                           <span className={cn(
                             "text-sm font-black tabular-nums",
-                            i === 0 ? "text-amber-300" : "text-zinc-300",
+                            i === 0 ? "text-amber-300" : "text-foreground/80",
                           )}>
                             {prize.value}
                           </span>
@@ -189,9 +189,9 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
             {/* Top referrers */}
             {product.topReferrers.length > 0 && (
               <>
-                <Separator className="bg-zinc-800/60" />
+                <Separator className="bg-muted/60" />
                 <div className="flex flex-col gap-3">
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
                     Top referrers
                   </p>
                   <div className="flex flex-col gap-1.5">
@@ -208,8 +208,8 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
                             />
                           </div>
                         </div>
-                        <p className="text-xs text-zinc-500">{ref.maskedName}</p>
-                        <p className="w-8 text-right text-xs font-bold tabular-nums text-zinc-300">{ref.referralCount}</p>
+                        <p className="text-xs text-muted-foreground/80">{ref.maskedName}</p>
+                        <p className="w-8 text-right text-xs font-bold tabular-nums text-foreground/80">{ref.referralCount}</p>
                       </div>
                     ))}
                   </div>
@@ -218,17 +218,17 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
             )}
 
             {/* Metadata */}
-            <Separator className="bg-zinc-800/60" />
+            <Separator className="bg-muted/60" />
             <div className="grid grid-cols-2 gap-3 text-xs">
               {[
                 { icon: <Calendar size={11} />, label: "Listed", value: fmtDate(product.createdAt) },
                 { icon: <Users    size={11} />, label: "By",      value: product.ownerName },
                 ...(product.expiresAt ? [{ icon: <Calendar size={11} />, label: "Closes", value: fmtDate(product.expiresAt) }] : []),
               ].map((row) => (
-                <div key={row.label} className="flex items-center gap-1.5 text-zinc-600">
+                <div key={row.label} className="flex items-center gap-1.5 text-muted-foreground/60">
                   {row.icon}
                   <span>{row.label}:</span>
-                  <span className="text-zinc-400 truncate">{row.value}</span>
+                  <span className="text-muted-foreground truncate">{row.value}</span>
                 </div>
               ))}
             </div>
@@ -236,13 +236,13 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
         </div>
 
         {/* Sticky footer CTA */}
-        <div className="border-t border-zinc-800/60 bg-[#0a0a0a] px-6 py-4">
+        <div className="border-t border-border/60 bg-[#0a0a0a] px-6 py-4">
           <div className="flex gap-3">
             {product.websiteUrl && (
               <Button
                 asChild
                 variant="outline"
-                className="gap-2 border-zinc-700/80 bg-transparent text-sm text-zinc-400 hover:border-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-200"
+                className="gap-2 border-zinc-700/80 bg-transparent text-sm text-muted-foreground hover:border-zinc-600 hover:bg-muted/60 hover:text-foreground/90"
               >
                 <a href={product.websiteUrl} target="_blank" rel="noopener noreferrer">
                   <ExternalLink size={13} />
@@ -260,7 +260,7 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
                 Join waitlist
               </Button>
             ) : (
-              <div className="flex-1 rounded-xl border border-zinc-700/60 bg-zinc-800/30 py-2 text-center text-sm text-zinc-600">
+              <div className="flex-1 rounded-xl border border-zinc-700/60 bg-zinc-800/30 py-2 text-center text-sm text-muted-foreground/60">
                 Waitlist closed
               </div>
             )}
@@ -273,9 +273,9 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
 
 function StatBox({ icon, label, value }: { icon: React.ReactNode; value: string; label: string }) {
   return (
-    <div className="flex flex-col gap-1.5 rounded-xl border border-zinc-800/60 bg-zinc-900/40 px-3 py-2.5">
-      <div className="flex items-center gap-1.5">{icon}<span className="text-[10px] text-zinc-600">{label}</span></div>
-      <p className="text-base font-black tabular-nums text-zinc-200">{value}</p>
+    <div className="flex flex-col gap-1.5 rounded-xl border border-border/60 bg-card/40 px-3 py-2.5">
+      <div className="flex items-center gap-1.5">{icon}<span className="text-[10px] text-muted-foreground/60">{label}</span></div>
+      <p className="text-base font-black tabular-nums text-foreground/90">{value}</p>
     </div>
   );
 }

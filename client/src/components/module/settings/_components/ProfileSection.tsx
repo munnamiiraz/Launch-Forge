@@ -64,7 +64,7 @@ function SaveBar({
           size="sm"
           onClick={onReset}
           disabled={isPending}
-          className="text-xs text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300"
+          className="text-xs text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80"
         >
           Reset
         </Button>
@@ -134,11 +134,11 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
     <div className="flex flex-col gap-6" id="profile">
 
       {/* ── Identity ────────────────────────────────────────── */}
-      <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+      <Card className="relative overflow-hidden border-border/80 bg-card/40">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
-        <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
-          <p className="text-sm font-semibold text-zinc-200">Profile</p>
-          <p className="text-[11px] text-zinc-600">Your public identity on LaunchForge</p>
+        <CardHeader className="border-b border-border/60 px-5 py-4">
+          <p className="text-sm font-semibold text-foreground/90">Profile</p>
+          <p className="text-[11px] text-muted-foreground/60">Your public identity on LaunchForge</p>
         </CardHeader>
         <CardContent className="flex flex-col gap-5 p-5">
 
@@ -150,18 +150,18 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
                   {initials}
                 </AvatarFallback>
               </Avatar>
-              <button className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border border-zinc-700 bg-zinc-800 text-zinc-400 hover:bg-zinc-700 transition-colors">
+              <button className="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full border border-zinc-700 bg-zinc-800 text-muted-foreground hover:bg-zinc-700 transition-colors">
                 <Camera size={11} />
               </button>
             </div>
             <div>
-              <p className="text-sm font-medium text-zinc-300">{form.name || "Your name"}</p>
-              <p className="text-xs text-zinc-600">{form.email}</p>
-              <p className="mt-1 text-[10px] text-zinc-700">JPG, PNG or GIF. Max 2MB.</p>
+              <p className="text-sm font-medium text-foreground/80">{form.name || "Your name"}</p>
+              <p className="text-xs text-muted-foreground/60">{form.email}</p>
+              <p className="mt-1 text-[10px] text-muted-foreground/40">JPG, PNG or GIF. Max 2MB.</p>
             </div>
           </div>
 
-          <Separator className="bg-zinc-800/60" />
+          <Separator className="bg-muted/60" />
 
           {/* Name + Email */}
           <div className="grid gap-4 sm:grid-cols-2">
@@ -179,8 +179,8 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
 
           {/* Bio */}
           <div className="flex flex-col gap-1.5">
-            <Label htmlFor="bio" className="text-xs font-medium text-zinc-400">
-              Bio <span className="text-zinc-700">(optional)</span>
+            <Label htmlFor="bio" className="text-xs font-medium text-muted-foreground">
+              Bio <span className="text-muted-foreground/40">(optional)</span>
             </Label>
             <Textarea
               id="bio"
@@ -188,9 +188,9 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
               onChange={(e) => set("bio", e.target.value)}
               placeholder="Tell your team a bit about yourself…"
               rows={2}
-              className="resize-none border-zinc-800 bg-zinc-900/60 text-sm text-zinc-100 placeholder:text-zinc-600 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
+              className="resize-none border-zinc-800 bg-card/60 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
             />
-            <p className="text-right text-[10px] text-zinc-700">{form.bio.length}/160</p>
+            <p className="text-right text-[10px] text-muted-foreground/40">{form.bio.length}/160</p>
           </div>
 
           {/* Website + Timezone */}
@@ -201,19 +201,19 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
               placeholder="https://example.com"
             />
             <div className="flex flex-col gap-1.5">
-              <Label className="flex items-center gap-1.5 text-xs font-medium text-zinc-400">
-                <Clock size={12} className="text-zinc-600" />Timezone
+              <Label className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                <Clock size={12} className="text-muted-foreground/60" />Timezone
               </Label>
               <Select
                 value={form.timezone}
                 onValueChange={(v) => set("timezone", v)}
               >
-                <SelectTrigger className="border-zinc-800 bg-zinc-900/60 text-sm text-zinc-100 focus:ring-zinc-600/40">
+                <SelectTrigger className="border-zinc-800 bg-card/60 text-sm text-foreground focus:ring-zinc-600/40">
                   <SelectValue />
                 </SelectTrigger>
-                <SelectContent className="border-zinc-800 bg-zinc-950">
+                <SelectContent className="border-zinc-800 bg-background">
                   {TIMEZONES.map((tz) => (
-                    <SelectItem key={tz} value={tz} className="text-xs text-zinc-300">
+                    <SelectItem key={tz} value={tz} className="text-xs text-foreground/80">
                       {tz}
                     </SelectItem>
                   ))}
@@ -224,8 +224,8 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
 
           {/* Save */}
           {dirty && (
-            <div className="flex items-center justify-between border-t border-zinc-800/60 pt-4">
-              <p className="text-xs text-zinc-600">You have unsaved changes</p>
+            <div className="flex items-center justify-between border-t border-border/60 pt-4">
+              <p className="text-xs text-muted-foreground/60">You have unsaved changes</p>
               <SaveBar
                 isPending={isPending} success={success} error={error}
                 onSave={handleSave} onReset={() => { setForm(profile); setDirty(false); }}
@@ -242,14 +242,14 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
       </Card>
 
       {/* ── Change password ──────────────────────────────────── */}
-      <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent" />
-        <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <Card className="relative overflow-hidden border-border/80 bg-card/40">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+        <CardHeader className="border-b border-border/60 px-5 py-4">
           <div className="flex items-center gap-2">
-            <Lock size={14} className="text-zinc-600" />
-            <p className="text-sm font-semibold text-zinc-200">Change password</p>
+            <Lock size={14} className="text-muted-foreground/60" />
+            <p className="text-sm font-semibold text-foreground/90">Change password</p>
           </div>
-          <p className="text-[11px] text-zinc-600">
+          <p className="text-[11px] text-muted-foreground/60">
             Use a strong password with letters, numbers, and symbols.
           </p>
         </CardHeader>
@@ -288,7 +288,7 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
                     "rounded-full px-2 py-0.5 text-[10px] font-medium",
                     r.ok
                       ? "bg-emerald-500/12 text-emerald-400"
-                      : "bg-zinc-800/60 text-zinc-600",
+                      : "bg-muted/60 text-muted-foreground/60",
                   )}
                 >
                   {r.ok ? "✓" : "·"} {r.label}
@@ -348,14 +348,14 @@ function Field({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <Label htmlFor={id} className="flex items-center gap-1.5 text-xs font-medium text-zinc-400">
-        <span className="text-zinc-600">{icon}</span>
+      <Label htmlFor={id} className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+        <span className="text-muted-foreground/60">{icon}</span>
         {label}
       </Label>
       <Input
         id={id} type={type} value={value} placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="border-zinc-800 bg-zinc-900/60 text-sm text-zinc-100 placeholder:text-zinc-600 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
+        className="border-zinc-800 bg-card/60 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
       />
     </div>
   );
@@ -369,18 +369,18 @@ function PasswordField({
 }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <Label htmlFor={id} className="text-xs font-medium text-zinc-400">{label}</Label>
+      <Label htmlFor={id} className="text-xs font-medium text-muted-foreground">{label}</Label>
       <div className="relative">
         <Input
           id={id} type={show ? "text" : "password"} value={value}
           placeholder="••••••••"
           onChange={(e) => onChange(e.target.value)}
-          className="border-zinc-800 bg-zinc-900/60 pr-9 text-sm text-zinc-100 placeholder:text-zinc-600 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
+          className="border-zinc-800 bg-card/60 pr-9 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
         />
         <button
           type="button"
           onClick={onToggle}
-          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-zinc-600 hover:text-zinc-400"
+          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-muted-foreground"
         >
           {show ? <EyeOff size={13} /> : <Eye size={13} />}
         </button>

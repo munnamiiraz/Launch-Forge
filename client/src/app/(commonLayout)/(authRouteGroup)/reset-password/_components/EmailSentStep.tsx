@@ -88,10 +88,10 @@ export function EmailSentStep({ email, onBack }: EmailSentStepProps) {
         animate="visible"
         className="mb-2"
       >
-        <h1 className="text-xl font-semibold tracking-tight text-zinc-100">
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">
           Check your inbox
         </h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-sm text-muted-foreground/80">
           We sent a reset link to
         </p>
       </motion.div>
@@ -106,7 +106,7 @@ export function EmailSentStep({ email, onBack }: EmailSentStepProps) {
       >
         <Badge
           variant="outline"
-          className="gap-1.5 border-zinc-700/80 bg-zinc-900/60 px-3 py-1.5 text-xs font-normal text-zinc-300"
+          className="gap-1.5 border-zinc-700/80 bg-card/60 px-3 py-1.5 text-xs font-normal text-foreground/80"
         >
           <MailOpen size={11} className="text-indigo-400" />
           {maskedEmail}
@@ -119,14 +119,14 @@ export function EmailSentStep({ email, onBack }: EmailSentStepProps) {
         variants={fadeUp}
         initial="hidden"
         animate="visible"
-        className="mb-6 rounded-xl border border-zinc-800/60 bg-zinc-900/30 p-4"
+        className="mb-6 rounded-xl border border-border/60 bg-card/30 p-4"
       >
-        <p className="mb-3 text-xs font-medium uppercase tracking-wide text-zinc-600">
+        <p className="mb-3 text-xs font-medium uppercase tracking-wide text-muted-foreground/60">
           Helpful tips
         </p>
         <ul className="flex flex-col gap-2">
           {hints.map((hint, i) => (
-            <li key={i} className="flex items-center gap-2 text-xs text-zinc-500">
+            <li key={i} className="flex items-center gap-2 text-xs text-muted-foreground/80">
               <span className="h-1 w-1 shrink-0 rounded-full bg-indigo-500/60" />
               {hint}
             </li>
@@ -144,7 +144,7 @@ export function EmailSentStep({ email, onBack }: EmailSentStepProps) {
       >
         <Separator className="bg-zinc-800" />
 
-        <p className="text-xs text-zinc-600">Didn't get it?</p>
+        <p className="text-xs text-muted-foreground/60">Didn't get it?</p>
 
         <Button
           type="button"
@@ -154,7 +154,7 @@ export function EmailSentStep({ email, onBack }: EmailSentStepProps) {
           disabled={resending || cooldown > 0}
           className={cn(
             "h-auto gap-1.5 px-3 py-1.5 text-xs font-medium",
-            "text-zinc-500 hover:bg-transparent hover:text-zinc-300",
+            "text-muted-foreground/80 hover:bg-transparent hover:text-foreground/80",
             "disabled:pointer-events-none disabled:opacity-50 transition-all duration-200"
           )}
         >
@@ -163,7 +163,7 @@ export function EmailSentStep({ email, onBack }: EmailSentStepProps) {
           ) : justResent ? (
             <><MailCheck size={12} className="text-emerald-400" /><span className="text-emerald-400">Sent!</span></>
           ) : cooldown > 0 ? (
-            <><RefreshCw size={12} />Resend in <span className="tabular-nums text-zinc-400">{String(Math.floor(cooldown / 60)).padStart(2,"0")}:{String(cooldown % 60).padStart(2,"0")}</span></>
+            <><RefreshCw size={12} />Resend in <span className="tabular-nums text-muted-foreground">{String(Math.floor(cooldown / 60)).padStart(2,"0")}:{String(cooldown % 60).padStart(2,"0")}</span></>
           ) : (
             <><RefreshCw size={12} />Resend reset link</>
           )}
@@ -181,7 +181,7 @@ export function EmailSentStep({ email, onBack }: EmailSentStepProps) {
         <button
           type="button"
           onClick={onBack}
-          className="flex items-center gap-1.5 text-xs text-zinc-600 transition-colors hover:text-zinc-400"
+          className="flex items-center gap-1.5 text-xs text-muted-foreground/60 transition-colors hover:text-muted-foreground"
         >
           <ArrowLeft size={12} />
           Use a different email

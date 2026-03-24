@@ -18,10 +18,10 @@ import type { LeaderboardEntry } from "../_types";
 
 const RANK_STYLES: Record<number, { num: string; dot: string }> = {
   1: { num: "text-amber-400 font-black text-base",  dot: "bg-amber-400"  },
-  2: { num: "text-zinc-300 font-bold",              dot: "bg-zinc-500"   },
+  2: { num: "text-foreground/80 font-bold",              dot: "bg-zinc-500"   },
   3: { num: "text-orange-500 font-bold",            dot: "bg-orange-500" },
 };
-const DEFAULT_RANK = { num: "text-zinc-600 font-medium text-sm", dot: "bg-indigo-500/60" };
+const DEFAULT_RANK = { num: "text-muted-foreground/60 font-medium text-sm", dot: "bg-indigo-500/60" };
 
 const AVATAR_GRADIENTS = [
   "from-amber-500 to-orange-500",
@@ -70,7 +70,7 @@ export function LeaderboardTableRow({
         className={cn(
           "group grid items-center gap-4 px-5 py-3.5 transition-colors hover:bg-zinc-900/50",
           "grid-cols-[36px_1fr_auto_auto_auto_auto_auto]",
-          !isLast && !expanded && "border-b border-zinc-800/40",
+          !isLast && !expanded && "border-b border-border/40",
         )}
       >
         {/* Rank */}
@@ -98,14 +98,14 @@ export function LeaderboardTableRow({
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <p className="truncate text-sm font-medium text-zinc-200">
+              <p className="truncate text-sm font-medium text-foreground/90">
                 {entry.name}
               </p>
               {entry.isConfirmed && (
                 <CheckCircle2 size={12} className="shrink-0 text-emerald-500" />
               )}
             </div>
-            <p className="truncate text-[11px] text-zinc-600">{entry.email}</p>
+            <p className="truncate text-[11px] text-muted-foreground/60">{entry.email}</p>
           </div>
         </div>
 
@@ -117,10 +117,10 @@ export function LeaderboardTableRow({
         {/* Direct referrals + bar */}
         <div className="hidden w-32 flex-col gap-1 md:flex">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-zinc-300 tabular-nums">
+            <span className="text-xs font-bold text-foreground/80 tabular-nums">
               {entry.directReferrals}
             </span>
-            <span className="text-[10px] text-zinc-600">{entry.sharePercent}%</span>
+            <span className="text-[10px] text-muted-foreground/60">{entry.sharePercent}%</span>
           </div>
           <div className="h-1 overflow-hidden rounded-full bg-zinc-800">
             <motion.div
@@ -136,21 +136,21 @@ export function LeaderboardTableRow({
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="hidden cursor-default items-center gap-1 lg:flex">
-              <GitBranch size={11} className="text-zinc-700" />
-              <span className="text-xs font-semibold tabular-nums text-zinc-400">
+              <GitBranch size={11} className="text-muted-foreground/40" />
+              <span className="text-xs font-semibold tabular-nums text-muted-foreground">
                 {entry.chainReferrals}
               </span>
             </div>
           </TooltipTrigger>
-          <TooltipContent side="top" className="border-zinc-800 bg-zinc-900 text-xs text-zinc-300">
+          <TooltipContent side="top" className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80">
             {entry.chainReferrals} total in chain (up to 4 hops deep)
           </TooltipContent>
         </Tooltip>
 
         {/* Queue position */}
         <div className="hidden items-center gap-1 xl:flex">
-          <span className="text-[10px] text-zinc-700">#</span>
-          <span className="text-xs font-semibold tabular-nums text-zinc-500">
+          <span className="text-[10px] text-muted-foreground/40">#</span>
+          <span className="text-xs font-semibold tabular-nums text-muted-foreground/80">
             {entry.queuePosition}
           </span>
         </div>
@@ -163,7 +163,7 @@ export function LeaderboardTableRow({
                 variant="ghost"
                 size="icon"
                 onClick={handleCopyLink}
-                className="h-7 w-7 rounded-md text-zinc-700 opacity-0 transition-all group-hover:opacity-100 hover:bg-zinc-800/60 hover:text-zinc-300"
+                className="h-7 w-7 rounded-md text-muted-foreground/40 opacity-0 transition-all group-hover:opacity-100 hover:bg-muted/60 hover:text-foreground/80"
               >
                 {copied
                   ? <CheckCircle2 size={12} className="text-emerald-400" />
@@ -171,7 +171,7 @@ export function LeaderboardTableRow({
                 }
               </Button>
             </TooltipTrigger>
-            <TooltipContent side="left" className="border-zinc-800 bg-zinc-900 text-xs text-zinc-300">
+            <TooltipContent side="left" className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80">
               {copied ? "Copied!" : "Copy referral link"}
             </TooltipContent>
           </Tooltip>
@@ -180,7 +180,7 @@ export function LeaderboardTableRow({
             variant="ghost"
             size="icon"
             onClick={() => setExpanded((v) => !v)}
-            className="h-7 w-7 rounded-md text-zinc-700 opacity-0 transition-all group-hover:opacity-100 hover:bg-zinc-800/60 hover:text-zinc-300"
+            className="h-7 w-7 rounded-md text-muted-foreground/40 opacity-0 transition-all group-hover:opacity-100 hover:bg-muted/60 hover:text-foreground/80"
           >
             {expanded
               ? <ChevronUp   size={13} />
@@ -198,25 +198,25 @@ export function LeaderboardTableRow({
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
           className={cn(
-            "overflow-hidden border-t border-zinc-800/40 bg-zinc-900/20 px-5 py-4",
-            !isLast && "border-b border-zinc-800/40"
+            "overflow-hidden border-t border-border/40 bg-zinc-900/20 px-5 py-4",
+            !isLast && "border-b border-border/40"
           )}
         >
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
 
             {/* Referral link */}
             <div className="flex flex-col gap-1">
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
                 Referral link
               </p>
-              <div className="flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-zinc-900/60 px-2.5 py-1.5">
+              <div className="flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-card/60 px-2.5 py-1.5">
                 <Link2 size={11} className="shrink-0 text-indigo-400" />
-                <span className="flex-1 truncate font-mono text-[11px] text-zinc-400">
+                <span className="flex-1 truncate font-mono text-[11px] text-muted-foreground">
                   launchforge.app/ref/{entry.referralCode}
                 </span>
                 <button
                   onClick={handleCopyLink}
-                  className="shrink-0 text-zinc-600 hover:text-zinc-300 transition-colors"
+                  className="shrink-0 text-muted-foreground/60 hover:text-foreground/80 transition-colors"
                 >
                   <Copy size={11} />
                 </button>
@@ -225,44 +225,44 @@ export function LeaderboardTableRow({
 
             {/* Referred by */}
             <div className="flex flex-col gap-1">
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
                 Referred by
               </p>
               {entry.referredBy ? (
-                <div className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/60 px-2.5 py-1.5">
+                <div className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-card/60 px-2.5 py-1.5">
                   <Avatar className="h-5 w-5 shrink-0 rounded-md">
                     <AvatarFallback className="rounded-md bg-indigo-500/20 text-[9px] font-bold text-indigo-400">
                       {entry.referredBy.name.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <span className="truncate text-xs text-zinc-300">{entry.referredBy.name}</span>
+                  <span className="truncate text-xs text-foreground/80">{entry.referredBy.name}</span>
                   {entry.referredBy.rank && (
-                    <Badge className="ml-auto shrink-0 border-zinc-700/60 bg-zinc-800/40 px-1.5 py-0 text-[9px] text-zinc-500">
+                    <Badge className="ml-auto shrink-0 border-zinc-700/60 bg-muted/40 px-1.5 py-0 text-[9px] text-muted-foreground/80">
                       #{entry.referredBy.rank}
                     </Badge>
                   )}
                 </div>
               ) : (
-                <p className="text-xs text-zinc-700">Direct signup</p>
+                <p className="text-xs text-muted-foreground/40">Direct signup</p>
               )}
             </div>
 
             {/* Referral preview chain */}
             <div className="flex flex-col gap-1">
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
                 Recent recruits
               </p>
               {entry.referralPreview.length > 0 ? (
                 <div className="flex flex-col gap-1">
                   {entry.referralPreview.map((p) => (
-                    <div key={p.id} className="flex items-center gap-1.5 text-xs text-zinc-400">
+                    <div key={p.id} className="flex items-center gap-1.5 text-xs text-muted-foreground">
                       <Share2 size={10} className="text-indigo-400/60" />
                       <span className="truncate">{p.name}</span>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-zinc-700">No recruits yet</p>
+                <p className="text-xs text-muted-foreground/40">No recruits yet</p>
               )}
             </div>
           </div>

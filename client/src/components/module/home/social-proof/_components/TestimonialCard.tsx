@@ -12,7 +12,7 @@ import { cn } from "@/src/lib/utils";
 const SourceIcon = ({ source }: { source: Testimonial["source"] }) => {
   if (source === "twitter") {
     return (
-      <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3 text-zinc-500">
+      <svg viewBox="0 0 24 24" fill="currentColor" className="h-3 w-3 text-muted-foreground/80">
         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622 5.911-5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
       </svg>
     );
@@ -76,15 +76,15 @@ function FeaturedCard({ testimonial: t, index }: TestimonialCardProps) {
               <Quote size={18} className="text-indigo-400" />
             </div>
             {t.source && (
-              <div className="flex items-center gap-1.5 rounded-full border border-zinc-800/60 bg-zinc-900/50 px-2.5 py-1">
+              <div className="flex items-center gap-1.5 rounded-full border border-border/60 bg-zinc-900/50 px-2.5 py-1">
                 <SourceIcon source={t.source} />
-                <span className="text-[10px] text-zinc-600">{SOURCE_LABELS[t.source]}</span>
+                <span className="text-[10px] text-muted-foreground/60">{SOURCE_LABELS[t.source]}</span>
               </div>
             )}
           </div>
 
           {/* Quote */}
-          <blockquote className="text-base leading-relaxed text-zinc-300 md:text-lg">
+          <blockquote className="text-base leading-relaxed text-foreground/80 md:text-lg">
             "{t.quote}"
           </blockquote>
 
@@ -106,18 +106,18 @@ function FeaturedCard({ testimonial: t, index }: TestimonialCardProps) {
           </div>
 
           {/* Author */}
-          <div className="flex items-center gap-3 border-t border-zinc-800/60 pt-5">
+          <div className="flex items-center gap-3 border-t border-border/60 pt-5">
             <Avatar className="h-10 w-10 rounded-xl">
               <AvatarFallback className={cn("rounded-xl bg-gradient-to-br text-sm font-bold text-white", t.avatarGradient)}>
                 {t.avatarInitials}
               </AvatarFallback>
             </Avatar>
             <div>
-              <p className="text-sm font-semibold text-zinc-100">{t.name}</p>
-              <p className="text-xs text-zinc-500">{t.role} · {t.company}</p>
+              <p className="text-sm font-semibold text-foreground">{t.name}</p>
+              <p className="text-xs text-muted-foreground/80">{t.role} · {t.company}</p>
             </div>
             {t.handle && (
-              <span className="ml-auto text-xs text-zinc-700">{t.handle}</span>
+              <span className="ml-auto text-xs text-muted-foreground/40">{t.handle}</span>
             )}
           </div>
         </CardContent>
@@ -136,16 +136,16 @@ function StandardCard({ testimonial: t, index }: TestimonialCardProps) {
       transition={{ delay: index * 0.07, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       className="h-full"
     >
-      <Card className="group relative h-full overflow-hidden border-zinc-800/80 bg-zinc-900/40 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-zinc-700/60 hover:bg-zinc-900/60 hover:shadow-xl hover:shadow-black/20">
+      <Card className="group relative h-full overflow-hidden border-border/80 bg-card/40 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-zinc-700/60 hover:bg-card/60 hover:shadow-xl hover:shadow-black/20">
         {/* Top line */}
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent transition-all duration-300 group-hover:via-indigo-500/30" />
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-indigo-500/30" />
         {/* Corner glow */}
         <div className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-indigo-500/6 blur-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
         <CardContent className="relative flex h-full flex-col gap-5 p-6">
           {/* Top row: quote mark + source */}
           <div className="flex items-center justify-between">
-            <Quote size={16} className="text-zinc-700 transition-colors group-hover:text-zinc-600" />
+            <Quote size={16} className="text-muted-foreground/40 transition-colors group-hover:text-muted-foreground/60" />
             {t.source && (
               <div className="flex items-center gap-1 opacity-60">
                 <SourceIcon source={t.source} />
@@ -154,7 +154,7 @@ function StandardCard({ testimonial: t, index }: TestimonialCardProps) {
           </div>
 
           {/* Quote */}
-          <blockquote className="flex-1 text-sm leading-relaxed text-zinc-400 group-hover:text-zinc-300 transition-colors">
+          <blockquote className="flex-1 text-sm leading-relaxed text-muted-foreground group-hover:text-foreground/80 transition-colors">
             "{t.quote}"
           </blockquote>
 
@@ -168,21 +168,21 @@ function StandardCard({ testimonial: t, index }: TestimonialCardProps) {
           </div>
 
           {/* Author */}
-          <div className="flex items-center gap-2.5 border-t border-zinc-800/60 pt-4">
+          <div className="flex items-center gap-2.5 border-t border-border/60 pt-4">
             <Avatar className="h-8 w-8 rounded-lg">
               <AvatarFallback className={cn("rounded-lg bg-gradient-to-br text-[11px] font-bold text-white", t.avatarGradient)}>
                 {t.avatarInitials}
               </AvatarFallback>
             </Avatar>
             <div className="min-w-0">
-              <p className="truncate text-xs font-semibold text-zinc-200">{t.name}</p>
-              <p className="truncate text-[10px] text-zinc-600">
+              <p className="truncate text-xs font-semibold text-foreground/90">{t.name}</p>
+              <p className="truncate text-[10px] text-muted-foreground/60">
                 {t.role}
-                {t.company && <span className="text-zinc-700"> · {t.company}</span>}
+                {t.company && <span className="text-muted-foreground/40"> · {t.company}</span>}
               </p>
             </div>
             {t.handle && (
-              <span className="ml-auto shrink-0 text-[10px] text-zinc-700">{t.handle}</span>
+              <span className="ml-auto shrink-0 text-[10px] text-muted-foreground/40">{t.handle}</span>
             )}
           </div>
         </CardContent>

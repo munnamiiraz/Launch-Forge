@@ -25,12 +25,12 @@ export const metadata: Metadata = {
 function SectionDivider({ title, sub }: { title: string; sub: string }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="h-px flex-1 bg-zinc-800/60" />
+      <div className="h-px flex-1 bg-muted/60" />
       <div className="flex flex-col items-center">
         <span className="text-[10px] font-bold uppercase tracking-widest text-red-500/70">{title}</span>
-        {sub && <span className="text-[9px] text-zinc-700">{sub}</span>}
+        {sub && <span className="text-[9px] text-muted-foreground/40">{sub}</span>}
       </div>
-      <div className="h-px flex-1 bg-zinc-800/60" />
+      <div className="h-px flex-1 bg-muted/60" />
     </div>
   );
 }
@@ -59,7 +59,7 @@ export default async function AdminRevenuePage() {
     <div className="flex flex-col gap-8 p-6">
 
       {/* ── Page identity band ────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-2xl border border-emerald-500/15 bg-zinc-900/30 px-6 py-5">
+      <div className="relative overflow-hidden rounded-2xl border border-emerald-500/15 bg-card/30 px-6 py-5">
         <div aria-hidden className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-emerald-500/5 blur-3xl" />
         <div aria-hidden className="pointer-events-none absolute -left-8 bottom-0 h-24 w-48 rounded-full bg-indigo-500/4 blur-3xl" />
         <div className="relative flex items-start gap-4">
@@ -67,26 +67,13 @@ export default async function AdminRevenuePage() {
             <DollarSign size={18} className="text-emerald-400" />
           </div>
           <div>
-            <h1 className="text-base font-bold tracking-tight text-zinc-100">
+            <h1 className="text-base font-bold tracking-tight text-foreground">
               Revenue analytics
             </h1>
-            <p className="mt-1 text-xs leading-relaxed text-zinc-500">
+            <p className="mt-1 text-xs leading-relaxed text-muted-foreground/80">
               Full financial picture of the LaunchForge platform — MRR waterfall, plan breakdowns,
               churn analysis, cohort LTV, and every recent payment transaction.
             </p>
-            <div className="mt-3 flex flex-wrap gap-2 text-[10px] text-zinc-600">
-              {[
-                `${(safeKpis.mrr / 1000).toFixed(1)}k MRR`,
-                `${(safeKpis.arr / 1000).toFixed(0)}k ARR`,
-                `${safeKpis.payingUsers.toLocaleString()} paying users`,
-                `${safeKpis.churnRatePct}% monthly churn`,
-                `${safeKpis.ltv} avg LTV`,
-              ].map((s) => (
-                <span key={s} className="rounded-full border border-zinc-800/60 bg-zinc-900/40 px-2.5 py-1">
-                  {s}
-                </span>
-              ))}
-            </div>
           </div>
         </div>
       </div>

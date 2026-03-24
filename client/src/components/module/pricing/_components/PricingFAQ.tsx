@@ -46,10 +46,10 @@ export function PricingFAQ() {
     >
       {/* Header */}
       <div className="flex flex-col items-center gap-3 text-center">
-        <h3 className="text-2xl font-bold tracking-tight text-zinc-100">
+        <h3 className="text-2xl font-bold tracking-tight text-foreground">
           Frequently asked questions
         </h3>
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-muted-foreground/80">
           Still have questions?{" "}
           <a href="/contact" className="text-indigo-400 underline-offset-2 hover:underline">
             Contact us
@@ -63,12 +63,12 @@ export function PricingFAQ() {
           <AccordionItem
             key={i}
             value={`faq-${i}`}
-            className="border-zinc-800/60"
+            className="border-border/60"
           >
-            <AccordionTrigger className="py-4 text-left text-sm font-medium text-zinc-300 hover:text-zinc-100 hover:no-underline [&[data-state=open]]:text-zinc-100">
+            <AccordionTrigger className="py-4 text-left text-sm font-medium text-foreground/80 hover:text-foreground hover:no-underline [&[data-state=open]]:text-foreground">
               {item.q}
             </AccordionTrigger>
-            <AccordionContent className="pb-4 text-sm leading-relaxed text-zinc-500">
+            <AccordionContent className="pb-4 text-sm leading-relaxed text-muted-foreground/80">
               {item.a}
             </AccordionContent>
           </AccordionItem>

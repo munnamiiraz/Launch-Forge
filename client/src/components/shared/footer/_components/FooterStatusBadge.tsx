@@ -45,7 +45,7 @@ export function FooterStatusBadge({ status = "operational" }: FooterStatusBadgeP
       transition={{ delay: 0.6, duration: 0.4 }}
       className={cn(
         "inline-flex w-fit items-center gap-2 rounded-full",
-        "border border-zinc-800/60 bg-zinc-900/40 px-3 py-1.5",
+        "border border-border/60 bg-card/40 px-3 py-1.5",
         "text-[11px] transition-colors duration-150 hover:border-zinc-700 hover:bg-zinc-900/70"
       )}
     >

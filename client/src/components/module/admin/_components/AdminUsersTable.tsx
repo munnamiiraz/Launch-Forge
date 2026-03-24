@@ -21,7 +21,7 @@ import { cn } from "@/src/lib/utils";
 import type { AdminUser } from "../_types";
 
 const PLAN_BADGE: Record<string, string> = {
-  FREE:   "border-zinc-700/60 bg-zinc-800/40 text-zinc-500",
+  FREE:   "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",
   PRO:    "border-indigo-500/30 bg-indigo-500/12 text-indigo-400",
   GROWTH: "border-violet-500/30 bg-violet-500/12 text-violet-400",
 };
@@ -29,7 +29,7 @@ const STATUS_BADGE: Record<string, string> = {
   ACTIVE:    "border-emerald-500/25 bg-emerald-500/10 text-emerald-400",
   SUSPENDED: "border-amber-500/25 bg-amber-500/10 text-amber-400",
   DELETED:   "border-red-500/25 bg-red-500/10 text-red-400",
-  INACTIVE:  "border-zinc-700/60 bg-zinc-800/40 text-zinc-500",
+  INACTIVE:  "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",
 };
 const AVATAR_GRADS = [
   "from-indigo-500 to-violet-600",
@@ -68,16 +68,16 @@ export function AdminUsersTable({ users: initialUsers }: AdminUsersTableProps) {
   };
 
   return (
-    <Card className="overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="overflow-hidden border-border/80 bg-card/40">
       {/* Toolbar */}
-      <div className="flex flex-col gap-3 border-b border-zinc-800/60 bg-zinc-900/60 p-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 border-b border-border/60 bg-card/60 p-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative max-w-xs flex-1">
-          <Search size={13} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-600" />
+          <Search size={13} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/60" />
           <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search users…"
-            className="h-8 border-zinc-800 bg-zinc-900/60 pl-8 text-xs text-zinc-100 placeholder:text-zinc-600 focus-visible:border-zinc-600 focus-visible:ring-0"
+            className="h-8 border-zinc-800 bg-card/60 pl-8 text-xs text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-0"
           />
         </div>
 
@@ -90,8 +90,8 @@ export function AdminUsersTable({ users: initialUsers }: AdminUsersTableProps) {
               className={cn(
                 "rounded-md px-2.5 py-1 text-xs font-medium transition-all",
                 planFilter === p
-                  ? "bg-zinc-800 text-zinc-200"
-                  : "text-zinc-600 hover:text-zinc-400",
+                  ? "bg-zinc-800 text-foreground/90"
+                  : "text-muted-foreground/60 hover:text-muted-foreground",
               )}
             >
               {p === "all" ? "All" : p}
@@ -101,7 +101,7 @@ export function AdminUsersTable({ users: initialUsers }: AdminUsersTableProps) {
       </div>
 
       {/* Header */}
-      <div className="hidden grid-cols-[auto_1fr_auto_auto_auto_auto_auto] gap-4 border-b border-zinc-800/60 bg-zinc-900/60 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-widest text-zinc-600 sm:grid">
+      <div className="hidden grid-cols-[auto_1fr_auto_auto_auto_auto_auto] gap-4 border-b border-border/60 bg-card/60 px-4 py-2.5 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 sm:grid">
         <div className="w-8" />
         <span>User</span>
         <span>Plan</span>
@@ -112,11 +112,11 @@ export function AdminUsersTable({ users: initialUsers }: AdminUsersTableProps) {
       </div>
 
       {/* Rows */}
-      <div className="divide-y divide-zinc-800/40">
+      <div className="divide-y divide-border/40">
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center gap-2 py-12 text-center">
             <Users size={28} className="text-zinc-800" />
-            <p className="text-sm text-zinc-600">No users match your search.</p>
+            <p className="text-sm text-muted-foreground/60">No users match your search.</p>
           </div>
         ) : filtered.map((user, i) => (
           <motion.div
@@ -124,7 +124,7 @@ export function AdminUsersTable({ users: initialUsers }: AdminUsersTableProps) {
             initial={{ opacity: 0, x: -6 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.03, duration: 0.33, ease: [0.22, 1, 0.36, 1] }}
-            className="group grid items-center gap-4 px-4 py-3 transition-colors hover:bg-zinc-900/40 sm:grid-cols-[auto_1fr_auto_auto_auto_auto_auto]"
+            className="group grid items-center gap-4 px-4 py-3 transition-colors hover:bg-card/40 sm:grid-cols-[auto_1fr_auto_auto_auto_auto_auto]"
           >
             {/* Avatar */}
             <Avatar className="h-8 w-8 shrink-0 rounded-lg">
@@ -139,7 +139,7 @@ export function AdminUsersTable({ users: initialUsers }: AdminUsersTableProps) {
             {/* Name + email */}
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
-                <p className="truncate text-sm font-medium text-zinc-200">{user.name}</p>
+                <p className="truncate text-sm font-medium text-foreground/90">{user.name}</p>
                 {user.role === "ADMIN" && (
                   <ShieldAlert size={11} className="shrink-0 text-red-400" />
                 )}
@@ -147,7 +147,7 @@ export function AdminUsersTable({ users: initialUsers }: AdminUsersTableProps) {
                   <Badge variant="outline" className="border-red-500/20 bg-red-500/10 px-1 py-0 text-[8px] font-bold text-red-400 uppercase">Owner</Badge>
                 )}
               </div>
-              <p className="truncate text-[11px] text-zinc-600">{user.email}</p>
+              <p className="truncate text-[11px] text-muted-foreground/60">{user.email}</p>
             </div>
 
             {/* Plan */}
@@ -158,12 +158,12 @@ export function AdminUsersTable({ users: initialUsers }: AdminUsersTableProps) {
 
             {/* Waitlists */}
             <div className="hidden items-center justify-end sm:flex">
-              <span className="w-20 text-right text-xs font-medium tabular-nums text-zinc-400">{user.waitlists}</span>
+              <span className="w-20 text-right text-xs font-medium tabular-nums text-muted-foreground">{user.waitlists}</span>
             </div>
 
             {/* Subscribers */}
             <div className="hidden items-center justify-end sm:flex">
-              <span className="w-24 text-right text-xs font-medium tabular-nums text-zinc-400">
+              <span className="w-24 text-right text-xs font-medium tabular-nums text-muted-foreground">
                 {user.subscribers.toLocaleString()}
               </span>
             </div>
@@ -182,19 +182,19 @@ export function AdminUsersTable({ users: initialUsers }: AdminUsersTableProps) {
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost" size="icon"
-                  className="h-6 w-6 rounded-md text-zinc-700 opacity-0 transition-all group-hover:opacity-100 hover:bg-zinc-800/60 hover:text-zinc-300"
+                  className="h-6 w-6 rounded-md text-muted-foreground/40 opacity-0 transition-all group-hover:opacity-100 hover:bg-muted/60 hover:text-foreground/80"
                 >
                   <MoreHorizontal size={12} />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-44 border-zinc-800 bg-zinc-950/95 backdrop-blur-xl">
-                <DropdownMenuItem className="gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60">
+              <DropdownMenuContent align="end" className="w-44 border-zinc-800 bg-background/95 backdrop-blur-xl">
+                <DropdownMenuItem className="gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60">
                   <ExternalLink size={12} />View profile
                 </DropdownMenuItem>
-                <DropdownMenuItem className="gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60">
+                <DropdownMenuItem className="gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60">
                   <Globe size={12} />View waitlists
                 </DropdownMenuItem>
-                <DropdownMenuSeparator className="bg-zinc-800/60" />
+                <DropdownMenuSeparator className="bg-muted/60" />
                 <DropdownMenuItem
                   onClick={() => toggleStatus(user.id)}
                   className={cn(
@@ -216,8 +216,8 @@ export function AdminUsersTable({ users: initialUsers }: AdminUsersTableProps) {
       </div>
 
       {/* Footer */}
-      <div className="border-t border-zinc-800/60 bg-zinc-900/30 px-4 py-2.5">
-        <p className="text-[11px] text-zinc-700">
+      <div className="border-t border-border/60 bg-card/30 px-4 py-2.5">
+        <p className="text-[11px] text-muted-foreground/40">
           Showing {filtered.length} of {users.length} users
         </p>
       </div>

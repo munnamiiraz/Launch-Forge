@@ -31,7 +31,7 @@ export function ForgotPasswordForm() {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         className={cn(
-          "relative rounded-2xl border border-zinc-800/80 bg-zinc-950/90",
+          "relative rounded-2xl border border-border/80 bg-background/90",
           "p-8 shadow-2xl shadow-black/60 backdrop-blur-xl",
           "before:absolute before:inset-0 before:-z-10 before:rounded-2xl",
           "before:bg-gradient-to-b before:from-zinc-800/10 before:to-transparent"
@@ -48,7 +48,7 @@ export function ForgotPasswordForm() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/15">
               <Zap size={15} className="text-indigo-400" />
             </div>
-            <span className="text-sm font-semibold tracking-tight text-zinc-100">LaunchForge</span>
+            <span className="text-sm font-semibold tracking-tight text-foreground">LaunchForge</span>
           </div>
 
           <AnimatePresence mode="wait">
@@ -95,16 +95,16 @@ export function ForgotPasswordForm() {
             transition={{ delay: 0.55, duration: 0.4 }}
             className="mt-6 flex flex-col gap-4"
           >
-            <Separator className="bg-zinc-800/60" />
+            <Separator className="bg-muted/60" />
             <div className="flex items-center justify-between">
               <Link
                 href="/login"
-                className="flex items-center gap-1.5 text-xs text-zinc-600 transition-colors hover:text-zinc-400"
+                className="flex items-center gap-1.5 text-xs text-muted-foreground/60 transition-colors hover:text-muted-foreground"
               >
                 <ArrowLeft size={12} />
                 Back to sign in
               </Link>
-              <Link href="/register" className="text-xs text-zinc-600 transition-colors hover:text-zinc-400">
+              <Link href="/register" className="text-xs text-muted-foreground/60 transition-colors hover:text-muted-foreground">
                 Create an account
               </Link>
             </div>

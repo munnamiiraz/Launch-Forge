@@ -21,16 +21,16 @@ function Section({ title, description, children }: {
   return (
     <section className="flex flex-col gap-4">
       <div className="flex items-center gap-3">
-        <div className="h-px flex-1 bg-zinc-800/60" />
+        <div className="h-px flex-1 bg-muted/60" />
         <div className="flex flex-col items-center gap-0.5">
           <span className="text-[10px] font-bold uppercase tracking-widest text-red-500/70">
             {title}
           </span>
           {description && (
-            <span className="text-[9px] text-zinc-700">{description}</span>
+            <span className="text-[9px] text-muted-foreground/40">{description}</span>
           )}
         </div>
-        <div className="h-px flex-1 bg-zinc-800/60" />
+        <div className="h-px flex-1 bg-muted/60" />
       </div>
       {children}
     </section>
@@ -60,28 +60,16 @@ export default async function AdminPage() {
     <div className="flex flex-col gap-8 p-6">
 
       {/* ── Page title ────────────────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-2xl border border-red-500/15 bg-zinc-900/30 px-6 py-5">
+      <div className="relative overflow-hidden rounded-2xl border border-red-500/15 bg-card/30 px-6 py-5">
         <div aria-hidden className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-red-500/6 blur-3xl" />
         <div className="relative">
-          <h1 className="text-lg font-black tracking-tight text-zinc-100">
+          <h1 className="text-lg font-black tracking-tight text-foreground">
             Platform overview
           </h1>
-          <p className="mt-1 text-xs text-zinc-500">
+          <p className="mt-1 text-xs text-muted-foreground/80">
             Real-time metrics across all users, workspaces, waitlists, and revenue.
-            You are logged in as <span className="text-red-400 font-semibold">Super Admin</span>.
+            You are logged in as <span className="text-red-400 font-semibold">Admin</span>.
           </p>
-          <div className="mt-3 flex flex-wrap gap-2 text-[10px] text-zinc-600">
-            {[
-              `${kpis.totalUsers.toLocaleString()} users`,
-              `${kpis.totalWaitlists.toLocaleString()} waitlists`,
-              `${(kpis.totalSubscribers / 1_000_000).toFixed(2)}M subscribers`,
-              `$${(kpis.mrr / 1000).toFixed(1)}k MRR`,
-            ].map((s) => (
-              <span key={s} className="rounded-full border border-zinc-800/60 bg-zinc-900/40 px-2.5 py-1">
-                {s}
-              </span>
-            ))}
-          </div>
         </div>
       </div>
 
@@ -115,11 +103,6 @@ export default async function AdminPage() {
           </div>
           <AdminTopWaitlists waitlists={topWaitlists} />
         </div>
-      </Section>
-
-      {/* ── Users table ───────────────────────────────────────── */}
-      <Section title="Users" description="All registered accounts — search, filter, and manage">
-        <AdminUsersTable users={users} />
       </Section>
 
     </div>

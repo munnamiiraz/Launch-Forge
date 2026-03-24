@@ -20,10 +20,10 @@ function heatColor(pct: number): string {
   if (pct >= 90) return "bg-indigo-500    text-white";
   if (pct >= 75) return "bg-indigo-500/75 text-white";
   if (pct >= 60) return "bg-indigo-500/55 text-white";
-  if (pct >= 45) return "bg-indigo-500/35 text-zinc-200";
-  if (pct >= 30) return "bg-indigo-500/20 text-zinc-400";
-  if (pct >= 15) return "bg-indigo-500/10 text-zinc-500";
-  return "bg-zinc-800/40 text-zinc-600";
+  if (pct >= 45) return "bg-indigo-500/35 text-foreground/90";
+  if (pct >= 30) return "bg-indigo-500/20 text-muted-foreground";
+  if (pct >= 15) return "bg-indigo-500/10 text-muted-foreground/80";
+  return "bg-muted/40 text-muted-foreground/60";
 }
 
 export function CohortRetentionChart() {
@@ -40,15 +40,15 @@ export function CohortRetentionChart() {
   const weekLabels = ["W0", "W1", "W2", "W3", "W4", "W5", "W6"];
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
-        <p className="text-sm font-semibold text-zinc-200">Subscriber cohort retention</p>
-        <p className="text-[11px] text-zinc-600">% of subscribers still active week-over-week</p>
+      <CardHeader className="border-b border-border/60 px-5 py-4">
+        <p className="text-sm font-semibold text-foreground/90">Subscriber cohort retention</p>
+        <p className="text-[11px] text-muted-foreground/60">% of subscribers still active week-over-week</p>
       </CardHeader>
       <CardContent className="overflow-x-auto p-5">
         {!workspaceId ? (
-          <div className="flex h-28 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-28 items-center justify-center text-xs text-muted-foreground/80">
             Select a workspace to view analytics.
           </div>
         ) : isError ? (
@@ -56,12 +56,12 @@ export function CohortRetentionChart() {
             {(error as Error)?.message || "Failed to load cohort retention."}
           </div>
         ) : isLoading ? (
-          <div className="flex h-28 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-28 items-center justify-center text-xs text-muted-foreground/80">
             <Loader2 size={16} className="mr-2 animate-spin" />
             Loading…
           </div>
         ) : rows.length === 0 ? (
-          <div className="flex h-28 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-28 items-center justify-center text-xs text-muted-foreground/80">
             No data yet.
           </div>
         ) : (
@@ -69,27 +69,27 @@ export function CohortRetentionChart() {
             <table className="w-full min-w-max text-xs">
               <thead>
                 <tr>
-                  <th className="w-28 pb-2 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+                  <th className="w-28 pb-2 text-left text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
                     Cohort
                   </th>
-                  <th className="pb-2 text-right text-[10px] font-semibold uppercase tracking-widest text-zinc-600 pr-2">
+                  <th className="pb-2 text-right text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 pr-2">
                     Size
                   </th>
                   {weekLabels.map((w) => (
                     <th
                       key={w}
-                      className="w-12 pb-2 text-center text-[10px] font-semibold uppercase tracking-widest text-zinc-600"
+                      className="w-12 pb-2 text-center text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60"
                     >
                       {w}
                     </th>
                   ))}
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-800/40">
+              <tbody className="divide-y divide-border/40">
                 {rows.map((row) => (
                   <tr key={row.cohort}>
-                    <td className="py-1.5 pr-3 text-[11px] text-zinc-400">{row.cohort}</td>
-                    <td className="py-1.5 pr-2 text-right text-[11px] font-semibold tabular-nums text-zinc-500">
+                    <td className="py-1.5 pr-3 text-[11px] text-muted-foreground">{row.cohort}</td>
+                    <td className="py-1.5 pr-2 text-right text-[11px] font-semibold tabular-nums text-muted-foreground/80">
                       {row.size}
                     </td>
                     {row.weeks.map((pct, wi) => (
@@ -110,11 +110,11 @@ export function CohortRetentionChart() {
             </table>
 
             <div className="mt-4 flex items-center gap-2">
-              <span className="text-[10px] text-zinc-600">Low</span>
+              <span className="text-[10px] text-muted-foreground/60">Low</span>
               {[10, 25, 45, 60, 75, 90].map((pct) => (
                 <div key={pct} className={cn("h-3 w-6 rounded-sm", heatColor(pct).split(" ")[0])} />
               ))}
-              <span className="text-[10px] text-zinc-600">High</span>
+              <span className="text-[10px] text-muted-foreground/60">High</span>
             </div>
           </>
         )}
@@ -145,29 +145,29 @@ export function FeedbackActivityChart() {
   const totalReqs = points.reduce((s, d) => s + d.requests, 0);
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/30 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-zinc-200">Feedback activity</p>
-            <p className="text-[11px] text-zinc-600">Feature requests + votes (last 30 days)</p>
+            <p className="text-sm font-semibold text-foreground/90">Feedback activity</p>
+            <p className="text-[11px] text-muted-foreground/60">Feature requests + votes (last 30 days)</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="text-center">
               <p className="text-base font-black tracking-tight tabular-nums text-indigo-300">{totalReqs}</p>
-              <p className="text-[9px] text-zinc-600">requests</p>
+              <p className="text-[9px] text-muted-foreground/60">requests</p>
             </div>
             <div className="text-center">
               <p className="text-base font-black tracking-tight tabular-nums text-emerald-300">{totalVotes}</p>
-              <p className="text-[9px] text-zinc-600">votes</p>
+              <p className="text-[9px] text-muted-foreground/60">votes</p>
             </div>
           </div>
         </div>
       </CardHeader>
       <CardContent className="p-5">
         {!workspaceId ? (
-          <div className="flex h-44 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-44 items-center justify-center text-xs text-muted-foreground/80">
             Select a workspace to view analytics.
           </div>
         ) : isError ? (
@@ -175,12 +175,12 @@ export function FeedbackActivityChart() {
             {(error as Error)?.message || "Failed to load feedback activity."}
           </div>
         ) : isLoading ? (
-          <div className="flex h-44 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-44 items-center justify-center text-xs text-muted-foreground/80">
             <Loader2 size={16} className="mr-2 animate-spin" />
             Loading…
           </div>
         ) : points.length === 0 ? (
-          <div className="flex h-44 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-44 items-center justify-center text-xs text-muted-foreground/80">
             No data yet.
           </div>
         ) : (

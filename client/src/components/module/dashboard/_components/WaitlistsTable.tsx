@@ -45,21 +45,21 @@ export function WaitlistsTable({ waitlists }: WaitlistsTableProps) {
     <div className="flex flex-col gap-4">
       {/* Search */}
       <div className="relative max-w-xs">
-        <Search size={13} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-600" />
+        <Search size={13} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/60" />
         <Input
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search waitlists…"
-          className="h-9 border-zinc-800 bg-zinc-900/60 pl-8 text-xs text-zinc-100 placeholder:text-zinc-600 focus-visible:border-zinc-600 focus-visible:ring-0"
+          className="h-9 border-zinc-800 bg-card/60 pl-8 text-xs text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-0"
         />
       </div>
 
       {/* Table */}
-      <Card className="overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+      <Card className="overflow-hidden border-border/80 bg-card/40">
         {/* Header */}
-        <div className="grid grid-cols-[2fr_1fr_1fr_1fr_80px] border-b border-zinc-800/60 bg-zinc-900/60 px-4 py-2.5">
+        <div className="grid grid-cols-[2fr_1fr_1fr_1fr_80px] border-b border-border/60 bg-card/60 px-4 py-2.5">
           {["Waitlist", "Subscribers", "Referrals", "Status", ""].map((h) => (
-            <p key={h} className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+            <p key={h} className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
               {h}
             </p>
           ))}
@@ -68,19 +68,19 @@ export function WaitlistsTable({ waitlists }: WaitlistsTableProps) {
         {filtered.length === 0 ? (
           <div className="flex flex-col items-center gap-2 py-14 text-center">
             <Users size={32} className="text-zinc-800" />
-            <p className="text-sm text-zinc-600">
+            <p className="text-sm text-muted-foreground/60">
               {search ? "No waitlists match your search." : "No waitlists yet."}
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-zinc-800/40">
+          <div className="divide-y divide-border/40">
             {filtered.map((wl, i) => (
               <motion.div
                 key={wl.id}
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.04, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                className="group grid grid-cols-[2fr_1fr_1fr_1fr_80px] items-center px-4 py-3.5 hover:bg-zinc-900/40 transition-colors"
+                className="group grid grid-cols-[2fr_1fr_1fr_1fr_80px] items-center px-4 py-3.5 hover:bg-card/40 transition-colors"
               >
                 {/* Name */}
                 <div className="flex items-center gap-3 min-w-0">
@@ -95,25 +95,25 @@ export function WaitlistsTable({ waitlists }: WaitlistsTableProps) {
                     </AvatarFallback>
                   </Avatar>
                   <div className="min-w-0">
-                    <p className="truncate text-sm font-medium text-zinc-200 group-hover:text-zinc-100 transition-colors">
+                    <p className="truncate text-sm font-medium text-foreground/90 group-hover:text-foreground transition-colors">
                       {wl.name}
                     </p>
-                    <p className="text-[11px] text-zinc-600">/{wl.slug}</p>
+                    <p className="text-[11px] text-muted-foreground/60">/{wl.slug}</p>
                   </div>
                 </div>
 
                 {/* Subscribers */}
                 <div className="flex items-center gap-1.5">
-                  <Users size={12} className="text-zinc-700" />
-                  <span className="text-sm font-medium text-zinc-300">
+                  <Users size={12} className="text-muted-foreground/40" />
+                  <span className="text-sm font-medium text-foreground/80">
                     {Number(wl.subscribers ?? 0).toLocaleString()}
                   </span>
                 </div>
 
                 {/* Referrals */}
                 <div className="flex items-center gap-1.5">
-                  <Share2 size={12} className="text-zinc-700" />
-                  <span className="text-sm text-zinc-400">
+                  <Share2 size={12} className="text-muted-foreground/40" />
+                  <span className="text-sm text-muted-foreground">
                     {Number(wl.referrals ?? 0).toLocaleString()}
                   </span>
                 </div>
@@ -125,7 +125,7 @@ export function WaitlistsTable({ waitlists }: WaitlistsTableProps) {
                       "gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-semibold",
                       wl.isOpen
                         ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
-                        : "border-zinc-700/60 bg-zinc-800/40 text-zinc-500"
+                        : "border-zinc-700/60 bg-muted/40 text-muted-foreground/80"
                     )}
                     variant="outline"
                   >
@@ -140,7 +140,7 @@ export function WaitlistsTable({ waitlists }: WaitlistsTableProps) {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-7 w-7 rounded-md text-zinc-600 opacity-0 transition-all group-hover:opacity-100 hover:bg-zinc-800/60 hover:text-zinc-300"
+                      className="h-7 w-7 rounded-md text-muted-foreground/60 opacity-0 transition-all group-hover:opacity-100 hover:bg-muted/60 hover:text-foreground/80"
                     >
                       <TrendingUp size={13} />
                     </Button>
@@ -151,30 +151,30 @@ export function WaitlistsTable({ waitlists }: WaitlistsTableProps) {
                       <Button
                         variant="ghost"
                         size="icon"
-                        className="h-7 w-7 rounded-md text-zinc-600 opacity-0 transition-all group-hover:opacity-100 hover:bg-zinc-800/60 hover:text-zinc-300"
+                        className="h-7 w-7 rounded-md text-muted-foreground/60 opacity-0 transition-all group-hover:opacity-100 hover:bg-muted/60 hover:text-foreground/80"
                       >
                         <MoreHorizontal size={13} />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent
                       align="end"
-                      className="w-44 border-zinc-800 bg-zinc-950/95 backdrop-blur-xl"
+                      className="w-44 border-zinc-800 bg-background/95 backdrop-blur-xl"
                     >
-                      <DropdownMenuItem asChild className="cursor-pointer gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60">
+                      <DropdownMenuItem asChild className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60">
                         <Link href={`/dashboard/waitlists/${wl.id}`}>
                           <TrendingUp size={12} />View details
                         </Link>
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="cursor-pointer gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60">
+                      <DropdownMenuItem className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60">
                         <Pencil size={12} />Edit waitlist
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="cursor-pointer gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60">
+                      <DropdownMenuItem className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60">
                         <Copy size={12} />Copy public link
                       </DropdownMenuItem>
-                      <DropdownMenuItem className="cursor-pointer gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60">
+                      <DropdownMenuItem className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60">
                         <ExternalLink size={12} />Open public page
                       </DropdownMenuItem>
-                      <DropdownMenuSeparator className="bg-zinc-800/60" />
+                      <DropdownMenuSeparator className="bg-muted/60" />
                       <DropdownMenuItem className="cursor-pointer gap-2 text-xs text-red-400 hover:bg-red-500/8 hover:text-red-400 focus:bg-red-500/8">
                         <Trash2 size={12} />Delete waitlist
                       </DropdownMenuItem>

@@ -29,14 +29,14 @@ export function PlatformSubscriberChart() {
   const referralPct = Math.round((current.referralSubs / current.newSubscribers) * 100);
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold text-zinc-200">Platform-wide subscriber growth</p>
-            <p className="text-[11px] text-zinc-600">
-              New <code className="text-zinc-500">Subscriber</code> records across all waitlists, 12 months
+            <p className="text-sm font-semibold text-foreground/90">Platform-wide subscriber growth</p>
+            <p className="text-[11px] text-muted-foreground/60">
+              New <code className="text-muted-foreground/80">Subscriber</code> records across all waitlists, 12 months
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
@@ -44,7 +44,7 @@ export function PlatformSubscriberChart() {
               <p className="text-xl font-black tabular-nums text-indigo-300">
                 {(current.cumulative / 1_000_000).toFixed(2)}M
               </p>
-              <p className="text-[10px] text-zinc-600">cumulative</p>
+              <p className="text-[10px] text-muted-foreground/60">cumulative</p>
             </div>
             <Badge className="gap-1 border-emerald-500/25 bg-emerald-500/10 text-[10px] text-emerald-400">
               <ArrowUpRight size={9} />+{pct}% MoM
@@ -83,10 +83,10 @@ export function PlatformSubscriberChart() {
           {[
             { label: "New this month",    value: current.newSubscribers.toLocaleString(), color: "text-indigo-300" },
             { label: "Via referral",      value: `${referralPct}%`,                       color: "text-emerald-300" },
-            { label: "Direct",            value: `${100 - referralPct}%`,                 color: "text-zinc-300" },
+            { label: "Direct",            value: `${100 - referralPct}%`,                 color: "text-foreground/80" },
           ].map((s) => (
-            <div key={s.label} className="rounded-lg border border-zinc-800/60 bg-zinc-900/40 px-3 py-2">
-              <p className="text-[10px] text-zinc-600">{s.label}</p>
+            <div key={s.label} className="rounded-lg border border-border/60 bg-card/40 px-3 py-2">
+              <p className="text-[10px] text-muted-foreground/60">{s.label}</p>
               <p className={cn("text-sm font-black tabular-nums", s.color)}>{s.value}</p>
             </div>
           ))}
@@ -104,19 +104,19 @@ export function WaitlistHealthChart() {
   const stats   = getWaitlistHealthStats();
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-zinc-200">Waitlist size distribution</p>
-            <p className="text-[11px] text-zinc-600">
-              How many subscribers each <code className="text-zinc-500">Waitlist</code> has
+            <p className="text-sm font-semibold text-foreground/90">Waitlist size distribution</p>
+            <p className="text-[11px] text-muted-foreground/60">
+              How many subscribers each <code className="text-muted-foreground/80">Waitlist</code> has
             </p>
           </div>
-          <div className="flex items-center gap-2 text-[10px] text-zinc-600">
+          <div className="flex items-center gap-2 text-[10px] text-muted-foreground/60">
             <span className="flex items-center gap-1"><Globe size={10} className="text-emerald-400" />{stats.open.toLocaleString()} open</span>
-            <span className="flex items-center gap-1"><Lock  size={10} className="text-zinc-600"    />{stats.closed.toLocaleString()} closed</span>
+            <span className="flex items-center gap-1"><Lock  size={10} className="text-muted-foreground/60"    />{stats.closed.toLocaleString()} closed</span>
           </div>
         </div>
       </CardHeader>
@@ -135,12 +135,12 @@ export function WaitlistHealthChart() {
 
         <div className="mt-3 grid grid-cols-3 gap-2">
           {[
-            { label: "Avg subscribers",  value: stats.avgSubs.toString(),                  color: "text-zinc-300" },
+            { label: "Avg subscribers",  value: stats.avgSubs.toString(),                  color: "text-foreground/80" },
             { label: "Median",           value: stats.medianSubs.toString(),                color: "text-cyan-300" },
             { label: "P90",              value: stats.p90Subs.toLocaleString(),             color: "text-violet-300" },
           ].map((s) => (
-            <div key={s.label} className="rounded-lg border border-zinc-800/60 bg-zinc-900/40 px-3 py-2">
-              <p className="text-[10px] text-zinc-600">{s.label}</p>
+            <div key={s.label} className="rounded-lg border border-border/60 bg-card/40 px-3 py-2">
+              <p className="text-[10px] text-muted-foreground/60">{s.label}</p>
               <p className={cn("text-sm font-black tabular-nums", s.color)}>{s.value}</p>
             </div>
           ))}

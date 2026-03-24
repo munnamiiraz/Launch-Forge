@@ -140,22 +140,22 @@ function PrizeFormDialogContent({
   return (
     <DialogContent
       showCloseButton={false}
-      className="flex max-h-[90vh] w-[92vw] flex-col gap-0 overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-950 p-0 sm:w-[50vw] sm:max-w-none"
+      className="flex max-h-[90vh] w-[92vw] flex-col gap-0 overflow-hidden rounded-2xl border border-border/80 bg-background p-0 sm:w-[50vw] sm:max-w-none"
     >
         {/* Top accent */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent" />
 
-        <DialogHeader className="border-b border-zinc-800/60 px-6 py-5">
+        <DialogHeader className="border-b border-border/60 px-6 py-5">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-amber-500/25 bg-amber-500/10">
                 <Trophy size={16} className="text-amber-400" />
               </div>
               <div>
-                <DialogTitle className="text-base font-semibold text-zinc-100">
+                <DialogTitle className="text-base font-semibold text-foreground">
                   {isEditing ? "Edit prize" : "Announce a prize"}
                 </DialogTitle>
-                <p className="mt-0.5 text-xs text-zinc-600">
+                <p className="mt-0.5 text-xs text-muted-foreground/60">
                   {isEditing
                     ? "Update the prize details below."
                     : "Set the reward and rank range. Only OWNER can create prizes."}
@@ -166,7 +166,7 @@ function PrizeFormDialogContent({
               variant="ghost"
               size="icon"
               onClick={onClose}
-              className="h-7 w-7 rounded-lg text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300"
+              className="h-7 w-7 rounded-lg text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80"
             >
               <X size={14} />
             </Button>
@@ -195,10 +195,10 @@ function PrizeFormDialogContent({
                   >
                     <CheckCircle2 size={28} className="text-emerald-400" />
                   </motion.div>
-                  <p className="text-base font-semibold text-zinc-100">
+                  <p className="text-base font-semibold text-foreground">
                     {isEditing ? "Prize updated!" : "Prize announced!"}
                   </p>
-                  <p className="text-sm text-zinc-500">Updating your prize board…</p>
+                  <p className="text-sm text-muted-foreground/80">Updating your prize board…</p>
                 </motion.div>
               ) : (
                 <motion.div
@@ -209,7 +209,7 @@ function PrizeFormDialogContent({
                 >
                   {/* Prize type */}
                   <div className="flex flex-col gap-2">
-                    <Label className="text-xs font-semibold uppercase tracking-widest text-zinc-500">
+                    <Label className="text-xs font-semibold uppercase tracking-widest text-muted-foreground/80">
                       Prize type
                     </Label>
                     <PrizeTypeSelector
@@ -219,12 +219,12 @@ function PrizeFormDialogContent({
                     />
                   </div>
 
-                  <Separator className="bg-zinc-800/60" />
+                  <Separator className="bg-muted/60" />
 
                   {/* Title */}
                   <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="prize-title" className="flex items-center gap-1.5 text-xs font-medium text-zinc-400">
-                      <AlignLeft size={11} className="text-zinc-600" />
+                    <Label htmlFor="prize-title" className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                      <AlignLeft size={11} className="text-muted-foreground/60" />
                       Prize title <span className="text-red-500">*</span>
                     </Label>
                     <Input
@@ -233,14 +233,14 @@ function PrizeFormDialogContent({
                       onChange={(e) => set("title", e.target.value)}
                       placeholder={`e.g. "${meta.emoji} ${meta.label} for #1 Referrer"`}
                       disabled={isPending}
-                      className="border-zinc-800 bg-zinc-900/60 text-zinc-100 placeholder:text-zinc-600 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
+                      className="border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
                     />
                   </div>
 
                   {/* Description */}
                   <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="prize-desc" className="text-xs font-medium text-zinc-400">
-                      Description <span className="text-zinc-700">(optional)</span>
+                    <Label htmlFor="prize-desc" className="text-xs font-medium text-muted-foreground">
+                      Description <span className="text-muted-foreground/40">(optional)</span>
                     </Label>
                     <Textarea
                       id="prize-desc"
@@ -249,7 +249,7 @@ function PrizeFormDialogContent({
                       placeholder="Tell participants more about this prize…"
                       rows={2}
                       disabled={isPending}
-                      className="resize-none border-zinc-800 bg-zinc-900/60 text-sm text-zinc-100 placeholder:text-zinc-600 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
+                      className="resize-none border-zinc-800 bg-card/60 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
                     />
                   </div>
 
@@ -257,9 +257,9 @@ function PrizeFormDialogContent({
                   {meta.showValue && (
                     <div className="flex gap-3">
                       <div className="flex flex-1 flex-col gap-1.5">
-                        <Label htmlFor="prize-value" className="flex items-center gap-1.5 text-xs font-medium text-zinc-400">
-                          <DollarSign size={11} className="text-zinc-600" />
-                          Value <span className="text-zinc-700">(optional)</span>
+                        <Label htmlFor="prize-value" className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                          <DollarSign size={11} className="text-muted-foreground/60" />
+                          Value <span className="text-muted-foreground/40">(optional)</span>
                         </Label>
                         <Input
                           id="prize-value"
@@ -270,22 +270,22 @@ function PrizeFormDialogContent({
                           onChange={(e) => set("value", e.target.value)}
                           placeholder="500"
                           disabled={isPending}
-                          className="border-zinc-800 bg-zinc-900/60 text-zinc-100 placeholder:text-zinc-600 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
+                          className="border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
                         />
                       </div>
                       <div className="flex w-32 flex-col gap-1.5">
-                        <Label className="text-xs font-medium text-zinc-400">Currency</Label>
+                        <Label className="text-xs font-medium text-muted-foreground">Currency</Label>
                         <Select
                           value={form.currency}
                           onValueChange={(v) => set("currency", v)}
                           disabled={isPending}
                         >
-                          <SelectTrigger className="border-zinc-800 bg-zinc-900/60 text-xs text-zinc-100 focus:ring-zinc-600/40">
+                          <SelectTrigger className="border-zinc-800 bg-card/60 text-xs text-foreground focus:ring-zinc-600/40">
                             <SelectValue />
                           </SelectTrigger>
-                          <SelectContent className="border-zinc-800 bg-zinc-950">
+                          <SelectContent className="border-zinc-800 bg-background">
                             {CURRENCIES.map((c) => (
-                              <SelectItem key={c.code} value={c.code} className="text-xs text-zinc-300">
+                              <SelectItem key={c.code} value={c.code} className="text-xs text-foreground/80">
                                 {c.symbol} {c.code}
                               </SelectItem>
                             ))}
@@ -297,48 +297,48 @@ function PrizeFormDialogContent({
 
                   {/* Rank range */}
                   <div className="flex flex-col gap-2">
-                    <Label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-zinc-500">
+                    <Label className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-muted-foreground/80">
                       <Hash size={11} />
                       Rank range <span className="font-normal normal-case text-red-500">*</span>
                     </Label>
-                    <div className="flex items-center gap-3 rounded-xl border border-zinc-800/80 bg-zinc-900/30 px-4 py-3">
+                    <div className="flex items-center gap-3 rounded-xl border border-border/80 bg-card/30 px-4 py-3">
                       <div className="flex flex-1 flex-col gap-1">
-                        <span className="text-[10px] text-zinc-600">From rank</span>
+                        <span className="text-[10px] text-muted-foreground/60">From rank</span>
                         <Input
                           type="number"
                           min="1"
                           value={form.rankFrom}
                           onChange={(e) => set("rankFrom", e.target.value)}
                           disabled={isPending}
-                          className="h-9 border-zinc-800 bg-zinc-900/60 text-center text-base font-bold text-zinc-100 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
+                          className="h-9 border-zinc-800 bg-card/60 text-center text-base font-bold text-foreground focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
                         />
                       </div>
                       <div className="flex flex-col items-center gap-0.5 pt-4">
-                        <ArrowRight size={14} className="text-zinc-700" />
-                        <span className="text-[9px] text-zinc-700">to</span>
+                        <ArrowRight size={14} className="text-muted-foreground/40" />
+                        <span className="text-[9px] text-muted-foreground/40">to</span>
                       </div>
                       <div className="flex flex-1 flex-col gap-1">
-                        <span className="text-[10px] text-zinc-600">To rank</span>
+                        <span className="text-[10px] text-muted-foreground/60">To rank</span>
                         <Input
                           type="number"
                           min="1"
                           value={form.rankTo}
                           onChange={(e) => set("rankTo", e.target.value)}
                           disabled={isPending}
-                          className="h-9 border-zinc-800 bg-zinc-900/60 text-center text-base font-bold text-zinc-100 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
+                          className="h-9 border-zinc-800 bg-card/60 text-center text-base font-bold text-foreground focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
                         />
                       </div>
                     </div>
-                    <p className="text-[10px] text-zinc-700">
+                    <p className="text-[10px] text-muted-foreground/40">
                       e.g. From 1 → To 1 means only #1 wins. From 1 → To 3 means top 3 share this prize.
                     </p>
                   </div>
 
                   {/* Expiry */}
                   <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="prize-expiry" className="flex items-center gap-1.5 text-xs font-medium text-zinc-400">
-                      <Calendar size={11} className="text-zinc-600" />
-                      Expiry date <span className="text-zinc-700">(optional)</span>
+                    <Label htmlFor="prize-expiry" className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                      <Calendar size={11} className="text-muted-foreground/60" />
+                      Expiry date <span className="text-muted-foreground/40">(optional)</span>
                     </Label>
                     <Input
                       id="prize-expiry"
@@ -346,18 +346,18 @@ function PrizeFormDialogContent({
                       value={form.expiresAt}
                       onChange={(e) => set("expiresAt", e.target.value)}
                       disabled={isPending}
-                      className="border-zinc-800 bg-zinc-900/60 text-sm text-zinc-400 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40 [color-scheme:dark]"
+                      className="border-zinc-800 bg-card/60 text-sm text-muted-foreground focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40 [color-scheme:dark]"
                     />
-                    <p className="text-[10px] text-zinc-700">
+                    <p className="text-[10px] text-muted-foreground/40">
                       Leave blank for no expiry. Prize will hide from public page after this date.
                     </p>
                   </div>
 
                   {/* Image URL */}
                   <div className="flex flex-col gap-1.5">
-                    <Label htmlFor="prize-image" className="flex items-center gap-1.5 text-xs font-medium text-zinc-400">
-                      <ImageIcon size={11} className="text-zinc-600" />
-                      Prize image URL <span className="text-zinc-700">(optional)</span>
+                    <Label htmlFor="prize-image" className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                      <ImageIcon size={11} className="text-muted-foreground/60" />
+                      Prize image URL <span className="text-muted-foreground/40">(optional)</span>
                     </Label>
                     <Input
                       id="prize-image"
@@ -365,7 +365,7 @@ function PrizeFormDialogContent({
                       onChange={(e) => set("imageUrl", e.target.value)}
                       placeholder="https://example.com/prize.png"
                       disabled={isPending}
-                      className="border-zinc-800 bg-zinc-900/60 text-zinc-100 placeholder:text-zinc-600 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
+                      className="border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
                     />
                   </div>
 
@@ -391,7 +391,7 @@ function PrizeFormDialogContent({
                       type="button"
                       variant="ghost"
                       onClick={onClose}
-                      className="flex-1 text-zinc-500 hover:bg-zinc-800/60 hover:text-zinc-300"
+                      className="flex-1 text-muted-foreground/80 hover:bg-muted/60 hover:text-foreground/80"
                     >
                       Cancel
                     </Button>
@@ -413,8 +413,8 @@ function PrizeFormDialogContent({
           </form>
 
           {/* ── Live preview panel ─────────────────────────── */}
-          <div className="hidden w-[200px] shrink-0 flex-col gap-3 border-l border-zinc-800/60 bg-zinc-900/20 p-4 xl:flex">
-            <p className="text-[9px] font-semibold uppercase tracking-widest text-zinc-700">Preview</p>
+          <div className="hidden w-[200px] shrink-0 flex-col gap-3 border-l border-border/60 bg-zinc-900/20 p-4 xl:flex">
+            <p className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/40">Preview</p>
             <PrizePreviewCard
               form={form}
               compact

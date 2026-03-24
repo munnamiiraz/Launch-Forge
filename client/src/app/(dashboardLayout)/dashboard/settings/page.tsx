@@ -6,6 +6,7 @@ import { ProfileSection }        from "@/src/components/module/settings/_compone
 import { WorkspaceSection }      from "@/src/components/module/settings/_components/WorkspaceSection";
 import { NotificationsSection }  from "@/src/components/module/settings/_components/NotificationsSection";
 import { SecuritySection }       from "@/src/components/module/settings/_components/SecuritySection";
+import { ThemeToggle }          from "@/src/components/shared/theme-toggle";
 import type { SettingsPageData } from "@/src/components/module/settings/_types";
 
 export const metadata: Metadata = {
@@ -105,6 +106,17 @@ export default async function SettingsPage() {
         <div className="flex flex-1 flex-col gap-10 min-w-0">
           <ProfileSection       profile={data.profile}               />
           <WorkspaceSection     workspace={data.workspace}            />
+          <section className="space-y-4">
+            <div>
+              <h3 className="text-lg font-semibold">Appearance</h3>
+              <p className="text-sm text-muted-foreground">
+                Customize how the application looks and feels.
+              </p>
+            </div>
+            <div className="flex items-center gap-4">
+              <ThemeToggle variant="outline" />
+            </div>
+          </section>
           <NotificationsSection prefs={data.notifications}           />
           <SecuritySection
             sessions={data.sessions}

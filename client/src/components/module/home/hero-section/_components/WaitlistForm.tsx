@@ -79,12 +79,12 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
               </motion.div>
 
               <div className="space-y-1">
-                <p className="text-base font-semibold text-zinc-100">
+                <p className="text-base font-semibold text-foreground">
                   You're on the list! 🎉
                 </p>
-                <p className="text-sm text-zinc-500">
+                <p className="text-sm text-muted-foreground/80">
                   You're{" "}
-                  <span className="font-semibold text-zinc-300">
+                  <span className="font-semibold text-foreground/80">
                     #{result.position?.toLocaleString()}
                   </span>{" "}
                   in line. Move up by referring friends.
@@ -93,11 +93,11 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
 
               {/* Referral link */}
               <div className="w-full space-y-2">
-                <p className="text-xs font-medium uppercase tracking-widest text-zinc-600">
+                <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground/60">
                   Your referral link
                 </p>
-                <div className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900/60 p-1.5 pl-3.5">
-                  <span className="flex-1 truncate font-mono text-xs text-zinc-400">
+                <div className="flex items-center gap-2 rounded-xl border border-zinc-800 bg-card/60 p-1.5 pl-3.5">
+                  <span className="flex-1 truncate font-mono text-xs text-muted-foreground">
                     {`${typeof window !== "undefined" ? window.location.origin : "https://launchforge.app"}?ref=${result.referralCode}`}
                   </span>
                   <Tooltip>
@@ -110,7 +110,7 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
                           "h-7 shrink-0 gap-1.5 rounded-lg px-3 text-xs transition-all duration-200",
                           copied
                             ? "bg-emerald-600 hover:bg-emerald-500 text-white"
-                            : "bg-zinc-800 hover:bg-zinc-700 text-zinc-300"
+                            : "bg-zinc-800 hover:bg-zinc-700 text-foreground/80"
                         )}
                       >
                         {copied ? (
@@ -120,7 +120,7 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
                         )}
                       </Button>
                     </TooltipTrigger>
-                    <TooltipContent className="border-zinc-800 bg-zinc-900 text-xs text-zinc-300">
+                    <TooltipContent className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80">
                       Copy your unique referral link
                     </TooltipContent>
                   </Tooltip>
@@ -128,9 +128,9 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
               </div>
 
               {/* Referral perks */}
-              <div className="flex items-center gap-2 text-xs text-zinc-600">
+              <div className="flex items-center gap-2 text-xs text-muted-foreground/60">
                 <Users size={12} />
-                <span>Each referral moves you up <span className="text-zinc-400">5 spots</span></span>
+                <span>Each referral moves you up <span className="text-muted-foreground">5 spots</span></span>
               </div>
             </motion.div>
           ) : (
@@ -150,7 +150,7 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
                 <div className="flex flex-col gap-1.5 sm:flex-1">
                   <Label
                     htmlFor="hero-name"
-                    className="text-xs font-medium uppercase tracking-wide text-zinc-500"
+                    className="text-xs font-medium uppercase tracking-wide text-muted-foreground/80"
                   >
                     Your name
                   </Label>
@@ -161,7 +161,7 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
                     autoComplete="name"
                     disabled={isPending}
                     className={cn(
-                      "border-zinc-800 bg-zinc-900/60 text-zinc-100 placeholder:text-zinc-600",
+                      "border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60",
                       "focus-visible:border-indigo-500/60 focus-visible:ring-1 focus-visible:ring-indigo-500/20",
                       "h-11 transition-all duration-200"
                     )}
@@ -171,7 +171,7 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
                 <div className="flex flex-col gap-1.5 sm:flex-1">
                   <Label
                     htmlFor="hero-email"
-                    className="text-xs font-medium uppercase tracking-wide text-zinc-500"
+                    className="text-xs font-medium uppercase tracking-wide text-muted-foreground/80"
                   >
                     Email address
                   </Label>
@@ -183,7 +183,7 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
                     autoComplete="email"
                     disabled={isPending}
                     className={cn(
-                      "border-zinc-800 bg-zinc-900/60 text-zinc-100 placeholder:text-zinc-600",
+                      "border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60",
                       "focus-visible:border-indigo-500/60 focus-visible:ring-1 focus-visible:ring-indigo-500/20",
                       "h-11 transition-all duration-200",
                       result?.fieldError &&
@@ -250,9 +250,9 @@ export function WaitlistForm({ className }: WaitlistFormProps) {
                 ].map((text) => (
                   <span
                     key={text}
-                    className="flex items-center gap-1 text-[11px] text-zinc-600"
+                    className="flex items-center gap-1 text-[11px] text-muted-foreground/60"
                   >
-                    <CheckCircle2 size={10} className="text-zinc-700" />
+                    <CheckCircle2 size={10} className="text-muted-foreground/40" />
                     {text}
                   </span>
                 ))}

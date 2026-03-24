@@ -28,7 +28,7 @@ export function Footer({ showCTA = true }: FooterProps) {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="relative w-full overflow-hidden border-t border-zinc-800/60 bg-zinc-950">
+    <footer className="relative w-full overflow-hidden border-t border-border/60 bg-background">
       {/* ── Ambient background ─────────────────────────────── */}
       <div
         aria-hidden

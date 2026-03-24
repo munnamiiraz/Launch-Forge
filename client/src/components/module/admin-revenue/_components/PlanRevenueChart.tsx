@@ -27,13 +27,13 @@ export function PlanRevenueChart({ data }: { data: PlanRevenue[] }) {
     <div className="grid gap-4 lg:grid-cols-2">
 
       {/* ── Revenue by plan donut + table ──────────────── */}
-      <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+      <Card className="relative overflow-hidden border-border/80 bg-card/40">
         <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-violet-500/30 to-transparent" />
-        <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+        <CardHeader className="border-b border-border/60 px-5 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-semibold text-zinc-200">Revenue by plan</p>
-              <p className="text-[11px] text-zinc-600">MRR contribution per subscription tier</p>
+              <p className="text-sm font-semibold text-foreground/90">Revenue by plan</p>
+              <p className="text-[11px] text-muted-foreground/60">MRR contribution per subscription tier</p>
             </div>
             <div className="flex items-center gap-1.5 text-sm font-black tabular-nums text-emerald-300">
               <DollarSign size={13} className="text-emerald-400" />
@@ -59,10 +59,10 @@ export function PlanRevenueChart({ data }: { data: PlanRevenue[] }) {
                   if (!active || !payload?.length) return null;
                   const d = payload[0].payload;
                   return (
-                    <div className="rounded-lg border border-zinc-800 bg-zinc-950/95 p-2.5 text-xs shadow-xl">
-                      <p className="font-semibold text-zinc-200">{d.name}</p>
+                    <div className="rounded-lg border border-zinc-800 bg-background/95 p-2.5 text-xs shadow-xl">
+                      <p className="font-semibold text-foreground/90">{d.name}</p>
                       <p className="text-emerald-400">${d.value.toLocaleString()} MRR</p>
-                      <p className="text-zinc-500">{Math.round((d.value / totalMrr) * 100)}% of total</p>
+                      <p className="text-muted-foreground/80">{Math.round((d.value / totalMrr) * 100)}% of total</p>
                     </div>
                   );
                 }}
@@ -73,7 +73,7 @@ export function PlanRevenueChart({ data }: { data: PlanRevenue[] }) {
           {/* Plan breakdown table */}
           <div className="flex flex-col gap-0">
             {/* Header */}
-            <div className="grid grid-cols-[1fr_auto_auto_auto] gap-3 border-b border-zinc-800/60 pb-2 text-[9px] font-semibold uppercase tracking-widest text-zinc-600">
+            <div className="grid grid-cols-[1fr_auto_auto_auto] gap-3 border-b border-border/60 pb-2 text-[9px] font-semibold uppercase tracking-widest text-muted-foreground/60">
               <span>Plan</span>
               <span className="text-right">Users</span>
               <span className="text-right">MRR</span>
@@ -82,22 +82,22 @@ export function PlanRevenueChart({ data }: { data: PlanRevenue[] }) {
             {data.map((d) => (
               <div
                 key={`${d.plan}-${d.mode}`}
-                className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-3 border-b border-zinc-800/40 py-2.5 text-xs last:border-0"
+                className="grid grid-cols-[1fr_auto_auto_auto] items-center gap-3 border-b border-border/40 py-2.5 text-xs last:border-0"
               >
                 <div className="flex items-center gap-2">
                   <div className="h-2 w-2 rounded-full shrink-0" style={{ backgroundColor: d.fill }} />
-                  <span className="text-zinc-300">{d.plan}</span>
-                  <Badge className="border-zinc-700/60 bg-zinc-800/40 px-1.5 py-0 text-[9px] text-zinc-600">
+                  <span className="text-foreground/80">{d.plan}</span>
+                  <Badge className="border-zinc-700/60 bg-muted/40 px-1.5 py-0 text-[9px] text-muted-foreground/60">
                     {d.mode === "Monthly" ? "Mo" : "Yr"}
                   </Badge>
                 </div>
-                <span className="text-right tabular-nums text-zinc-500">{d.users}</span>
+                <span className="text-right tabular-nums text-muted-foreground/80">{d.users}</span>
                 <span className="text-right tabular-nums font-semibold text-emerald-400">
                   ${(d.mrr / 1000).toFixed(1)}k
                 </span>
                 <span className={cn(
                   "text-right tabular-nums text-[11px]",
-                  d.churnPct > 2.5 ? "text-red-400" : "text-zinc-500",
+                  d.churnPct > 2.5 ? "text-red-400" : "text-muted-foreground/80",
                 )}>
                   {d.churnPct}%
                 </span>
@@ -108,11 +108,11 @@ export function PlanRevenueChart({ data }: { data: PlanRevenue[] }) {
       </Card>
 
       {/* ── Churn rate per plan ────────────────────────── */}
-      <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+      <Card className="relative overflow-hidden border-border/80 bg-card/40">
         <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-red-500/25 to-transparent" />
-        <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
-          <p className="text-sm font-semibold text-zinc-200">Churn rate by plan</p>
-          <p className="text-[11px] text-zinc-600">
+        <CardHeader className="border-b border-border/60 px-5 py-4">
+          <p className="text-sm font-semibold text-foreground/90">Churn rate by plan</p>
+          <p className="text-[11px] text-muted-foreground/60">
             Yearly plans churn significantly less — key retention insight
           </p>
         </CardHeader>
@@ -157,7 +157,7 @@ export function PlanRevenueChart({ data }: { data: PlanRevenue[] }) {
           {/* Insight callout */}
           <div className="mt-4 rounded-xl border border-indigo-500/20 bg-indigo-500/6 px-4 py-3">
             <p className="text-xs font-medium text-indigo-300">💡 Yearly plans retain 2× better</p>
-            <p className="mt-0.5 text-[11px] text-zinc-600">
+            <p className="mt-0.5 text-[11px] text-muted-foreground/60">
               Avg churn on monthly plans: {((3.1 + 2.8) / 2).toFixed(1)}% vs{" "}
               yearly: {((1.4 + 0.9) / 2).toFixed(1)}% — push annual billing at checkout.
             </p>

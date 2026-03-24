@@ -170,7 +170,7 @@ export const workspaceService = {
   async getDashboardOverview(
     payload: GetDashboardOverviewPayload,
   ) {
-    const { requestingUserId } = payload;
+    const { requestingUserId, workspaceId } = payload;
 
     // 1. Get all workspaces the user is a member of
     const memberships = await prisma.workspaceMember.findMany({
@@ -178,7 +178,16 @@ export const workspaceService = {
       select: { workspaceId: true },
     });
     
-    const workspaceIds = memberships.map(m => m.workspaceId);
+    let workspaceIds = memberships.map(m => m.workspaceId);
+
+    // If a specific workspaceId is requested, Filter to only that one
+    // (and verify the user is actually a member of it)
+    if (workspaceId) {
+       if (!workspaceIds.includes(workspaceId)) {
+          throw new AppError(status.FORBIDDEN, "You do not have access to this workspace.");
+       }
+       workspaceIds = [workspaceId];
+    }
 
     // 2. Fetch waitlists with their subscriber counts and top 3 referrers
     const waitlists = await prisma.waitlist.findMany({

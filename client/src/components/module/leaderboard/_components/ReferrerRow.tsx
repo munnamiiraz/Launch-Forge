@@ -10,10 +10,10 @@ import type { TopReferrer } from "../_types";
 
 const RANK_STYLES: Record<number, { num: string; bar: string }> = {
   1: { num: "text-amber-400 font-black",  bar: "bg-amber-400"  },
-  2: { num: "text-zinc-300 font-bold",    bar: "bg-zinc-500"   },
+  2: { num: "text-foreground/80 font-bold",    bar: "bg-zinc-500"   },
   3: { num: "text-orange-500 font-bold",  bar: "bg-orange-500" },
 };
-const DEFAULT_RANK = { num: "text-zinc-600 font-medium", bar: "bg-indigo-500/60" };
+const DEFAULT_RANK = { num: "text-muted-foreground/60 font-medium", bar: "bg-indigo-500/60" };
 
 const AVATAR_GRADIENTS = [
   "from-amber-500 to-orange-500",
@@ -49,7 +49,7 @@ export function ReferrerRow({
         duration: 0.38,
         ease: [0.22, 1, 0.36, 1],
       }}
-      className="group flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-zinc-800/40"
+      className="group flex items-center gap-3 rounded-lg px-3 py-2 transition-colors hover:bg-muted/40"
     >
       {/* Rank number */}
       <span className={cn("w-5 shrink-0 text-center text-sm tabular-nums", rankStyle.num)}>
@@ -71,7 +71,7 @@ export function ReferrerRow({
       {/* Name + bar */}
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex items-center gap-1.5">
-          <span className="truncate text-xs font-medium text-zinc-300">
+          <span className="truncate text-xs font-medium text-foreground/80">
             {referrer.name}
           </span>
           {referrer.isConfirmed && (
@@ -101,15 +101,15 @@ export function ReferrerRow({
         <Tooltip>
           <TooltipTrigger asChild>
             <div className="flex cursor-default items-center gap-1">
-              <Link2 size={10} className="text-zinc-700" />
-              <span className="text-xs font-bold tabular-nums text-zinc-300">
+              <Link2 size={10} className="text-muted-foreground/40" />
+              <span className="text-xs font-bold tabular-nums text-foreground/80">
                 {referrer.directReferrals}
               </span>
             </div>
           </TooltipTrigger>
           <TooltipContent
             side="left"
-            className="border-zinc-800 bg-zinc-900 text-xs text-zinc-300"
+            className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80"
           >
             {referrer.directReferrals} direct · {referrer.chainReferrals} chain ·{" "}
             {referrer.sharePercent}% share

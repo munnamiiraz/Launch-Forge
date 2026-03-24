@@ -30,7 +30,7 @@ import type { Prize } from "@/src/components/module/prizes/_types";
 const STATUS_CONFIG = {
   ACTIVE:    { label: "Active",    classes: "border-emerald-500/25 bg-emerald-500/10 text-emerald-400", icon: <CheckCircle2 size={9} /> },
   AWARDED:   { label: "Awarded",   classes: "border-amber-500/25 bg-amber-500/10 text-amber-400",       icon: <Trophy       size={9} /> },
-  CANCELLED: { label: "Cancelled", classes: "border-zinc-700/60 bg-zinc-800/40 text-zinc-500",          icon: <XCircle      size={9} /> },
+  CANCELLED: { label: "Cancelled", classes: "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",          icon: <XCircle      size={9} /> },
 };
 
 interface PrizeCardProps {
@@ -79,7 +79,7 @@ export function PrizeCard({ prize, index, onEdit, onDelete, onCancel }: PrizeCar
       >
         <Card className={cn(
           "group relative overflow-hidden transition-all duration-300",
-          "border-zinc-800/80 bg-zinc-900/40 hover:bg-zinc-900/60",
+          "border-border/80 bg-card/40 hover:bg-card/60",
           isTop1 && prize.status === "ACTIVE"
             ? "border-amber-500/30 shadow-md shadow-amber-500/5 hover:shadow-amber-500/10"
             : "",
@@ -107,14 +107,14 @@ export function PrizeCard({ prize, index, onEdit, onDelete, onCancel }: PrizeCar
                 </div>
 
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-zinc-100">
+                  <p className="truncate text-sm font-semibold text-foreground">
                     {prize.title}
                   </p>
                   <div className="mt-1 flex flex-wrap items-center gap-1.5">
                     <Badge variant="outline" className={cn("gap-1 rounded-full px-2 py-0.5 text-[9px] font-semibold", statusCfg.classes)}>
                       {statusCfg.icon}{statusCfg.label}
                     </Badge>
-                    <Badge variant="outline" className="border-zinc-700/60 bg-zinc-800/30 px-2 py-0.5 text-[9px] text-zinc-500">
+                    <Badge variant="outline" className="border-zinc-700/60 bg-zinc-800/30 px-2 py-0.5 text-[9px] text-muted-foreground/80">
                       {meta.label}
                     </Badge>
                     {isExpired && prize.status === "ACTIVE" && (
@@ -134,19 +134,19 @@ export function PrizeCard({ prize, index, onEdit, onDelete, onCancel }: PrizeCar
                       variant="ghost"
                       size="icon"
                       disabled={isPending}
-                      className="h-7 w-7 shrink-0 rounded-md text-zinc-600 opacity-0 transition-all group-hover:opacity-100 hover:bg-zinc-800/60 hover:text-zinc-300"
+                      className="h-7 w-7 shrink-0 rounded-md text-muted-foreground/60 opacity-0 transition-all group-hover:opacity-100 hover:bg-muted/60 hover:text-foreground/80"
                     >
                       <MoreHorizontal size={13} />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-44 border-zinc-800 bg-zinc-950/95 backdrop-blur-xl">
+                  <DropdownMenuContent align="end" className="w-44 border-zinc-800 bg-background/95 backdrop-blur-xl">
                     <DropdownMenuItem
                       onClick={() => onEdit(prize)}
-                      className="cursor-pointer gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60"
+                      className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60"
                     >
                       <Pencil size={12} />Edit prize
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator className="bg-zinc-800/60" />
+                    <DropdownMenuSeparator className="bg-muted/60" />
                     <DropdownMenuItem
                       onClick={() => setConfirmCancel(true)}
                       className="cursor-pointer gap-2 text-xs text-amber-400 hover:bg-amber-500/8 focus:bg-amber-500/8 focus:text-amber-400"
@@ -164,19 +164,19 @@ export function PrizeCard({ prize, index, onEdit, onDelete, onCancel }: PrizeCar
               )}
             </div>
 
-            <Separator className="my-4 bg-zinc-800/60" />
+            <Separator className="my-4 bg-muted/60" />
 
             {/* Details grid */}
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               <Detail
-                icon={<Hash size={11} className="text-zinc-600" />}
+                icon={<Hash size={11} className="text-muted-foreground/60" />}
                 label="Rank range"
                 value={rankLabel}
                 highlight={isTop1}
               />
               {prizeVal && (
                 <Detail
-                  icon={<DollarSign size={11} className="text-zinc-600" />}
+                  icon={<DollarSign size={11} className="text-muted-foreground/60" />}
                   label="Prize value"
                   value={prizeVal}
                   highlight
@@ -184,7 +184,7 @@ export function PrizeCard({ prize, index, onEdit, onDelete, onCancel }: PrizeCar
               )}
               {prize.expiresAt && (
                 <Detail
-                  icon={<Clock size={11} className={isExpired ? "text-red-500" : "text-zinc-600"} />}
+                  icon={<Clock size={11} className={isExpired ? "text-red-500" : "text-muted-foreground/60"} />}
                   label="Expires"
                   value={new Date(prize.expiresAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
                   danger={isExpired}
@@ -192,7 +192,7 @@ export function PrizeCard({ prize, index, onEdit, onDelete, onCancel }: PrizeCar
               )}
               {prize.description && (
                 <div className="col-span-2 sm:col-span-4">
-                  <p className="text-[11px] leading-relaxed text-zinc-500">{prize.description}</p>
+                  <p className="text-[11px] leading-relaxed text-muted-foreground/80">{prize.description}</p>
                 </div>
               )}
             </div>
@@ -202,16 +202,16 @@ export function PrizeCard({ prize, index, onEdit, onDelete, onCancel }: PrizeCar
 
       {/* Delete confirmation */}
       <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
-        <AlertDialogContent className="border-zinc-800 bg-zinc-950">
+        <AlertDialogContent className="border-zinc-800 bg-background">
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-zinc-100">Delete this prize?</AlertDialogTitle>
-            <AlertDialogDescription className="text-zinc-500">
-              <strong className="text-zinc-300">{prize.title}</strong> will be permanently removed.
+            <AlertDialogTitle className="text-foreground">Delete this prize?</AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground/80">
+              <strong className="text-foreground/80">{prize.title}</strong> will be permanently removed.
               This cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-zinc-800 bg-transparent text-zinc-400 hover:bg-zinc-800/60">Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="border-zinc-800 bg-transparent text-muted-foreground hover:bg-muted/60">Cancel</AlertDialogCancel>
             <AlertDialogAction onClick={handleDelete} className="bg-red-600 text-white hover:bg-red-500">
               Delete
             </AlertDialogAction>
@@ -221,19 +221,19 @@ export function PrizeCard({ prize, index, onEdit, onDelete, onCancel }: PrizeCar
 
       {/* Cancel confirmation */}
       <AlertDialog open={confirmCancel} onOpenChange={setConfirmCancel}>
-        <AlertDialogContent className="border-zinc-800 bg-zinc-950">
+        <AlertDialogContent className="border-zinc-800 bg-background">
           <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center gap-2 text-zinc-100">
+            <AlertDialogTitle className="flex items-center gap-2 text-foreground">
               <AlertTriangle size={16} className="text-amber-400" />
               Cancel this prize?
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-zinc-500">
-              <strong className="text-zinc-300">{prize.title}</strong> will be cancelled and hidden
+            <AlertDialogDescription className="text-muted-foreground/80">
+              <strong className="text-foreground/80">{prize.title}</strong> will be cancelled and hidden
               from the public page. Participants will no longer see it.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-zinc-800 bg-transparent text-zinc-400 hover:bg-zinc-800/60">Keep it</AlertDialogCancel>
+            <AlertDialogCancel className="border-zinc-800 bg-transparent text-muted-foreground hover:bg-muted/60">Keep it</AlertDialogCancel>
             <AlertDialogAction onClick={handleCancel} className="bg-amber-600 text-white hover:bg-amber-500">
               Cancel prize
             </AlertDialogAction>
@@ -255,15 +255,15 @@ function Detail({
 }) {
   return (
     <div className="flex flex-col gap-1">
-      <div className="flex items-center gap-1 text-[10px] text-zinc-700">
+      <div className="flex items-center gap-1 text-[10px] text-muted-foreground/40">
         {icon}
         {label}
       </div>
       <p className={cn(
         "text-sm font-bold tabular-nums",
         danger     ? "text-red-400" :
-        highlight  ? "text-zinc-100" :
-                     "text-zinc-300",
+        highlight  ? "text-foreground" :
+                     "text-foreground/80",
       )}>
         {value}
       </p>

@@ -60,8 +60,8 @@ export function LeaderboardWaitlistCard({ data, index }: LeaderboardWaitlistCard
       >
         <Card className={cn(
           "group relative flex flex-col overflow-hidden",
-          "border-zinc-800/80 bg-zinc-900/40 backdrop-blur-sm",
-          "transition-all duration-300 hover:border-zinc-700/60 hover:bg-zinc-900/60 hover:shadow-2xl hover:shadow-black/25",
+          "border-border/80 bg-card/40 backdrop-blur-sm",
+          "transition-all duration-300 hover:border-zinc-700/60 hover:bg-card/60 hover:shadow-2xl hover:shadow-black/25",
         )}>
           {/* Top accent line */}
           <div className={cn(
@@ -73,7 +73,7 @@ export function LeaderboardWaitlistCard({ data, index }: LeaderboardWaitlistCard
           <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-indigo-500/6 blur-3xl opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
 
           {/* ── Card header ─────────────────────────────────────── */}
-          <CardHeader className="relative border-b border-zinc-800/60 px-5 py-4">
+          <CardHeader className="relative border-b border-border/60 px-5 py-4">
             <div className="flex items-start justify-between gap-3">
 
               {/* Identity */}
@@ -89,10 +89,10 @@ export function LeaderboardWaitlistCard({ data, index }: LeaderboardWaitlistCard
                   </AvatarFallback>
                 </Avatar>
                 <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-zinc-100">
+                  <p className="truncate text-sm font-semibold text-foreground">
                     {data.waitlistName}
                   </p>
-                  <p className="text-[11px] text-zinc-600">/{data.waitlistSlug}</p>
+                  <p className="text-[11px] text-muted-foreground/60">/{data.waitlistSlug}</p>
                 </div>
               </div>
 
@@ -103,7 +103,7 @@ export function LeaderboardWaitlistCard({ data, index }: LeaderboardWaitlistCard
                   "shrink-0 gap-1 rounded-full px-2 py-0.5 text-[9px] font-semibold",
                   data.isOpen
                     ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
-                    : "border-zinc-700/60 bg-zinc-800/40 text-zinc-500"
+                    : "border-zinc-700/60 bg-muted/40 text-muted-foreground/80"
                 )}
               >
                 {data.isOpen ? <Globe size={8} /> : <Lock size={8} />}
@@ -134,15 +134,15 @@ export function LeaderboardWaitlistCard({ data, index }: LeaderboardWaitlistCard
           {/* ── Leaderboard entries ──────────────────────────────── */}
           <CardContent className="relative flex flex-1 flex-col gap-0 p-0">
             {/* Section label */}
-            <div className="flex items-center justify-between border-b border-zinc-800/40 px-5 py-2.5">
+            <div className="flex items-center justify-between border-b border-border/40 px-5 py-2.5">
               <div className="flex items-center gap-2">
                 <Trophy size={12} className="text-amber-400" />
-                <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+                <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
                   Top referrers
                 </span>
               </div>
-              <div className="flex items-center gap-1.5 text-[10px] text-zinc-600">
-                <span className="font-semibold text-zinc-400">
+              <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground/60">
+                <span className="font-semibold text-muted-foreground">
                   {data.activeReferrers}
                 </span>
                 active
@@ -153,8 +153,8 @@ export function LeaderboardWaitlistCard({ data, index }: LeaderboardWaitlistCard
               /* Empty leaderboard state */
               <div className="flex flex-col items-center gap-2 py-8 text-center">
                 <Trophy size={24} className="text-zinc-800" />
-                <p className="text-xs text-zinc-600">No referrals yet</p>
-                <p className="text-[10px] text-zinc-700">
+                <p className="text-xs text-muted-foreground/60">No referrals yet</p>
+                <p className="text-[10px] text-muted-foreground/40">
                   Share your waitlist to start building the leaderboard.
                 </p>
               </div>
@@ -172,22 +172,22 @@ export function LeaderboardWaitlistCard({ data, index }: LeaderboardWaitlistCard
               </div>
             )}
 
-            <Separator className="bg-zinc-800/60" />
+            <Separator className="bg-muted/60" />
 
             {/* ── Footer: stat pills + navigation CTA ─────────────── */}
             <div className="flex items-center justify-between gap-3 px-5 py-3.5">
               {/* Mini stat strip */}
-              <div className="flex items-center gap-3 text-[10px] text-zinc-600">
+              <div className="flex items-center gap-3 text-[10px] text-muted-foreground/60">
                 <span className="flex items-center gap-1">
                   <BarChart3 size={10} className="text-indigo-400" />
-                  <span className="text-zinc-400 font-semibold">
+                  <span className="text-muted-foreground font-semibold">
                     {data.avgReferrals.toFixed(1)}
                   </span>{" "}avg refs
                 </span>
                 <span className="h-3 w-px bg-zinc-800" />
                 <span className="flex items-center gap-1">
                   <Trophy size={10} className="text-amber-400" />
-                  <span className="text-zinc-400 font-semibold">
+                  <span className="text-muted-foreground font-semibold">
                     {data.topReferralCount}
                   </span>{" "}top
                 </span>
@@ -224,12 +224,12 @@ function QuickStat({
   icon, value, label,
 }: { icon: React.ReactNode; value: string; label: string }) {
   return (
-    <div className="flex flex-col gap-0.5 rounded-lg border border-zinc-800/60 bg-zinc-900/50 px-2.5 py-2">
+    <div className="flex flex-col gap-0.5 rounded-lg border border-border/60 bg-zinc-900/50 px-2.5 py-2">
       <div className="flex items-center gap-1">
         {icon}
-        <span className="text-sm font-bold tabular-nums text-zinc-200">{value}</span>
+        <span className="text-sm font-bold tabular-nums text-foreground/90">{value}</span>
       </div>
-      <span className="text-[9px] text-zinc-600">{label}</span>
+      <span className="text-[9px] text-muted-foreground/60">{label}</span>
     </div>
   );
 }

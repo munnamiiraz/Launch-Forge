@@ -18,9 +18,9 @@ export function SectionCTA() {
       <Separator className="bg-zinc-800/50" />
 
       <div className="flex flex-col items-center gap-4 text-center">
-        <p className="text-sm text-zinc-500">
+        <p className="text-sm text-muted-foreground/80">
           Ready to build a waitlist that{" "}
-          <span className="font-medium text-zinc-300">grows itself?</span>
+          <span className="font-medium text-foreground/80">grows itself?</span>
         </p>
 
         <div className="flex flex-col items-center gap-3 sm:flex-row">
@@ -41,13 +41,13 @@ export function SectionCTA() {
             asChild
             variant="ghost"
             size="lg"
-            className="px-7 text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200"
+            className="px-7 text-muted-foreground hover:bg-muted/60 hover:text-foreground/90"
           >
             <Link href="/demo">Watch a demo</Link>
           </Button>
         </div>
 
-        <p className="text-xs text-zinc-700">
+        <p className="text-xs text-muted-foreground/40">
           No credit card · Free forever plan · Live in 2 minutes
         </p>
       </div>

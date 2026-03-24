@@ -38,8 +38,8 @@ export function PrizePoolSection({ prizes }: PrizePoolSectionProps) {
             <Trophy size={16} className="text-amber-400" />
           </div>
           <div>
-            <h2 className="text-lg font-black tracking-tight text-zinc-100">Prize pool</h2>
-            <p className="text-xs text-zinc-600">
+            <h2 className="text-lg font-black tracking-tight text-foreground">Prize pool</h2>
+            <p className="text-xs text-muted-foreground/60">
               Top referrers win prizes when the waitlist closes
             </p>
           </div>
@@ -86,7 +86,7 @@ export function PrizePoolSection({ prizes }: PrizePoolSectionProps) {
                         "rounded-full px-2 py-0.5 text-[10px] font-bold",
                         isTop
                           ? "border-amber-500/40 bg-amber-500/15 text-amber-300"
-                          : "border-zinc-700/60 bg-zinc-800/40 text-zinc-400",
+                          : "border-zinc-700/60 bg-muted/40 text-muted-foreground",
                       )}>
                         {prize.rankLabel} place
                       </Badge>
@@ -95,14 +95,14 @@ export function PrizePoolSection({ prizes }: PrizePoolSectionProps) {
                       )}
                     </div>
 
-                    <p className="text-sm font-bold text-zinc-100">{prize.title}</p>
+                    <p className="text-sm font-bold text-foreground">{prize.title}</p>
 
                     {prize.description && (
-                      <p className="text-xs leading-relaxed text-zinc-500">{prize.description}</p>
+                      <p className="text-xs leading-relaxed text-muted-foreground/80">{prize.description}</p>
                     )}
 
                     {prize.expiresAt && !expired && (
-                      <div className="flex items-center gap-1 text-[10px] text-zinc-600">
+                      <div className="flex items-center gap-1 text-[10px] text-muted-foreground/60">
                         <Clock size={10} />
                         Ends {fmtExpiry(prize.expiresAt)}
                       </div>
@@ -120,7 +120,7 @@ export function PrizePoolSection({ prizes }: PrizePoolSectionProps) {
                       }
                     </p>
                     {prize.currency && prize.prizeType !== "DISCOUNT" && (
-                      <p className="text-[10px] text-zinc-600">{prize.currency}</p>
+                      <p className="text-[10px] text-muted-foreground/60">{prize.currency}</p>
                     )}
                   </div>
                 )}
@@ -130,7 +130,7 @@ export function PrizePoolSection({ prizes }: PrizePoolSectionProps) {
         })}
       </div>
 
-      <p className="text-center text-xs text-zinc-700">
+      <p className="text-center text-xs text-muted-foreground/40">
         Prizes are awarded to the top referrers when the waitlist closes.
         Each referral = one spot higher in the queue.
       </p>

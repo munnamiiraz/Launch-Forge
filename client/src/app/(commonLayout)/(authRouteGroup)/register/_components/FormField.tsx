@@ -20,14 +20,14 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
       <div className="group flex flex-col gap-1.5">
         <label
           htmlFor={props.id ?? props.name}
-          className="text-xs font-medium tracking-wide text-zinc-400 uppercase"
+          className="text-xs font-medium tracking-wide text-muted-foreground uppercase"
         >
           {label}
         </label>
 
         <div className="relative">
           {icon && (
-            <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-zinc-500">
+            <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center text-muted-foreground/80">
               {icon}
             </div>
           )}
@@ -37,8 +37,8 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
             id={props.id ?? props.name}
             type={resolvedType}
             className={cn(
-              "w-full rounded-lg border bg-zinc-900/60 px-3 py-2.5 text-sm text-zinc-100",
-              "placeholder:text-zinc-600",
+              "w-full rounded-lg border bg-card/60 px-3 py-2.5 text-sm text-foreground",
+              "placeholder:text-muted-foreground/60",
               "transition-all duration-200 outline-none",
               "border-zinc-800 focus:border-zinc-600 focus:ring-1 focus:ring-zinc-600/50",
               error && "border-red-500/60 focus:border-red-500 focus:ring-red-500/20",
@@ -53,7 +53,7 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
             <button
               type="button"
               onClick={() => setShowPassword((v) => !v)}
-              className="absolute inset-y-0 right-3 flex items-center text-zinc-500 hover:text-zinc-300 transition-colors"
+              className="absolute inset-y-0 right-3 flex items-center text-muted-foreground/80 hover:text-foreground/80 transition-colors"
               tabIndex={-1}
             >
               {showPassword ? <EyeOff size={14} /> : <Eye size={14} />}

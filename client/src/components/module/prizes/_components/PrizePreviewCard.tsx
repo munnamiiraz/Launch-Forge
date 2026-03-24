@@ -41,10 +41,10 @@ export function PrizePreviewCard({ form, prize, compact }: PrizePreviewCardProps
       transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
       className={cn(
         "group relative flex flex-col overflow-hidden rounded-2xl border",
-        "bg-zinc-900/60 backdrop-blur-sm",
+        "bg-card/60 backdrop-blur-sm",
         isTop1
           ? "border-amber-500/40 shadow-lg shadow-amber-500/10"
-          : "border-zinc-800/80",
+          : "border-border/80",
         compact ? "text-[11px]" : "",
       )}
     >
@@ -65,7 +65,7 @@ export function PrizePreviewCard({ form, prize, compact }: PrizePreviewCardProps
           compact ? "text-[10px]" : "text-xs",
           isTop1
             ? "border-amber-500/40 bg-amber-500/15 text-amber-300"
-            : "border-zinc-700/60 bg-zinc-800/40 text-zinc-400",
+            : "border-zinc-700/60 bg-muted/40 text-muted-foreground",
         )}>
           {isTop1 && <Trophy size={compact ? 9 : 11} className="text-amber-400" />}
           {rankLabel}
@@ -88,18 +88,18 @@ export function PrizePreviewCard({ form, prize, compact }: PrizePreviewCardProps
           <p className={cn(
             "font-black tracking-tight tabular-nums",
             compact ? "text-xl" : "text-3xl",
-            isTop1 ? "text-amber-300" : "text-zinc-100",
+            isTop1 ? "text-amber-300" : "text-foreground",
           )}>
             {sym}{value.toLocaleString()}
           </p>
         )}
 
-        <p className={cn("font-semibold text-zinc-200 leading-tight", compact ? "text-xs" : "text-sm")}>
-          {title || <span className="text-zinc-600">Prize title…</span>}
+        <p className={cn("font-semibold text-foreground/90 leading-tight", compact ? "text-xs" : "text-sm")}>
+          {title || <span className="text-muted-foreground/60">Prize title…</span>}
         </p>
 
         {description && !compact && (
-          <p className="text-xs leading-relaxed text-zinc-500">{description}</p>
+          <p className="text-xs leading-relaxed text-muted-foreground/80">{description}</p>
         )}
 
         {/* Expiry */}
@@ -107,7 +107,7 @@ export function PrizePreviewCard({ form, prize, compact }: PrizePreviewCardProps
           <div className={cn(
             "flex items-center gap-1",
             compact ? "text-[9px]" : "text-[10px]",
-            expired ? "text-red-400" : "text-zinc-600",
+            expired ? "text-red-400" : "text-muted-foreground/60",
           )}>
             <Clock size={compact ? 9 : 10} />
             {expired

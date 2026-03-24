@@ -109,9 +109,9 @@ export function StepCard({ step, isLast, index }: StepCardProps) {
       {/* ── Card ────────────────────────────────────────────── */}
       <Card
         className={cn(
-          "group relative overflow-hidden border-zinc-800/80 bg-zinc-900/40",
+          "group relative overflow-hidden border-border/80 bg-card/40",
           "backdrop-blur-sm transition-all duration-300",
-          "hover:bg-zinc-900/60 hover:shadow-xl",
+          "hover:bg-card/60 hover:shadow-xl",
           a.border,
           a.glow
         )}
@@ -173,10 +173,10 @@ export function StepCard({ step, isLast, index }: StepCardProps) {
 
           {/* Text */}
           <div className="flex flex-col gap-2">
-            <h3 className="text-base font-semibold tracking-tight text-zinc-100">
+            <h3 className="text-base font-semibold tracking-tight text-foreground">
               {step.title}
             </h3>
-            <p className="text-sm leading-relaxed text-zinc-500">
+            <p className="text-sm leading-relaxed text-muted-foreground/80">
               {step.description}
             </p>
           </div>
@@ -184,7 +184,7 @@ export function StepCard({ step, isLast, index }: StepCardProps) {
           {/* Bottom accent dot */}
           <div className="flex items-center gap-2">
             <span className={cn("h-1.5 w-1.5 rounded-full", a.dot)} />
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-700">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
               Step {step.step}
             </span>
           </div>

@@ -114,8 +114,8 @@ export function WaitlistLeaderboardClient({
           <AlertCircle size={22} className="text-red-400" />
         </div>
         <div>
-          <p className="text-sm font-medium text-zinc-300">Failed to load leaderboard</p>
-          <p className="mt-0.5 text-xs text-zinc-600">
+          <p className="text-sm font-medium text-foreground/80">Failed to load leaderboard</p>
+          <p className="mt-0.5 text-xs text-muted-foreground/60">
             {(error as Error)?.message ?? "An unexpected error occurred."}
           </p>
         </div>
@@ -123,7 +123,7 @@ export function WaitlistLeaderboardClient({
           size="sm"
           variant="outline"
           onClick={() => refetch()}
-          className="gap-2 border-zinc-800 text-zinc-400 hover:border-zinc-700 hover:text-zinc-200"
+          className="gap-2 border-zinc-800 text-muted-foreground hover:border-zinc-700 hover:text-foreground/90"
         >
           <RefreshCw size={13} />
           Try again
@@ -144,13 +144,13 @@ export function WaitlistLeaderboardClient({
         {/* ── Table card ────────────────────────────────────────── */}
         <Card
           id="leaderboard-table"
-          className="overflow-hidden border-zinc-800/80 bg-zinc-900/40"
+          className="overflow-hidden border-border/80 bg-card/40"
         >
           {/* Top accent line */}
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/25 to-transparent" />
 
           {/* Toolbar */}
-          <div className="border-b border-zinc-800/60 bg-zinc-900/60 px-5 py-4">
+          <div className="border-b border-border/60 bg-card/60 px-5 py-4">
             <LeaderboardToolbar
               search={params.search}
               onSearch={handleSearch}
@@ -169,13 +169,13 @@ export function WaitlistLeaderboardClient({
           <div className={cn("transition-opacity duration-200", hydrationSafeIsFetching && "opacity-60")}>
 
             {/* Column headers */}
-            <div className="hidden grid-cols-[36px_1fr_auto_auto_auto_auto_auto] gap-4 border-b border-zinc-800/60 bg-zinc-900/60 px-5 py-2.5 sm:grid">
-              <p className="text-center text-[10px] font-semibold uppercase tracking-widest text-zinc-600">#</p>
-              <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">Referrer</p>
-              <p className="hidden text-[10px] font-semibold uppercase tracking-widest text-zinc-600 sm:block">Tier</p>
-              <p className="hidden w-32 text-[10px] font-semibold uppercase tracking-widest text-zinc-600 md:block">Direct refs</p>
-              <p className="hidden text-[10px] font-semibold uppercase tracking-widest text-zinc-600 lg:block">Chain</p>
-              <p className="hidden text-[10px] font-semibold uppercase tracking-widest text-zinc-600 xl:block">Queue pos.</p>
+            <div className="hidden grid-cols-[36px_1fr_auto_auto_auto_auto_auto] gap-4 border-b border-border/60 bg-card/60 px-5 py-2.5 sm:grid">
+              <p className="text-center text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">#</p>
+              <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Referrer</p>
+              <p className="hidden text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 sm:block">Tier</p>
+              <p className="hidden w-32 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 md:block">Direct refs</p>
+              <p className="hidden text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 lg:block">Chain</p>
+              <p className="hidden text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 xl:block">Queue pos.</p>
               <div className="w-16" />
             </div>
 
@@ -191,8 +191,8 @@ export function WaitlistLeaderboardClient({
                 >
                   <Trophy size={32} className="text-zinc-800" />
                   <div>
-                    <p className="text-sm font-medium text-zinc-500">No referrers found</p>
-                    <p className="text-xs text-zinc-700">
+                    <p className="text-sm font-medium text-muted-foreground/80">No referrers found</p>
+                    <p className="text-xs text-muted-foreground/40">
                       {params.search || params.tier !== "all"
                         ? "Try adjusting your filters."
                         : "Share the waitlist to start building your leaderboard."}
@@ -223,7 +223,7 @@ export function WaitlistLeaderboardClient({
 
           {/* Pagination */}
           {data?.meta && data.meta.totalPages > 1 && (
-            <div className="border-t border-zinc-800/60 bg-zinc-900/30 px-5 py-3.5">
+            <div className="border-t border-border/60 bg-card/30 px-5 py-3.5">
               <LeaderboardPagination
                 meta={data.meta}
                 onPage={handlePage}

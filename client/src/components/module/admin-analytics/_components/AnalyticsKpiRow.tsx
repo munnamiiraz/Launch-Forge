@@ -28,11 +28,11 @@ function KpiCard({ icon, label, value, sub, accent, val_c, badge, index }: Pill)
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
     >
-      <Card className="group relative overflow-hidden border-zinc-800/80 bg-zinc-900/40 transition-all duration-300 hover:bg-zinc-900/60 hover:shadow-lg hover:shadow-black/20">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent transition-all duration-300 group-hover:via-red-500/20" />
+      <Card className="group relative overflow-hidden border-border/80 bg-card/40 transition-all duration-300 hover:bg-card/60 hover:shadow-lg hover:shadow-black/20">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-red-500/20" />
         <CardContent className="p-4">
           <div className="mb-2 flex items-center justify-between">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">{label}</p>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{label}</p>
             <div className={cn("flex h-7 w-7 items-center justify-center rounded-lg border transition-transform group-hover:scale-110", accent)}>
               {icon}
             </div>
@@ -44,7 +44,7 @@ function KpiCard({ icon, label, value, sub, accent, val_c, badge, index }: Pill)
                 {badge}
               </Badge>
             )}
-            <p className="text-[10px] text-zinc-600">{sub}</p>
+            <p className="text-[10px] text-muted-foreground/60">{sub}</p>
           </div>
         </CardContent>
       </Card>

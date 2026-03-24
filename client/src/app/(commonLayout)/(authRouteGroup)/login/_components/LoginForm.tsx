@@ -57,14 +57,6 @@ export function LoginForm() {
     });
   };
 
-  const handleSocialAuth = async (provider: "github" | "google") => {
-    /**
-     * import { authClient } from "@/lib/auth-client";
-     * await authClient.signIn.social({ provider, callbackURL: "/dashboard" });
-     */
-    console.log(`Social sign-in: ${provider}`);
-  };
-
   const fe = (k: keyof NonNullable<LoginActionResult["fieldErrors"]>) =>
     result?.fieldErrors?.[k];
 
@@ -77,7 +69,7 @@ export function LoginForm() {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className={cn(
-            "relative rounded-2xl border border-zinc-800/80 bg-zinc-950/90",
+            "relative rounded-2xl border border-border/80 bg-background/90",
             "p-8 shadow-2xl shadow-black/60 backdrop-blur-xl",
             "before:absolute before:inset-0 before:-z-10 before:rounded-2xl",
             "before:bg-gradient-to-b before:from-zinc-800/10 before:to-transparent"
@@ -94,7 +86,7 @@ export function LoginForm() {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-indigo-500/30 bg-indigo-500/15">
               <Zap size={15} className="text-indigo-400" />
             </div>
-            <span className="text-sm font-semibold tracking-tight text-zinc-100">
+            <span className="text-sm font-semibold tracking-tight text-foreground">
               LaunchForge
             </span>
           </motion.div>
@@ -107,26 +99,12 @@ export function LoginForm() {
             animate="visible"
             className="mb-6"
           >
-            <h1 className="text-xl font-semibold tracking-tight text-zinc-100">
+            <h1 className="text-xl font-semibold tracking-tight text-foreground">
               Welcome back
             </h1>
-            <p className="mt-1 text-sm text-zinc-500">
+            <p className="mt-1 text-sm text-muted-foreground/80">
               Sign in to your LaunchForge workspace.
             </p>
-          </motion.div>
-
-          {/* Social auth */}
-          <motion.div
-            custom={2}
-            variants={fadeUp}
-            initial="hidden"
-            animate="visible"
-            className="mb-5"
-          >
-            <SocialAuth
-              onGithub={() => handleSocialAuth("github")}
-              onGoogle={() => handleSocialAuth("google")}
-            />
           </motion.div>
 
           {/* Divider — shadcn Separator */}
@@ -138,7 +116,7 @@ export function LoginForm() {
             className="mb-5 flex items-center gap-3"
           >
             <Separator className="flex-1 bg-zinc-800" />
-            <span className="text-xs text-zinc-600">or continue with email</span>
+            <span className="text-xs text-muted-foreground/60">or continue with email</span>
             <Separator className="flex-1 bg-zinc-800" />
           </motion.div>
 
@@ -156,10 +134,10 @@ export function LoginForm() {
                   <CheckCircle2 size={22} className="text-emerald-400" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-zinc-100">
+                  <p className="text-sm font-medium text-foreground">
                     Signed in successfully!
                   </p>
-                  <p className="mt-0.5 text-xs text-zinc-500">
+                  <p className="mt-0.5 text-xs text-muted-foreground/80">
                     Redirecting to your dashboard…
                   </p>
                 </div>
@@ -180,7 +158,7 @@ export function LoginForm() {
                 >
                   <Label
                     htmlFor="email"
-                    className="text-xs font-medium uppercase tracking-wide text-zinc-400"
+                    className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
                   >
                     Email address
                   </Label>
@@ -192,7 +170,7 @@ export function LoginForm() {
                     autoComplete="email"
                     disabled={isPending}
                     className={cn(
-                      "border-zinc-800 bg-zinc-900/60 text-zinc-100 placeholder:text-zinc-600",
+                      "border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60",
                       "focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/50",
                       "transition-all duration-200",
                       fe("email") &&
@@ -218,13 +196,13 @@ export function LoginForm() {
                   <div className="flex items-center justify-between">
                     <Label
                       htmlFor="password"
-                      className="text-xs font-medium uppercase tracking-wide text-zinc-400"
+                      className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
                     >
                       Password
                     </Label>
                     <Link
                       href="/forgot-password"
-                      className="text-xs text-zinc-500 transition-colors hover:text-zinc-300"
+                      className="text-xs text-muted-foreground/80 transition-colors hover:text-foreground/80"
                     >
                       Forgot password?
                     </Link>
@@ -262,7 +240,7 @@ export function LoginForm() {
                   />
                   <label
                     htmlFor="rememberMe"
-                    className="cursor-pointer select-none text-sm text-zinc-400"
+                    className="cursor-pointer select-none text-sm text-muted-foreground"
                   >
                     Keep me signed in
                   </label>
@@ -272,12 +250,12 @@ export function LoginForm() {
                     <TooltipTrigger asChild>
                       <ShieldCheck
                         size={14}
-                        className="cursor-help text-zinc-600 hover:text-zinc-400 transition-colors"
+                        className="cursor-help text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                       />
                     </TooltipTrigger>
                     <TooltipContent
                       side="right"
-                      className="border-zinc-800 bg-zinc-900 text-xs text-zinc-300"
+                      className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80"
                     >
                       Stays signed in for 30 days on this device.
                     </TooltipContent>
@@ -351,12 +329,12 @@ export function LoginForm() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.4 }}
-          className="mt-5 text-center text-sm text-zinc-600"
+          className="mt-5 text-center text-sm text-muted-foreground/60"
         >
           Don&apos;t have an account?{" "}
           <Link
             href="/register"
-            className="font-medium text-zinc-400 underline-offset-2 transition-colors hover:text-zinc-200 hover:underline"
+            className="font-medium text-muted-foreground underline-offset-2 transition-colors hover:text-foreground/90 hover:underline"
           >
             Create one free
           </Link>

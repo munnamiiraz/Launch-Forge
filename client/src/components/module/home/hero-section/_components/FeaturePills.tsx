@@ -33,9 +33,9 @@ export function FeaturePills() {
         >
           <Badge
             variant="outline"
-            className="gap-1.5 border-zinc-800/80 bg-zinc-900/50 px-3 py-1.5 text-xs font-normal text-zinc-400 backdrop-blur-sm hover:border-zinc-700 hover:text-zinc-300 transition-colors cursor-default"
+            className="gap-1.5 border-border/80 bg-zinc-900/50 px-3 py-1.5 text-xs font-normal text-muted-foreground backdrop-blur-sm hover:border-zinc-700 hover:text-foreground/80 transition-colors cursor-default"
           >
-            <span className="text-zinc-600">{f.icon}</span>
+            <span className="text-muted-foreground/60">{f.icon}</span>
             {f.label}
           </Badge>
         </motion.div>

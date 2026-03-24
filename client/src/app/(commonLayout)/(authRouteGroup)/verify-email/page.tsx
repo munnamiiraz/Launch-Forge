@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function VerifyEmailPage() {
   return (
-    <main className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-zinc-950 px-4">
+    <main className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background px-4">
       {/* ── Dynamic background architecture ───────────────────────────── */}
 
       {/* Centred top glow — email icon energy */}
@@ -38,7 +38,7 @@ export default function VerifyEmailPage() {
       {/* ── Main content ─────────────────────────────────────────────── */}
       <div className="z-10 w-full flex flex-col items-center justify-center">
         <Suspense fallback={
-          <div className="flex h-[400px] w-full max-w-md items-center justify-center rounded-2xl border border-zinc-800/50 bg-zinc-950/80 backdrop-blur-2xl">
+          <div className="flex h-[400px] w-full max-w-md items-center justify-center rounded-2xl border border-border/50 bg-background/80 backdrop-blur-2xl">
             <Loader2 className="h-8 w-8 animate-spin text-indigo-500/50" />
           </div>
         }>

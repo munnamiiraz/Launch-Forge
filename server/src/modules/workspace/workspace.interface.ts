@@ -64,6 +64,7 @@ export interface AddMemberPayload {
 
 export interface GetDashboardOverviewPayload {
   requestingUserId: string;
+  workspaceId?:      string;
 }
 
 export interface RemoveMemberPayload {

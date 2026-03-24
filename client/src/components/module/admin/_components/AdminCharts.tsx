@@ -33,13 +33,13 @@ export function AdminRevenueChart({ data }: { data: RevenuePoint[] }) {
   const pct     = prev !== 0 ? Math.round(((current - prev) / prev) * 100) : 0;
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-emerald-500/20 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-zinc-200">Platform MRR</p>
-            <p className="text-[11px] text-zinc-600">Monthly recurring revenue across all subscribers</p>
+            <p className="text-sm font-semibold text-foreground/90">Platform MRR</p>
+            <p className="text-[11px] text-muted-foreground/60">Monthly recurring revenue across all subscribers</p>
           </div>
           <div className="flex items-center gap-2">
             <p className="text-xl font-black tabular-nums text-emerald-300">
@@ -86,8 +86,8 @@ export function AdminRevenueChart({ data }: { data: RevenuePoint[] }) {
             { label: "Churn",    value: `-$${(data[data.length-1].churn).toLocaleString()}`,  color: "text-red-400"    },
             { label: "Upgrades", value: `+$${(data[data.length-1].upgrades).toLocaleString()}`,color:"text-violet-400" },
           ].map((s) => (
-            <div key={s.label} className="flex flex-col gap-0.5 rounded-lg border border-zinc-800/60 bg-zinc-900/40 px-3 py-2">
-              <p className="text-[10px] text-zinc-600">{s.label}</p>
+            <div key={s.label} className="flex flex-col gap-0.5 rounded-lg border border-border/60 bg-card/40 px-3 py-2">
+              <p className="text-[10px] text-muted-foreground/60">{s.label}</p>
               <p className={cn("text-sm font-black tabular-nums", s.color)}>{s.value}</p>
             </div>
           ))}
@@ -118,13 +118,13 @@ export function AdminUserGrowthChart({ data: allData }: { data: Record<RangeId, 
   const last = data[data.length - 1];
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-indigo-500/20 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-sm font-semibold text-zinc-200">User growth</p>
-            <p className="text-[11px] text-zinc-600">Total registered users over time</p>
+            <p className="text-sm font-semibold text-foreground/90">User growth</p>
+            <p className="text-[11px] text-muted-foreground/60">Total registered users over time</p>
           </div>
           <div className="flex items-center gap-2">
             <p className="text-xl font-black tabular-nums text-indigo-300">{last?.total.toLocaleString()}</p>
@@ -137,7 +137,7 @@ export function AdminUserGrowthChart({ data: allData }: { data: Record<RangeId, 
                   onClick={() => setRange(r.id)}
                   className={cn(
                     "h-6 rounded-md px-2 text-xs",
-                    range === r.id ? "bg-indigo-600 text-white" : "text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300",
+                    range === r.id ? "bg-indigo-600 text-white" : "text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80",
                   )}
                 >
                   {r.label}
@@ -175,7 +175,7 @@ export function AdminUserGrowthChart({ data: allData }: { data: Record<RangeId, 
           ].map((l) => (
             <div key={l.label} className="flex items-center gap-1.5">
               <div className="h-2 w-2 rounded-full" style={{ backgroundColor: l.color }} />
-              <span className="text-[10px] text-zinc-600">{l.label}</span>
+              <span className="text-[10px] text-muted-foreground/60">{l.label}</span>
             </div>
           ))}
         </div>

@@ -34,21 +34,21 @@ export function GrowthChart() {
   const pct     = Math.round(((total - prevTotal) / prevTotal) * 100);
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
 
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-zinc-200">Signup growth</p>
-            <p className="text-[11px] text-zinc-600">Last 7 days</p>
+            <p className="text-sm font-semibold text-foreground/90">Signup growth</p>
+            <p className="text-[11px] text-muted-foreground/60">Last 7 days</p>
           </div>
           <div className="flex items-center gap-3">
             <div className="text-right">
               <p className="text-xl font-black tracking-tight text-indigo-300">
                 {total.toLocaleString()}
               </p>
-              <p className="text-[10px] text-zinc-600">total signups</p>
+              <p className="text-[10px] text-muted-foreground/60">total signups</p>
             </div>
             <Badge className="gap-1 border-emerald-500/25 bg-emerald-500/10 px-2 py-0.5 text-[10px] text-emerald-400">
               <ArrowUpRight size={10} />
@@ -106,7 +106,7 @@ export function GrowthChart() {
         <div className="mt-2 flex justify-between">
           {WEEKLY_DATA.map((d) => (
             <div key={d.day} className="flex flex-col items-center gap-0.5">
-              <span className="text-[9px] text-zinc-700">{d.day}</span>
+              <span className="text-[9px] text-muted-foreground/40">{d.day}</span>
             </div>
           ))}
         </div>

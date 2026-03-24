@@ -10,7 +10,7 @@ import type { PublicPrize } from "@/src/components/module/waitlist-page/_lib/dat
 import { getPrizeForRank } from "../_lib/data";
 
 const PODIUM_CONFIG = [
-  /* #2 — left  */ { order: 0, height: "h-20", label: "2nd", medal: "🥈", glow: "bg-zinc-400/8",    border: "border-zinc-600/30",   value: "text-zinc-300", crown: false },
+  /* #2 — left  */ { order: 0, height: "h-20", label: "2nd", medal: "🥈", glow: "bg-zinc-400/8",    border: "border-zinc-600/30",   value: "text-foreground/80", crown: false },
   /* #1 — centre*/ { order: 1, height: "h-28", label: "1st", medal: "🥇", glow: "bg-amber-400/10",  border: "border-amber-500/35",  value: "text-amber-300", crown: true  },
   /* #3 — right */ { order: 2, height: "h-14", label: "3rd", medal: "🥉", glow: "bg-orange-500/8",  border: "border-orange-500/25", value: "text-orange-300",crown: false },
 ];
@@ -85,7 +85,7 @@ export function PodiumSection({ top3, prizes }: PodiumSectionProps) {
                 </Avatar>
                 {/* Confirmation dot */}
                 {entry.isConfirmed && (
-                  <div className="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-zinc-950">
+                  <div className="absolute -bottom-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-background">
                     <CheckCircle2 size={12} className="text-emerald-400" />
                   </div>
                 )}
@@ -95,13 +95,13 @@ export function PodiumSection({ top3, prizes }: PodiumSectionProps) {
               <div className="flex flex-col items-center gap-0.5">
                 <p className={cn(
                   "font-bold tracking-tight",
-                  slot.crown ? "text-sm text-zinc-100" : "text-xs text-zinc-300",
+                  slot.crown ? "text-sm text-foreground" : "text-xs text-foreground/80",
                 )}>
                   {entry.maskedName}
                 </p>
-                <div className="flex items-center gap-1 text-[10px] text-zinc-600">
+                <div className="flex items-center gap-1 text-[10px] text-muted-foreground/60">
                   <Share2 size={9} />
-                  <span className="tabular-nums font-semibold text-zinc-400">{entry.referralCount}</span>
+                  <span className="tabular-nums font-semibold text-muted-foreground">{entry.referralCount}</span>
                   refs
                 </div>
               </div>
@@ -128,10 +128,10 @@ export function PodiumSection({ top3, prizes }: PodiumSectionProps) {
           const medals = ["🥇", "🥈", "🥉"];
           const accents = [
             "border-amber-500/25 bg-amber-500/8",
-            "border-zinc-700/60 bg-zinc-900/30",
+            "border-zinc-700/60 bg-card/30",
             "border-orange-500/20 bg-orange-500/6",
           ];
-          const valueColors = ["text-amber-300", "text-zinc-300", "text-orange-300"];
+          const valueColors = ["text-amber-300", "text-foreground/80", "text-orange-300"];
 
           return (
             <motion.div
@@ -147,8 +147,8 @@ export function PodiumSection({ top3, prizes }: PodiumSectionProps) {
               <div className="flex items-center gap-2.5 min-w-0">
                 <span className="text-base shrink-0">{medals[i]}</span>
                 <div className="min-w-0">
-                  <p className="truncate text-xs font-semibold text-zinc-200">{prize.title}</p>
-                  <p className="text-[10px] text-zinc-600">{prize.rankLabel} place</p>
+                  <p className="truncate text-xs font-semibold text-foreground/90">{prize.title}</p>
+                  <p className="text-[10px] text-muted-foreground/60">{prize.rankLabel} place</p>
                 </div>
               </div>
               {prize.value && (

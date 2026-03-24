@@ -52,8 +52,8 @@ export function UserMenu({ user }: UserMenuProps) {
           variant="ghost"
           className={cn(
             "group h-auto gap-2 rounded-lg border border-transparent px-2 py-1.5",
-            "hover:border-zinc-800 hover:bg-zinc-900/60",
-            "data-[state=open]:border-zinc-800 data-[state=open]:bg-zinc-900/60",
+            "hover:border-zinc-800 hover:bg-card/60",
+            "data-[state=open]:border-zinc-800 data-[state=open]:bg-card/60",
             "transition-all duration-150 focus-visible:ring-0 focus-visible:ring-offset-0"
           )}
         >
@@ -71,14 +71,14 @@ export function UserMenu({ user }: UserMenuProps) {
 
           {/* Name + plan — hidden on mobile */}
           <div className="hidden flex-col items-start gap-0.5 md:flex">
-            <span className="max-w-[100px] truncate text-xs font-medium text-zinc-300 group-hover:text-zinc-100 transition-colors">
+            <span className="max-w-[100px] truncate text-xs font-medium text-foreground/80 group-hover:text-foreground transition-colors">
               {user.name.split(" ")[0]}
             </span>
           </div>
 
           <ChevronDown
             size={13}
-            className="text-zinc-600 transition-transform duration-200 group-data-[state=open]:rotate-180"
+            className="text-muted-foreground/60 transition-transform duration-200 group-data-[state=open]:rotate-180"
           />
         </Button>
       </DropdownMenuTrigger>
@@ -86,7 +86,7 @@ export function UserMenu({ user }: UserMenuProps) {
       <DropdownMenuContent
         align="end"
         sideOffset={8}
-        className="w-64 border-zinc-800 bg-zinc-950/95 p-1.5 shadow-xl shadow-black/40 backdrop-blur-xl"
+        className="w-64 border-zinc-800 bg-background/95 p-1.5 shadow-xl shadow-black/40 backdrop-blur-xl"
       >
         {/* User identity header */}
         <DropdownMenuLabel className="px-2 py-2">
@@ -102,20 +102,20 @@ export function UserMenu({ user }: UserMenuProps) {
               </AvatarFallback>
             </Avatar>
             <div className="flex min-w-0 flex-col gap-0.5">
-              <span className="truncate text-sm font-semibold text-zinc-100">
+              <span className="truncate text-sm font-semibold text-foreground">
                 {user.name}
               </span>
-              <span className="truncate text-[11px] text-zinc-500">
+              <span className="truncate text-[11px] text-muted-foreground/80">
                 {user.email}
               </span>
             </div>
           </div>
 
           {/* Plan badge row */}
-          <div className="mt-3 flex items-center justify-between rounded-lg border border-zinc-800/80 bg-zinc-900/50 px-2.5 py-2">
+          <div className="mt-3 flex items-center justify-between rounded-lg border border-border/80 bg-zinc-900/50 px-2.5 py-2">
             <div className="flex items-center gap-2">
               <PlanBadge plan={user.plan} />
-              <span className="text-[11px] text-zinc-500">Current plan</span>
+              <span className="text-[11px] text-muted-foreground/80">Current plan</span>
             </div>
             <Link
               href="/settings/billing"
@@ -127,28 +127,28 @@ export function UserMenu({ user }: UserMenuProps) {
           </div>
         </DropdownMenuLabel>
 
-        <DropdownMenuSeparator className="my-1 bg-zinc-800/60" />
+        <DropdownMenuSeparator className="my-1 bg-muted/60" />
 
         {/* Navigation group */}
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild className="cursor-pointer rounded-md px-2 py-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60 focus:text-zinc-100">
+          <DropdownMenuItem asChild className="cursor-pointer rounded-md px-2 py-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60 focus:text-foreground">
             <Link href="/dashboard" className="flex items-center gap-2.5">
-              <LayoutDashboard size={13} className="text-zinc-500" />
+              <LayoutDashboard size={13} className="text-muted-foreground/80" />
               Dashboard
-              <DropdownMenuShortcut className="text-zinc-700">⌘D</DropdownMenuShortcut>
+              <DropdownMenuShortcut className="text-muted-foreground/40">⌘D</DropdownMenuShortcut>
             </Link>
           </DropdownMenuItem>
 
-          <DropdownMenuItem asChild className="cursor-pointer rounded-md px-2 py-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60 focus:text-zinc-100">
+          <DropdownMenuItem asChild className="cursor-pointer rounded-md px-2 py-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60 focus:text-foreground">
             <Link href="/dashboard/waitlists" className="flex items-center gap-2.5">
-              <Users size={13} className="text-zinc-500" />
+              <Users size={13} className="text-muted-foreground/80" />
               My Waitlists
             </Link>
           </DropdownMenuItem>
 
-          <DropdownMenuItem asChild className="cursor-pointer rounded-md px-2 py-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60 focus:text-zinc-100">
+          <DropdownMenuItem asChild className="cursor-pointer rounded-md px-2 py-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60 focus:text-foreground">
             <Link href="/dashboard/notifications" className="flex items-center gap-2.5">
-              <Bell size={13} className="text-zinc-500" />
+              <Bell size={13} className="text-muted-foreground/80" />
               Notifications
               {/* Unread dot */}
               <span className="ml-auto flex h-4 w-4 items-center justify-center rounded-full bg-indigo-600 text-[9px] font-bold text-white">
@@ -158,21 +158,21 @@ export function UserMenu({ user }: UserMenuProps) {
           </DropdownMenuItem>
         </DropdownMenuGroup>
 
-        <DropdownMenuSeparator className="my-1 bg-zinc-800/60" />
+        <DropdownMenuSeparator className="my-1 bg-muted/60" />
 
         {/* Settings group */}
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild className="cursor-pointer rounded-md px-2 py-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60 focus:text-zinc-100">
+          <DropdownMenuItem asChild className="cursor-pointer rounded-md px-2 py-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60 focus:text-foreground">
             <Link href="/settings" className="flex items-center gap-2.5">
-              <Settings size={13} className="text-zinc-500" />
+              <Settings size={13} className="text-muted-foreground/80" />
               Settings
-              <DropdownMenuShortcut className="text-zinc-700">⌘,</DropdownMenuShortcut>
+              <DropdownMenuShortcut className="text-muted-foreground/40">⌘,</DropdownMenuShortcut>
             </Link>
           </DropdownMenuItem>
 
-          <DropdownMenuItem asChild className="cursor-pointer rounded-md px-2 py-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60 focus:text-zinc-100">
+          <DropdownMenuItem asChild className="cursor-pointer rounded-md px-2 py-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60 focus:text-foreground">
             <Link href="/settings/billing" className="flex items-center gap-2.5">
-              <CreditCard size={13} className="text-zinc-500" />
+              <CreditCard size={13} className="text-muted-foreground/80" />
               Billing & Plan
             </Link>
           </DropdownMenuItem>
@@ -190,25 +190,25 @@ export function UserMenu({ user }: UserMenuProps) {
           )}
         </DropdownMenuGroup>
 
-        <DropdownMenuSeparator className="my-1 bg-zinc-800/60" />
+        <DropdownMenuSeparator className="my-1 bg-muted/60" />
 
         {/* Support + Sign out */}
         <DropdownMenuGroup>
-          <DropdownMenuItem asChild className="cursor-pointer rounded-md px-2 py-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60 focus:text-zinc-100">
+          <DropdownMenuItem asChild className="cursor-pointer rounded-md px-2 py-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60 focus:text-foreground">
             <Link href="/support" className="flex items-center gap-2.5">
-              <LifeBuoy size={13} className="text-zinc-500" />
+              <LifeBuoy size={13} className="text-muted-foreground/80" />
               Help & Support
             </Link>
           </DropdownMenuItem>
 
           <DropdownMenuItem
             onClick={handleSignOut}
-            className="cursor-pointer rounded-md px-2 py-2 text-xs text-zinc-400 hover:bg-red-500/8 hover:text-red-400 focus:bg-red-500/8 focus:text-red-400"
+            className="cursor-pointer rounded-md px-2 py-2 text-xs text-muted-foreground hover:bg-red-500/8 hover:text-red-400 focus:bg-red-500/8 focus:text-red-400"
           >
             <div className="flex w-full items-center gap-2.5">
               <LogOut size={13} />
               Sign out
-              <DropdownMenuShortcut className="text-zinc-700">⇧⌘Q</DropdownMenuShortcut>
+              <DropdownMenuShortcut className="text-muted-foreground/40">⇧⌘Q</DropdownMenuShortcut>
             </div>
           </DropdownMenuItem>
         </DropdownMenuGroup>

@@ -142,10 +142,10 @@ export function CreateWaitlistForm() {
           </div>
         </motion.div>
         <div>
-          <p className="text-lg font-semibold text-zinc-100">Waitlist created!</p>
-          <p className="mt-1 text-sm text-zinc-500">Redirecting to your waitlists…</p>
+          <p className="text-lg font-semibold text-foreground">Waitlist created!</p>
+          <p className="mt-1 text-sm text-muted-foreground/80">Redirecting to your waitlists…</p>
         </div>
-        <div className="flex items-center gap-1.5 text-xs text-zinc-600">
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground/60">
           <Loader2 size={11} className="animate-spin" />
           One moment…
         </div>
@@ -166,17 +166,17 @@ export function CreateWaitlistForm() {
               <div className="flex h-6 w-6 items-center justify-center rounded-md border border-indigo-500/30 bg-indigo-500/15">
                 <Zap size={12} className="text-indigo-400" />
               </div>
-              <h2 className="text-sm font-semibold text-zinc-200">Basic info</h2>
+              <h2 className="text-sm font-semibold text-foreground/90">Basic info</h2>
             </div>
 
-            <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/30 p-5 flex flex-col gap-5">
+            <div className="rounded-xl border border-border/80 bg-card/30 p-5 flex flex-col gap-5">
 
               {/* Waitlist name */}
               <div className="flex flex-col gap-1.5">
                 <div className="flex items-center justify-between">
                   <Label
                     htmlFor="name"
-                    className="text-xs font-medium uppercase tracking-wide text-zinc-400"
+                    className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
                   >
                     Waitlist name <span className="text-red-500">*</span>
                   </Label>
@@ -184,7 +184,7 @@ export function CreateWaitlistForm() {
                     "text-[10px] tabular-nums",
                     nameLen > FIELD_LIMITS.NAME_MAX - 20
                       ? "text-amber-500"
-                      : "text-zinc-700"
+                      : "text-muted-foreground/40"
                   )}>
                     {nameLen}/{FIELD_LIMITS.NAME_MAX}
                   </span>
@@ -197,7 +197,7 @@ export function CreateWaitlistForm() {
                   {...register("name")}
                   onChange={handleNameChange}
                   className={cn(
-                    "border-zinc-800 bg-zinc-900/60 text-zinc-100 placeholder:text-zinc-600",
+                    "border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60",
                     "focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/50 transition-all duration-200",
                     errors.name && "border-red-500/60 focus-visible:border-red-500 focus-visible:ring-red-500/20"
                   )}
@@ -222,15 +222,15 @@ export function CreateWaitlistForm() {
                 <div className="flex items-center gap-1.5">
                   <Label
                     htmlFor="slug"
-                    className="text-xs font-medium uppercase tracking-wide text-zinc-400"
+                    className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
                   >
                     URL slug <span className="text-red-500">*</span>
                   </Label>
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Info size={11} className="cursor-help text-zinc-700 hover:text-zinc-500 transition-colors" />
+                      <Info size={11} className="cursor-help text-muted-foreground/40 hover:text-muted-foreground/80 transition-colors" />
                     </TooltipTrigger>
-                    <TooltipContent side="right" className="border-zinc-800 bg-zinc-900 text-xs text-zinc-300 max-w-xs">
+                    <TooltipContent side="right" className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80 max-w-xs">
                       The URL path for your public waitlist page.
                       Only lowercase letters, numbers, and hyphens.
                       Auto-generated from your name — you can customise it.
@@ -238,12 +238,12 @@ export function CreateWaitlistForm() {
                   </Tooltip>
                 </div>
                 <div className={cn(
-                  "flex items-center overflow-hidden rounded-lg border bg-zinc-900/60 transition-all duration-200",
+                  "flex items-center overflow-hidden rounded-lg border bg-card/60 transition-all duration-200",
                   errors.slug
                     ? "border-red-500/60 focus-within:border-red-500"
                     : "border-zinc-800 focus-within:border-zinc-600"
                 )}>
-                  <span className="shrink-0 border-r border-zinc-800 px-3 py-2 text-xs text-zinc-600">
+                  <span className="shrink-0 border-r border-zinc-800 px-3 py-2 text-xs text-muted-foreground/60">
                     launchforge.app/
                   </span>
                   <input
@@ -252,7 +252,7 @@ export function CreateWaitlistForm() {
                     onChange={handleSlugChange}
                     disabled={isSubmitting}
                     placeholder="product-alpha"
-                    className="flex-1 bg-transparent px-3 py-2 text-sm text-zinc-100 placeholder:text-zinc-600 outline-none"
+                    className="flex-1 bg-transparent px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground/60 outline-none"
                   />
                   {watchedValues.slug && !errors.slug && dirtyFields.slug && (
                     <span className="mr-2.5 shrink-0">
@@ -280,16 +280,16 @@ export function CreateWaitlistForm() {
                 <div className="flex items-center justify-between">
                   <Label
                     htmlFor="description"
-                    className="text-xs font-medium uppercase tracking-wide text-zinc-400"
+                    className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
                   >
                     Description{" "}
-                    <span className="normal-case text-zinc-600">(optional)</span>
+                    <span className="normal-case text-muted-foreground/60">(optional)</span>
                   </Label>
                   <span className={cn(
                     "text-[10px] tabular-nums",
                     descLen > FIELD_LIMITS.DESCRIPTION_MAX - 100
                       ? "text-amber-500"
-                      : "text-zinc-700"
+                      : "text-muted-foreground/40"
                   )}>
                     {descLen}/{FIELD_LIMITS.DESCRIPTION_MAX}
                   </span>
@@ -301,7 +301,7 @@ export function CreateWaitlistForm() {
                   placeholder="What are you building? Tell visitors why they should join early."
                   {...register("description")}
                   className={cn(
-                    "resize-none border-zinc-800 bg-zinc-900/60 text-sm text-zinc-100 placeholder:text-zinc-600",
+                    "resize-none border-zinc-800 bg-card/60 text-sm text-foreground placeholder:text-muted-foreground/60",
                     "focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/50 transition-all duration-200",
                     errors.description && "border-red-500/60"
                   )}
@@ -316,25 +316,25 @@ export function CreateWaitlistForm() {
               <div className="flex h-6 w-6 items-center justify-center rounded-md border border-emerald-500/25 bg-emerald-500/10">
                 <Globe size={12} className="text-emerald-400" />
               </div>
-              <h2 className="text-sm font-semibold text-zinc-200">Signup settings</h2>
+              <h2 className="text-sm font-semibold text-foreground/90">Signup settings</h2>
             </div>
 
-            <div className="rounded-xl border border-zinc-800/80 bg-zinc-900/30 p-5">
+            <div className="rounded-xl border border-border/80 bg-card/30 p-5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className={cn(
                     "flex h-9 w-9 items-center justify-center rounded-lg border transition-all duration-300",
                     watchedValues.isOpen
                       ? "border-emerald-500/30 bg-emerald-500/12 text-emerald-400"
-                      : "border-zinc-700/60 bg-zinc-800/40 text-zinc-600"
+                      : "border-zinc-700/60 bg-muted/40 text-muted-foreground/60"
                   )}>
                     {watchedValues.isOpen ? <Globe size={15} /> : <Lock size={15} />}
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-zinc-200">
+                    <p className="text-sm font-medium text-foreground/90">
                       {watchedValues.isOpen ? "Open for signups" : "Signups closed"}
                     </p>
-                    <p className="text-xs text-zinc-600">
+                    <p className="text-xs text-muted-foreground/60">
                       {watchedValues.isOpen
                         ? "Anyone can join via your public link"
                         : "Signups are paused — you can enable them later"}
@@ -356,23 +356,23 @@ export function CreateWaitlistForm() {
             <button
               type="button"
               onClick={() => setAdvancedOpen((v) => !v)}
-              className="flex w-full items-center gap-2 rounded-xl border border-zinc-800/60 bg-zinc-900/20 px-5 py-3 text-left transition-colors hover:bg-zinc-900/40"
+              className="flex w-full items-center gap-2 rounded-xl border border-border/60 bg-zinc-900/20 px-5 py-3 text-left transition-colors hover:bg-card/40"
             >
-              <div className="flex h-6 w-6 items-center justify-center rounded-md border border-zinc-700/60 bg-zinc-800/40">
-                <ImageIcon size={12} className="text-zinc-500" />
+              <div className="flex h-6 w-6 items-center justify-center rounded-md border border-zinc-700/60 bg-muted/40">
+                <ImageIcon size={12} className="text-muted-foreground/80" />
               </div>
-              <span className="flex-1 text-sm font-medium text-zinc-400">
+              <span className="flex-1 text-sm font-medium text-muted-foreground">
                 Advanced settings
               </span>
               <Badge
                 variant="outline"
-                className="border-zinc-700/60 bg-zinc-800/40 px-2 py-0 text-[9px] text-zinc-600"
+                className="border-zinc-700/60 bg-muted/40 px-2 py-0 text-[9px] text-muted-foreground/60"
               >
                 Optional
               </Badge>
               {advancedOpen
-                ? <ChevronUp  size={14} className="text-zinc-600" />
-                : <ChevronDown size={14} className="text-zinc-600" />
+                ? <ChevronUp  size={14} className="text-muted-foreground/60" />
+                : <ChevronDown size={14} className="text-muted-foreground/60" />
               }
             </button>
 
@@ -385,20 +385,20 @@ export function CreateWaitlistForm() {
                   transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
                   className="overflow-hidden"
                 >
-                  <div className="mt-3 rounded-xl border border-zinc-800/80 bg-zinc-900/30 p-5">
+                  <div className="mt-3 rounded-xl border border-border/80 bg-card/30 p-5">
                     <div className="flex flex-col gap-1.5">
                       <div className="flex items-center gap-1.5">
                         <Label
                           htmlFor="logoUrl"
-                          className="text-xs font-medium uppercase tracking-wide text-zinc-400"
+                          className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
                         >
                           Logo URL
                         </Label>
                         <Tooltip>
                           <TooltipTrigger asChild>
-                            <Info size={11} className="cursor-help text-zinc-700 hover:text-zinc-500 transition-colors" />
+                            <Info size={11} className="cursor-help text-muted-foreground/40 hover:text-muted-foreground/80 transition-colors" />
                           </TooltipTrigger>
-                          <TooltipContent side="right" className="border-zinc-800 bg-zinc-900 text-xs text-zinc-300">
+                          <TooltipContent side="right" className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80">
                             A public image URL for your product logo.
                             Displayed on the public sign-up page.
                           </TooltipContent>
@@ -410,7 +410,7 @@ export function CreateWaitlistForm() {
                         disabled={isSubmitting}
                         {...register("logoUrl")}
                         className={cn(
-                          "border-zinc-800 bg-zinc-900/60 text-zinc-100 placeholder:text-zinc-600",
+                          "border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60",
                           "focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/50 transition-all",
                           errors.logoUrl && "border-red-500/60"
                         )}
@@ -466,7 +466,7 @@ export function CreateWaitlistForm() {
               variant="ghost"
               size="lg"
               onClick={() => router.back()}
-              className="text-zinc-500 hover:bg-zinc-800/60 hover:text-zinc-300"
+              className="text-muted-foreground/80 hover:bg-muted/60 hover:text-foreground/80"
             >
               Cancel
             </Button>

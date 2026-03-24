@@ -36,7 +36,7 @@ import type { AdminUser } from "@/src/components/module/admin/_types";
 import type { SortField, SortDir, StatusFilter, PlanFilter } from "@/src/components/module/admin-users/_lib/users-data";
 
 const PLAN_BADGE: Record<string, string> = {
-  FREE:   "border-zinc-700/60 bg-zinc-800/40 text-zinc-500",
+  FREE:   "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",
   PRO:    "border-indigo-500/30 bg-indigo-500/12 text-indigo-400",
   GROWTH: "border-violet-500/30 bg-violet-500/12 text-violet-400",
 };
@@ -60,7 +60,7 @@ const STATUS_TABS: { id: StatusFilter; label: string; icon: React.ReactNode }[] 
 ];
 
 function SortIcon({ field, active, dir }: { field: SortField; active: SortField; dir: SortDir }) {
-  if (field !== active) return <ArrowUpDown size={11} className="text-zinc-700" />;
+  if (field !== active) return <ArrowUpDown size={11} className="text-muted-foreground/40" />;
   return dir === "asc"
     ? <ArrowUp   size={11} className="text-red-400" />
     : <ArrowDown size={11} className="text-red-400" />;
@@ -225,7 +225,7 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
 
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             {/* Status tabs */}
-            <div className="flex items-center gap-0.5 rounded-lg border border-zinc-800/80 bg-zinc-900/40 p-0.5">
+            <div className="flex items-center gap-0.5 rounded-lg border border-border/80 bg-card/40 p-0.5">
               {STATUS_TABS.map((tab) => {
                 const active = currentQuery.status === tab.id;
                 return (
@@ -235,7 +235,7 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
                     onClick={() => handleStatus(tab.id)}
                     className={cn(
                       "relative flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all duration-150 disabled:opacity-50",
-                      active ? "text-zinc-100" : "text-zinc-500 hover:text-zinc-300",
+                      active ? "text-foreground" : "text-muted-foreground/80 hover:text-foreground/80",
                     )}
                   >
                     {active && (
@@ -269,7 +269,7 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
 
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
             <div className="relative flex-1 max-w-sm">
-              <Search size={13} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-zinc-600" />
+              <Search size={13} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/60" />
               <Input
                 defaultValue={currentQuery.search}
                 onKeyDown={(e) => {
@@ -277,17 +277,17 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
                 }}
                 disabled={isPending}
                 placeholder="Search and press Enter…"
-                className="h-9 border-zinc-800 bg-zinc-900/60 pl-8 text-xs text-zinc-100 placeholder:text-zinc-600 focus-visible:border-zinc-600 focus-visible:ring-0"
+                className="h-9 border-zinc-800 bg-card/60 pl-8 text-xs text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-0"
               />
               {isPending && (
                 <div className="absolute right-2.5 top-1/2 -translate-y-1/2">
-                   <Loader2 size={12} className="animate-spin text-zinc-600" />
+                   <Loader2 size={12} className="animate-spin text-muted-foreground/60" />
                 </div>
               )}
             </div>
 
             {/* Plan filter */}
-            <div className="flex items-center gap-1 rounded-lg border border-zinc-800/80 bg-zinc-900/40 p-1">
+            <div className="flex items-center gap-1 rounded-lg border border-border/80 bg-card/40 p-1">
               {(["ALL", "FREE", "PRO", "GROWTH"] as PlanFilter[]).map((p) => (
                 <button
                   key={p}
@@ -295,7 +295,7 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
                   onClick={() => handlePlan(p)}
                   className={cn(
                     "rounded-md px-2.5 py-1 text-xs font-medium transition-all disabled:opacity-50",
-                    currentQuery.plan === p ? "bg-zinc-800 text-zinc-200" : "text-zinc-600 hover:text-zinc-400",
+                    currentQuery.plan === p ? "bg-zinc-800 text-foreground/90" : "text-muted-foreground/60 hover:text-muted-foreground",
                   )}
                 >
                   {p === "ALL" ? "All plans" : p}
@@ -313,9 +313,9 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2 }}
-              className="flex items-center justify-between rounded-xl border border-zinc-700/60 bg-zinc-900/60 px-4 py-2.5"
+              className="flex items-center justify-between rounded-xl border border-zinc-700/60 bg-card/60 px-4 py-2.5"
             >
-              <span className="text-xs font-semibold text-zinc-300">
+              <span className="text-xs font-semibold text-foreground/80">
                 {selected.size} user{selected.size !== 1 ? "s" : ""} selected
               </span>
               <div className="flex items-center gap-2">
@@ -338,7 +338,7 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
                 <Button
                   size="sm" variant="ghost" disabled={bulkPending}
                   onClick={() => setSelected(new Set())}
-                  className="text-xs text-zinc-600 hover:bg-zinc-800/60"
+                  className="text-xs text-muted-foreground/60 hover:bg-muted/60"
                 >
                   Clear
                 </Button>
@@ -348,11 +348,11 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
         </AnimatePresence>
 
         {/* ── Table ────────────────────────────────────────── */}
-        <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+        <Card className="relative overflow-hidden border-border/80 bg-card/40">
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/20 to-transparent" />
 
           {/* Column headers */}
-          <div className="hidden grid-cols-[32px_24px_1fr_auto_auto_auto_auto_auto_32px] gap-3 border-b border-zinc-800/60 bg-zinc-900/60 px-4 py-2.5 sm:grid">
+          <div className="hidden grid-cols-[32px_24px_1fr_auto_auto_auto_auto_auto_32px] gap-3 border-b border-border/60 bg-card/60 px-4 py-2.5 sm:grid">
             <div className="flex items-center justify-center">
               <input
                 type="checkbox"
@@ -362,24 +362,24 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
               />
             </div>
             <div />
-            <button disabled={isPending} onClick={() => handleSort("name")} className="flex items-center gap-1 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-600 hover:text-zinc-400 disabled:opacity-50">
+            <button disabled={isPending} onClick={() => handleSort("name")} className="flex items-center gap-1 text-left text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 hover:text-muted-foreground disabled:opacity-50">
               User <SortIcon field="name" active={currentQuery.sortBy} dir={currentQuery.sortOrder} />
             </button>
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">Plan</span>
-            <button disabled={isPending} onClick={() => handleSort("waitlists")} className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-600 hover:text-zinc-400 tabular-nums disabled:opacity-50">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 text-right">Plan</span>
+            <button disabled={isPending} onClick={() => handleSort("waitlists")} className="flex items-center justify-end gap-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 hover:text-muted-foreground tabular-nums disabled:opacity-50">
               Waitlists <SortIcon field="waitlists" active={currentQuery.sortBy} dir={currentQuery.sortOrder} />
             </button>
-            <button disabled={isPending} onClick={() => handleSort("subscribers")} className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-600 hover:text-zinc-400 tabular-nums disabled:opacity-50">
+            <button disabled={isPending} onClick={() => handleSort("subscribers")} className="flex items-center justify-end gap-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 hover:text-muted-foreground tabular-nums disabled:opacity-50">
               Subscribers <SortIcon field="subscribers" active={currentQuery.sortBy} dir={currentQuery.sortOrder} />
             </button>
-            <button disabled={isPending} onClick={() => handleSort("createdAt")} className="flex items-center gap-1 text-[10px] font-semibold uppercase tracking-widest text-zinc-600 hover:text-zinc-400 disabled:opacity-50">
+            <button disabled={isPending} onClick={() => handleSort("createdAt")} className="flex items-center justify-end gap-1 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 hover:text-muted-foreground disabled:opacity-50">
               Joined <SortIcon field="createdAt" active={currentQuery.sortBy} dir={currentQuery.sortOrder} />
             </button>
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">Status</span>
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 text-center">Status</span>
             <div />
           </div>
 
-          <div className="divide-y divide-zinc-800/40 min-h-[400px]">
+          <div className="divide-y divide-border/40 min-h-[400px]">
             <AnimatePresence mode="popLayout">
               {users.length === 0 ? (
                 <motion.div
@@ -390,7 +390,7 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
                   className="flex flex-col items-center gap-2 py-32 text-center"
                 >
                   <Users size={32} className="text-zinc-800" />
-                  <p className="text-sm text-zinc-600">No users found matching your criteria.</p>
+                  <p className="text-sm text-muted-foreground/60">No users found matching your criteria.</p>
                 </motion.div>
               ) : users.map((user, i) => {
                 const globalIdx = (currentQuery.page - 1) * currentQuery.limit + i;
@@ -409,7 +409,7 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
                     className={cn(
                       "group grid items-center gap-3 px-4 py-3 transition-colors",
                       "grid-cols-[32px_24px_1fr] sm:grid-cols-[32px_24px_1fr_auto_auto_auto_auto_auto_32px]",
-                      isSelected ? "bg-red-500/5" : "hover:bg-zinc-900/40",
+                      isSelected ? "bg-red-500/5" : "hover:bg-card/40",
                       isPending && "opacity-60 grayscale-[0.5]"
                     )}
                   >
@@ -433,7 +433,7 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
                       className="flex min-w-0 flex-col items-start text-left cursor-pointer"
                     >
                       <div className="flex items-center gap-1.5">
-                        <span className="truncate text-sm font-medium text-zinc-200 group-hover:text-zinc-100 transition-colors">
+                        <span className="truncate text-sm font-medium text-foreground/90 group-hover:text-foreground transition-colors">
                           {user.name}
                         </span>
                         {user.role === "ADMIN" && (
@@ -441,36 +441,36 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
                             <TooltipTrigger asChild>
                               <ShieldAlert size={11} className="shrink-0 text-red-400 cursor-pointer" />
                             </TooltipTrigger>
-                            <TooltipContent side="top" className="border-zinc-800 bg-zinc-900 text-xs text-zinc-300">
+                            <TooltipContent side="top" className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80">
                               Admin
                             </TooltipContent>
                           </Tooltip>
                         )}
                       </div>
-                      <span className="truncate text-[11px] text-zinc-600">{user.email}</span>
+                      <span className="truncate text-[11px] text-muted-foreground/60">{user.email}</span>
                     </div>
 
-                    <Badge variant="outline" className={cn("hidden shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold sm:inline-flex", PLAN_BADGE[user.plan])}>
+                    <Badge variant="outline" className={cn("hidden shrink-0 w-20 justify-center rounded-full px-2 py-0.5 text-[10px] font-semibold sm:inline-flex", PLAN_BADGE[user.plan])}>
                       {user.plan}{user.planMode ? ` · ${user.planMode === "MONTHLY" ? "Mo" : "Yr"}` : ""}
                     </Badge>
 
                     <div className="hidden items-center justify-end sm:flex">
-                      <span className="w-16 text-right text-xs font-medium tabular-nums text-zinc-400">
+                      <span className="w-20 text-right text-xs font-medium tabular-nums text-muted-foreground">
                         {user.waitlists}
                       </span>
                     </div>
 
                     <div className="hidden items-center justify-end sm:flex">
-                      <span className="w-24 text-right text-xs tabular-nums text-zinc-500">
+                      <span className="w-20 text-right text-xs tabular-nums text-muted-foreground/80">
                         {user.subscribers.toLocaleString()}
                       </span>
                     </div>
 
-                    <span className="hidden text-xs tabular-nums text-zinc-600 sm:block">
+                    <span className="hidden w-20 justify-end text-right text-xs tabular-nums text-muted-foreground/60 sm:flex">
                       {fmtDate(user.createdAt)}
                     </span>
 
-                    <Badge variant="outline" className={cn("hidden shrink-0 gap-1 rounded-full px-2 py-0.5 text-[9px] font-semibold sm:inline-flex", STATUS_BADGE[user.status])}>
+                    <Badge variant="outline" className={cn("hidden shrink-0 w-20 justify-center gap-1 rounded-full px-2 py-0.5 text-[9px] font-semibold sm:inline-flex", STATUS_BADGE[user.status])}>
                       {user.status === "ACTIVE"    && <CheckCircle2 size={9} />}
                       {user.status === "SUSPENDED" && <Ban          size={9} />}
                       {user.status === "DELETED"   && <XCircle      size={9} />}
@@ -481,19 +481,19 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
                       <DropdownMenuTrigger asChild>
                         <Button
                           variant="ghost" size="icon"
-                          className="hidden h-6 w-6 rounded-md text-zinc-700 opacity-0 transition-all group-hover:opacity-100 hover:bg-zinc-800/60 hover:text-zinc-300 sm:flex"
+                          className="hidden h-6 w-6 rounded-md text-muted-foreground/40 opacity-0 transition-all group-hover:opacity-100 hover:bg-muted/60 hover:text-foreground/80 sm:flex"
                         >
                           <MoreHorizontal size={12} />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-44 border-zinc-800 bg-zinc-950/95 backdrop-blur-xl">
+                      <DropdownMenuContent align="end" className="w-44 border-zinc-800 bg-background/95 backdrop-blur-xl">
                         <DropdownMenuItem
                           onClick={() => openDrawer(user, globalIdx)}
-                          className="gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60 cursor-pointer"
+                          className="gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60 cursor-pointer"
                         >
                           <Users size={12} />View details
                         </DropdownMenuItem>
-                        <DropdownMenuSeparator className="bg-zinc-800/60" />
+                        <DropdownMenuSeparator className="bg-muted/60" />
                         {user.status === "ACTIVE" ? (
                           <DropdownMenuItem
                             onClick={() => onSuspend(user)}
@@ -510,15 +510,15 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
                           </DropdownMenuItem>
                         ) : null}
                         {user.role === "USER" ? (
-                          <DropdownMenuItem onClick={() => onPromote(user)} className="gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 focus:bg-zinc-800/60 cursor-pointer">
+                          <DropdownMenuItem onClick={() => onPromote(user)} className="gap-2 text-xs text-muted-foreground hover:bg-muted/60 focus:bg-muted/60 cursor-pointer">
                             <Crown size={12} />Promote to admin
                           </DropdownMenuItem>
                         ) : (
-                          <DropdownMenuItem onClick={() => onDemote(user)} className="gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 focus:bg-zinc-800/60 cursor-pointer">
+                          <DropdownMenuItem onClick={() => onDemote(user)} className="gap-2 text-xs text-muted-foreground hover:bg-muted/60 focus:bg-muted/60 cursor-pointer">
                             <ShieldAlert size={12} />Remove admin
                           </DropdownMenuItem>
                         )}
-                        <DropdownMenuSeparator className="bg-zinc-800/60" />
+                        <DropdownMenuSeparator className="bg-muted/60" />
                         <DropdownMenuItem onClick={() => onDelete(user)} className="gap-2 text-xs text-red-400 hover:bg-red-500/8 focus:bg-red-500/8 focus:text-red-400 cursor-pointer">
                           <Trash2 size={12} />Delete
                         </DropdownMenuItem>
@@ -531,17 +531,17 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
           </div>
 
           {/* ── Pagination ────────────────────────────────── */}
-          <div className="flex items-center justify-between border-t border-zinc-800/60 bg-zinc-900/30 px-4 py-3">
-            <p className="text-[11px] text-zinc-600">
-              Showing <span className="font-semibold text-zinc-400">{Math.min((meta.page - 1) * meta.limit + 1, meta.total)}–{Math.min(meta.page * meta.limit, meta.total)}</span>{" "}
-              of <span className="font-semibold text-zinc-400">{meta.total}</span> users
+          <div className="flex items-center justify-between border-t border-border/60 bg-card/30 px-4 py-3">
+            <p className="text-[11px] text-muted-foreground/60">
+              Showing <span className="font-semibold text-muted-foreground">{Math.min((meta.page - 1) * meta.limit + 1, meta.total)}–{Math.min(meta.page * meta.limit, meta.total)}</span>{" "}
+              of <span className="font-semibold text-muted-foreground">{meta.total}</span> users
             </p>
 
             <div className="flex items-center gap-1">
               <Button
                 variant="ghost" size="icon" disabled={!meta.hasPreviousPage || isPending}
                 onClick={() => handlePageChange(meta.page - 1)}
-                className="h-7 w-7 rounded-md text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300 disabled:opacity-30"
+                className="h-7 w-7 rounded-md text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80 disabled:opacity-30"
               >
                 <ChevronLeft size={13} />
               </Button>
@@ -562,7 +562,7 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
                       "h-7 w-7 rounded-md text-xs font-medium",
                       p === meta.page
                         ? "bg-red-600 text-white hover:bg-red-500"
-                        : "text-zinc-500 hover:bg-zinc-800/60 hover:text-zinc-300",
+                        : "text-muted-foreground/80 hover:bg-muted/60 hover:text-foreground/80",
                     )}
                   >
                     {p}
@@ -573,7 +573,7 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
               <Button
                 variant="ghost" size="icon" disabled={!meta.hasNextPage || isPending}
                 onClick={() => handlePageChange(meta.page + 1)}
-                className="h-7 w-7 rounded-md text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300 disabled:opacity-30"
+                className="h-7 w-7 rounded-md text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80 disabled:opacity-30"
               >
                 <ChevronRight size={13} />
               </Button>

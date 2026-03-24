@@ -13,7 +13,7 @@ const TIER_CONFIG: Record<
   top10: {
     label:   "Top 10",
     emoji:   "🥈",
-    classes: "border-zinc-400/30 bg-zinc-400/8 text-zinc-300",
+    classes: "border-zinc-400/30 bg-zinc-400/8 text-foreground/80",
   },
   top25: {
     label:   "Top 25",

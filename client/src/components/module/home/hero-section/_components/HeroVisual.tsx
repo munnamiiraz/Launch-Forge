@@ -25,18 +25,18 @@ export function HeroVisual() {
       <div className="absolute -inset-4 rounded-3xl bg-indigo-600/8 blur-2xl" />
 
       {/* Main card */}
-      <div className="relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-950/95 shadow-2xl shadow-black/50 backdrop-blur-xl">
+      <div className="relative overflow-hidden rounded-2xl border border-border/80 bg-background/95 shadow-2xl shadow-black/50 backdrop-blur-xl">
 
         {/* Window chrome */}
-        <div className="flex items-center gap-2 border-b border-zinc-800/60 px-4 py-3">
+        <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3">
           <div className="flex gap-1.5">
             <div className="h-2.5 w-2.5 rounded-full bg-zinc-700" />
             <div className="h-2.5 w-2.5 rounded-full bg-zinc-700" />
             <div className="h-2.5 w-2.5 rounded-full bg-zinc-700" />
           </div>
-          <div className="mx-auto flex items-center gap-1.5 rounded-md border border-zinc-800 bg-zinc-900/60 px-3 py-1">
+          <div className="mx-auto flex items-center gap-1.5 rounded-md border border-zinc-800 bg-card/60 px-3 py-1">
             <div className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            <span className="text-[10px] text-zinc-500">launchforge.app/dashboard</span>
+            <span className="text-[10px] text-muted-foreground/80">launchforge.app/dashboard</span>
           </div>
         </div>
 
@@ -74,10 +74,10 @@ export function HeroVisual() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.72, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="rounded-xl border border-zinc-800/60 bg-zinc-900/40 p-4"
+            className="rounded-xl border border-border/60 bg-card/40 p-4"
           >
             <div className="mb-3 flex items-center justify-between">
-              <p className="text-xs font-medium text-zinc-400">Signups growth</p>
+              <p className="text-xs font-medium text-muted-foreground">Signups growth</p>
               <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-400">
                 <ArrowUpRight size={10} />
                 +34% this month
@@ -110,7 +110,7 @@ export function HeroVisual() {
             </div>
 
             {/* X axis labels */}
-            <div className="mt-1.5 flex justify-between text-[9px] text-zinc-700">
+            <div className="mt-1.5 flex justify-between text-[9px] text-muted-foreground/40">
               <span>Jan</span>
               <span>Apr</span>
               <span>Jul</span>
@@ -124,10 +124,10 @@ export function HeroVisual() {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.88, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="rounded-xl border border-zinc-800/60 bg-zinc-900/40 p-4"
+            className="rounded-xl border border-border/60 bg-card/40 p-4"
           >
             <div className="mb-3 flex items-center justify-between">
-              <p className="text-xs font-medium text-zinc-400">Top referrers</p>
+              <p className="text-xs font-medium text-muted-foreground">Top referrers</p>
               <div className="flex items-center gap-1 rounded-full border border-indigo-500/20 bg-indigo-500/8 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-indigo-400">
                 <Zap size={8} />
                 Live
@@ -143,7 +143,7 @@ export function HeroVisual() {
                   transition={{ delay: 0.95 + i * 0.06, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                   className="flex items-center gap-3"
                 >
-                  <div className="w-20 shrink-0 truncate text-xs text-zinc-400">
+                  <div className="w-20 shrink-0 truncate text-xs text-muted-foreground">
                     {row.name}
                   </div>
                   <div className="flex flex-1 items-center gap-2">
@@ -155,7 +155,7 @@ export function HeroVisual() {
                         className="absolute inset-y-0 left-0 rounded-full bg-indigo-500"
                       />
                     </div>
-                    <span className="w-8 text-right text-[10px] text-zinc-500">
+                    <span className="w-8 text-right text-[10px] text-muted-foreground/80">
                       {row.referrals} refs
                     </span>
                   </div>
@@ -171,7 +171,7 @@ export function HeroVisual() {
         initial={{ opacity: 0, y: 10, x: 10 }}
         animate={{ opacity: 1, y: 0, x: 0 }}
         transition={{ delay: 1.3, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="absolute -bottom-4 -left-6 flex items-center gap-2.5 rounded-xl border border-zinc-800/80 bg-zinc-950/95 px-4 py-3 shadow-xl backdrop-blur-xl"
+        className="absolute -bottom-4 -left-6 flex items-center gap-2.5 rounded-xl border border-border/80 bg-background/95 px-4 py-3 shadow-xl backdrop-blur-xl"
       >
         <div className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 text-xs font-bold text-white">
           AK
@@ -181,8 +181,8 @@ export function HeroVisual() {
           </span>
         </div>
         <div>
-          <p className="text-[11px] font-medium text-zinc-300">Alex K. just joined!</p>
-          <p className="text-[10px] text-zinc-600">via referral link · 2s ago</p>
+          <p className="text-[11px] font-medium text-foreground/80">Alex K. just joined!</p>
+          <p className="text-[10px] text-muted-foreground/60">via referral link · 2s ago</p>
         </div>
       </motion.div>
     </motion.div>
@@ -209,13 +209,13 @@ function StatCard({
       initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className="rounded-xl border border-zinc-800/60 bg-zinc-900/40 p-3"
+      className="rounded-xl border border-border/60 bg-card/40 p-3"
     >
       <div className="mb-2 flex items-center justify-between">
-        <span className="text-[10px] text-zinc-600">{label}</span>
+        <span className="text-[10px] text-muted-foreground/60">{label}</span>
         {icon}
       </div>
-      <p className="text-base font-bold tracking-tight text-zinc-100">{value}</p>
+      <p className="text-base font-bold tracking-tight text-foreground">{value}</p>
       <p className={cn("mt-0.5 text-[10px]", deltaPositive ? "text-emerald-500" : "text-red-400")}>
         {delta}
       </p>

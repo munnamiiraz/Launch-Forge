@@ -50,11 +50,11 @@ export function LeaderboardSummaryStrip({ stats }: LeaderboardSummaryStripProps)
         >
           <div className="shrink-0">{p.icon}</div>
           <div className="min-w-0">
-            <p className="text-[10px] text-zinc-600">{p.label}</p>
-            <p className="text-lg font-black tracking-tight text-zinc-100 tabular-nums">
+            <p className="text-[10px] text-muted-foreground/60">{p.label}</p>
+            <p className="text-lg font-black tracking-tight text-foreground tabular-nums">
               {p.value}
             </p>
-            <p className="text-[10px] text-zinc-600">{p.sub}</p>
+            <p className="text-[10px] text-muted-foreground/60">{p.sub}</p>
           </div>
         </div>
       ))}

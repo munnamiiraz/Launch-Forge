@@ -47,7 +47,7 @@ export function FooterNewsletter() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: 0.35, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="rounded-2xl border border-zinc-800/80 bg-zinc-900/30 p-6"
+      className="rounded-2xl border border-border/80 bg-card/30 p-6"
     >
       {/* Header */}
       <div className="mb-4 flex items-start gap-3">
@@ -55,10 +55,10 @@ export function FooterNewsletter() {
           <Mail size={14} className="text-indigo-400" />
         </div>
         <div>
-          <p className="text-sm font-semibold text-zinc-100">
+          <p className="text-sm font-semibold text-foreground">
             Stay in the loop
           </p>
-          <p className="mt-0.5 text-xs leading-relaxed text-zinc-500">
+          <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground/80">
             Product updates, growth tips, and launch stories. No spam, ever.
           </p>
         </div>
@@ -93,7 +93,7 @@ export function FooterNewsletter() {
                 autoComplete="email"
                 disabled={isPending}
                 className={cn(
-                  "h-9 flex-1 border-zinc-800 bg-zinc-900/60 text-sm text-zinc-100 placeholder:text-zinc-600",
+                  "h-9 flex-1 border-zinc-800 bg-card/60 text-sm text-foreground placeholder:text-muted-foreground/60",
                   "focus-visible:border-indigo-500/60 focus-visible:ring-1 focus-visible:ring-indigo-500/20",
                   "transition-all duration-200"
                 )}
@@ -134,9 +134,9 @@ export function FooterNewsletter() {
               )}
             </AnimatePresence>
 
-            <p className="text-[10px] text-zinc-700">
+            <p className="text-[10px] text-muted-foreground/40">
               By subscribing you agree to our{" "}
-              <a href="/privacy" className="text-zinc-600 underline-offset-2 hover:underline">
+              <a href="/privacy" className="text-muted-foreground/60 underline-offset-2 hover:underline">
                 Privacy Policy
               </a>
               . Unsubscribe anytime.

@@ -99,14 +99,14 @@ export default function DashboardPage() {
 
   if (!activeWorkspace) {
     return (
-      <div className="flex flex-col h-full bg-zinc-950">
+      <div className="flex flex-col h-full bg-background">
         <DashboardHeader title="Dashboard" subtitle="Please select a workspace" />
         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
           <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/50 mb-4">
-            <Zap size={20} className="text-zinc-600" />
+            <Zap size={20} className="text-muted-foreground/60" />
           </div>
-          <p className="text-sm font-medium text-zinc-400">No workspace active</p>
-          <p className="mt-1 text-xs text-zinc-600">Select a workspace from the sidebar to view your metrics.</p>
+          <p className="text-sm font-medium text-muted-foreground">No workspace active</p>
+          <p className="mt-1 text-xs text-muted-foreground/60">Select a workspace from the sidebar to view your metrics.</p>
         </div>
       </div>
     );
@@ -123,7 +123,7 @@ export default function DashboardPage() {
 
       <div className="flex flex-col gap-6 p-6">
         {loading ? (
-          <div className="flex items-center justify-center py-20 text-zinc-500">
+          <div className="flex items-center justify-center py-20 text-muted-foreground/80">
             <Loader2 size={20} className="animate-spin mr-2" />
             <span className="text-sm">Fetching metrics…</span>
           </div>
@@ -134,7 +134,7 @@ export default function DashboardPage() {
               size="sm"
               variant="ghost"
               onClick={fetchOverview}
-              className="mt-4 gap-2 text-zinc-500 hover:text-zinc-300"
+              className="mt-4 gap-2 text-muted-foreground/80 hover:text-foreground/80"
             >
               <RefreshCw size={13} /> Retry
             </Button>
@@ -194,8 +194,8 @@ export default function DashboardPage() {
             <div className="flex flex-col gap-3">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-sm font-semibold text-zinc-200">Your waitlists</h2>
-                  <p className="text-xs text-zinc-600">{waitlists.length} total</p>
+                  <h2 className="text-sm font-semibold text-foreground/90">Your waitlists</h2>
+                  <p className="text-xs text-muted-foreground/60">{waitlists.length} total</p>
                 </div>
                 <CreateWaitlistDialog />
               </div>

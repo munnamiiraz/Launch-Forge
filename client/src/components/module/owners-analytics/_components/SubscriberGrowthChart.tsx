@@ -54,14 +54,14 @@ export function SubscriberGrowthChart() {
       : 0;
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
 
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm font-semibold text-zinc-200">Subscriber growth</p>
-            <p className="mt-0.5 text-[11px] text-zinc-600">Cumulative signups over time</p>
+            <p className="text-sm font-semibold text-foreground/90">Subscriber growth</p>
+            <p className="mt-0.5 text-[11px] text-muted-foreground/60">Cumulative signups over time</p>
           </div>
 
           <div className="flex items-center gap-3">
@@ -69,7 +69,7 @@ export function SubscriberGrowthChart() {
               <p className="text-xl font-black tracking-tight tabular-nums text-indigo-300">
                 {Number(last.cumulative ?? 0).toLocaleString()}
               </p>
-              <p className="text-[10px] text-zinc-600">total</p>
+              <p className="text-[10px] text-muted-foreground/60">total</p>
             </div>
             <Badge className="gap-1 border-emerald-500/25 bg-emerald-500/10 text-[10px] text-emerald-400">
               <ArrowUpRight size={10} />+{pct}%
@@ -88,7 +88,7 @@ export function SubscriberGrowthChart() {
                 "h-6 rounded-md px-2.5 text-xs",
                 range === r.id
                   ? "bg-indigo-600 text-white hover:bg-indigo-500"
-                  : "text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300",
+                  : "text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80",
               )}
             >
               {r.label}
@@ -99,7 +99,7 @@ export function SubscriberGrowthChart() {
 
       <CardContent className="p-5">
         {!workspaceId ? (
-          <div className="flex h-64 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-64 items-center justify-center text-xs text-muted-foreground/80">
             Select a workspace to view analytics.
           </div>
         ) : isError ? (
@@ -107,12 +107,12 @@ export function SubscriberGrowthChart() {
             {(error as Error)?.message || "Failed to load subscriber growth."}
           </div>
         ) : isLoading ? (
-          <div className="flex h-64 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-64 items-center justify-center text-xs text-muted-foreground/80">
             <Loader2 size={16} className="mr-2 animate-spin" />
             Loading…
           </div>
         ) : points.length === 0 ? (
-          <div className="flex h-64 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-64 items-center justify-center text-xs text-muted-foreground/80">
             No data yet.
           </div>
         ) : (
@@ -172,7 +172,7 @@ export function SubscriberGrowthChart() {
               ].map((l) => (
                 <div key={l.label} className="flex items-center gap-1.5">
                   <div className="h-2 w-2 rounded-full" style={{ backgroundColor: l.color }} />
-                  <span className="text-[10px] text-zinc-600">{l.label}</span>
+                  <span className="text-[10px] text-muted-foreground/60">{l.label}</span>
                 </div>
               ))}
             </div>

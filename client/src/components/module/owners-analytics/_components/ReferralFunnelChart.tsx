@@ -27,15 +27,15 @@ export function ReferralFunnelChart() {
   const funnel = data?.funnel ?? [];
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/30 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
-        <p className="text-sm font-semibold text-zinc-200">Referral funnel</p>
-        <p className="text-[11px] text-zinc-600">From signup to active referrer</p>
+      <CardHeader className="border-b border-border/60 px-5 py-4">
+        <p className="text-sm font-semibold text-foreground/90">Referral funnel</p>
+        <p className="text-[11px] text-muted-foreground/60">From signup to active referrer</p>
       </CardHeader>
       <CardContent className="p-5">
         {!workspaceId ? (
-          <div className="flex h-44 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-44 items-center justify-center text-xs text-muted-foreground/80">
             Select a workspace to view analytics.
           </div>
         ) : isError ? (
@@ -43,12 +43,12 @@ export function ReferralFunnelChart() {
             {(error as Error)?.message || "Failed to load referral funnel."}
           </div>
         ) : isLoading ? (
-          <div className="flex h-44 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-44 items-center justify-center text-xs text-muted-foreground/80">
             <Loader2 size={16} className="mr-2 animate-spin" />
             Loading…
           </div>
         ) : funnel.length === 0 ? (
-          <div className="flex h-44 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-44 items-center justify-center text-xs text-muted-foreground/80">
             No data yet.
           </div>
         ) : (
@@ -56,10 +56,10 @@ export function ReferralFunnelChart() {
             {funnel.map((item) => (
               <div key={item.label} className="flex items-center gap-3">
                 <div className="w-32 shrink-0">
-                  <p className="truncate text-[11px] text-zinc-400">{item.label}</p>
+                  <p className="truncate text-[11px] text-muted-foreground">{item.label}</p>
                 </div>
                 <div className="flex-1">
-                  <div className="h-5 overflow-hidden rounded-sm bg-zinc-800/60">
+                  <div className="h-5 overflow-hidden rounded-sm bg-muted/60">
                     <div
                       className="h-full rounded-sm transition-all duration-700"
                       style={{
@@ -71,10 +71,10 @@ export function ReferralFunnelChart() {
                   </div>
                 </div>
                 <div className="flex w-24 shrink-0 items-center justify-between gap-1">
-                  <span className="text-xs font-bold tabular-nums text-zinc-300">
+                  <span className="text-xs font-bold tabular-nums text-foreground/80">
                     {item.value.toLocaleString()}
                   </span>
-                  <span className="text-[10px] text-zinc-600">{item.pct}%</span>
+                  <span className="text-[10px] text-muted-foreground/60">{item.pct}%</span>
                 </div>
               </div>
             ))}
@@ -140,15 +140,15 @@ export function SignupSourceChart() {
   type SourceWithPct = (typeof withPct)[number];
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/30 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
-        <p className="text-sm font-semibold text-zinc-200">Signup sources</p>
-        <p className="text-[11px] text-zinc-600">How people find your waitlists</p>
+      <CardHeader className="border-b border-border/60 px-5 py-4">
+        <p className="text-sm font-semibold text-foreground/90">Signup sources</p>
+        <p className="text-[11px] text-muted-foreground/60">How people find your waitlists</p>
       </CardHeader>
       <CardContent className="flex flex-col gap-4 p-5">
         {!workspaceId ? (
-          <div className="flex h-44 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-44 items-center justify-center text-xs text-muted-foreground/80">
             Select a workspace to view analytics.
           </div>
         ) : isError ? (
@@ -156,12 +156,12 @@ export function SignupSourceChart() {
             {(error as Error)?.message || "Failed to load signup sources."}
           </div>
         ) : isLoading ? (
-          <div className="flex h-44 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-44 items-center justify-center text-xs text-muted-foreground/80">
             <Loader2 size={16} className="mr-2 animate-spin" />
             Loading…
           </div>
         ) : withPct.length === 0 ? (
-          <div className="flex h-44 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-44 items-center justify-center text-xs text-muted-foreground/80">
             No data yet.
           </div>
         ) : (
@@ -189,9 +189,9 @@ export function SignupSourceChart() {
                     if (!active || !payload?.length) return null;
                     const d = payload[0].payload as SourceWithPct;
                     return (
-                      <div className="rounded-lg border border-zinc-800 bg-zinc-950/95 p-2.5 text-xs text-zinc-300 shadow-xl">
+                      <div className="rounded-lg border border-zinc-800 bg-background/95 p-2.5 text-xs text-foreground/80 shadow-xl">
                         <p className="font-semibold">{d.source}</p>
-                        <p className="text-zinc-500">
+                        <p className="text-muted-foreground/80">
                           {Number(d.value).toLocaleString()} signups · {d.pct}%
                         </p>
                       </div>
@@ -206,9 +206,9 @@ export function SignupSourceChart() {
                 <div key={d.source} className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <div className="h-2 w-2 rounded-full" style={{ backgroundColor: d.fill }} />
-                    <span className="text-[11px] text-zinc-400">{d.source}</span>
+                    <span className="text-[11px] text-muted-foreground">{d.source}</span>
                   </div>
-                  <span className="text-[11px] font-semibold tabular-nums text-zinc-300">
+                  <span className="text-[11px] font-semibold tabular-nums text-foreground/80">
                     {d.value.toLocaleString()}
                   </span>
                 </div>

@@ -16,7 +16,7 @@ const MOCK_ROWS = [
 
 const RANK_COLOURS = [
   "text-amber-400",
-  "text-zinc-400",
+  "text-muted-foreground",
   "text-orange-700",
 ];
 
@@ -38,9 +38,9 @@ export function WideFeatureCard({ feature, index }: WideFeatureCardProps) {
     >
       <Card
         className={cn(
-          "group relative overflow-hidden border-zinc-800/80 bg-zinc-900/40 h-full",
+          "group relative overflow-hidden border-border/80 bg-card/40 h-full",
           "backdrop-blur-sm transition-all duration-300",
-          "hover:bg-zinc-900/60 hover:shadow-xl hover:shadow-black/20",
+          "hover:bg-card/60 hover:shadow-xl hover:shadow-black/20",
           a.border
         )}
       >
@@ -62,14 +62,14 @@ export function WideFeatureCard({ feature, index }: WideFeatureCardProps) {
             </div>
 
             <div className="flex flex-col gap-2">
-              <h3 className="text-lg font-bold tracking-tight text-zinc-100">{feature.title}</h3>
-              <p className="text-sm leading-relaxed text-zinc-500">{feature.description}</p>
+              <h3 className="text-lg font-bold tracking-tight text-foreground">{feature.title}</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground/80">{feature.description}</p>
             </div>
 
             {feature.bullets && (
               <ul className="flex flex-col gap-2">
                 {feature.bullets.map((b) => (
-                  <li key={b} className="flex items-center gap-2 text-xs text-zinc-400">
+                  <li key={b} className="flex items-center gap-2 text-xs text-muted-foreground">
                     <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", a.bullet)} />
                     {b}
                   </li>
@@ -79,8 +79,8 @@ export function WideFeatureCard({ feature, index }: WideFeatureCardProps) {
           </div>
 
           {/* Right — mini leaderboard widget */}
-          <div className="flex flex-col justify-center gap-3 rounded-xl border border-zinc-800/60 bg-zinc-950/50 p-4">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+          <div className="flex flex-col justify-center gap-3 rounded-xl border border-border/60 bg-background/50 p-4">
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
               Top referrers · Live
             </p>
             <div className="flex flex-col gap-3">
@@ -96,7 +96,7 @@ export function WideFeatureCard({ feature, index }: WideFeatureCardProps) {
                   <span className={cn("w-4 text-center text-xs font-bold", RANK_COLOURS[i])}>
                     {row.rank}
                   </span>
-                  <span className="w-16 shrink-0 truncate text-xs text-zinc-400">
+                  <span className="w-16 shrink-0 truncate text-xs text-muted-foreground">
                     {row.name}
                   </span>
                   <div className="flex flex-1 items-center gap-2">
@@ -110,7 +110,7 @@ export function WideFeatureCard({ feature, index }: WideFeatureCardProps) {
                         style={{ width: undefined }}
                       />
                     </div>
-                    <span className="w-10 text-right text-[10px] text-zinc-600">
+                    <span className="w-10 text-right text-[10px] text-muted-foreground/60">
                       {row.refs} refs
                     </span>
                   </div>

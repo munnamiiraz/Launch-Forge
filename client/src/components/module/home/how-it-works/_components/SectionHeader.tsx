@@ -37,7 +37,7 @@ export function SectionHeader({
       </Badge>
 
       {/* Headline */}
-      <h2 className="max-w-2xl text-4xl font-bold tracking-tight text-zinc-100 md:text-5xl">
+      <h2 className="max-w-2xl text-4xl font-bold tracking-tight text-foreground md:text-5xl">
         {parts[0]}
         {titleHighlight && (
           <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-indigo-300 bg-clip-text text-transparent">
@@ -48,7 +48,7 @@ export function SectionHeader({
       </h2>
 
       {/* Subtitle */}
-      <p className="max-w-xl text-base leading-relaxed text-zinc-500">
+      <p className="max-w-xl text-base leading-relaxed text-muted-foreground/80">
         {subtitle}
       </p>
     </motion.div>

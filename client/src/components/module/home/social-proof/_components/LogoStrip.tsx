@@ -6,12 +6,12 @@ import { LOGO_COMPANIES } from "../_lib/social-proof-data";
 /** Renders a single logo pill — text-based since we have no real assets */
 function LogoPill({ name }: { name: string }) {
   return (
-    <div className="flex shrink-0 items-center gap-2 rounded-lg border border-zinc-800/60 bg-zinc-900/40 px-4 py-2.5">
+    <div className="flex shrink-0 items-center gap-2 rounded-lg border border-border/60 bg-card/40 px-4 py-2.5">
       {/* Decorative monogram dot */}
-      <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded bg-zinc-800 text-[8px] font-bold text-zinc-500">
+      <div className="flex h-4 w-4 shrink-0 items-center justify-center rounded bg-zinc-800 text-[8px] font-bold text-muted-foreground/80">
         {name[0]}
       </div>
-      <span className="text-xs font-medium text-zinc-600">{name}</span>
+      <span className="text-xs font-medium text-muted-foreground/60">{name}</span>
     </div>
   );
 }
@@ -29,7 +29,7 @@ export function LogoStrip() {
       className="relative w-full overflow-hidden"
     >
       {/* Label */}
-      <p className="mb-4 text-center text-[10px] font-semibold uppercase tracking-widest text-zinc-700">
+      <p className="mb-4 text-center text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
         Trusted by founders building at
       </p>
 

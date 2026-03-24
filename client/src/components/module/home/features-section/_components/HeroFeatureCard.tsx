@@ -26,9 +26,9 @@ export function HeroFeatureCard({ feature, index }: HeroFeatureCardProps) {
     >
       <Card
         className={cn(
-          "group relative overflow-hidden border-zinc-800/80 bg-zinc-900/40",
+          "group relative overflow-hidden border-border/80 bg-card/40",
           "backdrop-blur-sm transition-all duration-300",
-          "hover:bg-zinc-900/60 hover:shadow-2xl hover:shadow-black/30",
+          "hover:bg-card/60 hover:shadow-2xl hover:shadow-black/30",
           a.border
         )}
       >
@@ -81,10 +81,10 @@ export function HeroFeatureCard({ feature, index }: HeroFeatureCardProps) {
 
             {/* Title + description */}
             <div className="flex flex-col gap-3">
-              <h3 className="text-2xl font-bold tracking-tight text-zinc-100">
+              <h3 className="text-2xl font-bold tracking-tight text-foreground">
                 {feature.title}
               </h3>
-              <p className="text-sm leading-relaxed text-zinc-500">
+              <p className="text-sm leading-relaxed text-muted-foreground/80">
                 {feature.description}
               </p>
             </div>
@@ -93,7 +93,7 @@ export function HeroFeatureCard({ feature, index }: HeroFeatureCardProps) {
             {feature.bullets && (
               <ul className="flex flex-col gap-2.5">
                 {feature.bullets.map((b) => (
-                  <li key={b} className="flex items-start gap-2.5 text-sm text-zinc-400">
+                  <li key={b} className="flex items-start gap-2.5 text-sm text-muted-foreground">
                     <span
                       className={cn(
                         "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full",
@@ -127,13 +127,13 @@ export function HeroFeatureCard({ feature, index }: HeroFeatureCardProps) {
                 >
                   {feature.metric.value}
                 </span>
-                <span className="text-sm font-medium text-zinc-500">
+                <span className="text-sm font-medium text-muted-foreground/80">
                   {feature.metric.label}
                 </span>
               </motion.div>
             )}
 
-            <Separator className="w-24 bg-zinc-800/60" />
+            <Separator className="w-24 bg-muted/60" />
 
             {/* Mini viral loop diagram */}
             <ViralLoopDiagram accent={feature.accent} />
@@ -157,7 +157,7 @@ function ViralLoopDiagram({ accent }: { accent: Feature["accent"] }) {
 
   return (
     <div className="flex flex-col items-center gap-3">
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">
+      <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
         How the loop works
       </p>
       <div className="flex items-center gap-2">
@@ -170,10 +170,10 @@ function ViralLoopDiagram({ accent }: { accent: Feature["accent"] }) {
               transition={{ delay: 0.6 + n.delay, duration: 0.4, type: "spring", stiffness: 260, damping: 18 }}
               className="flex flex-col items-center gap-1"
             >
-              <div className={cn("flex h-8 w-8 items-center justify-center rounded-full border text-[10px] font-bold text-zinc-300", a.icon)}>
+              <div className={cn("flex h-8 w-8 items-center justify-center rounded-full border text-[10px] font-bold text-foreground/80", a.icon)}>
                 {n.label[0]}
               </div>
-              <span className="text-[9px] text-zinc-700">{n.label}</span>
+              <span className="text-[9px] text-muted-foreground/40">{n.label}</span>
             </motion.div>
             {i < nodes.length - 1 && (
               <motion.div
@@ -192,7 +192,7 @@ function ViralLoopDiagram({ accent }: { accent: Feature["accent"] }) {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 1.1 }}
-          className="mb-4 text-[10px] text-zinc-700"
+          className="mb-4 text-[10px] text-muted-foreground/40"
         >
           ↺
         </motion.div>

@@ -27,12 +27,12 @@ export const metadata: Metadata = {
 function Divider({ title, sub }: { title: string; sub: string }) {
   return (
     <div className="flex items-center gap-3">
-      <div className="h-px flex-1 bg-zinc-800/60" />
+      <div className="h-px flex-1 bg-muted/60" />
       <div className="flex flex-col items-center gap-0.5">
         <span className="text-[10px] font-bold uppercase tracking-widest text-red-500/70">{title}</span>
-        {sub && <span className="text-[9px] text-zinc-700">{sub}</span>}
+        {sub && <span className="text-[9px] text-muted-foreground/40">{sub}</span>}
       </div>
-      <div className="h-px flex-1 bg-zinc-800/60" />
+      <div className="h-px flex-1 bg-muted/60" />
     </div>
   );
 }
@@ -44,7 +44,7 @@ export default async function AdminAnalyticsPage() {
     <div className="flex flex-col gap-8 p-6">
 
       {/* ── Page identity band ───────────────────────────── */}
-      <div className="relative overflow-hidden rounded-2xl border border-red-500/15 bg-zinc-900/30 px-6 py-5">
+      <div className="relative overflow-hidden rounded-2xl border border-red-500/15 bg-card/30 px-6 py-5">
         <div aria-hidden className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-red-500/5 blur-3xl" />
         <div aria-hidden className="pointer-events-none absolute -left-8 bottom-0 h-24 w-48 rounded-full bg-violet-500/4 blur-3xl" />
         <div className="relative flex items-start gap-4">
@@ -52,10 +52,10 @@ export default async function AdminAnalyticsPage() {
             <BarChart3 size={18} className="text-red-400" />
           </div>
           <div>
-            <h1 className="text-base font-bold tracking-tight text-zinc-100">
+            <h1 className="text-base font-bold tracking-tight text-foreground">
               Platform analytics
             </h1>
-            <p className="mt-1 text-xs leading-relaxed text-zinc-500">
+            <p className="mt-1 text-xs leading-relaxed text-muted-foreground/80">
               Full behavioural and product health metrics across every model —
               engagement, feature adoption, subscriber growth, referral network,
               feedback health, roadmap progress, and workspace activity patterns.
@@ -69,7 +69,7 @@ export default async function AdminAnalyticsPage() {
               ].map((m) => (
                 <code
                   key={m}
-                  className="rounded border border-zinc-800/60 bg-zinc-900/60 px-1.5 py-0.5 text-[9px] text-zinc-500"
+                  className="rounded border border-border/60 bg-card/60 px-1.5 py-0.5 text-[9px] text-muted-foreground/80"
                 >
                   {m}
                 </code>
@@ -121,7 +121,7 @@ export default async function AdminAnalyticsPage() {
         <div className="grid gap-4 lg:grid-cols-2">
           <ChangelogChart />
           {/* Spacer / future chart placeholder */}
-          <div className="hidden lg:flex items-center justify-center rounded-2xl border border-dashed border-zinc-800/40 text-[11px] text-zinc-700">
+          <div className="hidden lg:flex items-center justify-center rounded-2xl border border-dashed border-border/40 text-[11px] text-muted-foreground/40">
             More charts coming soon
           </div>
         </div>

@@ -73,11 +73,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 function StatPill({ icon, value, label }: { icon: React.ReactNode; value: string; label: string }) {
   return (
-    <div className="flex items-center gap-2 rounded-xl border border-zinc-800/60 bg-zinc-900/30 px-3.5 py-2.5">
+    <div className="flex items-center gap-2 rounded-xl border border-border/60 bg-card/30 px-3.5 py-2.5">
       <div className="shrink-0">{icon}</div>
       <div>
-        <p className="text-sm font-black tabular-nums text-zinc-200">{value}</p>
-        <p className="text-[10px] text-zinc-600">{label}</p>
+        <p className="text-sm font-black tabular-nums text-foreground/90">{value}</p>
+        <p className="text-[10px] text-muted-foreground/60">{label}</p>
       </div>
     </div>
   );
@@ -112,10 +112,10 @@ export default async function PublicWaitlistPage({ params }: Props) {
       <div aria-hidden className="pointer-events-none fixed -right-40 bottom-0 h-[400px] w-[400px] rounded-full bg-violet-500/5 blur-[100px]" />
 
       {/* ── Top nav bar ──────────────────────────────────── */}
-      <nav className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-zinc-800/50 bg-[#070707]/90 px-4 backdrop-blur-xl sm:px-6">
+      <nav className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/50 bg-[#070707]/90 px-4 backdrop-blur-xl sm:px-6">
         <Link
           href="/explore"
-          className="flex items-center gap-1.5 text-xs text-zinc-600 hover:text-zinc-400 transition-colors"
+          className="flex items-center gap-1.5 text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
         >
           <ArrowLeft size={13} />
           Browse products
@@ -126,15 +126,15 @@ export default async function PublicWaitlistPage({ params }: Props) {
           <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-indigo-600">
             <Zap size={12} className="text-white" />
           </div>
-          <span className="text-xs font-black tracking-tight text-zinc-300">LaunchForge</span>
+          <span className="text-xs font-black tracking-tight text-foreground/80">LaunchForge</span>
         </div>
 
         {/* Nav links */}
-        <div className="flex items-center gap-3 text-xs text-zinc-600">
+        <div className="flex items-center gap-3 text-xs text-muted-foreground/60">
           {hasPrizes && (
-            <a href="#prizes" className="hover:text-zinc-400 transition-colors">Prizes</a>
+            <a href="#prizes" className="hover:text-muted-foreground transition-colors">Prizes</a>
           )}
-          <a href="#leaderboard" className="hover:text-zinc-400 transition-colors">Leaderboard</a>
+          <a href="#leaderboard" className="hover:text-muted-foreground transition-colors">Leaderboard</a>
         </div>
       </nav>
 
@@ -162,19 +162,19 @@ export default async function PublicWaitlistPage({ params }: Props) {
 
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h1 className="text-3xl font-black tracking-tight text-zinc-100 sm:text-4xl">
+                    <h1 className="text-3xl font-black tracking-tight text-foreground sm:text-4xl">
                       {wl.name}
                     </h1>
                     <Badge className={cn(
                       "gap-1 rounded-full px-2.5 py-1 text-xs font-semibold",
                       wl.isOpen
                         ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
-                        : "border-zinc-700/60 bg-zinc-800/40 text-zinc-500",
+                        : "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",
                     )}>
                       {wl.isOpen ? <><Globe size={10} />Open</> : <><Lock size={10} />Closed</>}
                     </Badge>
                   </div>
-                  <p className="mt-1 text-base text-zinc-400">{wl.tagline}</p>
+                  <p className="mt-1 text-base text-muted-foreground">{wl.tagline}</p>
 
                   {/* Category + tags */}
                   <div className="mt-3 flex flex-wrap gap-1.5">
@@ -182,7 +182,7 @@ export default async function PublicWaitlistPage({ params }: Props) {
                       {wl.category}
                     </Badge>
                     {wl.tags.slice(0, 4).map((tag) => (
-                      <Badge key={tag} className="border-zinc-800 bg-zinc-900/60 text-xs text-zinc-600">
+                      <Badge key={tag} className="border-zinc-800 bg-card/60 text-xs text-muted-foreground/60">
                         {tag}
                       </Badge>
                     ))}
@@ -220,7 +220,7 @@ export default async function PublicWaitlistPage({ params }: Props) {
               )}
 
               {/* Description */}
-              <p className="text-sm leading-relaxed text-zinc-400">{wl.description}</p>
+              <p className="text-sm leading-relaxed text-muted-foreground">{wl.description}</p>
 
               {/* Website link */}
               {wl.websiteUrl && (
@@ -228,7 +228,7 @@ export default async function PublicWaitlistPage({ params }: Props) {
                   href={wl.websiteUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group flex w-fit items-center gap-2 rounded-xl border border-zinc-800/80 bg-zinc-900/40 px-4 py-2.5 text-sm text-zinc-400 transition-all hover:border-zinc-700 hover:bg-zinc-800/60 hover:text-zinc-200"
+                  className="group flex w-fit items-center gap-2 rounded-xl border border-border/80 bg-card/40 px-4 py-2.5 text-sm text-muted-foreground transition-all hover:border-zinc-700 hover:bg-muted/60 hover:text-foreground/90"
                 >
                   <ExternalLink size={13} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                   Visit {wl.websiteUrl.replace(/https?:\/\//, "")}
@@ -236,7 +236,7 @@ export default async function PublicWaitlistPage({ params }: Props) {
               )}
             </section>
 
-            <Separator className="bg-zinc-800/60" />
+            <Separator className="bg-muted/60" />
 
             {/* ── Owner message ─────────────────────────── */}
             {wl.ownerMessage && (
@@ -251,17 +251,17 @@ export default async function PublicWaitlistPage({ params }: Props) {
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-sm font-semibold text-zinc-200">{wl.ownerName}</p>
-                    <p className="text-[11px] text-zinc-600">Founder of {wl.name}</p>
+                    <p className="text-sm font-semibold text-foreground/90">{wl.ownerName}</p>
+                    <p className="text-[11px] text-muted-foreground/60">Founder of {wl.name}</p>
                   </div>
                 </div>
 
-                <div className="relative rounded-2xl border border-zinc-800/60 bg-zinc-900/30 px-5 py-4">
+                <div className="relative rounded-2xl border border-border/60 bg-card/30 px-5 py-4">
                   {/* Quote mark */}
                   <div className="absolute -left-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-zinc-900 text-2xl leading-none text-indigo-500/50">
                     "
                   </div>
-                  <p className="text-sm leading-relaxed text-zinc-400">{wl.ownerMessage}</p>
+                  <p className="text-sm leading-relaxed text-muted-foreground">{wl.ownerMessage}</p>
                 </div>
               </section>
             )}
@@ -269,13 +269,13 @@ export default async function PublicWaitlistPage({ params }: Props) {
             {/* ── Prize pool ────────────────────────────── */}
             {hasPrizes && (
               <>
-                <Separator className="bg-zinc-800/60" />
+                <Separator className="bg-muted/60" />
                 <PrizePoolSection prizes={wl.prizes.map((p, i) => ({ id: String(i), rankFrom: i + 1, rankTo: i + 1, rankLabel: p.rank, title: p.title, description: null, prizeType: "CUSTOM" as const, value: null, currency: null, emoji: p.emoji, expiresAt: null }))} />
               </>
             )}
 
             {/* ── Public leaderboard ────────────────────── */}
-            <Separator className="bg-zinc-800/60" />
+            <Separator className="bg-muted/60" />
             <PublicLeaderboard
               entries={(wl.leaderboard || wl.topReferrers.map((r, i) => ({ rank: r.rank, maskedName: r.maskedName, referralCount: r.referralCount, prizeWon: null, isTop3: r.rank <= 3 }))) as any}
               prizes={wl.prizes.map((p, i) => ({ id: String(i), rankFrom: i + 1, rankTo: i + 1, rankLabel: p.rank, title: p.title, description: null, prizeType: "CUSTOM" as const, value: null, currency: null, emoji: p.emoji, expiresAt: null }))}
@@ -299,10 +299,10 @@ export default async function PublicWaitlistPage({ params }: Props) {
               <div className="relative flex flex-col gap-5">
                 {/* Panel header */}
                 <div>
-                  <h2 className="text-lg font-black tracking-tight text-zinc-100">
+                  <h2 className="text-lg font-black tracking-tight text-foreground">
                     {wl.isOpen ? "Reserve your spot" : "Waitlist closed"}
                   </h2>
-                  <p className="mt-1 text-xs text-zinc-500">
+                  <p className="mt-1 text-xs text-muted-foreground/80">
                     {wl.isOpen
                       ? "Join now and refer friends to move up the queue."
                       : "This waitlist is no longer accepting signups."}
@@ -315,7 +315,7 @@ export default async function PublicWaitlistPage({ params }: Props) {
                     <Trophy size={14} className="shrink-0 text-amber-400" />
                     <div className="min-w-0">
                       <p className="text-xs font-semibold text-amber-300">Prizes up for grabs</p>
-                      <p className="truncate text-[10px] text-zinc-600">
+                      <p className="truncate text-[10px] text-muted-foreground/60">
                         {wl.prizes[0].emoji} {wl.prizes[0].title}
                         {wl.prizes.length > 1 && ` + ${wl.prizes.length - 1} more`}
                       </p>
@@ -335,7 +335,7 @@ export default async function PublicWaitlistPage({ params }: Props) {
                 {/* Leaderboard link */}
                 <a
                   href={`/explore/${wl.slug}/leaderboard`}
-                  className="flex items-center justify-center gap-1.5 text-xs text-zinc-600 hover:text-zinc-400 transition-colors"
+                  className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
                 >
                   <Trophy size={11} />
                   View full leaderboard
@@ -348,10 +348,10 @@ export default async function PublicWaitlistPage({ params }: Props) {
       </div>
 
       {/* ── Footer ───────────────────────────────────────── */}
-      <footer className="relative mt-16 border-t border-zinc-800/50 bg-[#070707] px-4 py-8 text-center">
-        <p className="text-xs text-zinc-700">
+      <footer className="relative mt-16 border-t border-border/50 bg-[#070707] px-4 py-8 text-center">
+        <p className="text-xs text-muted-foreground/40">
           Powered by{" "}
-          <Link href="#" className="font-semibold text-zinc-500 hover:text-zinc-400 transition-colors">
+          <Link href="#" className="font-semibold text-muted-foreground/80 hover:text-muted-foreground transition-colors">
             LaunchForge
           </Link>
           {" "}· The viral waitlist platform for product launches

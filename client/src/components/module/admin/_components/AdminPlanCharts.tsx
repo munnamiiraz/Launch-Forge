@@ -25,13 +25,13 @@ export function AdminPlanChart({ data }: { data: PlanBreakdownItem[] }) {
   const paid  = total - (data.find((d) => d.name === "Free")?.value ?? 0);
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-violet-500/30 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-zinc-200">Plan distribution</p>
-            <p className="text-[11px] text-zinc-600">All user accounts by subscription tier</p>
+            <p className="text-sm font-semibold text-foreground/90">Plan distribution</p>
+            <p className="text-[11px] text-muted-foreground/60">All user accounts by subscription tier</p>
           </div>
           <Badge className="border-violet-500/25 bg-violet-500/10 text-[10px] text-violet-400">
             {total > 0 ? Math.round((paid / total) * 100) : 0}% paid
@@ -49,9 +49,9 @@ export function AdminPlanChart({ data }: { data: PlanBreakdownItem[] }) {
               if (!active || !payload?.length) return null;
               const d = payload[0].payload;
               return (
-                <div className="rounded-lg border border-zinc-800 bg-zinc-950/95 p-2.5 text-xs shadow-xl">
-                  <p className="font-semibold text-zinc-200">{d.name}</p>
-                  <p className="text-zinc-500">{d.value.toLocaleString()} users</p>
+                <div className="rounded-lg border border-zinc-800 bg-background/95 p-2.5 text-xs shadow-xl">
+                  <p className="font-semibold text-foreground/90">{d.name}</p>
+                  <p className="text-muted-foreground/80">{d.value.toLocaleString()} users</p>
                   {d.mrr > 0 && <p className="text-emerald-400">${d.mrr.toLocaleString()} MRR</p>}
                 </div>
               );
@@ -64,11 +64,11 @@ export function AdminPlanChart({ data }: { data: PlanBreakdownItem[] }) {
             <div key={d.name} className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="h-2 w-2 rounded-full" style={{ backgroundColor: d.fill }} />
-                <span className="text-[11px] text-zinc-400">{d.name}</span>
+                <span className="text-[11px] text-muted-foreground">{d.name}</span>
               </div>
               <div className="flex items-center gap-3">
-                <span className="text-[10px] text-zinc-600">{total > 0 ? Math.round((d.value / total) * 100) : 0}%</span>
-                <span className="w-16 text-right text-[11px] font-semibold tabular-nums text-zinc-300">
+                <span className="text-[10px] text-muted-foreground/60">{total > 0 ? Math.round((d.value / total) * 100) : 0}%</span>
+                <span className="w-16 text-right text-[11px] font-semibold tabular-nums text-foreground/80">
                   {d.value.toLocaleString()}
                 </span>
                 {d.mrr > 0 && (
@@ -79,8 +79,8 @@ export function AdminPlanChart({ data }: { data: PlanBreakdownItem[] }) {
               </div>
             </div>
           ))}
-          <div className="mt-2 flex items-center justify-between border-t border-zinc-800/60 pt-2">
-            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-zinc-400">
+          <div className="mt-2 flex items-center justify-between border-t border-border/60 pt-2">
+            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground">
               <DollarSign size={11} className="text-emerald-400" />Total MRR
             </div>
             <span className="text-sm font-black tabular-nums text-emerald-300">
@@ -101,11 +101,11 @@ export function AdminSignupSourcesChart({ data }: { data: SignupSourcePoint[] })
   const total = data.reduce((s, d) => s + d.value, 0);
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-cyan-500/30 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
-        <p className="text-sm font-semibold text-zinc-200">Signup sources</p>
-        <p className="text-[11px] text-zinc-600">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
+        <p className="text-sm font-semibold text-foreground/90">Signup sources</p>
+        <p className="text-[11px] text-muted-foreground/60">
           How users discover LaunchForge ({total.toLocaleString()} total)
         </p>
       </CardHeader>

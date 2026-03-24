@@ -24,8 +24,8 @@ export function AnnouncementBanner() {
 
             <Sparkles size={13} className="shrink-0 text-indigo-400" />
 
-            <p className="text-xs text-zinc-400">
-              <span className="font-semibold text-zinc-200">LaunchForge Beta</span>
+            <p className="text-xs text-muted-foreground">
+              <span className="font-semibold text-foreground/90">LaunchForge Beta</span>
               {" "}is now live — get 6 months Pro free for early adopters.{" "}
               <Link
                 href="/pricing"
@@ -39,7 +39,7 @@ export function AnnouncementBanner() {
               type="button"
               onClick={() => setVisible(false)}
               aria-label="Dismiss announcement"
-              className="absolute right-3 rounded-md p-1 text-zinc-600 transition-colors hover:bg-zinc-800/60 hover:text-zinc-400"
+              className="absolute right-3 rounded-md p-1 text-muted-foreground/60 transition-colors hover:bg-muted/60 hover:text-muted-foreground"
             >
               <X size={13} />
             </button>

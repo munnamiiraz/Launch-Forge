@@ -92,8 +92,8 @@ export function WorkspaceWaitlistsClient() {
   if (!activeWorkspace) {
     return (
       <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-zinc-800 py-20 text-center">
-        <p className="text-sm font-medium text-zinc-400">No workspace selected</p>
-        <p className="mt-1 text-xs text-zinc-600">
+        <p className="text-sm font-medium text-muted-foreground">No workspace selected</p>
+        <p className="mt-1 text-xs text-muted-foreground/60">
           Select or create a workspace from the sidebar to see your waitlists.
         </p>
       </div>
@@ -103,7 +103,7 @@ export function WorkspaceWaitlistsClient() {
   /* ── Loading ───────────────────────────────────────────────────── */
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-20 text-zinc-500">
+      <div className="flex items-center justify-center py-20 text-muted-foreground/80">
         <Loader2 size={20} className="animate-spin mr-2" />
         <span className="text-sm">Loading waitlists…</span>
       </div>
@@ -119,7 +119,7 @@ export function WorkspaceWaitlistsClient() {
           size="sm"
           variant="ghost"
           onClick={fetchWaitlists}
-          className="mt-4 gap-2 text-zinc-500 hover:text-zinc-300"
+          className="mt-4 gap-2 text-muted-foreground/80 hover:text-foreground/80"
         >
           <RefreshCw size={13} /> Retry
         </Button>
@@ -135,8 +135,8 @@ export function WorkspaceWaitlistsClient() {
           <Plus size={22} className="text-indigo-400" />
         </div>
         <div>
-          <p className="text-sm font-semibold text-zinc-300">No waitlists yet</p>
-          <p className="mt-1 text-xs text-zinc-600">
+          <p className="text-sm font-semibold text-foreground/80">No waitlists yet</p>
+          <p className="mt-1 text-xs text-muted-foreground/60">
             Create your first waitlist under <span className="text-indigo-400">{activeWorkspace.name}</span>.
           </p>
         </div>
@@ -161,7 +161,7 @@ export function WorkspaceWaitlistsClient() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.97 }}
               transition={{ delay: i * 0.04, duration: 0.3 }}
-              className="group relative flex flex-col gap-3 rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-5 hover:border-zinc-700/80 hover:bg-zinc-900/60 transition-all duration-200 cursor-pointer"
+              className="group relative flex flex-col gap-3 rounded-xl border border-border/80 bg-card/40 p-5 hover:border-zinc-700/80 hover:bg-card/60 transition-all duration-200 cursor-pointer"
               onClick={() => router.push(`/explore/${wl.slug}`)}
             >
               {/* Status badge */}
@@ -171,7 +171,7 @@ export function WorkspaceWaitlistsClient() {
                     "flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold",
                     wl.isOpen
                       ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
-                      : "border-zinc-700/60 bg-zinc-800/40 text-zinc-600"
+                      : "border-zinc-700/60 bg-muted/40 text-muted-foreground/60"
                   )}
                 >
                   {wl.isOpen ? <Globe size={9} /> : <Lock size={9} />}
@@ -183,7 +183,7 @@ export function WorkspaceWaitlistsClient() {
                     e.stopPropagation();
                     setDeleteId(wl.id);
                   }}
-                  className="rounded-md p-1.5 text-zinc-700 opacity-0 transition-all group-hover:opacity-100 hover:bg-red-500/10 hover:text-red-400"
+                  className="rounded-md p-1.5 text-muted-foreground/40 opacity-0 transition-all group-hover:opacity-100 hover:bg-red-500/10 hover:text-red-400"
                   title="Delete waitlist"
                 >
                   <Trash2 size={13} />
@@ -192,28 +192,28 @@ export function WorkspaceWaitlistsClient() {
 
               {/* Name + description */}
               <div>
-                <h3 className="truncate text-sm font-semibold text-zinc-200 group-hover:text-zinc-100">
+                <h3 className="truncate text-sm font-semibold text-foreground/90 group-hover:text-foreground">
                   {wl.name}
                 </h3>
                 {wl.description && (
-                  <p className="mt-0.5 line-clamp-2 text-xs text-zinc-600">{wl.description}</p>
+                  <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground/60">{wl.description}</p>
                 )}
               </div>
 
               {/* Slug */}
-              <p className="truncate text-[10px] font-mono text-zinc-700">
-                launchforge.app/<span className="text-zinc-500">{wl.slug}</span>
+              <p className="truncate text-[10px] font-mono text-muted-foreground/40">
+                launchforge.app/<span className="text-muted-foreground/80">{wl.slug}</span>
               </p>
 
               {/* Stats row */}
-              <div className="flex items-center gap-4 border-t border-zinc-800/60 pt-3">
+              <div className="flex items-center gap-4 border-t border-border/60 pt-3">
                 <div className="flex flex-col">
-                  <span className="text-sm font-bold tabular-nums text-zinc-200">
+                  <span className="text-sm font-bold tabular-nums text-foreground/90">
                     {wl._count.subscribers.toLocaleString()}
                   </span>
-                  <span className="text-[10px] text-zinc-600">subscribers</span>
+                  <span className="text-[10px] text-muted-foreground/60">subscribers</span>
                 </div>
-                <div className="flex items-center gap-1 text-[10px] text-zinc-700 ml-auto">
+                <div className="flex items-center gap-1 text-[10px] text-muted-foreground/40 ml-auto">
                   <Calendar size={9} />
                   {new Date(wl.createdAt).toLocaleDateString()}
                 </div>
@@ -229,7 +229,7 @@ export function WorkspaceWaitlistsClient() {
           variant="ghost"
           size="sm"
           onClick={fetchWaitlists}
-          className="gap-2 text-xs text-zinc-600 hover:text-zinc-400"
+          className="gap-2 text-xs text-muted-foreground/60 hover:text-muted-foreground"
         >
           <RefreshCw size={11} /> Refresh
         </Button>
@@ -237,16 +237,16 @@ export function WorkspaceWaitlistsClient() {
 
       {/* Delete confirmation dialog */}
       <AlertDialog open={!!deleteId} onOpenChange={(open) => !open && setDeleteId(null)}>
-        <AlertDialogContent className="border-zinc-800 bg-zinc-950/98 text-zinc-100 backdrop-blur-xl">
+        <AlertDialogContent className="border-zinc-800 bg-background/98 text-foreground backdrop-blur-xl">
           <AlertDialogHeader>
             <AlertDialogTitle>Delete waitlist?</AlertDialogTitle>
-            <AlertDialogDescription className="text-zinc-500">
+            <AlertDialogDescription className="text-muted-foreground/80">
               This action cannot be undone. The waitlist and all its configuration will be permanently removed.
               Note: waitlists with active subscribers cannot be deleted.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-zinc-800 bg-transparent text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200">
+            <AlertDialogCancel className="border-zinc-800 bg-transparent text-muted-foreground hover:bg-zinc-800 hover:text-foreground/90">
               Cancel
             </AlertDialogCancel>
             <AlertDialogAction

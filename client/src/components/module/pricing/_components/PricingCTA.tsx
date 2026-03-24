@@ -12,7 +12,7 @@ export function PricingCTA() {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      className="relative overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/40 px-8 py-14 text-center"
+      className="relative overflow-hidden rounded-2xl border border-border/80 bg-card/40 px-8 py-14 text-center"
     >
       {/* Glow */}
       <div
@@ -33,10 +33,10 @@ export function PricingCTA() {
 
         {/* Copy */}
         <div className="flex flex-col gap-2">
-          <h3 className="text-3xl font-bold tracking-tight text-zinc-100 md:text-4xl">
+          <h3 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
             Start growing your waitlist today
           </h3>
-          <p className="mx-auto max-w-md text-base text-zinc-500">
+          <p className="mx-auto max-w-md text-base text-muted-foreground/80">
             Join 2,847 founders already using LaunchForge. Set up in 2 minutes,
             no engineering required.
           </p>
@@ -61,7 +61,7 @@ export function PricingCTA() {
             asChild
             variant="ghost"
             size="lg"
-            className="px-7 text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-200"
+            className="px-7 text-muted-foreground hover:bg-muted/60 hover:text-foreground/90"
           >
             <Link href="/demo">Watch a demo</Link>
           </Button>
@@ -74,8 +74,8 @@ export function PricingCTA() {
             { icon: <Zap size={12} />, text: "Free forever plan" },
             { icon: <ShieldCheck size={12} />, text: "14-day money-back guarantee" },
           ].map(({ icon, text }) => (
-            <span key={text} className="flex items-center gap-1.5 text-xs text-zinc-600">
-              <span className="text-zinc-700">{icon}</span>
+            <span key={text} className="flex items-center gap-1.5 text-xs text-muted-foreground/60">
+              <span className="text-muted-foreground/40">{icon}</span>
               {text}
             </span>
           ))}

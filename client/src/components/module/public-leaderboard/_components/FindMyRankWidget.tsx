@@ -67,12 +67,12 @@ export function FindMyRankWidget({ slug }: FindMyRankWidgetProps) {
   };
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-zinc-800/60 bg-zinc-900/30 p-5">
+    <div className="flex flex-col gap-4 rounded-2xl border border-border/60 bg-card/30 p-5">
       <div className="flex items-center gap-2">
         <User size={14} className="text-indigo-400" />
         <div>
-          <p className="text-sm font-semibold text-zinc-200">Find your rank</p>
-          <p className="text-[11px] text-zinc-600">Enter your email to see your position</p>
+          <p className="text-sm font-semibold text-foreground/90">Find your rank</p>
+          <p className="text-[11px] text-muted-foreground/60">Enter your email to see your position</p>
         </div>
       </div>
 
@@ -83,7 +83,7 @@ export function FindMyRankWidget({ slug }: FindMyRankWidgetProps) {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
           disabled={isPending}
-          className="h-9 flex-1 border-zinc-800 bg-zinc-900/60 text-sm text-zinc-100 placeholder:text-zinc-600 focus-visible:border-indigo-500/40 focus-visible:ring-1 focus-visible:ring-indigo-500/20"
+          className="h-9 flex-1 border-zinc-800 bg-card/60 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/40 focus-visible:ring-1 focus-visible:ring-indigo-500/20"
         />
         <Button
           type="submit"
@@ -108,14 +108,14 @@ export function FindMyRankWidget({ slug }: FindMyRankWidgetProps) {
             {/* Position + refs */}
             <div className="grid grid-cols-2 gap-2">
               <div className="flex flex-col gap-0.5 rounded-xl border border-indigo-500/20 bg-indigo-500/8 px-3 py-2.5">
-                <p className="text-[10px] text-zinc-600">Your position</p>
+                <p className="text-[10px] text-muted-foreground/60">Your position</p>
                 <p className="text-xl font-black tabular-nums text-indigo-300">#{result.position.toLocaleString()}</p>
-                <p className="text-[10px] text-zinc-600">of {result.totalInQueue.toLocaleString()}</p>
+                <p className="text-[10px] text-muted-foreground/60">of {result.totalInQueue.toLocaleString()}</p>
               </div>
-              <div className="flex flex-col gap-0.5 rounded-xl border border-zinc-800/60 bg-zinc-900/40 px-3 py-2.5">
-                <p className="text-[10px] text-zinc-600">Your referrals</p>
-                <p className="text-xl font-black tabular-nums text-zinc-200">{result.referralCount}</p>
-                <p className="text-[10px] text-zinc-600">
+              <div className="flex flex-col gap-0.5 rounded-xl border border-border/60 bg-card/40 px-3 py-2.5">
+                <p className="text-[10px] text-muted-foreground/60">Your referrals</p>
+                <p className="text-xl font-black tabular-nums text-foreground/90">{result.referralCount}</p>
+                <p className="text-[10px] text-muted-foreground/60">
                   {result.referralCount === 0 ? "share to earn" : "people referred"}
                 </p>
               </div>
@@ -132,9 +132,9 @@ export function FindMyRankWidget({ slug }: FindMyRankWidgetProps) {
             )}
 
             {/* Referral link */}
-            <div className="flex items-center gap-2 overflow-hidden rounded-xl border border-zinc-800/80 bg-zinc-900/60 px-3 py-2">
-              <Share2 size={11} className="shrink-0 text-zinc-700" />
-              <code className="flex-1 truncate text-[11px] text-zinc-500">{result.referralUrl}</code>
+            <div className="flex items-center gap-2 overflow-hidden rounded-xl border border-border/80 bg-card/60 px-3 py-2">
+              <Share2 size={11} className="shrink-0 text-muted-foreground/40" />
+              <code className="flex-1 truncate text-[11px] text-muted-foreground/80">{result.referralUrl}</code>
               <Button
                 size="sm"
                 onClick={copyLink}
@@ -155,7 +155,7 @@ export function FindMyRankWidget({ slug }: FindMyRankWidgetProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="text-xs text-zinc-500"
+            className="text-xs text-muted-foreground/80"
           >
             No account found for that email.{" "}
             <a href={`/w/${slug}`} className="text-indigo-400 hover:underline">

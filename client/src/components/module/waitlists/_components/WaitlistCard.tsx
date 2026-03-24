@@ -51,12 +51,12 @@ export function WaitlistCard({ waitlist, index }: WaitlistCardProps) {
       transition={{ delay: index * 0.06, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
     >
       <Card className={cn(
-        "group relative overflow-hidden border-zinc-800/80 bg-zinc-900/40 backdrop-blur-sm",
-        "transition-all duration-300 hover:border-zinc-700/60 hover:bg-zinc-900/60 hover:shadow-xl hover:shadow-black/20",
+        "group relative overflow-hidden border-border/80 bg-card/40 backdrop-blur-sm",
+        "transition-all duration-300 hover:border-zinc-700/60 hover:bg-card/60 hover:shadow-xl hover:shadow-black/20",
         "hover:-translate-y-0.5"
       )}>
         {/* Top accent line */}
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent transition-all duration-300 group-hover:via-indigo-500/30" />
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-indigo-500/30" />
 
         {/* Corner glow */}
         <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-indigo-500/5 blur-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
@@ -72,10 +72,10 @@ export function WaitlistCard({ waitlist, index }: WaitlistCardProps) {
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0">
-                <p className="truncate text-sm font-semibold text-zinc-100">
+                <p className="truncate text-sm font-semibold text-foreground">
                   {waitlist.name}
                 </p>
-                <p className="text-[11px] text-zinc-600">/{waitlist.slug}</p>
+                <p className="text-[11px] text-muted-foreground/60">/{waitlist.slug}</p>
               </div>
             </div>
 
@@ -87,7 +87,7 @@ export function WaitlistCard({ waitlist, index }: WaitlistCardProps) {
                   "gap-1 rounded-full px-2 py-0.5 text-[9px] font-semibold",
                   waitlist.isOpen
                     ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
-                    : "border-zinc-700/60 bg-zinc-800/40 text-zinc-500"
+                    : "border-zinc-700/60 bg-muted/40 text-muted-foreground/80"
                 )}
               >
                 {waitlist.isOpen ? <Globe size={8} /> : <Lock size={8} />}
@@ -99,27 +99,27 @@ export function WaitlistCard({ waitlist, index }: WaitlistCardProps) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-6 w-6 rounded-md text-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-300 opacity-0 transition-opacity group-hover:opacity-100"
+                    className="h-6 w-6 rounded-md text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80 opacity-0 transition-opacity group-hover:opacity-100"
                   >
                     <MoreHorizontal size={13} />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-44 border-zinc-800 bg-zinc-950/95 backdrop-blur-xl">
-                  <DropdownMenuItem asChild className="cursor-pointer gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60">
+                <DropdownMenuContent align="end" className="w-44 border-zinc-800 bg-background/95 backdrop-blur-xl">
+                  <DropdownMenuItem asChild className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60">
                     <Link href={`/dashboard/waitlists/${waitlist.id}`}>
                       <TrendingUp size={12} />View analytics
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60">
+                  <DropdownMenuItem className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60">
                     <Pencil size={12} />Edit waitlist
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60">
+                  <DropdownMenuItem className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60">
                     <Copy size={12} />Copy public link
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="cursor-pointer gap-2 text-xs text-zinc-400 hover:bg-zinc-800/60 hover:text-zinc-100 focus:bg-zinc-800/60">
+                  <DropdownMenuItem className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60">
                     <ExternalLink size={12} />Open public page
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-zinc-800/60" />
+                  <DropdownMenuSeparator className="bg-muted/60" />
                   <DropdownMenuItem className="cursor-pointer gap-2 text-xs text-red-400 hover:bg-red-500/8 focus:bg-red-500/8 focus:text-red-400">
                     <Trash2 size={12} />Delete
                   </DropdownMenuItem>
@@ -149,7 +149,7 @@ export function WaitlistCard({ waitlist, index }: WaitlistCardProps) {
             ))}
           </div>
 
-          <Separator className="bg-zinc-800/60" />
+          <Separator className="bg-muted/60" />
 
           {/* Stats row */}
           <div className="grid grid-cols-3 gap-2">
@@ -175,7 +175,7 @@ export function WaitlistCard({ waitlist, index }: WaitlistCardProps) {
             <Button
               variant="ghost"
               size="sm"
-              className="h-8 w-full gap-1.5 border border-zinc-800/60 text-xs text-zinc-500 hover:border-zinc-700 hover:bg-zinc-800/50 hover:text-zinc-200 transition-all duration-150"
+              className="h-8 w-full gap-1.5 border border-border/60 text-xs text-muted-foreground/80 hover:border-zinc-700 hover:bg-zinc-800/50 hover:text-foreground/90 transition-all duration-150"
             >
               View details
               <ArrowUpRight size={12} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
@@ -192,9 +192,9 @@ function Metric({ icon, value, label }: { icon: React.ReactNode; value: string; 
     <div className="flex flex-col gap-1">
       <div className="flex items-center gap-1">
         {icon}
-        <span className="text-sm font-bold text-zinc-200">{value}</span>
+        <span className="text-sm font-bold text-foreground/90">{value}</span>
       </div>
-      <span className="text-[10px] text-zinc-600">{label}</span>
+      <span className="text-[10px] text-muted-foreground/60">{label}</span>
     </div>
   );
 }

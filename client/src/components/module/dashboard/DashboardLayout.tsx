@@ -59,7 +59,7 @@ export async function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <WorkspaceProvider initialWorkspaces={workspaces}>
-      <div className="flex h-screen overflow-hidden bg-zinc-950">
+      <div className="flex h-screen overflow-hidden bg-background">
         {/* Sidebar */}
         <DashboardSidebar user={user} initialWorkspaces={workspaces} />
 

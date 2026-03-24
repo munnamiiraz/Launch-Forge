@@ -84,29 +84,29 @@ export function SecuritySection({ sessions: initialSessions, apiKeys: initialKey
     <div className="flex flex-col gap-6" id="security">
 
       {/* ── Two-factor auth ──────────────────────────────────── */}
-      <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+      <Card className="relative overflow-hidden border-border/80 bg-card/40">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
-        <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+        <CardHeader className="border-b border-border/60 px-5 py-4">
           <div className="flex items-center gap-2">
             <Shield size={14} className="text-emerald-400" />
-            <p className="text-sm font-semibold text-zinc-200">Two-factor authentication</p>
+            <p className="text-sm font-semibold text-foreground/90">Two-factor authentication</p>
           </div>
-          <p className="text-[11px] text-zinc-600">Add an extra layer of security to your account.</p>
+          <p className="text-[11px] text-muted-foreground/60">Add an extra layer of security to your account.</p>
         </CardHeader>
         <CardContent className="p-5">
-          <div className="flex items-center justify-between rounded-xl border border-zinc-800/60 bg-zinc-900/30 px-4 py-4">
+          <div className="flex items-center justify-between rounded-xl border border-border/60 bg-card/30 px-4 py-4">
             <div className="flex items-center gap-3">
               <div className={cn(
                 "flex h-9 w-9 items-center justify-center rounded-lg border",
                 hasTwoFactor
                   ? "border-emerald-500/30 bg-emerald-500/12 text-emerald-400"
-                  : "border-zinc-700/60 bg-zinc-800/40 text-zinc-600",
+                  : "border-zinc-700/60 bg-muted/40 text-muted-foreground/60",
               )}>
                 <Lock size={15} />
               </div>
               <div>
-                <p className="text-sm font-medium text-zinc-200">Authenticator app</p>
-                <p className="text-xs text-zinc-600">
+                <p className="text-sm font-medium text-foreground/90">Authenticator app</p>
+                <p className="text-xs text-muted-foreground/60">
                   {hasTwoFactor
                     ? "2FA is enabled. Your account is protected."
                     : "Not enabled. Set up an authenticator app for added security."}
@@ -119,7 +119,7 @@ export function SecuritySection({ sessions: initialSessions, apiKeys: initialKey
               className={cn(
                 "text-xs",
                 hasTwoFactor
-                  ? "border-zinc-700/80 bg-transparent text-zinc-400 hover:bg-zinc-800/60"
+                  ? "border-zinc-700/80 bg-transparent text-muted-foreground hover:bg-muted/60"
                   : "bg-emerald-600 text-white hover:bg-emerald-500",
               )}
             >
@@ -130,20 +130,20 @@ export function SecuritySection({ sessions: initialSessions, apiKeys: initialKey
       </Card>
 
       {/* ── Active sessions ──────────────────────────────────── */}
-      <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent" />
-        <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <Card className="relative overflow-hidden border-border/80 bg-card/40">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+        <CardHeader className="border-b border-border/60 px-5 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-semibold text-zinc-200">Active sessions</p>
-              <p className="text-[11px] text-zinc-600">Devices currently logged into your account.</p>
+              <p className="text-sm font-semibold text-foreground/90">Active sessions</p>
+              <p className="text-[11px] text-muted-foreground/60">Devices currently logged into your account.</p>
             </div>
-            <Badge className="border-zinc-700/60 bg-zinc-800/40 text-[10px] text-zinc-500">
+            <Badge className="border-zinc-700/60 bg-muted/40 text-[10px] text-muted-foreground/80">
               {sessions.length} session{sessions.length !== 1 ? "s" : ""}
             </Badge>
           </div>
         </CardHeader>
-        <CardContent className="divide-y divide-zinc-800/40 p-0">
+        <CardContent className="divide-y divide-border/40 p-0">
           {sessions.map((session, i) => (
             <motion.div
               key={session.id}
@@ -151,15 +151,15 @@ export function SecuritySection({ sessions: initialSessions, apiKeys: initialKey
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, scale: 0.98 }}
               transition={{ delay: i * 0.05, duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="group flex items-center justify-between gap-4 px-5 py-4 hover:bg-zinc-900/30 transition-colors"
+              className="group flex items-center justify-between gap-4 px-5 py-4 hover:bg-card/30 transition-colors"
             >
               <div className="flex items-start gap-3">
-                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/60 text-zinc-600">
+                <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-zinc-800 bg-card/60 text-muted-foreground/60">
                   {session.device === "Mobile" ? <Smartphone size={14} /> : <Monitor size={14} />}
                 </div>
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-1.5">
-                    <p className="text-xs font-medium text-zinc-300">
+                    <p className="text-xs font-medium text-foreground/80">
                       {session.browser} on {session.os}
                     </p>
                     {session.isCurrent && (
@@ -168,7 +168,7 @@ export function SecuritySection({ sessions: initialSessions, apiKeys: initialKey
                       </Badge>
                     )}
                   </div>
-                  <div className="mt-1 flex flex-wrap items-center gap-2 text-[10px] text-zinc-600">
+                  <div className="mt-1 flex flex-wrap items-center gap-2 text-[10px] text-muted-foreground/60">
                     <span className="flex items-center gap-0.5">
                       <MapPin size={9} />{session.location}
                     </span>
@@ -187,7 +187,7 @@ export function SecuritySection({ sessions: initialSessions, apiKeys: initialKey
                   variant="ghost"
                   size="sm"
                   onClick={() => handleRevokeSession(session.id)}
-                  className="shrink-0 gap-1 text-xs text-zinc-600 opacity-0 transition-all group-hover:opacity-100 hover:bg-red-500/8 hover:text-red-400"
+                  className="shrink-0 gap-1 text-xs text-muted-foreground/60 opacity-0 transition-all group-hover:opacity-100 hover:bg-red-500/8 hover:text-red-400"
                 >
                   <Trash2 size={11} />Revoke
                 </Button>
@@ -198,14 +198,14 @@ export function SecuritySection({ sessions: initialSessions, apiKeys: initialKey
       </Card>
 
       {/* ── API keys ─────────────────────────────────────────── */}
-      <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+      <Card className="relative overflow-hidden border-border/80 bg-card/40">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
-        <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+        <CardHeader className="border-b border-border/60 px-5 py-4">
           <div className="flex items-center gap-2">
             <Key size={14} className="text-indigo-400" />
             <div>
-              <p className="text-sm font-semibold text-zinc-200">API keys</p>
-              <p className="text-[11px] text-zinc-600">
+              <p className="text-sm font-semibold text-foreground/90">API keys</p>
+              <p className="text-[11px] text-muted-foreground/60">
                 Use API keys to authenticate requests to the LaunchForge API.
               </p>
             </div>
@@ -230,13 +230,13 @@ export function SecuritySection({ sessions: initialSessions, apiKeys: initialKey
                   </p>
                 </div>
                 <div className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900/80 px-3 py-2">
-                  <code className="flex-1 break-all font-mono text-[11px] text-zinc-300">
+                  <code className="flex-1 break-all font-mono text-[11px] text-foreground/80">
                     {keyVisible ? newKey : "•".repeat(40)}
                   </code>
-                  <button onClick={() => setKeyVisible((v) => !v)} className="shrink-0 text-zinc-600 hover:text-zinc-400">
+                  <button onClick={() => setKeyVisible((v) => !v)} className="shrink-0 text-muted-foreground/60 hover:text-muted-foreground">
                     {keyVisible ? <EyeOff size={13} /> : <Eye size={13} />}
                   </button>
-                  <button onClick={copyKey} className="shrink-0 text-zinc-600 hover:text-zinc-300">
+                  <button onClick={copyKey} className="shrink-0 text-muted-foreground/60 hover:text-foreground/80">
                     {keyCopied ? <CheckCircle2 size={13} className="text-emerald-400" /> : <Copy size={13} />}
                   </button>
                 </div>
@@ -244,7 +244,7 @@ export function SecuritySection({ sessions: initialSessions, apiKeys: initialKey
                   size="sm"
                   variant="ghost"
                   onClick={() => setNewKey(null)}
-                  className="self-end text-xs text-zinc-600 hover:bg-zinc-800/40"
+                  className="self-end text-xs text-muted-foreground/60 hover:bg-muted/40"
                 >
                   I've saved it, dismiss
                 </Button>
@@ -254,13 +254,13 @@ export function SecuritySection({ sessions: initialSessions, apiKeys: initialKey
 
           {/* Create key */}
           <div className="flex flex-col gap-2">
-            <Label className="text-xs font-medium text-zinc-400">Create new API key</Label>
+            <Label className="text-xs font-medium text-muted-foreground">Create new API key</Label>
             <div className="flex gap-2">
               <Input
                 value={keyName}
                 onChange={(e) => setKeyName(e.target.value)}
                 placeholder="e.g. My integration"
-                className="border-zinc-800 bg-zinc-900/60 text-sm text-zinc-100 placeholder:text-zinc-600 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
+                className="border-zinc-800 bg-card/60 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
                 onKeyDown={(e) => e.key === "Enter" && handleCreateKey()}
               />
               <Button
@@ -274,7 +274,7 @@ export function SecuritySection({ sessions: initialSessions, apiKeys: initialKey
               </Button>
             </div>
             {keyError && <p className="text-xs text-red-400">{keyError}</p>}
-            <p className="text-[10px] text-zinc-700">
+            <p className="text-[10px] text-muted-foreground/40">
               Keys have read-only scope by default. Contact support for write access.
             </p>
           </div>
@@ -282,7 +282,7 @@ export function SecuritySection({ sessions: initialSessions, apiKeys: initialKey
           {/* Existing keys */}
           {apiKeys.length > 0 && (
             <>
-              <Separator className="bg-zinc-800/60" />
+              <Separator className="bg-muted/60" />
               <div className="flex flex-col gap-2">
                 {apiKeys.map((key, i) => (
                   <motion.div
@@ -291,23 +291,23 @@ export function SecuritySection({ sessions: initialSessions, apiKeys: initialKey
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, scale: 0.97 }}
                     transition={{ delay: i * 0.05 }}
-                    className="group flex items-center justify-between gap-3 rounded-lg border border-zinc-800/60 bg-zinc-900/30 px-3.5 py-3"
+                    className="group flex items-center justify-between gap-3 rounded-lg border border-border/60 bg-card/30 px-3.5 py-3"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <Key size={13} className="shrink-0 text-zinc-700" />
+                      <Key size={13} className="shrink-0 text-muted-foreground/40" />
                       <div className="min-w-0">
-                        <p className="truncate text-xs font-medium text-zinc-300">{key.name}</p>
-                        <p className="font-mono text-[10px] text-zinc-600">{key.prefix}</p>
+                        <p className="truncate text-xs font-medium text-foreground/80">{key.name}</p>
+                        <p className="font-mono text-[10px] text-muted-foreground/60">{key.prefix}</p>
                       </div>
                     </div>
                     <div className="flex shrink-0 items-center gap-3">
                       <div className="hidden flex-col items-end text-right sm:flex">
-                        <span className="text-[10px] text-zinc-600">
+                        <span className="text-[10px] text-muted-foreground/60">
                           {key.scopes.map((s) => (
-                            <Badge key={s} className="border-zinc-800 bg-zinc-800/60 px-1.5 py-0 text-[9px] text-zinc-500">{s}</Badge>
+                            <Badge key={s} className="border-zinc-800 bg-muted/60 px-1.5 py-0 text-[9px] text-muted-foreground/80">{s}</Badge>
                           ))}
                         </span>
-                        <span className="text-[10px] text-zinc-700">
+                        <span className="text-[10px] text-muted-foreground/40">
                           {key.lastUsedAt
                             ? `Last used ${new Date(key.lastUsedAt).toLocaleDateString("en-US", { month: "short", day: "numeric" })}`
                             : "Never used"}
@@ -317,7 +317,7 @@ export function SecuritySection({ sessions: initialSessions, apiKeys: initialKey
                         variant="ghost"
                         size="icon"
                         onClick={() => handleRevokeKey(key.id)}
-                        className="h-7 w-7 rounded-md text-zinc-700 opacity-0 transition-all group-hover:opacity-100 hover:bg-red-500/8 hover:text-red-400"
+                        className="h-7 w-7 rounded-md text-muted-foreground/40 opacity-0 transition-all group-hover:opacity-100 hover:bg-red-500/8 hover:text-red-400"
                       >
                         <Trash2 size={13} />
                       </Button>

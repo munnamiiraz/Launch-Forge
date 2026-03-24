@@ -26,9 +26,9 @@ export function DefaultFeatureCard({ feature, index }: DefaultFeatureCardProps) 
     >
       <Card
         className={cn(
-          "group relative h-full cursor-default overflow-hidden border-zinc-800/80 bg-zinc-900/40",
+          "group relative h-full cursor-default overflow-hidden border-border/80 bg-card/40",
           "backdrop-blur-sm transition-all duration-300",
-          "hover:bg-zinc-900/60 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/20",
+          "hover:bg-card/60 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-black/20",
           a.border
         )}
       >
@@ -39,7 +39,7 @@ export function DefaultFeatureCard({ feature, index }: DefaultFeatureCardProps) 
         <div className={cn("pointer-events-none absolute -right-10 -top-10 h-28 w-28 rounded-full blur-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100", a.glow)} />
 
         {/* Arrow — appears on hover */}
-        <div className="absolute right-4 top-4 text-zinc-700 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 -translate-x-1">
+        <div className="absolute right-4 top-4 text-muted-foreground/40 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 -translate-x-1">
           <ArrowUpRight size={14} />
         </div>
 
@@ -71,10 +71,10 @@ export function DefaultFeatureCard({ feature, index }: DefaultFeatureCardProps) 
 
           {/* Text */}
           <div className="flex flex-col gap-2">
-            <h3 className="text-base font-semibold tracking-tight text-zinc-100 transition-colors group-hover:text-white">
+            <h3 className="text-base font-semibold tracking-tight text-foreground transition-colors group-hover:text-white">
               {feature.title}
             </h3>
-            <p className="text-sm leading-relaxed text-zinc-500 line-clamp-3">
+            <p className="text-sm leading-relaxed text-muted-foreground/80 line-clamp-3">
               {feature.description}
             </p>
           </div>
@@ -88,7 +88,7 @@ export function DefaultFeatureCard({ feature, index }: DefaultFeatureCardProps) 
               transition={{ delay: index * 0.08 + 0.4, duration: 0.4 }}
               className={cn("h-px rounded-full", a.bullet)}
             />
-            <span className="text-[10px] font-semibold uppercase tracking-widest text-zinc-700 transition-colors group-hover:text-zinc-500">
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40 transition-colors group-hover:text-muted-foreground/80">
               {feature.title.split(" ")[0]}
             </span>
           </div>

@@ -43,11 +43,11 @@ const AVATAR_GRADS = [
 
 export function AdminActivityFeed({ activities }: { activities: AdminActivity[] }) {
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-red-500/20 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
-          <p className="text-sm font-semibold text-zinc-200">Recent activity</p>
+          <p className="text-sm font-semibold text-foreground/90">Recent activity</p>
           <div className="flex items-center gap-1.5 text-[10px] text-emerald-400">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
@@ -57,14 +57,14 @@ export function AdminActivityFeed({ activities }: { activities: AdminActivity[] 
           </div>
         </div>
       </CardHeader>
-      <div className="divide-y divide-zinc-800/40">
+      <div className="divide-y divide-border/40">
         {activities.map((a, i) => (
           <motion.div
             key={a.id}
             initial={{ opacity: 0, x: -6 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.05, duration: 0.34, ease: [0.22, 1, 0.36, 1] }}
-            className="flex items-start gap-3 px-5 py-3 hover:bg-zinc-900/30 transition-colors"
+            className="flex items-start gap-3 px-5 py-3 hover:bg-card/30 transition-colors"
           >
             <div className="relative mt-0.5 shrink-0">
               <Avatar className="h-7 w-7 rounded-lg">
@@ -77,10 +77,10 @@ export function AdminActivityFeed({ activities }: { activities: AdminActivity[] 
               </span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium text-zinc-300 truncate">{a.user}</p>
-              <p className="text-[11px] text-zinc-600 truncate">{a.message}</p>
+              <p className="text-xs font-medium text-foreground/80 truncate">{a.user}</p>
+              <p className="text-[11px] text-muted-foreground/60 truncate">{a.message}</p>
             </div>
-            <span className="shrink-0 text-[10px] text-zinc-700">{a.time}</span>
+            <span className="shrink-0 text-[10px] text-muted-foreground/40">{a.time}</span>
           </motion.div>
         ))}
       </div>
@@ -113,11 +113,11 @@ export function AdminSystemHealth({ health }: { health: SystemHealth }) {
   const allOperational = services.every((s) => health[s.key] === "operational");
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-zinc-700/50 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-border to-transparent" />
+      <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
-          <p className="text-sm font-semibold text-zinc-200">System health</p>
+          <p className="text-sm font-semibold text-foreground/90">System health</p>
           <Badge className={cn(
             "gap-1 rounded-full px-2.5 text-[10px] font-semibold",
             allOperational
@@ -135,8 +135,8 @@ export function AdminSystemHealth({ health }: { health: SystemHealth }) {
           const cfg    = HEALTH_CONFIG[status];
           return (
             <div key={key} className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5 text-xs text-zinc-400">
-                <span className="text-zinc-700">{SERVICE_ICON[key]}</span>
+              <div className="flex items-center gap-2.5 text-xs text-muted-foreground">
+                <span className="text-muted-foreground/40">{SERVICE_ICON[key]}</span>
                 {label}
               </div>
               <div className={cn("flex items-center gap-1.5 text-[11px] font-semibold", cfg.text)}>
@@ -147,16 +147,16 @@ export function AdminSystemHealth({ health }: { health: SystemHealth }) {
           );
         })}
 
-        <Separator className="bg-zinc-800/60" />
+        <Separator className="bg-muted/60" />
 
         <div className="grid grid-cols-2 gap-3">
-          <div className="flex flex-col gap-0.5 rounded-lg border border-zinc-800/60 bg-zinc-900/40 px-3 py-2">
-            <p className="text-[10px] text-zinc-600">Uptime (30d)</p>
+          <div className="flex flex-col gap-0.5 rounded-lg border border-border/60 bg-card/40 px-3 py-2">
+            <p className="text-[10px] text-muted-foreground/60">Uptime (30d)</p>
             <p className="text-sm font-black text-emerald-300">{health.uptime}%</p>
           </div>
-          <div className="flex flex-col gap-0.5 rounded-lg border border-zinc-800/60 bg-zinc-900/40 px-3 py-2">
-            <p className="text-[10px] text-zinc-600">P99 latency</p>
-            <p className="text-sm font-black text-zinc-200">{health.p99Latency}ms</p>
+          <div className="flex flex-col gap-0.5 rounded-lg border border-border/60 bg-card/40 px-3 py-2">
+            <p className="text-[10px] text-muted-foreground/60">P99 latency</p>
+            <p className="text-sm font-black text-foreground/90">{health.p99Latency}ms</p>
           </div>
         </div>
       </CardContent>
@@ -176,27 +176,27 @@ const WL_GRADS = [
 
 export function AdminTopWaitlists({ waitlists }: { waitlists: TopWaitlist[] }) {
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-amber-500/30 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center gap-2">
           <Trophy size={13} className="text-amber-400" />
-          <p className="text-sm font-semibold text-zinc-200">Top waitlists</p>
+          <p className="text-sm font-semibold text-foreground/90">Top waitlists</p>
         </div>
-        <p className="text-[11px] text-zinc-600">Highest subscriber counts platform-wide</p>
+        <p className="text-[11px] text-muted-foreground/60">Highest subscriber counts platform-wide</p>
       </CardHeader>
-      <div className="divide-y divide-zinc-800/40">
+      <div className="divide-y divide-border/40">
         {waitlists.map((wl, i) => (
           <motion.div
             key={wl.id}
             initial={{ opacity: 0, x: -6 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.06, duration: 0.36, ease: [0.22, 1, 0.36, 1] }}
-            className="group flex items-center gap-3 px-5 py-3.5 hover:bg-zinc-900/30 transition-colors"
+            className="group flex items-center gap-3 px-5 py-3.5 hover:bg-card/30 transition-colors"
           >
             <span className={cn(
               "w-4 shrink-0 text-center text-xs font-black tabular-nums",
-              i === 0 ? "text-amber-400" : i === 1 ? "text-zinc-300" : "text-zinc-600",
+              i === 0 ? "text-amber-400" : i === 1 ? "text-foreground/80" : "text-muted-foreground/60",
             )}>
               {i + 1}
             </span>
@@ -209,17 +209,17 @@ export function AdminTopWaitlists({ waitlists }: { waitlists: TopWaitlist[] }) {
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-1.5">
-                <p className="truncate text-xs font-medium text-zinc-300">{wl.name}</p>
-                {!wl.isOpen && <Badge className="border-zinc-700/60 bg-zinc-800/40 px-1 py-0 text-[8px] text-zinc-600">Closed</Badge>}
+                <p className="truncate text-xs font-medium text-foreground/80">{wl.name}</p>
+                {!wl.isOpen && <Badge className="border-zinc-700/60 bg-muted/40 px-1 py-0 text-[8px] text-muted-foreground/60">Closed</Badge>}
               </div>
-              <p className="truncate text-[10px] text-zinc-600">{wl.ownerName} · {wl.ownerEmail}</p>
+              <p className="truncate text-[10px] text-muted-foreground/60">{wl.ownerName} · {wl.ownerEmail}</p>
             </div>
 
             <div className="flex flex-col items-end shrink-0">
-              <div className="flex items-center gap-1 text-[10px] text-zinc-400">
+              <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
                 <Users size={9} /><span className="font-semibold tabular-nums">{wl.subscribers.toLocaleString()}</span>
               </div>
-              <div className="flex items-center gap-1 text-[9px] text-zinc-600">
+              <div className="flex items-center gap-1 text-[9px] text-muted-foreground/60">
                 <Share2 size={8} />{wl.referrals.toLocaleString()} · {wl.viralScore}×
               </div>
             </div>

@@ -39,13 +39,13 @@ export function ViralKFactorChart() {
   const viral = current >= 1;
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
+      <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-semibold text-zinc-200">Viral coefficient (K-factor)</p>
-            <p className="text-[11px] text-zinc-600">K ≥ 1 means exponential growth</p>
+            <p className="text-sm font-semibold text-foreground/90">Viral coefficient (K-factor)</p>
+            <p className="text-[11px] text-muted-foreground/60">K ≥ 1 means exponential growth</p>
           </div>
           <div className="flex items-center gap-2">
             <span className="text-2xl font-black tracking-tight tabular-nums text-amber-300">
@@ -65,7 +65,7 @@ export function ViralKFactorChart() {
       </CardHeader>
       <CardContent className="p-5">
         {!workspaceId ? (
-          <div className="flex h-52 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-52 items-center justify-center text-xs text-muted-foreground/80">
             Select a workspace to view analytics.
           </div>
         ) : isError ? (
@@ -73,12 +73,12 @@ export function ViralKFactorChart() {
             {(error as Error)?.message || "Failed to load k-factor."}
           </div>
         ) : isLoading ? (
-          <div className="flex h-52 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-52 items-center justify-center text-xs text-muted-foreground/80">
             <Loader2 size={16} className="mr-2 animate-spin" />
             Loading…
           </div>
         ) : points.length === 0 ? (
-          <div className="flex h-52 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-52 items-center justify-center text-xs text-muted-foreground/80">
             No data yet.
           </div>
         ) : (
@@ -133,15 +133,15 @@ export function WaitlistComparisonChart() {
   const rows = data ?? [];
 
   return (
-    <Card className="relative overflow-hidden border-zinc-800/80 bg-zinc-900/40">
+    <Card className="relative overflow-hidden border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
-      <CardHeader className="border-b border-zinc-800/60 px-5 py-4">
-        <p className="text-sm font-semibold text-zinc-200">Waitlist comparison</p>
-        <p className="text-[11px] text-zinc-600">Subscribers · Referrals · Confirmed per waitlist</p>
+      <CardHeader className="border-b border-border/60 px-5 py-4">
+        <p className="text-sm font-semibold text-foreground/90">Waitlist comparison</p>
+        <p className="text-[11px] text-muted-foreground/60">Subscribers · Referrals · Confirmed per waitlist</p>
       </CardHeader>
       <CardContent className="p-5">
         {!workspaceId ? (
-          <div className="flex h-56 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-56 items-center justify-center text-xs text-muted-foreground/80">
             Select a workspace to view analytics.
           </div>
         ) : isError ? (
@@ -149,12 +149,12 @@ export function WaitlistComparisonChart() {
             {(error as Error)?.message || "Failed to load waitlist comparison."}
           </div>
         ) : isLoading ? (
-          <div className="flex h-56 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-56 items-center justify-center text-xs text-muted-foreground/80">
             <Loader2 size={16} className="mr-2 animate-spin" />
             Loading…
           </div>
         ) : rows.length === 0 ? (
-          <div className="flex h-56 items-center justify-center text-xs text-zinc-500">
+          <div className="flex h-56 items-center justify-center text-xs text-muted-foreground/80">
             No data yet.
           </div>
         ) : (
@@ -178,8 +178,8 @@ export function WaitlistComparisonChart() {
 
             <div className="mt-3 flex flex-wrap gap-2">
               {rows.map((w) => (
-                <div key={w.name} className="flex items-center gap-1.5 rounded-full border border-zinc-800/60 bg-zinc-900/40 px-2.5 py-1">
-                  <span className="text-[10px] text-zinc-500">{w.name.split(" ").slice(0, 2).join(" ")}</span>
+                <div key={w.name} className="flex items-center gap-1.5 rounded-full border border-border/60 bg-card/40 px-2.5 py-1">
+                  <span className="text-[10px] text-muted-foreground/80">{w.name.split(" ").slice(0, 2).join(" ")}</span>
                   <Badge className="border-amber-500/25 bg-amber-500/10 px-1.5 py-0 text-[9px] font-bold text-amber-400">
                     {w.viralScore}×
                   </Badge>

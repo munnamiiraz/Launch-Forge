@@ -51,20 +51,20 @@ export function AnalyticsMockUI() {
   const areaPath = `${linePath} L ${W},${H} L 0,${H} Z`;
 
   return (
-    <div className="relative w-full overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-950/95 shadow-2xl shadow-black/60 backdrop-blur-xl">
+    <div className="relative w-full overflow-hidden rounded-2xl border border-border/80 bg-background/95 shadow-2xl shadow-black/60 backdrop-blur-xl">
       {/* Top gradient line */}
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
 
       {/* Window chrome */}
-      <div className="flex items-center gap-2 border-b border-zinc-800/60 px-4 py-2.5">
+      <div className="flex items-center gap-2 border-b border-border/60 px-4 py-2.5">
         <div className="flex gap-1.5">
           {["bg-zinc-700", "bg-zinc-700", "bg-zinc-700"].map((c, i) => (
             <div key={i} className={cn("h-2 w-2 rounded-full", c)} />
           ))}
         </div>
-        <div className="mx-auto flex items-center gap-1.5 rounded-md border border-zinc-800 bg-zinc-900/60 px-3 py-0.5">
+        <div className="mx-auto flex items-center gap-1.5 rounded-md border border-zinc-800 bg-card/60 px-3 py-0.5">
           <div className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-          <span className="text-[10px] text-zinc-500">launchforge.app/analytics</span>
+          <span className="text-[10px] text-muted-foreground/80">launchforge.app/analytics</span>
         </div>
         <div className="flex items-center gap-1 rounded-full border border-indigo-500/20 bg-indigo-500/8 px-2 py-0.5 text-[9px] font-semibold text-indigo-400">
           <span className="relative flex h-1.5 w-1.5">
@@ -85,13 +85,13 @@ export function AnalyticsMockUI() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 + i * 0.07, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="rounded-xl border border-zinc-800/60 bg-zinc-900/50 p-3"
+              className="rounded-xl border border-border/60 bg-zinc-900/50 p-3"
             >
               <div className="mb-1.5 flex items-center justify-between">
-                <span className="text-[9px] text-zinc-600">{s.label}</span>
+                <span className="text-[9px] text-muted-foreground/60">{s.label}</span>
                 {s.icon}
               </div>
-              <p className="text-sm font-bold tracking-tight text-zinc-100">{s.value}</p>
+              <p className="text-sm font-bold tracking-tight text-foreground">{s.value}</p>
               <div className="mt-1 flex items-center gap-1">
                 <span className={cn("h-1 w-1 rounded-full", ACCENT_DOT[s.accent])} />
                 <span className="text-[9px] text-emerald-500">{s.pct}</span>
@@ -106,12 +106,12 @@ export function AnalyticsMockUI() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.35, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="rounded-xl border border-zinc-800/60 bg-zinc-900/40 p-4"
+          className="rounded-xl border border-border/60 bg-card/40 p-4"
         >
           <div className="mb-3 flex items-center justify-between">
             <div>
-              <p className="text-xs font-medium text-zinc-300">Signup velocity</p>
-              <p className="text-[10px] text-zinc-600">Last 30 days</p>
+              <p className="text-xs font-medium text-foreground/80">Signup velocity</p>
+              <p className="text-[10px] text-muted-foreground/60">Last 30 days</p>
             </div>
             <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-400">
               <ArrowUpRight size={10} />
@@ -160,7 +160,7 @@ export function AnalyticsMockUI() {
             />
           </svg>
 
-          <div className="mt-1 flex justify-between text-[9px] text-zinc-700">
+          <div className="mt-1 flex justify-between text-[9px] text-muted-foreground/40">
             {["Day 1","","","","","Day 8","","","","","Day 16","","","","Day 30"].map((l, i) => (
               <span key={i}>{l}</span>
             ))}
@@ -175,13 +175,13 @@ export function AnalyticsMockUI() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.55, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="col-span-3 rounded-xl border border-zinc-800/60 bg-zinc-900/40 p-3"
+            className="col-span-3 rounded-xl border border-border/60 bg-card/40 p-3"
           >
-            <p className="mb-2.5 text-[10px] font-semibold text-zinc-500">Channel attribution</p>
+            <p className="mb-2.5 text-[10px] font-semibold text-muted-foreground/80">Channel attribution</p>
             <div className="space-y-2">
               {CHANNEL_ROWS.map((row, i) => (
                 <div key={row.label} className="flex items-center gap-2">
-                  <span className="w-16 shrink-0 text-[10px] text-zinc-500">{row.label}</span>
+                  <span className="w-16 shrink-0 text-[10px] text-muted-foreground/80">{row.label}</span>
                   <div className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-zinc-800">
                     <motion.div
                       initial={{ width: 0 }}
@@ -191,7 +191,7 @@ export function AnalyticsMockUI() {
                       className="absolute inset-y-0 left-0 rounded-full bg-indigo-500"
                     />
                   </div>
-                  <span className="w-8 text-right text-[10px] text-zinc-600">{row.count}</span>
+                  <span className="w-8 text-right text-[10px] text-muted-foreground/60">{row.count}</span>
                 </div>
               ))}
             </div>
@@ -203,14 +203,14 @@ export function AnalyticsMockUI() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.62, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-            className="col-span-2 rounded-xl border border-zinc-800/60 bg-zinc-900/40 p-3"
+            className="col-span-2 rounded-xl border border-border/60 bg-card/40 p-3"
           >
             <div className="mb-2 flex items-center justify-between">
-              <p className="text-[10px] font-semibold text-zinc-500">Top regions</p>
-              <Globe size={11} className="text-zinc-700" />
+              <p className="text-[10px] font-semibold text-muted-foreground/80">Top regions</p>
+              <Globe size={11} className="text-muted-foreground/40" />
             </div>
             {/* Simplified world blob + dots */}
-            <div className="relative h-16 overflow-hidden rounded-lg bg-zinc-800/40">
+            <div className="relative h-16 overflow-hidden rounded-lg bg-muted/40">
               <div className="pointer-events-none absolute inset-0 opacity-20"
                 style={{
                   backgroundImage: "radial-gradient(circle at 50% 50%, rgba(99,102,241,0.3) 0%, transparent 70%)",

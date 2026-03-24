@@ -30,16 +30,14 @@ export function AdminKpiGrid({ kpis }: AdminKpiGridProps) {
       label: "Total users",
       value: kpis.totalUsers.toLocaleString(),
       sub:   `+${kpis.newUsersToday} today · +${kpis.newUsersThisWeek} this week`,
-      delta: `+${kpis.newUsersThisWeek}`, deltaUp: true,
       icon: <Users size={14} />,
       accent: "border-indigo-500/30 bg-indigo-500/12",
       valueColor: "text-indigo-300",
     },
     {
       label: "MRR",
-      value: `$${(kpis.mrr / 1000).toFixed(1)}k`,
-      sub:   `ARR $${(kpis.arr / 1000).toFixed(0)}k`,
-      delta: "+12%", deltaUp: true,
+      value: `${(kpis.mrr / 1000).toFixed(1)}k`,
+      sub:   `ARR ${(kpis.arr / 1000).toFixed(0)}k`,
       icon: <DollarSign size={14} />,
       accent: "border-emerald-500/30 bg-emerald-500/12",
       valueColor: "text-emerald-300",
@@ -95,13 +93,12 @@ export function AdminKpiGrid({ kpis }: AdminKpiGridProps) {
       sub:   `${kpis.totalVotes.toLocaleString()} votes cast`,
       icon: <MessageSquare size={14} />,
       accent: "border-zinc-700/60 bg-zinc-800/30",
-      valueColor: "text-zinc-300",
+      valueColor: "text-foreground/80",
     },
     {
       label: "Churned this month",
       value: kpis.churnedThisMonth.toString(),
       sub:   `${((kpis.churnedThisMonth / kpis.paidUsers) * 100).toFixed(1)}% churn rate`,
-      delta: `${kpis.churnedThisMonth}`, deltaUp: false,
       icon: <TrendingDown size={14} />,
       accent: "border-red-500/25 bg-red-500/8",
       valueColor: "text-red-300",
@@ -117,24 +114,24 @@ export function AdminKpiGrid({ kpis }: AdminKpiGridProps) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.05, duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
         >
-          <Card className="group relative overflow-hidden border-zinc-800/80 bg-zinc-900/40 transition-all duration-300 hover:bg-zinc-900/60 hover:shadow-lg hover:shadow-black/20">
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent transition-all duration-300 group-hover:via-red-500/20" />
+          <Card className="group relative overflow-hidden border-border/80 bg-card/40 transition-all duration-300 hover:bg-card/60 hover:shadow-lg hover:shadow-black/20">
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-red-500/20" />
             <CardContent className="p-4">
               <div className="mb-2.5 flex items-center justify-between">
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-600">{card.label}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{card.label}</p>
                 <div className={cn("flex h-7 w-7 items-center justify-center rounded-lg border text-current transition-transform group-hover:scale-110", card.accent, card.valueColor)}>
                   {card.icon}
                 </div>
               </div>
               <p className={cn("text-2xl font-black tracking-tight tabular-nums", card.valueColor)}>{card.value}</p>
-              <p className="mt-1 text-[10px] text-zinc-600">{card.sub}</p>
+              <p className="mt-1 text-[10px] text-muted-foreground/60">{card.sub}</p>
               {card.delta && (
                 <div className={cn(
                   "mt-1.5 flex items-center gap-1 text-[10px] font-semibold",
                   card.deltaUp ? "text-emerald-400" : "text-red-400",
                 )}>
                   {card.deltaUp ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
-                  {card.delta} this week
+                  {card.delta}
                 </div>
               )}
             </CardContent>

@@ -98,22 +98,22 @@ export function ExploreClient({
     <div className="flex flex-col gap-6">
 
       {/* ── Sticky search + filter bar ──────────────────── */}
-      <div className="sticky top-16 z-20 flex flex-col gap-3 bg-[#080808]/90 pb-3 pt-1 backdrop-blur-xl">
+      <div className="sticky top-0 z-20 flex flex-col gap-3 bg-background/90 pb-3 pt-3 backdrop-blur-xl">
 
         {/* Search row */}
         <div className="flex gap-3">
           <div className="relative flex-1">
-            <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-zinc-600" />
+            <Search size={14} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/60" />
             <Input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search products, categories, tags…"
-              className="h-10 border-zinc-800/80 bg-zinc-900/60 pl-9 text-sm text-zinc-100 placeholder:text-zinc-600 focus-visible:border-indigo-500/40 focus-visible:ring-1 focus-visible:ring-indigo-500/20"
+              className="h-10 border-border/80 bg-card/60 pl-9 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/40 focus-visible:ring-1 focus-visible:ring-indigo-500/20"
             />
             {search && (
               <button
                 onClick={() => setSearch("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-600 hover:text-zinc-400 transition-colors"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-muted-foreground transition-colors"
               >
                 <X size={13} />
               </button>
@@ -121,7 +121,7 @@ export function ExploreClient({
           </div>
 
           {/* Sort */}
-          <div className="flex items-center gap-0.5 rounded-lg border border-zinc-800/80 bg-zinc-900/60 p-1">
+          <div className="flex items-center gap-0.5 rounded-lg border border-border/80 bg-card/60 p-1">
             {SORT_OPTIONS.map((opt) => (
               <button
                 key={opt.id}
@@ -129,8 +129,8 @@ export function ExploreClient({
                 className={cn(
                   "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-medium transition-all duration-150",
                   sortBy === opt.id
-                    ? "bg-zinc-800 text-zinc-100"
-                    : "text-zinc-600 hover:text-zinc-400",
+                    ? "bg-zinc-800 text-foreground"
+                    : "text-muted-foreground/60 hover:text-muted-foreground",
                 )}
               >
                 {opt.icon}
@@ -148,7 +148,7 @@ export function ExploreClient({
               "shrink-0 rounded-full border px-3 py-1 text-xs font-medium transition-all duration-150",
               activeCategory === "All"
                 ? "border-indigo-500/50 bg-indigo-500/15 text-indigo-300"
-                : "border-zinc-800/80 bg-zinc-900/40 text-zinc-500 hover:border-zinc-700 hover:text-zinc-300",
+                : "border-border/80 bg-card/40 text-muted-foreground/80 hover:border-zinc-700 hover:text-foreground/80",
             )}
           >
             All
@@ -161,7 +161,7 @@ export function ExploreClient({
                 "shrink-0 rounded-full border px-3 py-1 text-xs font-medium transition-all duration-150",
                 activeCategory === cat
                   ? "border-indigo-500/50 bg-indigo-500/15 text-indigo-300"
-                  : "border-zinc-800/80 bg-zinc-900/40 text-zinc-500 hover:border-zinc-700 hover:text-zinc-300",
+                  : "border-border/80 bg-card/40 text-muted-foreground/80 hover:border-zinc-700 hover:text-foreground/80",
               )}
             >
               {cat}
@@ -177,11 +177,11 @@ export function ExploreClient({
               "shrink-0 flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-all",
               showOpen
                 ? "border-emerald-500/40 bg-emerald-500/12 text-emerald-400"
-                : "border-zinc-800/80 bg-zinc-900/40 text-zinc-600 hover:text-zinc-400",
+                : "border-border/80 bg-card/40 text-muted-foreground/60 hover:text-muted-foreground",
             )}
           >
             🟢 Open only
-            <Badge className="border-zinc-700 bg-zinc-800/60 px-1.5 py-0 text-[9px] text-zinc-500">
+            <Badge className="border-zinc-700 bg-muted/60 px-1.5 py-0 text-[9px] text-muted-foreground/80">
               {openCount}
             </Badge>
           </button>
@@ -192,11 +192,11 @@ export function ExploreClient({
               "shrink-0 flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-all",
               showPrizesOnly
                 ? "border-amber-500/40 bg-amber-500/12 text-amber-400"
-                : "border-zinc-800/80 bg-zinc-900/40 text-zinc-600 hover:text-zinc-400",
+                : "border-border/80 bg-card/40 text-muted-foreground/60 hover:text-muted-foreground",
             )}
           >
             🏆 With prizes
-            <Badge className="border-zinc-700 bg-zinc-800/60 px-1.5 py-0 text-[9px] text-zinc-500">
+            <Badge className="border-zinc-700 bg-muted/60 px-1.5 py-0 text-[9px] text-muted-foreground/80">
               {prizeCount}
             </Badge>
           </button>
@@ -204,7 +204,7 @@ export function ExploreClient({
           {hasFilters && (
             <button
               onClick={clearFilters}
-              className="shrink-0 flex items-center gap-1 rounded-full border border-zinc-800 bg-zinc-900/40 px-3 py-1 text-xs text-zinc-600 hover:text-zinc-400 transition-colors"
+              className="shrink-0 flex items-center gap-1 rounded-full border border-zinc-800 bg-card/40 px-3 py-1 text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors"
             >
               <X size={11} />Clear
             </button>
@@ -213,8 +213,8 @@ export function ExploreClient({
 
         {/* Result count */}
         <div className="flex items-center justify-between">
-          <p className="text-xs text-zinc-600">
-            <span className="font-semibold text-zinc-400">{filtered.length}</span>{" "}
+          <p className="text-xs text-muted-foreground/60">
+            <span className="font-semibold text-muted-foreground">{filtered.length}</span>{" "}
             product{filtered.length !== 1 ? "s" : ""} found
             {hasFilters && " matching your filters"}
           </p>
@@ -231,19 +231,19 @@ export function ExploreClient({
             exit={{ opacity: 0 }}
             className="flex flex-col items-center gap-5 py-24 text-center"
           >
-            <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900/60">
-              <Rocket size={28} className="text-zinc-700" />
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-zinc-800 bg-card/60">
+              <Rocket size={28} className="text-muted-foreground/40" />
             </div>
             <div>
-              <p className="text-base font-semibold text-zinc-400">No products found</p>
-              <p className="mt-1 text-sm text-zinc-600">
+              <p className="text-base font-semibold text-muted-foreground">No products found</p>
+              <p className="mt-1 text-sm text-muted-foreground/60">
                 Try different keywords or clear your filters.
               </p>
             </div>
             <Button
               variant="outline"
               onClick={clearFilters}
-              className="gap-2 border-zinc-700/80 bg-transparent text-sm text-zinc-400 hover:border-zinc-600 hover:bg-zinc-800/60"
+              className="gap-2 border-zinc-700/80 bg-transparent text-sm text-muted-foreground hover:border-zinc-600 hover:bg-muted/60"
             >
               <X size={13} />Clear filters
             </Button>

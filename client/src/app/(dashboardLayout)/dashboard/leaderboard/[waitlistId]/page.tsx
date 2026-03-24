@@ -81,7 +81,7 @@ export default async function WaitlistLeaderboardPage({ params }: PageProps) {
           <Button
             size="sm"
             variant="outline"
-            className="gap-1.5 border-zinc-700/80 bg-transparent text-xs text-zinc-400 hover:border-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-200"
+            className="gap-1.5 border-zinc-700/80 bg-transparent text-xs text-muted-foreground hover:border-zinc-600 hover:bg-muted/60 hover:text-foreground/90"
           >
             <ExternalLink size={12} />
             Public page
@@ -96,14 +96,14 @@ export default async function WaitlistLeaderboardPage({ params }: PageProps) {
         <div className="flex flex-col gap-4">
           <Link
             href="/dashboard/leaderboard"
-            className="flex w-fit items-center gap-1.5 text-xs text-zinc-600 transition-colors hover:text-zinc-400"
+            className="flex w-fit items-center gap-1.5 text-xs text-muted-foreground/60 transition-colors hover:text-muted-foreground"
           >
             <ArrowLeft size={13} />
             All leaderboards
           </Link>
 
           {/* Identity band */}
-          <div className="relative overflow-hidden rounded-2xl border border-zinc-800/60 bg-zinc-900/30 px-6 py-5">
+          <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-card/30 px-6 py-5">
             {/* Ambient glow */}
             <div
               aria-hidden
@@ -121,7 +121,7 @@ export default async function WaitlistLeaderboardPage({ params }: PageProps) {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h1 className="text-lg font-bold tracking-tight text-zinc-100">
+                    <h1 className="text-lg font-bold tracking-tight text-foreground">
                       {waitlistInfo.name}
                     </h1>
                     <Badge
@@ -129,7 +129,7 @@ export default async function WaitlistLeaderboardPage({ params }: PageProps) {
                       className={
                         waitlistInfo.isOpen
                           ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
-                          : "border-zinc-700/60 bg-zinc-800/40 text-zinc-500"
+                          : "border-zinc-700/60 bg-muted/40 text-muted-foreground/80"
                       }
                     >
                       {waitlistInfo.isOpen
@@ -139,11 +139,11 @@ export default async function WaitlistLeaderboardPage({ params }: PageProps) {
                     </Badge>
                   </div>
                   {waitlistInfo.description && (
-                    <p className="mt-0.5 text-xs text-zinc-500">
+                    <p className="mt-0.5 text-xs text-muted-foreground/80">
                       {waitlistInfo.description}
                     </p>
                   )}
-                  <p className="mt-1 text-[11px] text-zinc-600">
+                  <p className="mt-1 text-[11px] text-muted-foreground/60">
                     launchforge.app/{waitlistInfo.slug}
                   </p>
                 </div>
@@ -156,7 +156,7 @@ export default async function WaitlistLeaderboardPage({ params }: PageProps) {
                 <Button
                   size="sm"
                   variant="outline"
-                  className="gap-1.5 border-zinc-700/60 bg-transparent text-xs text-zinc-400 hover:border-zinc-600 hover:bg-zinc-800/60 hover:text-zinc-200"
+                  className="gap-1.5 border-zinc-700/60 bg-transparent text-xs text-muted-foreground hover:border-zinc-600 hover:bg-muted/60 hover:text-foreground/90"
                 >
                   <Users size={12} />
                   Manage waitlist

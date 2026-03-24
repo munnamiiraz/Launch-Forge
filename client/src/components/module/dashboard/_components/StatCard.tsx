@@ -40,16 +40,16 @@ export function StatCard({
       transition={{ delay: index * 0.07, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
     >
       <Card className={cn(
-        "group relative overflow-hidden border-zinc-800/80 bg-zinc-900/40 backdrop-blur-sm",
-        "transition-all duration-300 hover:bg-zinc-900/60 hover:shadow-xl",
+        "group relative overflow-hidden border-border/80 bg-card/40 backdrop-blur-sm",
+        "transition-all duration-300 hover:bg-card/60 hover:shadow-xl",
         a.glow
       )}>
         {/* top accent line */}
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-zinc-700/50 to-transparent transition-all duration-300 group-hover:via-indigo-500/30" />
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-indigo-500/30" />
 
         <CardContent className="p-5">
           <div className="mb-3 flex items-center justify-between">
-            <p className="text-xs font-medium text-zinc-500">{label}</p>
+            <p className="text-xs font-medium text-muted-foreground/80">{label}</p>
             <div className={cn("flex h-8 w-8 items-center justify-center rounded-lg border transition-transform duration-300 group-hover:scale-110", a.icon)}>
               {icon}
             </div>
@@ -66,7 +66,7 @@ export function StatCard({
                   "flex items-center gap-0.5 text-xs font-medium",
                   deltaType === "up"      ? "text-emerald-400"
                   : deltaType === "down"  ? "text-red-400"
-                  : "text-zinc-600"
+                  : "text-muted-foreground/60"
                 )}>
                   {deltaType === "up"      ? <TrendingUp  size={11} /> :
                    deltaType === "down"    ? <TrendingDown size={11} /> :
@@ -75,7 +75,7 @@ export function StatCard({
                 </span>
               )}
               {subtext && (
-                <span className="text-[11px] text-zinc-600">{subtext}</span>
+                <span className="text-[11px] text-muted-foreground/60">{subtext}</span>
               )}
             </div>
           )}

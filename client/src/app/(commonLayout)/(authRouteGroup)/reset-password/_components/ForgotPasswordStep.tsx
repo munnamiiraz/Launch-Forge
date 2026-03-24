@@ -58,10 +58,10 @@ export function ForgotPasswordStep({
         animate="visible"
         className="mb-6"
       >
-        <h1 className="text-xl font-semibold tracking-tight text-zinc-100">
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">
           Reset your password
         </h1>
-        <p className="mt-1 text-sm text-zinc-500">
+        <p className="mt-1 text-sm text-muted-foreground/80">
           Enter your email and we'll send you a secure reset link.
         </p>
       </motion.div>
@@ -77,14 +77,14 @@ export function ForgotPasswordStep({
         >
           <Label
             htmlFor="email"
-            className="text-xs font-medium uppercase tracking-wide text-zinc-400"
+            className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
           >
             Email address
           </Label>
           <div className="relative">
             <Mail
               size={14}
-              className="pointer-events-none absolute inset-y-0 left-3 my-auto text-zinc-600"
+              className="pointer-events-none absolute inset-y-0 left-3 my-auto text-muted-foreground/60"
             />
             <Input
               id="email"
@@ -95,7 +95,7 @@ export function ForgotPasswordStep({
               autoFocus
               disabled={isPending}
               className={cn(
-                "border-zinc-800 bg-zinc-900/60 pl-9 text-zinc-100 placeholder:text-zinc-600",
+                "border-zinc-800 bg-card/60 pl-9 text-foreground placeholder:text-muted-foreground/60",
                 "focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/50",
                 "transition-all duration-200",
                 result?.fieldError &&
