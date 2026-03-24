@@ -14,6 +14,15 @@ export const createCheckoutSchema = z.object({
   }),
 });
 
+/* POST /api/payment/confirm
+   Body: { sessionId }
+   Confirms a Stripe Checkout Session after redirect back to the app. */
+export const confirmCheckoutSchema = z.object({
+  sessionId: z
+    .string("sessionId is required.")
+    .min(1, "sessionId must not be empty."),
+});
+
 /* ─────────────────────────────────────────────────────────────────
    POST /api/payment/webhook
    The raw body is handled by Express before this validator runs.

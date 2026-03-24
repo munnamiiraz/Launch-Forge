@@ -8,7 +8,7 @@ import {
 
 import { Badge }    from "@/src/components/ui/badge";
 import { Button }   from "@/src/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/src/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/src/components/ui/dialog";
 import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
 import { Separator } from "@/src/components/ui/separator";
 import { cn }       from "@/src/lib/utils";
@@ -204,7 +204,7 @@ export default async function PublicWaitlistPage({ params }: Props) {
                             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/20">
                               <Trophy size={16} className="text-amber-400" />
                             </div>
-                            <h2 className="text-lg font-bold">Prizes</h2>
+                            <DialogTitle className="text-lg font-bold">Prizes</DialogTitle>
                           </div>
                           {hasPrizes ? (
                             <div className="flex flex-col gap-3">

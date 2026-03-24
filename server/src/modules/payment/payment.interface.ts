@@ -37,6 +37,12 @@ export interface CreatePortalSessionPayload {
   requestingUserId: string;
 }
 
+/** POST /api/payment/confirm - confirm a Checkout Session after returning from Stripe */
+export interface ConfirmCheckoutPayload {
+  requestingUserId: string;
+  sessionId: string;
+}
+
 /* ─────────────────────────────────────────────────────────────────
    Stripe event shape (only the fields we actually use)
    ──────────────────────────────────────────────────────────────── */
@@ -107,11 +113,26 @@ export type PaymentRecord = Pick<
   | "updatedAt"
 >;
 
+export interface ActiveSubscriptionInfo {
+  planTier:      PaymentType;
+  billingMode:   PaymentMode;
+  status:        "active" | "trialing" | "past_due" | "cancelled" | "none";
+  amount:        number;
+  currency:      string;
+  nextBillingAt: string | null;  // ISO date
+  cancelAt:      string | null;  // ISO date
+  trialEndsAt:   string | null;
+  transactionId: string;
+  startedAt:     string;
+}
+
 export interface PaymentStatusResult {
   hasPaid:      boolean;
   payment:      PaymentRecord | null;
   /** Resolved plan slug for the workspace plan gate */
   activePlan:   "FREE" | "PRO" | "GROWTH";
+  /** Detailed subscription info for the billing page UI */
+  subscription: ActiveSubscriptionInfo | null;
 }
 
 /** Returned by the webhook handler to the controller */

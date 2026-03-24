@@ -5,7 +5,6 @@ import { subscriberRouter as SubscriberRoutes } from "../modules/subscriber/subs
 import { feedbackRouter as FeedbackRoutes } from "../modules/feedback/feedback.routes";
 import { roadmapRouter as RoadmapRoutes } from "../modules/roadmap/roadmap.route";
 import { leaderboardRouter as LeaderboardRoutes } from "../modules/leaderboard/leaderboard.route";
-import { paymentRouter as PaymentRoutes } from "../modules/payment/payment.route";
 import { workspaceRouter } from "../modules/workspace/workspace.route";
 import { inviteRouter } from "../modules/invite/invite.route";
 import { publicWaitlistRouter } from "../modules/public-waitlist/public-waitlist.route";
@@ -58,7 +57,6 @@ router.use("/roadmap", RoadmapRoutes);
 router.use("/workspaces/:workspaceId/waitlists/:id/leaderboard", LeaderboardRoutes);
 router.use("/workspaces/:workspaceId/analytics", analyticsRouter);
 router.use("/workspaces", workspaceRouter);
-router.use("/payment", PaymentRoutes);
 router.use("/invites", inviteRouter);
 router.use("/public/waitlist", publicWaitlistRouter);
 router.use("/prizes", prizeRouter);

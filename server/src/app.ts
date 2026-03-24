@@ -29,16 +29,18 @@ app.use(cors({
     allowedHeaders : ["Content-Type", "Authorization"]
 }))
 
+// Needed for auth/payment routes (checkAuth reads req.cookies)
+app.use(cookieParser());
+
 app.use("/api/auth", toNodeHandler(auth))
 
 // Payment router must be mounted BEFORE express.json()
-// because the webhook route needs raw body for Stripe signature verification
+// because the webhook route needs raw body for Stripe signature verification.
+// Keep both mounts for backwards-compatibility, but prefer /api/v1/payment.
 app.use("/api/payment", paymentRouter);
-
-app.use(express.urlencoded({ extended: true }));
+app.use("/api/v1/payment", paymentRouter);
 
 app.use(express.json());
-app.use(cookieParser())
 app.use(express.urlencoded({ extended: true }));
 
 

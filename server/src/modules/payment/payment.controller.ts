@@ -75,6 +75,31 @@ export const paymentController = {
     }
   },
 
+  /* POST /api/payment/confirm */
+  async confirmCheckoutSession(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const requestingUserId = req.user!.id;
+      const { sessionId } = req.body;
+
+      const result = await paymentService.confirmCheckoutSession({
+        requestingUserId,
+        sessionId,
+      });
+
+      res.status(status.OK).json({
+        success: true,
+        message: "Checkout session confirmed.",
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
   /* ──────────────────────────────────────────────────────────────
      GET /api/payment/status
      ────────────────────────────────────────────────────────────── */
@@ -92,6 +117,30 @@ export const paymentController = {
       res.status(status.OK).json({
         success: true,
         message: PAYMENT_MESSAGES.STATUS_FETCHED,
+        data:    result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /* ──────────────────────────────────────────────────────────────
+     GET /api/payment/invoices
+     ────────────────────────────────────────────────────────────── */
+
+  async getInvoices(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const requestingUserId = req.user!.id;
+
+      const result = await paymentService.getInvoices({ requestingUserId });
+
+      res.status(status.OK).json({
+        success: true,
+        message: "Invoices fetched successfully.",
         data:    result,
       });
     } catch (error) {

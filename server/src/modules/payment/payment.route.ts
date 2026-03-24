@@ -2,7 +2,7 @@ import express, { Router } from "express";
 import { paymentController }  from "./payment.controller";
 import { validateRequest }    from "../../middlewares/validateRequest";
 import { checkAuth }          from "../../middlewares/checkAuth";
-import { createCheckoutSchema } from "./payment.validation";
+import { createCheckoutSchema, confirmCheckoutSchema } from "./payment.validation";
 import { Role } from "../../constraint/index";
 
 /**
@@ -40,10 +40,20 @@ const router = Router();
 router
   .route("/checkout")
   .post(
-    checkAuth(Role.USER, Role.ADMIN),
+    checkAuth(Role.OWNER, Role.ADMIN),
     express.json(),                       // parse JSON just for this route
     validateRequest(createCheckoutSchema),
     paymentController.createCheckoutSession,
+  );
+
+/* POST /api/payment/confirm */
+router
+  .route("/confirm")
+  .post(
+    checkAuth(Role.OWNER, Role.ADMIN),
+    express.json(),
+    validateRequest(confirmCheckoutSchema),
+    paymentController.confirmCheckoutSession,
   );
 
 /*
@@ -62,15 +72,23 @@ router
 router
   .route("/status")
   .get(
-    checkAuth(Role.USER, Role.ADMIN),
+    checkAuth(Role.OWNER, Role.ADMIN),
     paymentController.getPaymentStatus,
+  );
+
+/* GET /api/payment/invoices */
+router
+  .route("/invoices")
+  .get(
+    checkAuth(Role.OWNER, Role.ADMIN),
+    paymentController.getInvoices,
   );
 
 /* POST /api/payment/portal */
 router
   .route("/portal")
   .post(
-    checkAuth(Role.USER, Role.ADMIN),
+    checkAuth(Role.OWNER, Role.ADMIN),
     express.json(),
     paymentController.createPortalSession,
   );

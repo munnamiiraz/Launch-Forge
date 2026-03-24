@@ -99,6 +99,8 @@ export const PAYMENT_TYPE_TO_WORKSPACE_PLAN: Record<PaymentType, "PRO" | "GROWTH
    ──────────────────────────────────────────────────────────────── */
 
 export const CHECKOUT_CONFIG = {
-  SUCCESS_URL: `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/dashboard/billing?success=true`,
+  // Include session_id so the app can confirm the Checkout Session on return (useful in local dev).
+  // Stripe replaces {CHECKOUT_SESSION_ID} automatically.
+  SUCCESS_URL: `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/dashboard/billing?success=true&session_id={CHECKOUT_SESSION_ID}`,
   CANCEL_URL:  `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/pricing?cancelled=true`,
 } as const;

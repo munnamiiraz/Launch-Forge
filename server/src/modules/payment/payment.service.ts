@@ -7,10 +7,12 @@ import {
   GetPaymentStatusPayload,
   HandleWebhookPayload,
   CreatePortalSessionPayload,
+  ConfirmCheckoutPayload,
   CheckoutSessionResult,
   PortalSessionResult,
   PaymentStatusResult,
   WebhookHandledResult,
+  ActiveSubscriptionInfo,
 } from "./payment.interface";
 import {
   PAYMENT_MESSAGES,
@@ -126,6 +128,84 @@ export const paymentService = {
      Called with the raw request body — signature verification
      requires the raw bytes, NOT the parsed JSON.
      ────────────────────────────────────────────────────────────── */
+
+  /*
+     POST /api/payment/confirm
+     Confirm a Stripe Checkout Session after the user returns to the app.
+
+     This is a dev-friendly fallback when webhooks are not configured yet.
+     Keep the webhook as the source of truth in production.
+  */
+  async confirmCheckoutSession(payload: ConfirmCheckoutPayload): Promise<{
+    updated: boolean;
+    status: "PAID" | "UNPAID";
+  }> {
+    const { requestingUserId, sessionId } = payload;
+
+    let session: Stripe.Checkout.Session;
+    try {
+      session = await stripe.checkout.sessions.retrieve(sessionId, {
+        expand: ["subscription"],
+      });
+    } catch {
+      throw new AppError(status.BAD_REQUEST, "Invalid checkout session id.");
+    }
+
+    const meta = extractMetadata((session.metadata ?? {}) as Record<string, string>);
+    if (!meta) {
+      throw new AppError(status.UNPROCESSABLE_ENTITY, "Missing checkout metadata.");
+    }
+
+    if (meta.userId !== requestingUserId) {
+      throw new AppError(status.FORBIDDEN, "Checkout session does not belong to this user.");
+    }
+
+    // Not paid yet (or user cancelled), don't upgrade.
+    if (session.payment_status !== "paid") {
+      return { updated: false, status: "UNPAID" };
+    }
+
+    const subscriptionId =
+      typeof session.subscription === "string"
+        ? session.subscription
+        : session.subscription?.id ?? null;
+
+    const amount = session.amount_total
+      ? centsToDollars(session.amount_total)
+      : derivePlanAmount(meta.planType, meta.planMode);
+
+    await prisma.$transaction(async (tx) => {
+      await tx.payment.upsert({
+        where: { userId: meta.userId },
+        create: {
+          userId:            meta.userId,
+          amount,
+          transactionId:     subscriptionId ?? session.id,
+          stripeEventId:     null,
+          status:            "PAID",
+          planType:          meta.planType,
+          planMode:          meta.planMode,
+          paymentGatewayData: session as unknown as object,
+        },
+        update: {
+          amount,
+          transactionId:     subscriptionId ?? session.id,
+          stripeEventId:     null,
+          status:            "PAID",
+          planType:          meta.planType,
+          planMode:          meta.planMode,
+          paymentGatewayData: session as unknown as object,
+        },
+      });
+
+      await tx.workspace.updateMany({
+        where: { ownerId: meta.userId, deletedAt: null },
+        data:  { plan: PAYMENT_TYPE_TO_WORKSPACE_PLAN[meta.planType] },
+      });
+    });
+
+    return { updated: true, status: "PAID" };
+  },
 
   async handleWebhook(
     rawBody:          Buffer,
@@ -349,6 +429,7 @@ export const paymentService = {
         transactionId: true,
         createdAt:     true,
         updatedAt:     true,
+        paymentGatewayData: true,
       },
     });
 
@@ -359,11 +440,94 @@ export const paymentService = {
       activePlan = payment!.planType === "PRO" ? "PRO" : "GROWTH";
     }
 
+    /*
+     * Build the detailed ActiveSubscriptionInfo if use is paid.
+     * We extract dates from Stripe metadata if available.
+     */
+    let subscription: ActiveSubscriptionInfo | null = null;
+    if (payment && hasPaid) {
+      const data = payment.paymentGatewayData as any;
+      
+      // If paymentGatewayData is a Stripe Subscription object or has it
+      const subObj = data?.object === "subscription" ? data : data?.subscription;
+
+      // Map Stripe subscription statuses to the UI/status union expected by the client.
+      // NOTE: This is different from PaymentStatus (PAID/UNPAID).
+      const uiStatus: ActiveSubscriptionInfo["status"] = (() => {
+        const s = String(subObj?.status ?? "active");
+        if (s === "active") return "active";
+        if (s === "trialing") return "trialing";
+        if (s === "past_due") return "past_due";
+        if (s === "canceled" || s === "cancelled") return "cancelled";
+        return "none";
+      })();
+      
+      subscription = {
+        planTier:      payment.planType,
+        billingMode:   payment.planMode,
+        status:        uiStatus,
+        amount:        payment.amount,
+        currency:      "USD",
+        nextBillingAt: subObj?.current_period_end 
+          ? new Date(subObj.current_period_end * 1000).toISOString()
+          : null,
+        cancelAt:      subObj?.cancel_at
+          ? new Date(subObj.cancel_at * 1000).toISOString()
+          : null,
+        trialEndsAt:   subObj?.trial_end
+          ? new Date(subObj.trial_end * 1000).toISOString()
+          : null,
+        transactionId: payment.transactionId,
+        startedAt:     payment.createdAt.toISOString(),
+      };
+    }
+
     return {
       hasPaid,
       payment: payment ?? null,
       activePlan,
+      subscription,
     };
+  },
+
+  /* ──────────────────────────────────────────────────────────────
+     GET /api/payment/invoices
+     Fetch real invoice history from Stripe.
+     ────────────────────────────────────────────────────────────── */
+
+  async getInvoices(payload: { requestingUserId: string }): Promise<any[]> {
+    const { requestingUserId } = payload;
+
+    const payment = await prisma.payment.findUnique({
+      where:  { userId: requestingUserId },
+      select: { paymentGatewayData: true },
+    });
+
+    if (!payment) return [];
+
+    const data = payment.paymentGatewayData as any;
+    const customerId = data?.customer;
+
+    if (!customerId) return [];
+
+    try {
+      const invoices = await stripe.invoices.list({
+        customer: customerId,
+        limit: 10,
+      });
+
+      return invoices.data.map((inv) => ({
+        id:          inv.id,
+        date:        new Date(inv.created * 1000).toISOString(),
+        amount:      centsToDollars(inv.amount_paid),
+        currency:    inv.currency.toUpperCase(),
+        status:      inv.status,
+        description: inv.lines.data[0]?.description ?? "LaunchForge Subscription",
+        pdfUrl:      inv.invoice_pdf,
+      }));
+    } catch {
+      return [];
+    }
   },
 
   /* ──────────────────────────────────────────────────────────────

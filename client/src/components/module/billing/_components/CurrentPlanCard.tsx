@@ -41,7 +41,7 @@ export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
   const plan       = subscription?.planTier ?? "FREE";
   const planDef    = PLANS.find((p) => p.tier === plan) ?? PLANS[0];
   const accent     = PLAN_ACCENT[plan];
-  const statusCfg  = STATUS_CONFIG[subscription?.status ?? "none"];
+  const statusCfg  = STATUS_CONFIG[subscription?.status ?? "none"] ?? STATUS_CONFIG.none;
 
   const monthlyEquiv = subscription?.billingMode === "YEARLY"
     ? planDef.yearlyPrice
