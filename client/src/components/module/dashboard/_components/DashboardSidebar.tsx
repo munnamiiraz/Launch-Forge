@@ -31,6 +31,7 @@ import { cn } from "@/src/lib/utils";
 import type { DashboardUser } from "../_types";
 import { useWorkspace } from "@/src/provider/WorkspaceProvider";
 import { logoutAction } from "@/src/services/auth/logout.action";
+import { authFetch } from "@/src/lib/axios/authFetch";
 import { isFeatureAvailable, isWithinLimit, type PlanTier, type FeatureKey } from "@/src/lib/plan-limits";
 
 /* ── Nav structure ───────────────────────────────────────────────── */
@@ -126,8 +127,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
       setSlugStatus("checking");
       try {
         const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
-        const res = await fetch(`${baseUrl}/workspaces/check-slug/${newWsSlug}`, {
-          credentials: "include",
+        const res = await authFetch(`${baseUrl}/workspaces/check-slug/${newWsSlug}`, {
         });
         if (res.ok) {
           const json = await res.json();
@@ -150,9 +150,8 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
     
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
-      const res = await fetch(`${baseUrl}/workspaces/${workspaceId}`, {
+      const res = await authFetch(`${baseUrl}/workspaces/${workspaceId}`, {
         method: "DELETE",
-        credentials: "include",
       });
       if (res.ok) {
         window.location.reload();
@@ -170,10 +169,9 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
     if (!newWsName || !newWsSlug || slugStatus !== "available") return;
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
-      const res = await fetch(`${baseUrl}/workspaces`, {
+      const res = await authFetch(`${baseUrl}/workspaces`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ name: newWsName, slug: newWsSlug })
       });
       if (res.ok) {
@@ -204,10 +202,9 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
     const slug = (document.getElementById("edit-ws-slug") as HTMLInputElement).value;
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
-      const res = await fetch(`${baseUrl}/workspaces/${activeWorkspace.id}`, {
+      const res = await authFetch(`${baseUrl}/workspaces/${activeWorkspace.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ name, slug })
       });
       if (res.ok) {

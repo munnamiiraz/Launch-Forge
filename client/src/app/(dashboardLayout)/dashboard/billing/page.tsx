@@ -1,4 +1,5 @@
 import { type Metadata } from "next";
+import { Suspense } from "react";
 import { CreditCard, MessageCircle, CheckCircle2, AlertTriangle } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 
@@ -8,6 +9,7 @@ import { UsageGauges }      from "@/src/components/module/billing/_components/Us
 import { PlanCards }        from "@/src/components/module/billing/_components/PlanCards";
 import { InvoiceHistory }   from "@/src/components/module/billing/_components/InvoiceHistory";
 import { BillingFaq }       from "@/src/components/module/billing/_components/BillingFaq";
+import { PaymentSuccessHandler } from "@/src/components/module/billing/_components/PaymentSuccessHandler";
 import { getBillingData }   from "@/src/components/module/billing/_lib/data";
 import { confirmCheckoutAction } from "@/src/services/billing/_lib/billing.actions";
 
@@ -82,6 +84,11 @@ export default async function BillingPage({ searchParams }: BillingPageProps) {
 
   return (
     <div className="flex flex-col">
+
+      {/* Client-side handler: refreshes data after Stripe redirect */}
+      <Suspense fallback={null}>
+        <PaymentSuccessHandler />
+      </Suspense>
 
       {/* ── Sticky header ────────────────────────────────────── */}
       <DashboardHeader

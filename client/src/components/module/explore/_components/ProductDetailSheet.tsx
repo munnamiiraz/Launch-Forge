@@ -12,7 +12,7 @@ import {
 } from "@/src/components/ui/sheet";
 import { Button }    from "@/src/components/ui/button";
 import { Badge }     from "@/src/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/src/components/ui/avatar";
 import { Separator } from "@/src/components/ui/separator";
 import { cn }        from "@/src/lib/utils";
 import type { PublicProduct } from "../_lib/data";
@@ -53,12 +53,20 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-start gap-3 min-w-0">
               <Avatar className="h-12 w-12 shrink-0 rounded-xl">
-                <AvatarFallback className={cn(
-                  "rounded-xl bg-gradient-to-br text-base font-black text-white",
-                  product.logoGradient,
-                )}>
-                  {product.logoInitials}
-                </AvatarFallback>
+                {product.logoUrl ? (
+                  <AvatarImage 
+                    src={product.logoUrl} 
+                    alt={product.name} 
+                    className="object-cover rounded-xl"
+                  />
+                ) : (
+                  <AvatarFallback className={cn(
+                    "rounded-xl bg-gradient-to-br text-base font-black text-white",
+                    product.logoGradient,
+                  )}>
+                    {product.logoInitials}
+                  </AvatarFallback>
+                )}
               </Avatar>
               <div className="min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">

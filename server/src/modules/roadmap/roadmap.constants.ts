@@ -15,7 +15,7 @@ export const ROADMAP_MESSAGES = {
     "This roadmap item does not belong to the specified workspace.",
 } as const;
 
-import type { Prisma } from "@prisma/client";
+import type { Prisma } from "../../../generated/client";
 
 /* ─────────────────────────────────────────────────────────────────
    Field constraints

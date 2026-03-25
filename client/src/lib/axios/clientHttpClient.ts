@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from 'axios';
+import { getAuthCookieHeader } from './getAuthCookies';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
@@ -7,23 +8,22 @@ if (!API_BASE_URL) {
     throw new Error('API_BASE_URL is not defined in environment variables');
 }
 
-const getCookieHeader = (): string => {
-    // This works in both server and client contexts
-    // On server: reads from headers cookie
-    // On client: reads from document.cookie
-    if (typeof document !== 'undefined') {
-        return document.cookie;
-    }
-    return '';
-};
-
 const axiosInstance = axios.create({
     baseURL: API_BASE_URL,
     timeout: 30000,
     headers: {
         'Content-Type': 'application/json',
     },
-    withCredentials: true
+    withCredentials: true,
+});
+
+// Attach auth cookies to every outgoing request via custom header
+axiosInstance.interceptors.request.use((config) => {
+    const cookieHeader = getAuthCookieHeader();
+    if (cookieHeader) {
+        config.headers['x-auth-cookies'] = cookieHeader;
+    }
+    return config;
 });
 
 export const clientHttpClient = {

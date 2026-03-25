@@ -18,10 +18,20 @@ const churnConfig = {
 };
 
 export function ChurnAnalysisChart({ data }: { data: ChurnDataPoint[] }) {
-  const latestRate  = data[data.length - 1].churnRate;
-  const prevRate    = data[data.length - 2].churnRate;
+  if (!data || data.length === 0) {
+    return (
+      <Card className="flex h-56 items-center justify-center border-border/60 bg-card/20 text-xs text-muted-foreground">
+        Insufficient churn data to render analysis.
+      </Card>
+    );
+  }
+
+  const latestRate  = data[data.length - 1]?.churnRate ?? 0;
+  const prevRate    = data.length > 1 ? (data[data.length - 2]?.churnRate ?? 0) : latestRate;
   const delta       = parseFloat((latestRate - prevRate).toFixed(1));
-  const avgChurn    = parseFloat((data.reduce((s, d) => s + d.churnRate, 0) / data.length).toFixed(1));
+  const avgChurn    = data.length > 0
+    ? parseFloat((data.reduce((s, d) => s + d.churnRate, 0) / data.length).toFixed(1))
+    : 0;
   const totalChurned  = data.reduce((s, d) => s + d.churned, 0);
   const totalRecovered= data.reduce((s, d) => s + d.recovered, 0);
 

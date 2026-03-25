@@ -93,4 +93,13 @@ router
     paymentController.createPortalSession,
   );
 
+/* POST /api/payment/cancel — cancel at end of billing period (no refund) */
+router
+  .route("/cancel")
+  .post(
+    checkAuth(Role.OWNER, Role.ADMIN),
+    express.json(),
+    paymentController.cancelSubscription,
+  );
+
 export const paymentRouter = router;

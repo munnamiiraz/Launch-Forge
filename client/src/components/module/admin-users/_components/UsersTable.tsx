@@ -16,7 +16,7 @@ import { Card }   from "@/src/components/ui/card";
 import { Input }  from "@/src/components/ui/input";
 import { Badge }  from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
-import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
   DropdownMenuSeparator, DropdownMenuTrigger,
@@ -423,6 +423,7 @@ export function UsersTable({ users: initialUsers, meta, currentQuery }: UsersTab
                     </div>
 
                     <Avatar className="h-7 w-7 shrink-0 rounded-lg">
+                      {user.image && <AvatarImage src={user.image} alt={user.name} className="object-cover" />}
                       <AvatarFallback className={cn("rounded-lg bg-gradient-to-br text-[9px] font-bold text-white", grad)}>
                         {initials}
                       </AvatarFallback>

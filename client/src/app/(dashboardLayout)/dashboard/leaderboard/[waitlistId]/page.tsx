@@ -70,8 +70,6 @@ export default async function WaitlistLeaderboardPage({ params }: PageProps) {
 
   return (
     <div className="flex flex-col">
-      {/* {console.log("hiii")} */}
-      hii
       {/* ── Sticky header ────────────────────────────────────── */}
       {/* <DashboardHeader
         title={waitlistInfo.name}

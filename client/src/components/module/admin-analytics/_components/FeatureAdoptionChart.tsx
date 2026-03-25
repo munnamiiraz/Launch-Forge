@@ -5,14 +5,13 @@ import { TrendingUp } from "lucide-react";
 import { Card, CardContent, CardHeader } from "@/src/components/ui/card";
 import { Badge }  from "@/src/components/ui/badge";
 import { cn }     from "@/src/lib/utils";
-import { getFeatureAdoption } from "../_lib/analytics-data";
+import { FeatureAdoptionItem } from "../_lib/analytics-data";
 
-export function FeatureAdoptionChart() {
-  const data = getFeatureAdoption();
+export function FeatureAdoptionChart({ data = [] }: { data?: FeatureAdoptionItem[] }) {
 
   return (
     <Card className="relative overflow-hidden border-border/80 bg-card/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-violet-500/30 to-transparent" />
 
       <CardHeader className="border-b border-border/60 px-5 py-4">
         <p className="text-sm font-semibold text-foreground/90">Feature adoption</p>

@@ -30,15 +30,14 @@ const USER_SELECT = {
   id:            true,
   name:          true,
   email:         true,
+  image:         true,
   role:          true,
   status:        true,
   createdAt:     true,
   isDeleted:     true,
   emailVerified: true,
   payments: {
-    where:  { status: "PAID" as const },
-    select: { planType: true, planMode: true },
-    take:   1,
+    select: { planType: true, planMode: true, status: true },
   },
   sessions: {
     orderBy: { createdAt: "desc" as const },
@@ -81,12 +80,13 @@ function toAdminUser(raw: {
   id:            string;
   name:          string;
   email:         string;
+  image:         string | null;
   role:          string;
   status:        string;
   createdAt:     Date;
   isDeleted:     boolean;
   emailVerified: boolean;
-  payments:      { planType: string; planMode: string }[];
+  payments:      { planType: string; planMode: string; status: string } | null;
   sessions:      { createdAt: Date }[];
   ownedWorkspaces: {
     _count: { waitlists: number };
@@ -96,7 +96,7 @@ function toAdminUser(raw: {
     }[];
   }[];
 }): AdminUser {
-  const payment = raw.payments[0] ?? null;
+  const payment = raw.payments?.status === "PAID" ? raw.payments : null;
   const plan    = (payment?.planType as "PRO" | "GROWTH") ?? "FREE";
   const planMode= (payment?.planMode as "MONTHLY" | "YEARLY") ?? null;
 
@@ -123,6 +123,7 @@ function toAdminUser(raw: {
     id:             raw.id,
     name:           raw.name,
     email:          raw.email,
+    image:          raw.image,
     role:           raw.role as "USER" | "ADMIN",
     status:         raw.status as "ACTIVE" | "SUSPENDED" | "INACTIVE",
     plan,

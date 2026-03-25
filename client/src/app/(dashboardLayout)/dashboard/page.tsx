@@ -9,6 +9,7 @@ import { GrowthChart }          from "@/src/components/module/dashboard/_compone
 import { RecentActivityFeed }   from "@/src/components/module/dashboard/_components/RecentActivityFeed";
 import { WaitlistsTable }       from "@/src/components/module/dashboard/_components/WaitlistsTable";
 import { CreateWaitlistDialog } from "@/src/components/module/dashboard/_components/CreateWaitlistDialog";
+import { authFetch }            from "@/src/lib/axios/authFetch";
 import { useWorkspace }         from "@/src/provider/WorkspaceProvider";
 import type { DashboardWaitlist } from "@/src/components/module/dashboard/_types";
 
@@ -60,11 +61,7 @@ export default function DashboardPage() {
     setLoading(true);
     setError(null);
     try {
-      // NOTE: We probably need an API endpoint that filters by workspaceId.
-      // If /workspaces/dashboard/overview doesn't support workspaceId param, we might see everything.
-      // Let's try passing it as a query param.
-      const res = await fetch(`${BASE_URL}/workspaces/dashboard/overview?workspaceId=${activeWorkspace.id}`, {
-        credentials: "include",
+      const res = await authFetch(`${BASE_URL}/workspaces/dashboard/overview?workspaceId=${activeWorkspace.id}`, {
         cache: "no-store",
       });
       const json = (await res.json()) as ApiDashboardOverview;

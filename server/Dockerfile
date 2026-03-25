@@ -1,48 +1,44 @@
-# syntax=docker/dockerfile:1
-
-# Build stage
+# Build stage — install deps & generate Prisma client
 FROM node:20-bookworm-slim AS build
 WORKDIR /app
 
 # Enable pnpm via Corepack (ships with Node)
 RUN corepack enable
 
-# Install dependencies first (better layer caching)
+# Copy package files + prisma schema (needed for prisma generate)
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile
+COPY prisma ./prisma/
 
-# Copy source
-COPY prisma ./prisma
-COPY src ./src
-COPY tsconfig.json ./
+# Install openssl (needed by Prisma) and all dependencies
+RUN apt-get update -y && apt-get install -y openssl && pnpm install --no-frozen-lockfile
 
-# Prisma client is generated into ./generated/client (see prisma/schema.prisma)
-RUN pnpm run generate
+# Generate Prisma client
+RUN npx prisma generate
 
-# Compile TS -> dist/
-RUN pnpm run build
-
-# Keep only production deps for the final image
-RUN pnpm prune --prod
+# Prune dev dependencies (keep tsx since it's a prod dep)
+RUN pnpm prune --prod --ignore-scripts
 
 
-# Runtime stage
+# Runtime stage — lean image with only what's needed
 FROM node:20-bookworm-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production
 
-# Copy runtime artifacts
+# Install openssl for Prisma runtime
+RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists/*
+
+# Copy production node_modules (includes tsx)
 COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/dist ./dist
 COPY --from=build /app/generated ./generated
 
-# EJS templates are loaded from "src/app/templates" at runtime (see server/src/app.ts),
-# so we include just that folder.
-COPY --from=build /app/src/app/templates ./src/app/templates
+# Copy source code (tsx runs TypeScript directly, no compilation needed)
+COPY prisma ./prisma
+COPY src ./src
+COPY tsconfig.json ./
 
 # Render sets $PORT; we expose 5000 for local runs.
 EXPOSE 5000
 
-CMD ["node", "dist/src/server.js"]
-
+# Run the server directly with tsx (handles ESM + extensionless imports)
+CMD ["npx", "tsx", "src/server.ts"]

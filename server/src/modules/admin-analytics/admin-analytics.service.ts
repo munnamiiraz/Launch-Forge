@@ -101,26 +101,23 @@ export const adminAnalyticsService = {
         prisma.session.findMany({
           where:    { createdAt: { gte: today } },
           select:   { userId: true },
-          distinct: ["userId"],
         }),
         prisma.session.findMany({
           where:    { createdAt: { gte: weekStart } },
           select:   { userId: true },
-          distinct: ["userId"],
         }),
         prisma.session.findMany({
           where:    { createdAt: { gte: monthStart } },
           select:   { userId: true },
-          distinct: ["userId"],
         }),
         prisma.session.count({
           where: { createdAt: { gte: daysAgo(30) } },
         }),
       ]);
 
-    const dauToday     = dauSessions.length;
-    const wauThisWeek  = wauSessions.length;
-    const mauThisMonth = mauSessions.length;
+    const dauToday     = new Set(dauSessions.map(s => s.userId)).size;
+    const wauThisWeek  = new Set(wauSessions.map(s => s.userId)).size;
+    const mauThisMonth = new Set(mauSessions.map(s => s.userId)).size;
 
     const dauOverMau = mauThisMonth > 0
       ? round1((dauToday / mauThisMonth) * 100)
@@ -458,7 +455,7 @@ export const adminAnalyticsService = {
   }> {
     await assertAdmin(payload.requestingUserId);
 
-    const [waitlistCounts, waitlistStatus] = await prisma.$transaction([
+    const [waitlists, waitlistStatusCounts] = await prisma.$transaction([
       /* Each waitlist + its subscriber count */
       prisma.waitlist.findMany({
         where:  { deletedAt: null },
@@ -467,18 +464,20 @@ export const adminAnalyticsService = {
           _count: { select: { subscribers: { where: { deletedAt: null } } } },
         },
       }),
-      prisma.waitlist.groupBy({
-        by:     ["isOpen"],
+      /* Simplified status counts */
+      prisma.waitlist.findMany({
         where:  { deletedAt: null },
-        orderBy: { isOpen: "asc" },
-        _count: { _all: true },
+        select: { isOpen: true },
       }),
     ]);
+
+    const openCount   = waitlistStatusCounts.filter(w => w.isOpen).length;
+    const closedCount = waitlistStatusCounts.filter(w => !w.isOpen).length;
 
     /* Bucket assignment ─────────────────────────────────────────── */
     const bucketCounts = WAITLIST_BUCKETS.map(() => 0);
 
-    const subCounts = waitlistCounts.map((w) => w._count.subscribers);
+    const subCounts = waitlists.map((w) => w._count.subscribers);
     let   totalSubs = 0;
 
     for (const count of subCounts) {
@@ -499,8 +498,6 @@ export const adminAnalyticsService = {
     }));
 
     /* Stats ─────────────────────────────────────────────────────── */
-    const openCount   = countGroupAll(waitlistStatus.find((s) => s.isOpen === true));
-    const closedCount = countGroupAll(waitlistStatus.find((s) => s.isOpen === false));
     const total       = openCount + closedCount;
 
     const sorted = [...subCounts].sort((a, b) => a - b);
@@ -554,16 +551,17 @@ export const adminAnalyticsService = {
     ]);
 
     /* Platform-wide totals ──────────────────────────────────────── */
-    const totalSubsAll = await prisma.subscriber.count({ where: { deletedAt: null } });
-    const totalRefs    = await prisma.subscriber.aggregate({
-      where: { deletedAt: null },
-      _sum:  { referralsCount: true },
-    });
+    const [allSubscribersFull, totalSubsAll, confirmedCountAll] = await prisma.$transaction([
+      prisma.subscriber.findMany({
+        where: { deletedAt: null },
+        select: { id: true, referralsCount: true },
+      }),
+      prisma.subscriber.count({ where: { deletedAt: null } }),
+      prisma.subscriber.count({ where: { deletedAt: null, isConfirmed: true } }),
+    ]);
 
-    const totalReferrals = totalRefs._sum.referralsCount ?? 0;
-    const totalReferrers = await prisma.subscriber.count({
-      where: { deletedAt: null, referralsCount: { gt: 0 } },
-    });
+    const totalReferrals = allSubscribersFull.reduce((s, sub) => s + sub.referralsCount, 0);
+    const totalReferrers = allSubscribersFull.filter(sub => sub.referralsCount > 0).length;
 
     const avgRefsPerReferrer = totalReferrers > 0
       ? round1(totalReferrals / totalReferrers)
@@ -629,7 +627,7 @@ export const adminAnalyticsService = {
         avgReferralsPerReferrer: avgRefsPerReferrer,
         topKFactor,
         platformKFactor,
-        confirmedPct: pct(confirmedCount, totalSubsAll),
+        confirmedPct: pct(confirmedCountAll, totalSubsAll),
       },
     };
   },
@@ -651,14 +649,12 @@ export const adminAnalyticsService = {
     const windowStart = daysAgo(FEEDBACK_WINDOW_DAYS);
 
     /* Status breakdown ──────────────────────────────────────────── */
-    const statusGroups = await prisma.featureRequest.groupBy({
-      by:     ["status"],
+    const allRequestsForStatus = await prisma.featureRequest.findMany({
       where:  { deletedAt: null },
-      orderBy: { status: "asc" },
-      _count: { _all: true },
+      select: { status: true },
     });
 
-    const totalRequests = statusGroups.reduce((s, g) => s + countGroupAll(g), 0);
+    const totalRequests = allRequestsForStatus.length;
 
     const STATUS_LABELS: Record<string, string> = {
       UNDER_REVIEW: "Under review",
@@ -668,11 +664,17 @@ export const adminAnalyticsService = {
       DECLINED:     "Declined",
     };
 
-    const statusBreakdown: FeedbackStatusBreakdown[] = statusGroups.map((g) => ({
-      status: STATUS_LABELS[g.status] ?? g.status,
-      count:  countGroupAll(g),
-      pct:    pct(countGroupAll(g), totalRequests),
-      fill:   FEEDBACK_STATUS_FILLS[g.status] ?? "hsl(240 4% 30%)",
+    const statusCounts: Record<string, number> = {};
+    Object.keys(STATUS_LABELS).forEach(s => statusCounts[s] = 0);
+    allRequestsForStatus.forEach(r => {
+      statusCounts[r.status] = (statusCounts[r.status] ?? 0) + 1;
+    });
+
+    const statusBreakdown: FeedbackStatusBreakdown[] = Object.entries(STATUS_LABELS).map(([key, label]) => ({
+      status: label,
+      count:  statusCounts[key] ?? 0,
+      pct:    pct(statusCounts[key] ?? 0, totalRequests),
+      fill:   FEEDBACK_STATUS_FILLS[key] ?? "hsl(240 4% 30%)",
     }));
 
     /* Parallel stats ────────────────────────────────────────────── */
@@ -741,8 +743,8 @@ export const adminAnalyticsService = {
     });
 
     /* Summary stats ─────────────────────────────────────────────── */
-    const completedCount    = countGroupAll(statusGroups.find((g) => g.status === "COMPLETED"));
-    const underReviewCount  = countGroupAll(statusGroups.find((g) => g.status === "UNDER_REVIEW"));
+    const completedCount    = statusCounts["COMPLETED"]    ?? 0;
+    const underReviewCount  = statusCounts["UNDER_REVIEW"] ?? 0;
 
     return {
       statusBreakdown,
@@ -772,17 +774,15 @@ export const adminAnalyticsService = {
   }> {
     await assertAdmin(payload.requestingUserId);
 
-    const [statusGroups, totalRoadmaps] = await prisma.$transaction([
-      prisma.roadmapItem.groupBy({
-        by:     ["status"],
+    const [roadmapItems, totalRoadmaps] = await prisma.$transaction([
+      prisma.roadmapItem.findMany({
         where:  { deletedAt: null },
-        orderBy: { status: "asc" },
-        _count: { _all: true },
+        select: { status: true },
       }),
       prisma.roadmap.count({ where: { deletedAt: null } }),
     ]);
 
-    const totalItems = statusGroups.reduce((s, g) => s + countGroupAll(g), 0);
+    const totalItems = roadmapItems.length;
 
     const STATUS_LABELS: Record<string, string> = {
       PLANNED:     "Planned",
@@ -790,25 +790,39 @@ export const adminAnalyticsService = {
       COMPLETED:   "Completed",
     };
 
-    const progress: RoadmapProgressItem[] = statusGroups.map((g) => ({
-      status: STATUS_LABELS[g.status] ?? g.status,
-      count:  countGroupAll(g),
-      pct:    pct(countGroupAll(g), totalItems),
-      fill:   ROADMAP_STATUS_FILLS[g.status] ?? "hsl(240 4% 30%)",
-    }));
+    const completedCount  = roadmapItems.filter(i => i.status === "COMPLETED").length;
+    const inProgressCount = roadmapItems.filter(i => i.status === "IN_PROGRESS").length;
+    const plannedCount    = roadmapItems.filter(i => i.status === "PLANNED").length;
 
-    const completedCount    = countGroupAll(statusGroups.find((g) => g.status === "COMPLETED"));
-    const inProgressCount   = countGroupAll(statusGroups.find((g) => g.status === "IN_PROGRESS"));
-    const plannedCount      = countGroupAll(statusGroups.find((g) => g.status === "PLANNED"));
+    const progress: RoadmapProgressItem[] = [
+      {
+        status: STATUS_LABELS["PLANNED"],
+        count:  plannedCount,
+        pct:    pct(plannedCount, totalItems),
+        fill:   ROADMAP_STATUS_FILLS["PLANNED"] ?? "hsl(240 4% 30%)",
+      },
+      {
+        status: STATUS_LABELS["IN_PROGRESS"],
+        count:  inProgressCount,
+        pct:    pct(inProgressCount, totalItems),
+        fill:   ROADMAP_STATUS_FILLS["IN_PROGRESS"] ?? "hsl(240 4% 30%)",
+      },
+      {
+        status: STATUS_LABELS["COMPLETED"],
+        count:  completedCount,
+        pct:    pct(completedCount, totalItems),
+        fill:   ROADMAP_STATUS_FILLS["COMPLETED"] ?? "hsl(240 4% 30%)",
+      },
+    ];
 
     return {
       progress,
       stats: {
         totalRoadmaps,
         totalItems,
-        completedPct:  pct(completedCount,   totalItems),
-        inProgressPct: pct(inProgressCount,  totalItems),
-        plannedPct:    pct(plannedCount,      totalItems),
+        completedPct:  pct(completedCount,  totalItems),
+        inProgressPct: pct(inProgressCount, totalItems),
+        plannedPct:    pct(plannedCount,    totalItems),
       },
     };
   },

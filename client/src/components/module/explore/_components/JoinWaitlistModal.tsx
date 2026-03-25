@@ -14,7 +14,7 @@ import { Button }   from "@/src/components/ui/button";
 import { Input }    from "@/src/components/ui/input";
 import { Label }    from "@/src/components/ui/label";
 import { Badge }    from "@/src/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/src/components/ui/avatar";
 import { cn }       from "@/src/lib/utils";
 import { joinWaitlistAction as joinPublicWaitlist } from "@/src/services/public-waitlist/public-waitlist.services";
 import type { PublicProduct, JoinResult } from "../_lib/data";
@@ -216,12 +216,20 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
 
                 <div className="flex items-center gap-3 pr-6">
                   <Avatar className="h-10 w-10 shrink-0 rounded-xl">
-                    <AvatarFallback className={cn(
-                      "rounded-xl bg-gradient-to-br text-sm font-black text-white",
-                      product.logoGradient,
-                    )}>
-                      {product.logoInitials}
-                    </AvatarFallback>
+                    {product.logoUrl ? (
+                      <AvatarImage 
+                        src={product.logoUrl} 
+                        alt={product.name} 
+                        className="object-cover rounded-xl"
+                      />
+                    ) : (
+                      <AvatarFallback className={cn(
+                        "rounded-xl bg-gradient-to-br text-sm font-black text-white",
+                        product.logoGradient,
+                      )}>
+                        {product.logoInitials}
+                      </AvatarFallback>
+                    )}
                   </Avatar>
                   <div className="min-w-0">
                     <h2 className="text-base font-bold text-foreground">{product.name}</h2>

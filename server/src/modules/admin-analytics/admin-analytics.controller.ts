@@ -108,11 +108,13 @@ export const adminAnalyticsController = {
         requestingUserId: req.user!.id,
       });
       res.status(status.OK).json({
-        success:         true,
-        message:         ADMIN_ANALYTICS_MESSAGES.FEEDBACK_FETCHED,
-        statusBreakdown: result.statusBreakdown,
-        timeline:        result.timeline,
-        stats:           result.stats,
+        success: true,
+        message: ADMIN_ANALYTICS_MESSAGES.FEEDBACK_FETCHED,
+        data: {
+          statusBreakdown: result.statusBreakdown,
+          timeline:        result.timeline,
+        },
+        stats: result.stats,
       });
     } catch (e) { next(e); }
   },

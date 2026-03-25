@@ -83,7 +83,7 @@ export const publicWaitlistService = {
     /* 1. Resolve the waitlist ────────────────────────────────────── */
     const waitlist = await prisma.waitlist.findFirst({
       where: { slug, deletedAt: null, archivedAt: null },
-      select: { id: true, slug: true, isOpen: true },
+      select: { id: true, slug: true, isOpen: true, workspaceId: true },
     });
 
     if (!waitlist) {
@@ -93,6 +93,34 @@ export const publicWaitlistService = {
     /* 2. Respect the isOpen gate ─────────────────────────────────── */
     if (!waitlist.isOpen) {
       throw new AppError(status.FORBIDDEN, PUBLIC_WAITLIST_MESSAGES.CLOSED);
+    }
+
+    /* 2b. Enforce plan-based subscriber limits ───────────────────── */
+    const SUBSCRIBER_LIMITS: Record<string, number> = {
+      FREE: 500, STARTER: 500, PRO: 10_000, GROWTH: Infinity,
+    };
+
+    const workspace = await prisma.workspace.findUnique({
+      where: { id: waitlist.workspaceId },
+      select: { plan: true },
+    });
+
+    const subLimit = SUBSCRIBER_LIMITS[workspace?.plan ?? "FREE"] ?? 500;
+
+    if (subLimit !== Infinity) {
+      const totalSubs = await prisma.subscriber.count({
+        where: {
+          waitlist: { workspaceId: waitlist.workspaceId },
+          deletedAt: null,
+        },
+      });
+
+      if (totalSubs >= subLimit) {
+        throw new AppError(
+          status.FORBIDDEN,
+          "This waitlist has reached the maximum subscriber limit for its current plan. Please check back later.",
+        );
+      }
     }
 
     /* 3. Idempotency — handle re-joins gracefully ─────────────────

@@ -20,6 +20,7 @@ import { Switch } from "@/src/components/ui/switch";
 import { Alert, AlertDescription } from "@/src/components/ui/alert";
 import { Separator } from "@/src/components/ui/separator";
 import { cn } from "@/src/lib/utils";
+import { authFetch } from "@/src/lib/axios/authFetch";
 import { useWorkspace } from "@/src/provider/WorkspaceProvider";
 
 function slugify(str: string): string {
@@ -79,10 +80,9 @@ export function CreateWaitlistDialog({ trigger }: CreateWaitlistDialogProps) {
     setIsPending(true);
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
-      const res = await fetch(`${baseUrl}/waitlists/${activeWorkspace.id}`, {
+      const res = await authFetch(`${baseUrl}/waitlists/${activeWorkspace.id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify({ name, slug, description, isOpen }),
       });
       const data = await res.json();

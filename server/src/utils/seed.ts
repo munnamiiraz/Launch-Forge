@@ -411,7 +411,7 @@ async function seedAccountsAndSessions(users: { id: string; email: string; creat
 
 
   // Sessions — 60% of users have an active session
-  const withSession = users.filter(() => Math.random() < 0.6);
+  const withSession = users.filter(() => Math.random() < 0.1);
   const BATCH_S = 50;
   for (let i = 0; i < withSession.length; i += BATCH_S) {
     const batch = withSession.slice(i, i + BATCH_S);
@@ -610,7 +610,7 @@ async function seedSubscribers(waitlists: { id: string; createdAt: Date }[]) {
 
     // Second pass — assign referrals (40% of subs are referred by someone earlier)
     for (let i = 1; i < subs.length; i++) {
-      if (Math.random() < 0.4) {
+      if (Math.random() < 0.1) {
         const referrerIdx = rng(0, i - 1);
         subs[i].referredById = subs[referrerIdx].id;
         subs[referrerIdx].referralsCount++;

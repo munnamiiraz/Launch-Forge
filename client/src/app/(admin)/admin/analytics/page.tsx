@@ -18,11 +18,28 @@ import {
   WorkspaceHeatmap,
   ChangelogChart,
 }                                   from "@/src/components/module/admin-analytics/_components/WorkspaceHeatmap";
-import { getEngagementStats, type EngagementStats }       from "@/src/components/module/admin-analytics/_lib/analytics-data";
+import { 
+  type EngagementStats, 
+  type EngagementPoint, 
+  type FeatureAdoptionItem, 
+  type PlatformSubscriberPoint, 
+  type PlatformSubscriberStats, 
+  type WaitlistHealthBucket, 
+  type WaitlistHealthStats, 
+  type ReferralNetworkPoint, 
+  type ReferralStats, 
+  type FeedbackStatusBreakdown, 
+  type FeedbackCategoryPoint, 
+  type FeedbackStats, 
+  type RoadmapProgressItem, 
+  type RoadmapStats, 
+  type HeatmapCell, 
+  type ChangelogPoint 
+} from "@/src/components/module/admin-analytics/_lib/analytics-data";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
 
-async function fetchAnalyticsData<T>(endpoint: string): Promise<T> {
+async function fetchAnalyticsData<T>(endpoint: string): Promise<T | null> {
   const cookieStore = await cookies();
   const cookieHeader = cookieStore.getAll().map(c => `${c.name}=${c.value}`).join('; ');
   
@@ -33,13 +50,13 @@ async function fetchAnalyticsData<T>(endpoint: string): Promise<T> {
     });
     if (!res.ok) {
       console.error(`Failed to fetch ${endpoint}:`, res.status);
-      return null as T;
+      return null;
     }
     const json = await res.json();
-    return json.data as T;
+    return json as T; // Return full response object (success, message, data, etc.)
   } catch (error) {
     console.error(`Error fetching ${endpoint}:`, error);
-    return null as T;
+    return null;
   }
 }
 
@@ -61,12 +78,56 @@ function Divider({ title, sub }: { title: string; sub: string }) {
   );
 }
 
+// Minimal type for API responses
+interface AdminApiResponse<TData = any, TStats = any> {
+  success: boolean;
+  message: string;
+  data:    TData;
+  stats?:  TStats;
+}
+
 export default async function AdminAnalyticsPage() {
-  // Fetch real data from API
-  const engStats = await fetchAnalyticsData<EngagementStats>("/admin/analytics/engagement");
+  // Parallel fetch real data
+  const [
+    engStatsRes,
+    engTimelineRes,
+    featureAdoptionRes,
+    subscriberDataRes,
+    waitlistDataRes,
+    referralDataRes,
+    feedbackDataRes,
+    roadmapDataRes,
+    changelogDataRes,
+    heatmapDataRes,
+  ] = await Promise.all([
+    fetchAnalyticsData<AdminApiResponse<EngagementStats>>("/admin/analytics/engagement"),
+    fetchAnalyticsData<AdminApiResponse<EngagementPoint[]>>("/admin/analytics/engagement/timeline"),
+    fetchAnalyticsData<AdminApiResponse<FeatureAdoptionItem[]>>("/admin/analytics/features"),
+    fetchAnalyticsData<AdminApiResponse<PlatformSubscriberPoint[], PlatformSubscriberStats>>("/admin/analytics/subscribers"),
+    fetchAnalyticsData<AdminApiResponse<WaitlistHealthBucket[], WaitlistHealthStats>>("/admin/analytics/waitlists"),
+    fetchAnalyticsData<AdminApiResponse<ReferralNetworkPoint[], ReferralStats>>("/admin/analytics/referrals"),
+    fetchAnalyticsData<AdminApiResponse<{ statusBreakdown: FeedbackStatusBreakdown[], timeline: FeedbackCategoryPoint[] }, FeedbackStats>>("/admin/analytics/feedback"),
+    fetchAnalyticsData<AdminApiResponse<RoadmapProgressItem[], RoadmapStats>>("/admin/analytics/roadmap"),
+    fetchAnalyticsData<AdminApiResponse<ChangelogPoint[]>>("/admin/analytics/changelog"),
+    fetchAnalyticsData<AdminApiResponse<HeatmapCell[]>>("/admin/analytics/heatmap"),
+  ]);
   
-  // Fallback to mock data if API fails
-  const stats = engStats ?? getEngagementStats();
+  // Safe fallbacks — only real data or empty defaults (NO MOCK FALLBACKS)
+  const safeEngStats   = engStatsRes?.data || { dauToday: 0, wauThisWeek: 0, mauThisMonth: 0, dauOverMau: 0, avgSessionsPerUser: 0, avgSessionLengthMin: 0 };
+  const safeEngTl      = engTimelineRes?.data || [];
+  const safeFeatures   = featureAdoptionRes?.data || [];
+  const safeSubTl      = subscriberDataRes?.data || [];
+  const safeWlBuckets  = waitlistDataRes?.data || [];
+  const safeWlStats    = waitlistDataRes?.stats || { total: 0, open: 0, closed: 0, avgSubs: 0, medianSubs: 0, p90Subs: 0, totalSubs: 0 };
+  const safeRefTl      = referralDataRes?.data || [];
+  const safeRefStats   = referralDataRes?.stats || { totalReferrals: 0, totalReferrers: 0, avgReferralsPerReferrer: 0, topKFactor: 0, platformKFactor: 0, confirmedPct: 0 };
+  const safeFbStatus   = feedbackDataRes?.data?.statusBreakdown || [];
+  const safeFbTl       = feedbackDataRes?.data?.timeline || [];
+  const safeFbStats    = feedbackDataRes?.stats || { totalBoards: 0, totalRequests: 0, totalVotes: 0, totalComments: 0, avgVotesPerRequest: 0, completedPct: 0, underReviewPct: 0 };
+  const safeRoadTl     = roadmapDataRes?.data || [];
+  const safeRoadStats  = roadmapDataRes?.stats || { totalRoadmaps: 0, totalItems: 0, completedPct: 0, inProgressPct: 0, plannedPct: 0 };
+  const safeHeatmap    = heatmapDataRes?.data || [];
+  const safeChangelog  = changelogDataRes?.data || [];
 
   return (
     <div className="flex flex-col gap-8 p-6">
@@ -110,50 +171,42 @@ export default async function AdminAnalyticsPage() {
       {/* ── Engagement KPIs ─────────────────────────────── */}
       <section className="flex flex-col gap-4">
         <Divider title="Engagement" sub="DAU · WAU · MAU · stickiness — from Session model" />
-        <AnalyticsKpiRow stats={stats} />
-        <EngagementChart />
+        <AnalyticsKpiRow stats={safeEngStats} />
+        <EngagementChart data={safeEngTl} />
       </section>
 
       {/* ── Feature adoption ────────────────────────────── */}
       <section className="flex flex-col gap-4">
         <Divider title="Feature adoption" sub="% of workspaces using each product feature" />
-        <FeatureAdoptionChart />
+        <FeatureAdoptionChart data={safeFeatures} />
       </section>
 
       {/* ── Subscriber & waitlist health ─────────────────── */}
       <section className="flex flex-col gap-4">
         <Divider title="Subscriber & waitlist health" sub="Platform-wide Subscriber growth and Waitlist size distribution" />
         <div className="grid gap-4 lg:grid-cols-2">
-          <PlatformSubscriberChart />
-          <WaitlistHealthChart />
+          <PlatformSubscriberChart data={safeSubTl} />
+          <WaitlistHealthChart buckets={safeWlBuckets} stats={safeWlStats} />
         </div>
       </section>
 
       {/* ── Referral network ────────────────────────────── */}
       <section className="flex flex-col gap-4">
         <Divider title="Referral network" sub="Global referral chain depth and k-factor — Subscriber.referredById" />
-        <ReferralNetworkChart />
+        <ReferralNetworkChart data={safeRefTl} stats={safeRefStats} />
       </section>
 
       {/* ── Feedback & roadmap ──────────────────────────── */}
       <section className="flex flex-col gap-4">
         <Divider title="Feedback & roadmap" sub="FeatureRequest status, Vote & Comment activity, RoadmapItem progress" />
-        <FeedbackHealthChart />
-        <RoadmapProgressChart />
+        <FeedbackHealthChart 
+          breakdown={safeFbStatus}
+          timeline={safeFbTl}
+          stats={safeFbStats}
+        />
+        <RoadmapProgressChart data={safeRoadTl} stats={safeRoadStats} />
       </section>
 
-      {/* ── Activity patterns & changelog ───────────────── */}
-      <section className="flex flex-col gap-4">
-        <Divider title="Activity & content" sub="Workspace usage heatmap and Changelog publishing trends" />
-        <WorkspaceHeatmap />
-        <div className="grid gap-4 lg:grid-cols-2">
-          <ChangelogChart />
-          {/* Spacer / future chart placeholder */}
-          <div className="hidden lg:flex items-center justify-center rounded-2xl border border-dashed border-border/40 text-[11px] text-muted-foreground/40">
-            More charts coming soon
-          </div>
-        </div>
-      </section>
 
     </div>
   );

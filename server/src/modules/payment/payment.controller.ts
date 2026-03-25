@@ -171,4 +171,28 @@ export const paymentController = {
       next(error);
     }
   },
+  /* ──────────────────────────────────────────────────────────────
+     POST /api/payment/cancel
+     Cancel subscription at end of billing period (no refund).
+     ────────────────────────────────────────────────────────────── */
+
+  async cancelSubscription(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const requestingUserId = req.user!.id;
+
+      const result = await paymentService.cancelSubscription({ requestingUserId });
+
+      res.status(status.OK).json({
+        success: true,
+        message: "Subscription will be cancelled at the end of the billing period. No refund will be issued.",
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 };

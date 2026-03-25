@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { adminAnalyticsController }  from "./admin-analytics.controller";
-import { validateRequest }           from "../../middlewares/validateRequest";
+import { validateRequest, validateQuery }   from "../../middlewares/validateRequest";
 import { checkAuth }                 from "../../middlewares/checkAuth";
 import { engagementRangeSchema }     from "./admin-analytics.validation";
 import { Role }                      from "../../constraint/index";

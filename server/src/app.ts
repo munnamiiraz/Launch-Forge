@@ -18,7 +18,7 @@ const app: Application = express();
 app.set("query parser", (str : string) => qs.parse(str));
 
 app.set("view engine", "ejs");
-app.set("views", path.resolve(process.cwd(), `src/app/templates`) )
+app.set("views", path.resolve(process.cwd(), `src/templates`) )
 
 // app.post("/webhook", express.raw({ type: "application/json" }), PaymentController.handleStripeWebhookEvent)
 
@@ -26,7 +26,7 @@ app.use(cors({
     origin : [envVars.FRONTEND_URL, envVars.BETTER_AUTH_URL, "http://localhost:3000", "http://localhost:5000"],
     credentials : true,
     methods : ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders : ["Content-Type", "Authorization"]
+    allowedHeaders : ["Content-Type", "Authorization", "x-auth-cookies"]
 }))
 
 // Needed for auth/payment routes (checkAuth reads req.cookies)

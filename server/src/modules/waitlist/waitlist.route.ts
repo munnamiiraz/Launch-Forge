@@ -21,7 +21,7 @@ const router = Router();
 router
   .route("/by-id/:id")
   .get(
-    checkAuth(Role.OWNER, Role.ADMIN, Role.USER),
+    checkAuth(Role.OWNER, Role.ADMIN),
     waitlistByIdController.getWaitlistByIdOnly,
   );
 
@@ -34,7 +34,7 @@ router
   .route("/:workspaceId")
   .post(
     checkAuth(Role.OWNER, Role.ADMIN),
-    validateParams(workspaceIdParamSchema),
+    // validateParams(workspaceIdParamSchema),
     // Optional logo upload (multipart/form-data). If not multipart, multer skips.
     multerUpload.single("logo"),
     validateRequest(createWaitlistSchema),
@@ -42,8 +42,8 @@ router
   )
   .get(
     checkAuth(Role.OWNER, Role.ADMIN),
-    validateParams(workspaceIdParamSchema),
-    validateQuery(getWaitlistsQuerySchema),
+    // validateParams(workspaceIdParamSchema),
+    // validateQuery(getWaitlistsQuerySchema),
     waitlistController.getWaitlists,
   );
 
@@ -52,8 +52,8 @@ router
   .route("/:workspaceId/:id/status")
   .patch(
     checkAuth(Role.OWNER, Role.ADMIN),
-    validateParams(waitlistByIdParamSchema),
-    validateRequest(updateWaitlistStatusSchema),
+    // validateParams(waitlistByIdParamSchema),
+    // validateRequest(updateWaitlistStatusSchema),
     waitlistByIdController.updateWaitlistStatus,
   );
 
@@ -61,8 +61,8 @@ router
   .route("/:workspaceId/:id/archive")
   .patch(
     checkAuth(Role.OWNER, Role.ADMIN),
-    validateParams(waitlistByIdParamSchema),
-    validateRequest(archiveWaitlistSchema),
+    // validateParams(waitlistByIdParamSchema),
+    // validateRequest(archiveWaitlistSchema),
     waitlistByIdController.setWaitlistArchived,
   );
 
@@ -71,12 +71,12 @@ router
   .route("/:workspaceId/:id")
   .get(
     checkAuth(Role.OWNER, Role.ADMIN),
-    validateParams(waitlistByIdParamSchema),
+    // validateParams(waitlistByIdParamSchema),
     waitlistByIdController.getWaitlistById,
   )
   .delete(
     checkAuth(Role.OWNER, Role.ADMIN),
-    validateParams(waitlistByIdParamSchema),
+    // validateParams(waitlistByIdParamSchema),
     waitlistByIdController.deleteWaitlist,
   );
 

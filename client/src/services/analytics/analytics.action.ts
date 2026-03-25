@@ -21,6 +21,8 @@ const BASE_URL = RAW_BASE_URL.replace(/\/+$/, "");
 
 type ApiResponse<T> = { success: boolean; message?: string; data: T };
 
+import { authFetch } from "@/src/lib/axios/authFetch";
+
 async function apiGet<T>(path: string, params?: Record<string, string | undefined>): Promise<T> {
   const url = new URL(`${BASE_URL}${path}`);
   if (params) {
@@ -29,9 +31,8 @@ async function apiGet<T>(path: string, params?: Record<string, string | undefine
     }
   }
 
-  const res = await fetch(url.toString(), {
+  const res = await authFetch(url.toString(), {
     method: "GET",
-    credentials: "include",
     cache: "no-store",
     headers: {
       "Content-Type": "application/json",

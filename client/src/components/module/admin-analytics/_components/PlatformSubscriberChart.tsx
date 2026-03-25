@@ -10,9 +10,9 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/src/compone
 import { ArrowUpRight, Globe, Lock } from "lucide-react";
 import { cn } from "@/src/lib/utils";
 import {
-  getPlatformSubscriberGrowth,
-  getWaitlistHealthBuckets,
-  getWaitlistHealthStats,
+  PlatformSubscriberPoint,
+  WaitlistHealthBucket,
+  WaitlistHealthStats,
 } from "../_lib/analytics-data";
 
 /* ── Platform subscriber growth ──────────────────────────────────── */
@@ -21,16 +21,15 @@ const subConfig = {
   referralSubs:   { label: "Via referral",    color: "hsl(var(--chart-3))" },
 };
 
-export function PlatformSubscriberChart() {
-  const data    = getPlatformSubscriberGrowth();
-  const current = data[data.length - 1];
-  const prev    = data[data.length - 2];
-  const pct     = Math.round(((current.newSubscribers - prev.newSubscribers) / prev.newSubscribers) * 100);
-  const referralPct = Math.round((current.referralSubs / current.newSubscribers) * 100);
+export function PlatformSubscriberChart({ data = [] }: { data?: PlatformSubscriberPoint[] }) {
+  const current = data.length > 0 ? data[data.length - 1] : { newSubscribers: 0, referralSubs: 0, cumulative: 0, month: "" };
+  const prev    = data.length > 1 ? data[data.length - 2] : current;
+  const pct     = prev.newSubscribers > 0 ? Math.round(((current.newSubscribers - prev.newSubscribers) / prev.newSubscribers) * 100) : 0;
+  const referralPct = current.newSubscribers > 0 ? Math.round((current.referralSubs / current.newSubscribers) * 100) : 0;
 
   return (
     <Card className="relative overflow-hidden border-border/80 bg-card/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-indigo-500/30 to-transparent" />
       <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -99,13 +98,18 @@ export function PlatformSubscriberChart() {
 /* ── Waitlist subscriber distribution ────────────────────────────── */
 const wlConfig = { count: { label: "Waitlists", color: "hsl(var(--chart-2))" } };
 
-export function WaitlistHealthChart() {
-  const buckets = getWaitlistHealthBuckets();
-  const stats   = getWaitlistHealthStats();
+export function WaitlistHealthChart({
+  buckets = [],
+  stats,
+}: {
+  buckets?: WaitlistHealthBucket[];
+  stats?:   WaitlistHealthStats;
+}) {
+  const safeStats = stats || { open: 0, closed: 0, avgSubs: 0, medianSubs: 0, p90Subs: 0 };
 
   return (
     <Card className="relative overflow-hidden border-border/80 bg-card/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-cyan-500/30 to-transparent" />
       <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <div>
@@ -115,8 +119,8 @@ export function WaitlistHealthChart() {
             </p>
           </div>
           <div className="flex items-center gap-2 text-[10px] text-muted-foreground/60">
-            <span className="flex items-center gap-1"><Globe size={10} className="text-emerald-400" />{stats.open.toLocaleString()} open</span>
-            <span className="flex items-center gap-1"><Lock  size={10} className="text-muted-foreground/60"    />{stats.closed.toLocaleString()} closed</span>
+            <span className="flex items-center gap-1"><Globe size={10} className="text-emerald-400" />{safeStats.open.toLocaleString()} open</span>
+            <span className="flex items-center gap-1"><Lock  size={10} className="text-muted-foreground/60"    />{safeStats.closed.toLocaleString()} closed</span>
           </div>
         </div>
       </CardHeader>
@@ -135,9 +139,9 @@ export function WaitlistHealthChart() {
 
         <div className="mt-3 grid grid-cols-3 gap-2">
           {[
-            { label: "Avg subscribers",  value: stats.avgSubs.toString(),                  color: "text-foreground/80" },
-            { label: "Median",           value: stats.medianSubs.toString(),                color: "text-cyan-300" },
-            { label: "P90",              value: stats.p90Subs.toLocaleString(),             color: "text-violet-300" },
+            { label: "Avg subscribers",  value: safeStats.avgSubs.toString(),                  color: "text-foreground/80" },
+            { label: "Median",           value: safeStats.medianSubs.toString(),                color: "text-cyan-300" },
+            { label: "P90",              value: safeStats.p90Subs.toLocaleString(),             color: "text-violet-300" },
           ].map((s) => (
             <div key={s.label} className="rounded-lg border border-border/60 bg-card/40 px-3 py-2">
               <p className="text-[10px] text-muted-foreground/60">{s.label}</p>

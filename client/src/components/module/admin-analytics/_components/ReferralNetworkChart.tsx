@@ -9,7 +9,7 @@ import { Badge }  from "@/src/components/ui/badge";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/src/components/ui/chart";
 import { Share2, Link2, CheckCircle2, Zap } from "lucide-react";
 import { cn } from "@/src/lib/utils";
-import { getReferralNetworkTimeline, getReferralStats } from "../_lib/analytics-data";
+import { ReferralNetworkPoint, ReferralStats } from "../_lib/analytics-data";
 
 const refConfig = {
   totalReferrals: { label: "Total referrals", color: "hsl(var(--chart-1))" },
@@ -17,14 +17,19 @@ const refConfig = {
   referrers:      { label: "Active referrers", color: "hsl(var(--chart-4))" },
 };
 
-export function ReferralNetworkChart() {
-  const data  = getReferralNetworkTimeline();
-  const stats = getReferralStats();
-  const last  = data[data.length - 1];
+export function ReferralNetworkChart({
+  data = [],
+  stats,
+}: {
+  data?: ReferralNetworkPoint[];
+  stats?: ReferralStats;
+}) {
+  const safeStats = stats || { totalReferrals: 0, totalReferrers: 0, avgReferralsPerReferrer: 0, topKFactor: 0, platformKFactor: 0, confirmedPct: 0 };
+  const last  = data.length > 0 ? data[data.length - 1] : { month: "", totalReferrals: 0, chainReferrals: 0, referrers: 0 };
 
   return (
     <Card className="relative overflow-hidden border-border/80 bg-card/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-violet-500/30 to-transparent" />
 
       <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-start justify-between gap-4">
@@ -36,10 +41,10 @@ export function ReferralNetworkChart() {
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <p className="text-xl font-black tabular-nums text-violet-300">
-              {(stats.totalReferrals / 1000).toFixed(0)}k
+              {(safeStats.totalReferrals / 1000).toFixed(0)}k
             </p>
             <Badge className="border-violet-500/25 bg-violet-500/10 text-[10px] text-violet-400">
-              {stats.platformKFactor}× k-factor
+              {safeStats.platformKFactor}× k-factor
             </Badge>
           </div>
         </div>
@@ -73,10 +78,10 @@ export function ReferralNetworkChart() {
         {/* Stats grid */}
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {[
-            { icon: <Share2       size={12} className="text-violet-400" />, label: "Total referrals",    value: (stats.totalReferrals / 1000).toFixed(0) + "k" },
-            { icon: <Link2        size={12} className="text-indigo-400" />, label: "Active referrers",   value: (stats.totalReferrers / 1000).toFixed(0) + "k" },
-            { icon: <Zap          size={12} className="text-amber-400"  />, label: "Avg refs/referrer",  value: stats.avgReferralsPerReferrer.toFixed(1) + "×" },
-            { icon: <CheckCircle2 size={12} className="text-emerald-400"/>, label: "Email confirmed",    value: stats.confirmedPct.toFixed(1) + "%" },
+            { icon: <Share2       size={12} className="text-violet-400" />, label: "Total referrals",    value: (safeStats.totalReferrals / 1000).toFixed(0) + "k" },
+            { icon: <Link2        size={12} className="text-indigo-400" />, label: "Active referrers",   value: (safeStats.totalReferrers / 1000).toFixed(0) + "k" },
+            { icon: <Zap          size={12} className="text-amber-400"  />, label: "Avg refs/referrer",  value: safeStats.avgReferralsPerReferrer.toFixed(1) + "×" },
+            { icon: <CheckCircle2 size={12} className="text-emerald-400"/>, label: "Email confirmed",    value: safeStats.confirmedPct.toFixed(1) + "%" },
           ].map((s) => (
             <div key={s.label} className="flex items-start gap-2 rounded-lg border border-border/60 bg-card/40 px-3 py-2">
               <div className="mt-0.5 shrink-0">{s.icon}</div>

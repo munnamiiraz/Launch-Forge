@@ -10,7 +10,7 @@ import { Badge }  from "@/src/components/ui/badge";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/src/components/ui/chart";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/src/lib/utils";
-import { getEngagementTimeline } from "../_lib/analytics-data";
+import { EngagementPoint } from "../_lib/analytics-data";
 
 type Range = "30d" | "60d";
 
@@ -20,16 +20,16 @@ const chartConfig = {
   newReg: { label: "New signups", color: "hsl(var(--chart-4))" },
 };
 
-export function EngagementChart() {
+export function EngagementChart({ data = [] }: { data?: EngagementPoint[] }) {
   const [range, setRange] = useState<Range>("30d");
-  const data = getEngagementTimeline(range === "30d" ? 30 : 60);
-  const last = data[data.length - 1];
-  const prev = data[Math.max(0, data.length - 8)];
-  const dauPct = Math.round(((last.dau - prev.dau) / prev.dau) * 100);
+  
+  const last = data.length > 0 ? data[data.length - 1] : { dau: 0, wau: 0, newReg: 0, date: "" };
+  const prev = data.length > 7 ? data[data.length - 8] : (data.length > 0 ? data[0] : last);
+  const dauPct = prev.dau > 0 ? Math.round(((last.dau - prev.dau) / prev.dau) * 100) : 0;
 
   return (
     <Card className="relative overflow-hidden border-border/80 bg-card/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/25 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-red-500/25 to-transparent" />
 
       <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-start justify-between gap-4">

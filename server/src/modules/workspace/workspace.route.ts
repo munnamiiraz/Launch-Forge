@@ -38,45 +38,45 @@ const router = Router();
 router
   .route("/")
   .post(
-    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
-    validateRequest(createWorkspaceSchema),
+    checkAuth(Role.OWNER, Role.ADMIN),
+    // validateRequest(createWorkspaceSchema),
     workspaceController.createWorkspace,
   )
   .get(
-    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
+    checkAuth(Role.OWNER, Role.ADMIN),
     // validateQuery(getWorkspacesQuerySchema),
     workspaceController.getWorkspaces,
   );
 router
   .route("/dashboard/overview")
   .get(
-    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
+    checkAuth(Role.OWNER, Role.ADMIN),
     workspaceController.getDashboardOverview,
   );
 
 router
   .route("/check-slug/:slug")
   .get(
-    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
+    checkAuth(Role.OWNER, Role.ADMIN),
     workspaceController.checkSlugAvailability,
   );
 
 router
   .route("/:workspaceId")
   .get(
-    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
-    validateParams(workspaceIdParamSchema),
+    checkAuth(Role.OWNER, Role.ADMIN),
+    // validateParams(workspaceIdParamSchema),
     workspaceController.getWorkspace,
   )
   .patch(
     checkAuth(Role.OWNER, Role.ADMIN),
-    validateParams(workspaceIdParamSchema),
+    // validateParams(workspaceIdParamSchema),
     validateRequest(updateWorkspaceSchema),
     workspaceController.updateWorkspace,
   )
   .delete(
     checkAuth(Role.OWNER, Role.ADMIN),
-    validateParams(workspaceIdParamSchema),
+    // validateParams(workspaceIdParamSchema),
     workspaceController.deleteWorkspace,
   );
 
@@ -85,7 +85,7 @@ router
 router
   .route("/:workspaceId/members")
   .get(
-    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
+    checkAuth(Role.OWNER, Role.ADMIN),
     validateParams(workspaceIdParamSchema),
     validateQuery(getMembersQuerySchema),
     workspaceController.getMembers,

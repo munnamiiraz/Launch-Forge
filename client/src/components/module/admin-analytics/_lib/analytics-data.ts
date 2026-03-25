@@ -44,6 +44,14 @@ export interface PlatformSubscriberPoint {
   directSubs:    number;   // direct join
 }
 
+export interface PlatformSubscriberStats {
+  newThisMonth:    number;
+  referralPct:     number;
+  directPct:       number;
+  cumulativeTotal: number;
+  momGrowthPct:    number;
+}
+
 /* ── Waitlist health distribution ───────────────────────────────── */
 export interface WaitlistHealthBucket {
   bucket:  string;   // "0–100", "100–500", etc.
@@ -328,9 +336,10 @@ export function getFeedbackStats(): FeedbackStats {
 
 /* ── Roadmap ─────────────────────────────────────────────────────── */
 export function getRoadmapProgress(): RoadmapProgressItem[] {
+  const total = 25_460;
   return [
     { status: "Planned",     count: 14_820, pct: 58.2, fill: "hsl(var(--chart-5))" },
-    { status: "In Progress", count:  6_240, pct: 24.5, fill: "hsl(var(--chart-3))" },
+    { status: "In progress", count:  6_240, pct: 24.5, fill: "hsl(var(--chart-3))" },
     { status: "Completed",   count:  4_400, pct: 17.3, fill: "hsl(var(--chart-2))" },
   ];
 }

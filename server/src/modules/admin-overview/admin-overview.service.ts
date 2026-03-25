@@ -712,9 +712,7 @@ export const adminOverviewService = {
         createdAt:     true,
         isDeleted:     true,
         payments: {
-          where:  { status: "PAID" },
-          select: { planType: true, planMode: true },
-          take:   1,
+          select: { planType: true, planMode: true, status: true },
         },
         sessions: {
           orderBy: { createdAt: "desc" },
@@ -736,24 +734,24 @@ export const adminOverviewService = {
       },
     });
 
-    return users.map((u) => {
-      const payment = u.payments[0] ?? null;
+    return users.map((u: any) => {
+      const paymentRecord = u.payments?.status === "PAID" ? u.payments : null;
 
-      const plan: AdminRecentUser["plan"] = payment
-        ? (payment.planType as "PRO" | "GROWTH")
+      const plan: AdminRecentUser["plan"] = paymentRecord
+        ? (paymentRecord.planType as "PRO" | "GROWTH")
         : "FREE";
 
-      const planMode: AdminRecentUser["planMode"] = payment
-        ? (payment.planMode as "MONTHLY" | "YEARLY")
+      const planMode: AdminRecentUser["planMode"] = paymentRecord
+        ? (paymentRecord.planMode as "MONTHLY" | "YEARLY")
         : null;
 
       /* Aggregate waitlists + subscribers across all owned workspaces */
-      const waitlists = u.ownedWorkspaces.reduce(
-        (s, ws) => s + ws._count.waitlists, 0,
+      const waitlists = (u.ownedWorkspaces as any[]).reduce(
+        (s: number, ws: any) => s + (ws._count.waitlists ?? 0), 0,
       );
-      const subscribers = u.ownedWorkspaces.reduce(
-        (s, ws) =>
-          s + ws.waitlists.reduce((w, wl) => w + wl._count.subscribers, 0),
+      const subscribers = (u.ownedWorkspaces as any[]).reduce(
+        (s: number, ws: any) =>
+          s + ws.waitlists.reduce((w: number, wl: any) => w + (wl._count.subscribers ?? 0), 0),
         0,
       );
 

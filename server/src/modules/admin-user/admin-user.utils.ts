@@ -115,10 +115,12 @@ export function buildUsersWhere(query: UsersListQuery): object {
   if (query.plan && query.plan !== "ALL") {
     if (query.plan === "FREE") {
       /* FREE = no PAID payment record */
-      where.payments = { none: { status: "PAID" } };
+      where.payments = { 
+        isNot: { status: "PAID" } 
+      };
     } else {
       where.payments = {
-        some: { status: "PAID", planType: query.plan },
+        is: { status: "PAID", planType: query.plan },
       };
     }
   }

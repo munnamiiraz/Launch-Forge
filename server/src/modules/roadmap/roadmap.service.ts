@@ -167,7 +167,7 @@ export const roadmapService = {
 
     const rawItems = await prisma.roadmapItem.findMany({
       where,
-      orderBy: ROADMAP_ITEM_ORDER_BY,
+      orderBy: ROADMAP_ITEM_ORDER_BY as any,
       select:  ROADMAP_ITEM_SELECT,
     });
 

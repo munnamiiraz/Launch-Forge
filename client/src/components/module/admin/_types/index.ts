@@ -29,6 +29,7 @@ export interface AdminUser {
   id:           string;
   name:         string;
   email:        string;
+  image:        string | null;
   role:         "USER" | "ADMIN" | "OWNER";
   status:       "ACTIVE" | "SUSPENDED" | "DELETED" | "INACTIVE";
   plan:         "FREE" | "PRO" | "GROWTH";

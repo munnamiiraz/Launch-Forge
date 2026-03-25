@@ -29,7 +29,7 @@ const router = Router({ mergeParams: true });
 router
   .route("/full")
   .get(
-    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
+    checkAuth(Role.OWNER, Role.ADMIN),
     // validateQuery(getLeaderboardQuerySchema),
     leaderboardController.getLeaderboard,
   );
@@ -38,7 +38,7 @@ router
 router
   .route("/:waitlistSlug")
   .get(
-    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
+    checkAuth(Role.OWNER, Role.ADMIN),
     leaderboardController.getLeaderboardMinimal,
   );
 
@@ -46,7 +46,7 @@ router
 router
   .route("/by-slug/:waitlistSlug")
   .get(
-    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
+    checkAuth(Role.OWNER, Role.ADMIN),
     leaderboardController.getLeaderboardBySlug,
   );
 

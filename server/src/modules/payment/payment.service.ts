@@ -64,15 +64,69 @@ export const paymentService = {
       throw new AppError(status.NOT_FOUND, PAYMENT_MESSAGES.USER_NOT_FOUND);
     }
 
-    /* 2. Guard: block if user already has an active PAID subscription ─
-     *    They should manage changes via the billing portal instead.     */
+    /* 2. Check if user already has an active subscription ─────────── */
     const existingPayment = await prisma.payment.findUnique({
       where:  { userId: requestingUserId },
-      select: { status: true },
+      select: { status: true, transactionId: true, paymentGatewayData: true },
     });
 
-    if (existingPayment?.status === "PAID") {
-      throw new AppError(status.CONFLICT, PAYMENT_MESSAGES.ALREADY_PAID);
+    /* ── Plan switch: user already has a PAID subscription ────────── */
+    if (existingPayment?.status === "PAID" && existingPayment.transactionId?.startsWith("sub_")) {
+      const newPriceId = STRIPE_PRICE_IDS[planType][planMode];
+      const subscriptionId = existingPayment.transactionId;
+
+      try {
+        /* Fetch the current subscription to get the item ID */
+        const currentSub = await stripe.subscriptions.retrieve(subscriptionId) as any;
+        const subscriptionItemId = currentSub.items?.data?.[0]?.id;
+
+        if (!subscriptionItemId) {
+          throw new AppError(status.UNPROCESSABLE_ENTITY, "Could not find subscription item to update.");
+        }
+
+        /* Update the subscription to the new plan.
+         * always_invoice → immediately creates an invoice for the price
+         * difference and charges the card on file right away.  */
+        await stripe.subscriptions.update(subscriptionId, {
+          items: [{
+            id:    subscriptionItemId,
+            price: newPriceId,
+          }],
+          proration_behavior: "always_invoice",
+          payment_behavior:   "pending_if_incomplete",
+        });
+
+        /* Update the local payment record */
+        await prisma.payment.update({
+          where: { userId: requestingUserId },
+          data: {
+            planType,
+            planMode,
+            amount: planType === "GROWTH"
+              ? (planMode === "YEARLY" ? 39 * 12 : 49)
+              : (planMode === "YEARLY" ? 15 * 12 : 19),
+          },
+        });
+
+        /* Update the workspace plan */
+        await prisma.workspace.updateMany({
+          where: { ownerId: requestingUserId, deletedAt: null },
+          data:  { plan: planType },
+        });
+
+        /*
+         * Return the billing page URL instead of a checkout URL.
+         * The frontend will detect this and reload the page.
+         */
+        return {
+          checkoutUrl: `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/dashboard/billing?success=true&switched=true`,
+          sessionId:   subscriptionId,
+        };
+      } catch (err: any) {
+        if (err instanceof AppError) throw err;
+        console.error("[payment] plan switch error:", err?.message ?? err);
+        throw new AppError(status.BAD_GATEWAY, "Failed to switch plan. Please try again or contact support.");
+      }
     }
 
     /* 3. Resolve the Stripe Price ID ─────────────────────────────── */
@@ -84,6 +138,7 @@ export const paymentService = {
     try {
       session = await stripe.checkout.sessions.create({
         mode:              "subscription",
+        payment_method_types: ["card"],   // ← Only accept card payments
         customer_email:    user.email,
         line_items: [
           {
@@ -91,11 +146,6 @@ export const paymentService = {
             quantity: 1,
           },
         ],
-        /*
-         * Embed userId, planType, planMode in metadata so the webhook
-         * handler can fully reconstruct the context without a DB lookup
-         * on the email (which could collide if the user changes email).
-         */
         metadata: {
           userId:   user.id,
           planType,
@@ -360,10 +410,52 @@ export const paymentService = {
             },
           });
 
+          /* Downgrade all workspaces back to FREE */
           await tx.workspace.updateMany({
             where: { ownerId: meta.userId, deletedAt: null },
             data:  { plan: "FREE" },
           });
+
+          /* ── Soft-downgrade: enforce FREE plan limits ─────────────
+           *  FREE plan: 1 waitlist, 1 team member (owner only).
+           *  We never delete data — just close/restrict access.
+           * ─────────────────────────────────────────────────────── */
+
+          /* 1. Auto-close excess waitlists.
+           *    Keep the most recent waitlist open, close all others. */
+          const userWorkspaces = await tx.workspace.findMany({
+            where: { ownerId: meta.userId, deletedAt: null },
+            select: { id: true },
+          });
+
+          for (const ws of userWorkspaces) {
+            const openWaitlists = await tx.waitlist.findMany({
+              where: { workspaceId: ws.id, deletedAt: null, isOpen: true },
+              orderBy: { createdAt: "desc" },
+              select: { id: true },
+            });
+
+            // Keep the first (most recent), close the rest
+            if (openWaitlists.length > 1) {
+              const idsToClose = openWaitlists.slice(1).map((w) => w.id);
+              await tx.waitlist.updateMany({
+                where: { id: { in: idsToClose } },
+                data:  { isOpen: false },
+              });
+            }
+
+            /* 2. Soft-remove non-owner team members.
+             *    We don't delete them — we soft-delete their membership
+             *    so they can be re-invited later if the user re-subscribes. */
+            await tx.workspaceMember.updateMany({
+              where: {
+                workspaceId: ws.id,
+                deletedAt:   null,
+                role:        { not: "OWNER" },
+              },
+              data: { deletedAt: new Date() },
+            });
+          }
         });
 
         break;
@@ -533,7 +625,12 @@ export const paymentService = {
   /* ──────────────────────────────────────────────────────────────
      POST /api/payment/portal
      Create a Stripe Customer Portal session so the user can manage
-     their subscription (cancel, update card, switch plan) themselves.
+     their subscription (update card, view invoices, switch plan).
+
+     ⚠ NO REFUND POLICY:
+       Cancellation in the portal is configured as "cancel at end of
+       billing period" (Stripe Dashboard → Settings → Customer Portal).
+       The user keeps access until the period ends. No prorated refund.
      ────────────────────────────────────────────────────────────── */
 
   async createPortalSession(
@@ -575,5 +672,58 @@ export const paymentService = {
     }
 
     return { portalUrl: portalSession.url };
+  },
+
+  /* ──────────────────────────────────────────────────────────────
+     POST /api/payment/cancel
+     Cancel the subscription at the end of the current billing period.
+     NO refund — the user keeps access until the period ends.
+     Once the period ends, Stripe fires `customer.subscription.deleted`
+     which triggers the soft-downgrade logic above.
+     ────────────────────────────────────────────────────────────── */
+
+  async cancelSubscription(
+    payload: { requestingUserId: string },
+  ): Promise<{ cancelledAt: string; accessUntil: string }> {
+    const { requestingUserId } = payload;
+
+    const payment = await prisma.payment.findUnique({
+      where:  { userId: requestingUserId },
+      select: { transactionId: true, paymentGatewayData: true, status: true },
+    });
+
+    if (!payment || payment.status !== "PAID") {
+      throw new AppError(status.NOT_FOUND, "No active subscription to cancel.");
+    }
+
+    const gatewayData = payment.paymentGatewayData as Record<string, unknown>;
+    const subscriptionId = payment.transactionId;
+
+    if (!subscriptionId || !subscriptionId.startsWith("sub_")) {
+      throw new AppError(status.UNPROCESSABLE_ENTITY, "No Stripe subscription found.");
+    }
+
+    try {
+      /*
+       * cancel_at_period_end = true  →  user keeps access until billing cycle ends
+       * No immediate charge reversal  →  NO REFUND
+       * Stripe will fire `customer.subscription.deleted` when the period ends
+       */
+      const updatedSub = await stripe.subscriptions.update(subscriptionId, {
+        cancel_at_period_end: true,
+      }) as any;
+
+      const periodEnd = updatedSub.current_period_end ?? updatedSub?.data?.current_period_end;
+      const accessUntil = periodEnd
+        ? new Date(periodEnd * 1000).toISOString()
+        : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // fallback: 30 days
+
+      return {
+        cancelledAt: new Date().toISOString(),
+        accessUntil,
+      };
+    } catch {
+      throw new AppError(status.BAD_GATEWAY, PAYMENT_MESSAGES.STRIPE_ERROR);
+    }
   },
 };

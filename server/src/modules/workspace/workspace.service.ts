@@ -536,7 +536,7 @@ export const workspaceService = {
     /* 1. Fetch workspace + ownership check ───────────────────────── */
     const workspace = await prisma.workspace.findUnique({
       where:  { id: workspaceId, deletedAt: null },
-      select: { id: true, ownerId: true },
+      select: { id: true, ownerId: true, plan: true },
     });
 
     if (!workspace) {
@@ -545,6 +545,25 @@ export const workspaceService = {
 
     if (workspace.ownerId !== requestingUserId) {
       throw new AppError(status.FORBIDDEN, WORKSPACE_MESSAGES.OWNER_ONLY);
+    }
+
+    /* 1b. Enforce plan-based team member limits ──────────────────── */
+    const TEAM_MEMBER_LIMITS: Record<string, number> = {
+      FREE: 1, STARTER: 1, PRO: 5, GROWTH: Infinity,
+    };
+    const memberLimit = TEAM_MEMBER_LIMITS[workspace.plan] ?? 1;
+
+    if (memberLimit !== Infinity) {
+      const currentMemberCount = await prisma.workspaceMember.count({
+        where: { workspaceId, deletedAt: null },
+      });
+
+      if (currentMemberCount >= memberLimit) {
+        throw new AppError(
+          status.PAYMENT_REQUIRED,
+          `Your ${workspace.plan} plan allows up to ${memberLimit} team member${memberLimit !== 1 ? "s" : ""}. Please upgrade to add more members.`,
+        );
+      }
     }
 
     /* 2. Resolve user by email ───────────────────────────────────── */

@@ -28,9 +28,11 @@ import { assertPlanFeature } from "../../middlewares/checkPlanFeature";
 
 /* ── Shared auth guard ───────────────────────────────────────────── */
 
-async function assertMember(workspaceId: string, userId: string) {
-  // Plan gate — require Pro or higher for analytics
-  await assertPlanFeature(workspaceId, "analytics");
+async function assertMember(workspaceId: string, userId: string, skipPlanCheck = false) {
+  // Plan gate — require Pro or higher for analytics, unless explicitly bypassed
+  if (!skipPlanCheck) {
+    await assertPlanFeature(workspaceId, "analytics");
+  }
 
   const member = await prisma.workspaceMember.findUnique({
     where: {
@@ -234,11 +236,12 @@ export const analyticsService = {
   async getSubscriberGrowth(
     payload: AnalyticsPayload,
   ): Promise<SubscriberGrowthPoint[]> {
-    const { workspaceId, requestingUserId, query } = payload;
-    await assertMember(workspaceId, requestingUserId);
-
+    const { workspaceId, requestingUserId, query = {} } = payload;
+    const range = query.range ?? "30d";
+    
+    // Bypass plan check for 7d so Free users can see the dashboard chart
+    await assertMember(workspaceId, requestingUserId, range === "7d");
     const waitlistIds = await resolveWaitlistIds(workspaceId, query.waitlistId);
-    const range       = query.range ?? "30d";
     const start       = rangeStart(range);
 
     /* Fetch all subscribers in range with createdAt + referredById ── */

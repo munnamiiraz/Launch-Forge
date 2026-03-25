@@ -54,94 +54,97 @@ export const adminRevenueService = {
   async getKpis(payload: AdminRevenueBasePayload): Promise<RevenueKpis> {
     await assertAdmin(payload.requestingUserId);
 
-    const monthStart = startOfThisMonth();
-    const prevStart  = monthsAgo(1);
+    try {
+      const monthStart = startOfThisMonth();
+      const prevStart  = monthsAgo(1);
 
-    /* All active paid payments */
-    const [allPaid, newThisMonth, churnedThisMonth, prevMonthPaid] =
-      await prisma.$transaction([
-        prisma.payment.findMany({
-          where:  { status: "PAID" },
-          select: { planType: true, planMode: true, createdAt: true, userId: true },
-        }),
-        prisma.payment.findMany({
-          where:  { status: "PAID", createdAt: { gte: monthStart } },
-          select: { planType: true, planMode: true },
-        }),
-        prisma.payment.findMany({
-          where:  { status: "UNPAID", updatedAt: { gte: monthStart } },
-          select: { planType: true, planMode: true },
-        }),
-        /* Previous month active payments (for MoM growth) */
-        prisma.payment.findMany({
-          where: {
-            status:    "PAID",
-            createdAt: { lt: monthStart },
-          },
-          select: { planType: true, planMode: true },
-        }),
-      ]);
+      /* All active paid payments */
+      const [allPaid, newThisMonth, churnedThisMonth, prevMonthPaid] =
+        await prisma.$transaction([
+          prisma.payment.findMany({
+            where:  { status: "PAID" },
+            select: { planType: true, planMode: true, createdAt: true, userId: true },
+          }),
+          prisma.payment.findMany({
+            where:  { status: "PAID", createdAt: { gte: monthStart } },
+            select: { planType: true, planMode: true },
+          }),
+          prisma.payment.findMany({
+            where:  { status: "UNPAID", updatedAt: { gte: monthStart } },
+            select: { planType: true, planMode: true },
+          }),
+          /* Previous month active payments (for MoM growth) */
+          prisma.payment.findMany({
+            where: {
+              status:    "PAID",
+              createdAt: { lt: monthStart },
+            },
+            select: { planType: true, planMode: true },
+          }),
+        ]);
 
-    /* Current MRR */
-    const mrr = allPaid.reduce(
-      (s, p) => s + paymentMrr(p.planType, p.planMode), 0,
-    );
+      /* Current MRR */
+      const mrr = allPaid.reduce(
+        (s, p) => s + paymentMrr(p.planType, p.planMode), 0,
+      );
 
-    /* Prior month MRR */
-    const prevMrr = prevMonthPaid.reduce(
-      (s, p) => s + paymentMrr(p.planType, p.planMode), 0,
-    );
+      /* Prior month MRR */
+      const prevMrr = prevMonthPaid.reduce(
+        (s, p) => s + paymentMrr(p.planType, p.planMode), 0,
+      );
 
-    /* New MRR this month */
-    const newMrrThisMonth = newThisMonth.reduce(
-      (s, p) => s + paymentMrr(p.planType, p.planMode), 0,
-    );
+      /* New MRR this month */
+      const newMrrThisMonth = newThisMonth.reduce(
+        (s, p) => s + paymentMrr(p.planType, p.planMode), 0,
+      );
 
-    /* Churned MRR (UNPAID updated this month) */
-    const churnedMrr = churnedThisMonth.reduce(
-      (s, p) => s + paymentMrr(p.planType, p.planMode), 0,
-    );
+      /* Churned MRR (UNPAID updated this month) */
+      const churnedMrr = churnedThisMonth.reduce(
+        (s, p) => s + paymentMrr(p.planType, p.planMode), 0,
+      );
 
-    /*
-     * Expansion MRR: payments upgraded to GROWTH this month.
-     * Since the schema has one Payment per user we can't directly
-     * track plan changes. Estimate as portion of newMrr from GROWTH plans.
-     */
-    const expansionMrr = newThisMonth
-      .filter((p) => p.planType === "GROWTH")
-      .reduce((s, p) => s + paymentMrr(p.planType, p.planMode), 0);
+      const expansionMrr = newThisMonth
+        .filter((p) => p.planType === "GROWTH")
+        .reduce((s, p) => s + paymentMrr(p.planType, p.planMode), 0);
 
-    const netNewMrr    = newMrrThisMonth + expansionMrr - churnedMrr;
-    const payingUsers  = allPaid.length;
-    const arr          = mrr * 12;
-    const arpu         = payingUsers > 0 ? round2(mrr / payingUsers) : 0;
-    const mrrGrowthPct = prevMrr > 0
-      ? round1(((mrr - prevMrr) / prevMrr) * 100)
-      : 0;
+      const netNewMrr    = newMrrThisMonth + expansionMrr - churnedMrr;
+      const payingUsers  = allPaid.length;
+      const arr          = mrr * 12;
+      const arpu         = payingUsers > 0 ? round2(mrr / payingUsers) : 0;
+      const mrrGrowthPct = prevMrr > 0
+        ? round1(((mrr - prevMrr) / prevMrr) * 100)
+        : 0;
 
-    /* Churn rate = churned this month / paying users */
-    const churnRatePct = payingUsers > 0
-      ? round1((churnedThisMonth.length / payingUsers) * 100)
-      : 0;
+      const churnRatePct = payingUsers > 0
+        ? round1((churnedThisMonth.length / payingUsers) * 100)
+        : 0;
 
-    /* LTV = ARPU / churnRate (monthly) */
-    const churnDecimal     = churnRatePct / 100 || LTV_CHURN_DIVISOR;
-    const ltv              = Math.round(arpu / churnDecimal);
-    const avgSubLengthMonths = round1(1 / churnDecimal);
+      const churnDecimal     = churnRatePct / 100 || LTV_CHURN_DIVISOR;
+      const ltv              = Math.round(arpu / churnDecimal);
+      const avgSubLengthMonths = round1(1 / churnDecimal);
 
-    return {
-      mrr, arr,
-      mrrGrowthPct,
-      newMrrThisMonth,
-      churnedMrr,
-      expansionMrr,
-      netNewMrr,
-      ltv,
-      arpu,
-      payingUsers,
-      churnRatePct,
-      avgSubLengthMonths,
-    };
+      return {
+        mrr, arr,
+        mrrGrowthPct,
+        newMrrThisMonth,
+        churnedMrr,
+        expansionMrr,
+        netNewMrr,
+        ltv,
+        arpu,
+        payingUsers,
+        churnRatePct,
+        avgSubLengthMonths,
+      };
+    } catch (error: any) {
+      console.error("[RevenueService] getKpis failed:", error?.message);
+      return {
+        mrr: 0, arr: 0, mrrGrowthPct: 0, newMrrThisMonth: 0,
+        churnedMrr: 0, expansionMrr: 0, netNewMrr: 0,
+        ltv: 0, arpu: 0, payingUsers: 0, churnRatePct: 0,
+        avgSubLengthMonths: 0,
+      };
+    }
   },
 
   /* ──────────────────────────────────────────────────────────────
@@ -154,43 +157,47 @@ export const adminRevenueService = {
   async getMrrWaterfall(payload: AdminRevenueBasePayload): Promise<MrrWaterfallPoint[]> {
     await assertAdmin(payload.requestingUserId);
 
-    const result: MrrWaterfallPoint[] = [];
-
-    for (let i = REVENUE_MONTHS - 1; i >= 0; i--) {
-      const mStart = monthsAgo(i);
-      const mEnd   = endOfMonth(mStart);
-
-      /*
-       * Active payments at end of this month = PAID and created ≤ mEnd
-       * New payments = created in this month
-       * Churned = set UNPAID in this month
-       */
-      const [activePays, newPays, churnPays] = await prisma.$transaction([
+    try {
+      /* Fetch ALL payments once — avoid 12 sequential DB transactions */
+      const [allPaid, allChurned] = await prisma.$transaction([
         prisma.payment.findMany({
-          where: { status: "PAID", createdAt: { lte: mEnd } },
-          select: { planType: true, planMode: true },
+          where:  { status: "PAID" },
+          select: { planType: true, planMode: true, createdAt: true },
         }),
         prisma.payment.findMany({
-          where: { status: "PAID", createdAt: { gte: mStart, lte: mEnd } },
-          select: { planType: true, planMode: true },
-        }),
-        prisma.payment.findMany({
-          where: { status: "UNPAID", updatedAt: { gte: mStart, lte: mEnd } },
-          select: { planType: true, planMode: true },
+          where:  { status: "UNPAID" },
+          select: { planType: true, planMode: true, updatedAt: true },
         }),
       ]);
 
-      const mrr       = activePays.reduce((s, p) => s + paymentMrr(p.planType, p.planMode), 0);
-      const newMrr    = newPays.reduce((s, p) => s + paymentMrr(p.planType, p.planMode), 0);
-      const expansion = newPays.filter((p) => p.planType === "GROWTH")
-                               .reduce((s, p) => s + paymentMrr(p.planType, p.planMode), 0);
-      const churn     = churnPays.reduce((s, p) => s + paymentMrr(p.planType, p.planMode), 0);
-      const net       = newMrr + expansion - churn;
+      const result: MrrWaterfallPoint[] = [];
 
-      result.push({ month: fmtMonth(mStart), mrr, newMrr, expansion, churn, net });
+      for (let i = REVENUE_MONTHS - 1; i >= 0; i--) {
+        const mStart = monthsAgo(i);
+        const mEnd   = endOfMonth(mStart);
+
+        /* Active payments at end of month = PAID and created ≤ mEnd */
+        const activePays = allPaid.filter(p => p.createdAt <= mEnd);
+        /* New payments = PAID and created in this month */
+        const newPays    = allPaid.filter(p => p.createdAt >= mStart && p.createdAt <= mEnd);
+        /* Churned = UNPAID and updated in this month */
+        const churnPays  = allChurned.filter(p => p.updatedAt >= mStart && p.updatedAt <= mEnd);
+
+        const mrr       = activePays.reduce((s, p) => s + paymentMrr(p.planType, p.planMode), 0);
+        const newMrr    = newPays.reduce((s, p) => s + paymentMrr(p.planType, p.planMode), 0);
+        const expansion = newPays.filter(p => p.planType === "GROWTH")
+                                 .reduce((s, p) => s + paymentMrr(p.planType, p.planMode), 0);
+        const churn     = churnPays.reduce((s, p) => s + paymentMrr(p.planType, p.planMode), 0);
+        const net       = newMrr + expansion - churn;
+
+        result.push({ month: fmtMonth(mStart), mrr, newMrr, expansion, churn, net });
+      }
+
+      return result;
+    } catch (error: any) {
+      console.error("[RevenueService] getMrrWaterfall failed:", error?.message);
+      return [];
     }
-
-    return result;
   },
 
   /* ──────────────────────────────────────────────────────────────
@@ -203,54 +210,59 @@ export const adminRevenueService = {
   async getPlanRevenue(payload: AdminRevenueBasePayload): Promise<PlanRevenue[]> {
     await assertAdmin(payload.requestingUserId);
 
-    const monthStart = startOfThisMonth();
+    try {
+      const monthStart = startOfThisMonth();
 
-    const [allPaid, churnedThisMonth] = await prisma.$transaction([
-      prisma.payment.findMany({
-        where:  { status: "PAID" },
-        select: { planType: true, planMode: true },
-      }),
-      prisma.payment.findMany({
-        where:  { status: "UNPAID", updatedAt: { gte: monthStart } },
-        select: { planType: true, planMode: true },
-      }),
-    ]);
+      const [allPaid, churnedThisMonth] = await prisma.$transaction([
+        prisma.payment.findMany({
+          where:  { status: "PAID" },
+          select: { planType: true, planMode: true },
+        }),
+        prisma.payment.findMany({
+          where:  { status: "UNPAID", updatedAt: { gte: monthStart } },
+          select: { planType: true, planMode: true },
+        }),
+      ]);
 
-    /* Group by plan key */
-    const planCounts:   Record<string, number> = {};
-    const churnCounts:  Record<string, number> = {};
+      /* Group by plan key */
+      const planCounts:   Record<string, number> = {};
+      const churnCounts:  Record<string, number> = {};
 
-    for (const p of allPaid) {
-      const key = planKey(p.planType, p.planMode);
-      planCounts[key] = (planCounts[key] ?? 0) + 1;
+      for (const p of allPaid) {
+        const key = planKey(p.planType, p.planMode);
+        planCounts[key] = (planCounts[key] ?? 0) + 1;
+      }
+      for (const c of churnedThisMonth) {
+        const key = planKey(c.planType, c.planMode);
+        churnCounts[key] = (churnCounts[key] ?? 0) + 1;
+      }
+
+      const ORDER = ["PRO_MONTHLY", "PRO_YEARLY", "GROWTH_MONTHLY", "GROWTH_YEARLY"];
+
+      return ORDER.map((key) => {
+        const users    = planCounts[key]  ?? 0;
+        const churned  = churnCounts[key] ?? 0;
+        const mrr      = users * (PLAN_MRR[key] ?? 0);
+        const arr      = users * (PLAN_ARR[key] ?? 0);
+        const avgPrice = PLAN_MRR[key] ?? 0;
+        const churnPct = users > 0 ? round1((churned / users) * 100) : 0;
+        const meta     = PLAN_LABELS[key];
+
+        return {
+          plan:     meta?.plan     ?? key,
+          mode:     meta?.mode     ?? "",
+          users,
+          mrr,
+          arr,
+          avgPrice,
+          churnPct,
+          fill:     meta?.fill     ?? "hsl(240 5% 55%)",
+        };
+      }).filter((p) => p.users > 0);
+    } catch (error: any) {
+      console.error("[RevenueService] getPlanRevenue failed:", error?.message);
+      return [];
     }
-    for (const c of churnedThisMonth) {
-      const key = planKey(c.planType, c.planMode);
-      churnCounts[key] = (churnCounts[key] ?? 0) + 1;
-    }
-
-    const ORDER = ["PRO_MONTHLY", "PRO_YEARLY", "GROWTH_MONTHLY", "GROWTH_YEARLY"];
-
-    return ORDER.map((key) => {
-      const users    = planCounts[key]  ?? 0;
-      const churned  = churnCounts[key] ?? 0;
-      const mrr      = users * (PLAN_MRR[key] ?? 0);
-      const arr      = users * (PLAN_ARR[key] ?? 0);
-      const avgPrice = PLAN_MRR[key] ?? 0;
-      const churnPct = users > 0 ? round1((churned / users) * 100) : 0;
-      const meta     = PLAN_LABELS[key];
-
-      return {
-        plan:     meta?.plan     ?? key,
-        mode:     meta?.mode     ?? "",
-        users,
-        mrr,
-        arr,
-        avgPrice,
-        churnPct,
-        fill:     meta?.fill     ?? "hsl(240 5% 55%)",
-      };
-    }).filter((p) => p.users > 0);
   },
 
   /* ──────────────────────────────────────────────────────────────
@@ -263,52 +275,51 @@ export const adminRevenueService = {
   async getChurnAnalysis(payload: AdminRevenueBasePayload): Promise<ChurnDataPoint[]> {
     await assertAdmin(payload.requestingUserId);
 
-    const result: ChurnDataPoint[] = [];
-
-    for (let i = REVENUE_MONTHS - 1; i >= 0; i--) {
-      const mStart = monthsAgo(i);
-      const mEnd   = endOfMonth(mStart);
-
-      const [activeCount, churnedCount, recoveredCount] = await prisma.$transaction([
-        /* Active subscribers at start of month */
-        prisma.payment.count({
-          where: { status: "PAID", createdAt: { lte: mStart } },
+    try {
+      /* Fetch all payments once — avoid 12 sequential DB transactions */
+      const [allPaid, allUnpaid] = await prisma.$transaction([
+        prisma.payment.findMany({
+          where:  { status: "PAID" },
+          select: { createdAt: true, updatedAt: true },
         }),
-        /* Churned = went UNPAID in this month */
-        prisma.payment.count({
-          where: { status: "UNPAID", updatedAt: { gte: mStart, lte: mEnd } },
-        }),
-        /*
-         * Recovered = payments that went back to PAID this month.
-         * Schema tracks single status; use createdAt-based detection
-         * as a proxy (new payment after a previous UNPAID period).
-         * This is an approximation — add a PaymentEvent table for accuracy.
-         */
-        prisma.payment.count({
-          where: {
-            status:    "PAID",
-            createdAt: { gte: mStart, lte: mEnd },
-            /* User previously had an UNPAID payment */
-            user: {
-              payments: { some: { status: "UNPAID" } },
-            },
-          },
+        prisma.payment.findMany({
+          where:  { status: "UNPAID" },
+          select: { updatedAt: true },
         }),
       ]);
 
-      const churnRate = activeCount > 0
-        ? round1((churnedCount / activeCount) * 100)
-        : 0;
+      const result: ChurnDataPoint[] = [];
 
-      result.push({
-        month:     fmtMonth(mStart),
-        churned:   churnedCount,
-        churnRate,
-        recovered: recoveredCount,
-      });
+      for (let i = REVENUE_MONTHS - 1; i >= 0; i--) {
+        const mStart = monthsAgo(i);
+        const mEnd   = endOfMonth(mStart);
+
+        /* Active subscribers at start of month */
+        const activeCount    = allPaid.filter(p => p.createdAt <= mStart).length;
+        /* Churned = went UNPAID in this month */
+        const churnedCount   = allUnpaid.filter(p => p.updatedAt >= mStart && p.updatedAt <= mEnd).length;
+        /* Recovered = PAID payments updated this month but created before it */
+        const recoveredCount = allPaid.filter(p =>
+          p.updatedAt >= mStart && p.updatedAt <= mEnd && p.createdAt < mStart
+        ).length;
+
+        const churnRate = activeCount > 0
+          ? round1((churnedCount / activeCount) * 100)
+          : 0;
+
+        result.push({
+          month:     fmtMonth(mStart),
+          churned:   churnedCount,
+          churnRate,
+          recovered: recoveredCount,
+        });
+      }
+
+      return result;
+    } catch (error: any) {
+      console.error("[RevenueService] getChurnAnalysis failed:", error?.message);
+      return [];
     }
-
-    return result;
   },
 
   /* ──────────────────────────────────────────────────────────────
@@ -320,66 +331,59 @@ export const adminRevenueService = {
   async getCohortLtv(payload: AdminRevenueBasePayload): Promise<CohortLtvRow[]> {
     await assertAdmin(payload.requestingUserId);
 
-    const result: CohortLtvRow[] = [];
-    const now = new Date();
-
-    for (let i = COHORT_MONTHS - 1; i >= 0; i--) {
-      const cohortStart = monthsAgo(i);
-      const cohortEnd   = endOfMonth(cohortStart);
-
-      /* New paid subscribers in this cohort month */
-      const cohortPayments = await prisma.payment.findMany({
-        where: {
-          status:    "PAID",
-          createdAt: { gte: cohortStart, lte: cohortEnd },
-        },
+    try {
+      /* Fetch all PAID payments once instead of 6 sequential queries */
+      const allPaidPayments = await prisma.payment.findMany({
+        where:  { status: "PAID" },
         select: { planType: true, planMode: true, userId: true, createdAt: true },
       });
 
-      const startingUsers = cohortPayments.length;
-      if (startingUsers === 0) continue;
+      const result: CohortLtvRow[] = [];
+      const now = new Date();
 
-      /* Monthly MRR for this cohort (per-user × retention approximation) */
-      const baseMrr = cohortPayments.reduce(
-        (s, p) => s + paymentMrr(p.planType, p.planMode), 0,
-      );
+      for (let i = COHORT_MONTHS - 1; i >= 0; i--) {
+        const cohortStart = monthsAgo(i);
+        const cohortEnd   = endOfMonth(cohortStart);
 
-      const monthsSinceCohort = i;  // months ago = how long ago this cohort started
-      const now_ms = now.getTime();
+        /* New paid subscribers in this cohort month */
+        const cohortPayments = allPaidPayments.filter(
+          p => p.createdAt >= cohortStart && p.createdAt <= cohortEnd
+        );
 
-      /* Only show months that have actually passed */
-      const mAvail = Math.floor(monthsSinceCohort);
+        const startingUsers = cohortPayments.length;
+        if (startingUsers === 0) continue;
 
-      /*
-       * MRR retention model:
-       *   M1  = ~95% of base (early churn is low for subscription tools)
-       *   M3  = ~86% (steady-state churn at ~2.7%/mo × 3)
-       *   M6  = ~76%
-       *   M12 = ~59%
-       * These approximations match industry SaaS benchmarks.
-       * Replace with actual per-user tracking when you add a PaymentEvent table.
-       */
-      const m1Mrr  = mAvail >= 1  ? Math.round(baseMrr * 0.95) : 0;
-      const m3Mrr  = mAvail >= 3  ? Math.round(baseMrr * 0.86) : 0;
-      const m6Mrr  = mAvail >= 6  ? Math.round(baseMrr * 0.76) : 0;
-      const m12Mrr = mAvail >= 12 ? Math.round(baseMrr * 0.59) : 0;
+        const baseMrr = cohortPayments.reduce(
+          (s, p) => s + paymentMrr(p.planType, p.planMode), 0,
+        );
 
-      /* Avg LTV estimate: ARPU / churnRate (simple model) */
-      const arpu   = baseMrr / startingUsers;
-      const avgLtv = Math.round(arpu / LTV_CHURN_DIVISOR);
+        const monthsSinceCohort = i;
+        const mAvail = Math.floor(monthsSinceCohort);
 
-      result.push({
-        cohort:        fmtCohortLabel(cohortStart),
-        startingUsers,
-        month1Mrr:  m1Mrr,
-        month3Mrr:  m3Mrr,
-        month6Mrr:  m6Mrr,
-        month12Mrr: m12Mrr,
-        avgLtv,
-      });
+        const m1Mrr  = mAvail >= 1  ? Math.round(baseMrr * 0.95) : 0;
+        const m3Mrr  = mAvail >= 3  ? Math.round(baseMrr * 0.86) : 0;
+        const m6Mrr  = mAvail >= 6  ? Math.round(baseMrr * 0.76) : 0;
+        const m12Mrr = mAvail >= 12 ? Math.round(baseMrr * 0.59) : 0;
+
+        const arpu   = baseMrr / startingUsers;
+        const avgLtv = Math.round(arpu / LTV_CHURN_DIVISOR);
+
+        result.push({
+          cohort:        fmtCohortLabel(cohortStart),
+          startingUsers,
+          month1Mrr:  m1Mrr,
+          month3Mrr:  m3Mrr,
+          month6Mrr:  m6Mrr,
+          month12Mrr: m12Mrr,
+          avgLtv,
+        });
+      }
+
+      return result;
+    } catch (error: any) {
+      console.error("[RevenueService] getCohortLtv failed:", error?.message);
+      return [];
     }
-
-    return result;
   },
 
   /* ──────────────────────────────────────────────────────────────
@@ -396,71 +400,76 @@ export const adminRevenueService = {
   async getRevenueByCountry(payload: AdminRevenueBasePayload): Promise<RevenueByCountry[]> {
     await assertAdmin(payload.requestingUserId);
 
-    const paidUsers = await prisma.payment.findMany({
-      where:  { status: "PAID" },
-      select: {
-        planType: true,
-        planMode: true,
-        user:     { select: { email: true } },
-      },
-    });
+    try {
+      const paidUsers = await prisma.payment.findMany({
+        where:  { status: "PAID" },
+        select: {
+          planType: true,
+          planMode: true,
+          user:     { select: { email: true } },
+        },
+      });
 
-    /* Map TLD → country */
-    const TLD_MAP: Record<string, { country: string; flag: string }> = {
-      ".de":  { country: "Germany",        flag: "🇩🇪" },
-      ".co.uk": { country: "United Kingdom", flag: "🇬🇧" },
-      ".uk":  { country: "United Kingdom",  flag: "🇬🇧" },
-      ".in":  { country: "India",           flag: "🇮🇳" },
-      ".io":  { country: "United States",   flag: "🇺🇸" }, // .io is ~40% US startups
-      ".br":  { country: "Brazil",          flag: "🇧🇷" },
-      ".sg":  { country: "Singapore",       flag: "🇸🇬" },
-      ".bd":  { country: "Bangladesh",      flag: "🇧🇩" },
-      ".mx":  { country: "Mexico",          flag: "🇲🇽" },
-      ".ae":  { country: "UAE",             flag: "🇦🇪" },
-      ".dk":  { country: "Denmark",         flag: "🇩🇰" },
-      ".jp":  { country: "Japan",           flag: "🇯🇵" },
-      ".cn":  { country: "China",           flag: "🇨🇳" },
-      ".ng":  { country: "Nigeria",         flag: "🇳🇬" },
-      ".com": { country: "United States",   flag: "🇺🇸" },
-    };
+      /* Map TLD → country */
+      const TLD_MAP: Record<string, { country: string; flag: string }> = {
+        ".de":  { country: "Germany",        flag: "🇩🇪" },
+        ".co.uk": { country: "United Kingdom", flag: "🇬🇧" },
+        ".uk":  { country: "United Kingdom",  flag: "🇬🇧" },
+        ".in":  { country: "India",           flag: "🇮🇳" },
+        ".io":  { country: "United States",   flag: "🇺🇸" },
+        ".br":  { country: "Brazil",          flag: "🇧🇷" },
+        ".sg":  { country: "Singapore",       flag: "🇸🇬" },
+        ".bd":  { country: "Bangladesh",      flag: "🇧🇩" },
+        ".mx":  { country: "Mexico",          flag: "🇲🇽" },
+        ".ae":  { country: "UAE",             flag: "🇦🇪" },
+        ".dk":  { country: "Denmark",         flag: "🇩🇰" },
+        ".jp":  { country: "Japan",           flag: "🇯🇵" },
+        ".cn":  { country: "China",           flag: "🇨🇳" },
+        ".ng":  { country: "Nigeria",         flag: "🇳🇬" },
+        ".com": { country: "United States",   flag: "🇺🇸" },
+      };
 
-    const countryMap = new Map<string, { flag: string; users: number; mrr: number }>();
+      const countryMap = new Map<string, { flag: string; users: number; mrr: number }>();
 
-    for (const p of paidUsers) {
-      const email  = p.user.email.toLowerCase();
-      const domain = email.split("@")[1] ?? "";
+      for (const p of paidUsers) {
+        const email  = p.user.email.toLowerCase();
+        const domain = email.split("@")[1] ?? "";
 
-      /* Match longest TLD first */
-      let matched = false;
-      for (const [tld, info] of Object.entries(TLD_MAP).sort((a, b) => b[0].length - a[0].length)) {
-        if (domain.endsWith(tld)) {
-          const existing = countryMap.get(info.country) ?? { flag: info.flag, users: 0, mrr: 0 };
+        /* Match longest TLD first */
+        let matched = false;
+        for (const [tld, info] of Object.entries(TLD_MAP).sort((a, b) => b[0].length - a[0].length)) {
+          if (domain.endsWith(tld)) {
+            const existing = countryMap.get(info.country) ?? { flag: info.flag, users: 0, mrr: 0 };
+            existing.users++;
+            existing.mrr += paymentMrr(p.planType, p.planMode);
+            countryMap.set(info.country, existing);
+            matched = true;
+            break;
+          }
+        }
+        if (!matched) {
+          const existing = countryMap.get("Other") ?? { flag: "🌍", users: 0, mrr: 0 };
           existing.users++;
           existing.mrr += paymentMrr(p.planType, p.planMode);
-          countryMap.set(info.country, existing);
-          matched = true;
-          break;
+          countryMap.set("Other", existing);
         }
       }
-      if (!matched) {
-        const existing = countryMap.get("Other") ?? { flag: "🌍", users: 0, mrr: 0 };
-        existing.users++;
-        existing.mrr += paymentMrr(p.planType, p.planMode);
-        countryMap.set("Other", existing);
-      }
+
+      const totalMrr = Array.from(countryMap.values()).reduce((s, v) => s + v.mrr, 0) || 1;
+
+      return Array.from(countryMap.entries())
+        .sort((a, b) => b[1].mrr - a[1].mrr)
+        .map(([country, data]) => ({
+          country,
+          flag:  data.flag,
+          users: data.users,
+          mrr:   data.mrr,
+          pct:   round1((data.mrr / totalMrr) * 100),
+        }));
+    } catch (error: any) {
+      console.error("[RevenueService] getRevenueByCountry failed:", error?.message);
+      return [];
     }
-
-    const totalMrr = Array.from(countryMap.values()).reduce((s, v) => s + v.mrr, 0) || 1;
-
-    return Array.from(countryMap.entries())
-      .sort((a, b) => b[1].mrr - a[1].mrr)
-      .map(([country, data]) => ({
-        country,
-        flag:  data.flag,
-        users: data.users,
-        mrr:   data.mrr,
-        pct:   round1((data.mrr / totalMrr) * 100),
-      }));
   },
 
   /* ──────────────────────────────────────────────────────────────
@@ -475,110 +484,117 @@ export const adminRevenueService = {
   async getTransactions(payload: GetTransactionsPayload): Promise<PaginatedTransactions> {
     await assertAdmin(payload.requestingUserId);
 
-    const { query } = payload;
-    const { page, limit, skip } = normaliseTxPagination(query);
+    try {
+      const { query } = payload;
+      const { page, limit, skip } = normaliseTxPagination(query);
 
-    /* Build where clause ────────────────────────────────────────── */
-    const where: Record<string, unknown> = {};
+      /* Build where clause */
+      const where: Record<string, unknown> = {};
 
-    /* Type filter: map frontend type → payment status/context */
-    if (query.type && query.type !== "all") {
-      switch (query.type) {
-        case "cancel":
-        case "refund":
-          where.status = "UNPAID";
-          break;
-        default:
-          where.status = "PAID";
-          break;
+      if (query.type && query.type !== "all") {
+        switch (query.type) {
+          case "cancel":
+          case "refund":
+            where.status = "UNPAID";
+            break;
+          default:
+            where.status = "PAID";
+            break;
+        }
       }
-    }
 
-    /* Search: name or email */
-    if (query.search?.trim()) {
-      const q = query.search.trim();
-      where.user = {
-        OR: [
-          { name:  { contains: q, mode: "insensitive" } },
-          { email: { contains: q, mode: "insensitive" } },
-        ],
-      };
-    }
+      if (query.search?.trim()) {
+        const q = query.search.trim();
+        where.user = {
+          OR: [
+            { name:  { contains: q, mode: "insensitive" } },
+            { email: { contains: q, mode: "insensitive" } },
+          ],
+        };
+      }
 
-    const [total, payments] = await prisma.$transaction([
-      prisma.payment.count({ where }),
-      prisma.payment.findMany({
-        where,
-        orderBy: { updatedAt: "desc" },
-        skip,
-        take:    limit,
-        select: {
-          id:                true,
-          status:            true,
-          planType:          true,
-          planMode:          true,
-          amount:            true,
-          transactionId:     true,
-          stripeEventId:     true,
-          createdAt:         true,
-          updatedAt:         true,
-          user: {
-            select: { id: true, name: true, email: true },
+      const [total, payments] = await prisma.$transaction([
+        prisma.payment.count({ where }),
+        prisma.payment.findMany({
+          where,
+          orderBy: { updatedAt: "desc" },
+          skip,
+          take:    limit,
+          select: {
+            id:                true,
+            status:            true,
+            planType:          true,
+            planMode:          true,
+            amount:            true,
+            transactionId:     true,
+            stripeEventId:     true,
+            createdAt:         true,
+            updatedAt:         true,
+            user: {
+              select: { id: true, name: true, email: true },
+            },
           },
-        },
-      }),
-    ]);
+        }),
+      ]);
 
-    /* Determine which user IDs are "first-time" payers ─────────── */
-    const userIds = payments.map((p) => p.user.id);
+      /* Determine which user IDs are "first-time" payers */
+      const userIds = payments.map((p) => p.user.id);
 
-    const priorPayments = await prisma.payment.findMany({
-      where: {
-        userId:    { in: userIds },
-        createdAt: { lt: payments[0]?.createdAt ?? new Date() },
-        status:    "PAID",
-      },
-      select: { userId: true },
-    });
+      const priorPayments = userIds.length > 0
+        ? await prisma.payment.findMany({
+            where: {
+              userId:    { in: userIds },
+              createdAt: { lt: payments[0]?.createdAt ?? new Date() },
+              status:    "PAID",
+            },
+            select: { userId: true },
+          })
+        : [];
 
-    const priorPayers = new Set(priorPayments.map((p) => p.userId));
+      const priorPayers = new Set(priorPayments.map((p) => p.userId));
 
-    /* Map to response shape ─────────────────────────────────────── */
-    const data: RecentTransaction[] = payments.map((p) => {
-      const isFirst = !priorPayers.has(p.user.id);
-      const type    = deriveTransactionType(isFirst, p.status);
-      const txStatus = deriveTransactionStatus(p.status);
-      const pLabel  = planLabel(p.planType, p.planMode);
+      /* Map to response shape */
+      const data: RecentTransaction[] = payments.map((p) => {
+        const isFirst = !priorPayers.has(p.user.id);
+        const type    = deriveTransactionType(isFirst, p.status);
+        const txStatus = deriveTransactionStatus(p.status);
+        const pLabel  = planLabel(p.planType, p.planMode);
 
-      /* Amount: for yearly plans show annual charge, monthly show monthly */
-      const amount = p.planMode === "YEARLY"
-        ? (p.planType === "PRO" ? 156 : 396)
-        : (PLAN_MRR[planKey(p.planType, p.planMode)] ?? 0);
+        const amount = p.planMode === "YEARLY"
+          ? (p.planType === "PRO" ? 156 : 396)
+          : (PLAN_MRR[planKey(p.planType, p.planMode)] ?? 0);
+
+        return {
+          id:         p.id,
+          userId:     p.user.id,
+          userName:   p.user.name,
+          userEmail:  p.user.email,
+          type,
+          plan:       pLabel,
+          amount:     txStatus === "paid" ? amount : 0,
+          currency:   "USD",
+          status:     txStatus,
+          date:       p.updatedAt.toISOString(),
+          stripeId:   p.stripeEventId ?? p.transactionId ?? null,
+        };
+      });
+
+      const totalRevenue = data
+        .filter((t) => t.status === "paid")
+        .reduce((s, t) => s + t.amount, 0);
 
       return {
-        id:         p.id,
-        userId:     p.user.id,
-        userName:   p.user.name,
-        userEmail:  p.user.email,
-        type,
-        plan:       pLabel,
-        amount:     txStatus === "paid" ? amount : 0,
-        currency:   "USD",
-        status:     txStatus,
-        date:       p.updatedAt.toISOString(),
-        stripeId:   p.stripeEventId ?? p.transactionId ?? null,
+        data,
+        meta: buildTxMeta(total, page, limit),
+        totalRevenue,
       };
-    });
-
-    /* Total revenue (paid transactions in current filter) */
-    const totalRevenue = data
-      .filter((t) => t.status === "paid")
-      .reduce((s, t) => s + t.amount, 0);
-
-    return {
-      data,
-      meta: buildTxMeta(total, page, limit),
-      totalRevenue,
-    };
+    } catch (error: any) {
+      console.error("[RevenueService] getTransactions failed:", error?.message);
+      return {
+        data:         [],
+        meta:         buildTxMeta(0, 1, 20),
+        totalRevenue: 0,
+      };
+    }
   },
 };

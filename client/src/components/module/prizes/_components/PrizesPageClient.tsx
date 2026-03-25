@@ -6,6 +6,7 @@ import { Trophy, Loader2, RefreshCw } from "lucide-react";
 import { DashboardHeader } from "@/src/components/module/dashboard/_components/DashboardHeader";
 import { Button } from "@/src/components/ui/button";
 import { PrizesClient } from "@/src/components/module/prizes/_components/PrizesClient";
+import { authFetch } from "@/src/lib/axios/authFetch";
 import { useWorkspace } from "@/src/provider/WorkspaceProvider";
 import type { Prize, PrizeWaitlist } from "@/src/components/module/prizes/_types";
 
@@ -41,9 +42,9 @@ export function PrizesPageClient() {
     setError(null);
 
     try {
-      const waitlistsRes = await fetch(
+      const waitlistsRes = await authFetch(
         `${API_BASE}/waitlists/${activeWorkspace.id}?page=1&limit=100`,
-        { credentials: "include", cache: "no-store" },
+        { cache: "no-store" },
       );
       const waitlistsJson = (await waitlistsRes.json()) as ApiResponse<ApiWaitlistItem[]>;
       if (!waitlistsRes.ok) throw new Error(waitlistsJson.message || "Failed to fetch waitlists");
@@ -52,9 +53,9 @@ export function PrizesPageClient() {
 
       const prizeFetches = await Promise.all(
         rawWaitlists.map(async (w) => {
-          const res = await fetch(
+          const res = await authFetch(
             `${API_BASE}/prizes/waitlist/${w.id}?workspaceId=${activeWorkspace.id}`,
-            { credentials: "include", cache: "no-store" },
+            { cache: "no-store" },
           );
           const json = (await res.json()) as ApiResponse<Prize[]>;
           if (!res.ok) throw new Error(json.message || `Failed to fetch prizes for ${w.name}`);

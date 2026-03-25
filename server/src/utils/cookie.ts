@@ -8,11 +8,13 @@ const getCookie = (req: Request, key: string) => {
     // cookie-parser populates req.cookies. Some routes may run before it,
     // so fall back to parsing the raw Cookie header.
     const anyReq = req as unknown as { cookies?: Record<string, string> };
-    if (anyReq.cookies && typeof anyReq.cookies === "object") {
+    if (anyReq.cookies && typeof anyReq.cookies === "object" && anyReq.cookies[key]) {
         return anyReq.cookies[key];
     }
 
-    const header = req.headers?.cookie;
+    // For cross-origin requests where browser doesn't send cookies,
+    // the frontend sends tokens via a custom x-auth-cookies header.
+    const header = req.headers?.cookie || req.headers?.["x-auth-cookies"] as string | undefined;
     if (!header) return undefined;
 
     const parts = header.split(";");

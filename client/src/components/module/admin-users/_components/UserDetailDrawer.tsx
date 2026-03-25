@@ -14,7 +14,7 @@ import {
 } from "@/src/components/ui/sheet";
 import { Button }    from "@/src/components/ui/button";
 import { Badge }     from "@/src/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { Separator } from "@/src/components/ui/separator";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel,
@@ -105,6 +105,7 @@ export function UserDetailDrawer({
             <div className="flex items-start justify-between gap-3">
               <div className="flex items-center gap-3">
                 <Avatar className="h-11 w-11 rounded-xl">
+                  {user.image && <AvatarImage src={user.image} alt={user.name} className="object-cover" />}
                   <AvatarFallback className={cn("rounded-xl bg-gradient-to-br text-sm font-black text-white", gradient)}>
                     {initials}
                   </AvatarFallback>

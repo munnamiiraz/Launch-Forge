@@ -23,10 +23,18 @@ const netConfig = {
 };
 
 export function MrrWaterfallChart({ data }: { data: MrrWaterfallPoint[] }) {
-  const current = data[data.length - 1].mrr;
-  const prev    = data[data.length - 2].mrr;
-  const pct     = Math.round(((current - prev) / prev) * 100);
-  const currentNet = data[data.length - 1].net;
+  if (!data || data.length === 0) {
+    return (
+      <Card className="flex h-56 items-center justify-center border-border/60 bg-card/20 text-xs text-muted-foreground">
+        Insufficient MRR trend data to render trend.
+      </Card>
+    );
+  }
+
+  const current = data[data.length - 1]?.mrr ?? 0;
+  const prev    = data.length > 1 ? (data[data.length - 2]?.mrr ?? current) : current;
+  const pct     = prev > 0 ? Math.round(((current - prev) / prev) * 100) : 0;
+  const currentNet = data[data.length - 1]?.net ?? 0;
 
   return (
     <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
@@ -147,9 +155,9 @@ export function MrrWaterfallChart({ data }: { data: MrrWaterfallPoint[] }) {
           {/* Breakdown for latest month */}
           <div className="mt-4 grid grid-cols-3 gap-2">
             {[
-              { label: "New",       value: `+$${data[data.length-1].newMrr.toLocaleString()}`,    color: "text-emerald-400" },
-              { label: "Expansion", value: `+$${data[data.length-1].expansion.toLocaleString()}`, color: "text-indigo-400"  },
-              { label: "Churn",     value: `-$${data[data.length-1].churn.toLocaleString()}`,     color: "text-red-400"     },
+              { label: "New",       value: `+$${(data[data.length-1]?.newMrr ?? 0).toLocaleString()}`,    color: "text-emerald-400" },
+              { label: "Expansion", value: `+$${(data[data.length-1]?.expansion ?? 0).toLocaleString()}`, color: "text-indigo-400"  },
+              { label: "Churn",     value: `-$${(data[data.length-1]?.churn ?? 0).toLocaleString()}`,     color: "text-red-400"     },
             ].map((s) => (
               <div key={s.label} className="flex flex-col gap-0.5 rounded-lg border border-border/60 bg-card/40 px-2.5 py-2">
                 <p className="text-[10px] text-muted-foreground/60">{s.label}</p>

@@ -6,7 +6,7 @@ import {
   Zap, Globe, Lock, Calendar,
 } from "lucide-react";
 
-import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/src/components/ui/avatar";
 import { Badge }    from "@/src/components/ui/badge";
 import { Button }   from "@/src/components/ui/button";
 import { Separator } from "@/src/components/ui/separator";
@@ -49,6 +49,7 @@ function transformWaitlistData(data: any): PublicWaitlistData {
     tagline: data.description?.split(".")[0] || "Early access joining soon",
     description: data.description || "",
     ownerMessage: null,
+    logoUrl: data.logoUrl || null,
     logoInitials: getInitials(data.name),
     logoGradient: "from-indigo-500 to-violet-600",
     websiteUrl: null,
@@ -147,7 +148,14 @@ export default async function PublicLeaderboardPage({ params }: Props) {
 
             {/* Product identity */}
             <div className="flex items-start gap-4">
-              <Avatar className="h-14 w-14 shrink-0 rounded-2xl shadow-xl shadow-black/30">
+              <Avatar className="h-14 w-14 shrink-0 rounded-2xl shadow-xl shadow-black/30 outline outline-1 outline-border/20">
+                {waitlist.logoUrl && (
+                  <AvatarImage 
+                    src={waitlist.logoUrl} 
+                    alt={waitlist.name} 
+                    className="rounded-2xl"
+                  />
+                )}
                 <AvatarFallback className={cn(
                   "rounded-2xl bg-gradient-to-br text-xl font-black text-white",
                   waitlist.logoGradient,

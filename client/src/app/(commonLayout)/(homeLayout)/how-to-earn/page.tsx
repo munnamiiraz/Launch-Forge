@@ -109,7 +109,6 @@ export default function HowToEarnPage() {
       <div aria-hidden className="pointer-events-none fixed bottom-0 right-0 h-[500px] w-[500px] translate-x-1/2 translate-y-1/2 rounded-full bg-violet-500/5 blur-[100px]" />
 
 
-          ═══════════════════════════════════════════════════════════ */}
       <section className="relative overflow-hidden border-b border-border/50">
         <div className="mx-auto max-w-5xl px-4 py-20 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center gap-8 text-center">

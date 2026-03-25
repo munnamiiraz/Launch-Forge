@@ -27,8 +27,16 @@ const auth    = checkAuth(Role.OWNER, Role.ADMIN);
 const params  = validateParams(analyticsParamSchema);
 const planGate = checkPlanFeature("analytics");
 
+// Allow Free users to see basic 7-day growth for the dashboard chart
+const growthPlanGate = (req: any, res: any, next: any) => {
+  if (req.query.range === "7d") {
+    return next();
+  }
+  return planGate(req, res, next);
+};
+
 router.get("/summary",      auth, params, planGate, analyticsController.getSummary);
-router.get("/growth",       auth, params, planGate, analyticsController.getSubscriberGrowth);
+router.get("/growth",       auth, params, growthPlanGate, analyticsController.getSubscriberGrowth);
 router.get("/funnel",       auth, params, planGate, analyticsController.getReferralFunnel);
 router.get("/kfactor",      auth, params, planGate, analyticsController.getViralKFactor);
 router.get("/confirmation", auth, params, planGate, analyticsController.getConfirmationRate);

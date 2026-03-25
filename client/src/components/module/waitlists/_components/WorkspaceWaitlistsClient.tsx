@@ -9,6 +9,7 @@ import { useWorkspace } from "@/src/provider/WorkspaceProvider";
 import { Button } from "@/src/components/ui/button";
 import { Switch } from "@/src/components/ui/switch";
 import { cn } from "@/src/lib/utils";
+import { authFetch } from "@/src/lib/axios/authFetch";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -62,8 +63,7 @@ export function WorkspaceWaitlistsClient() {
         ? `${BASE_URL}/waitlists/${activeWorkspace.id}?includeArchived=true`
         : `${BASE_URL}/waitlists/${activeWorkspace.id}`;
 
-      const res = await fetch(url, {
-        credentials: "include",
+      const res = await authFetch(url, {
         cache: "no-store",
       });
       const json = await res.json();
@@ -82,9 +82,8 @@ export function WorkspaceWaitlistsClient() {
 
   const patchStatus = async (waitlistId: string, isOpen: boolean) => {
     if (!activeWorkspace) return;
-    const res = await fetch(`${BASE_URL}/waitlists/${activeWorkspace.id}/${waitlistId}/status`, {
+    const res = await authFetch(`${BASE_URL}/waitlists/${activeWorkspace.id}/${waitlistId}/status`, {
       method: "PATCH",
-      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ isOpen }),
     });
@@ -96,9 +95,8 @@ export function WorkspaceWaitlistsClient() {
 
   const patchArchive = async (waitlistId: string, archived: boolean) => {
     if (!activeWorkspace) return;
-    const res = await fetch(`${BASE_URL}/waitlists/${activeWorkspace.id}/${waitlistId}/archive`, {
+    const res = await authFetch(`${BASE_URL}/waitlists/${activeWorkspace.id}/${waitlistId}/archive`, {
       method: "PATCH",
-      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ archived }),
     });
@@ -117,9 +115,8 @@ export function WorkspaceWaitlistsClient() {
     if (!deleteId || !activeWorkspace) return;
     setDeleting(true);
     try {
-      const res = await fetch(`${BASE_URL}/waitlists/${activeWorkspace.id}/${deleteId}`, {
+      const res = await authFetch(`${BASE_URL}/waitlists/${activeWorkspace.id}/${deleteId}`, {
         method: "DELETE",
-        credentials: "include",
       });
       if (!res.ok) {
         const json = await res.json();

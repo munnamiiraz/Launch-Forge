@@ -7,7 +7,7 @@ import {
 import { Card, CardContent, CardHeader } from "@/src/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/src/components/ui/chart";
 import { cn } from "@/src/lib/utils";
-import { getWorkspaceHeatmap, getChangelogTimeline } from "../_lib/analytics-data";
+import { HeatmapCell, ChangelogPoint } from "../_lib/analytics-data";
 
 /* ── Workspace activity heatmap ──────────────────────────────────── */
 
@@ -30,18 +30,16 @@ const HOURS = Array.from({ length: 24 }, (_, i) => {
 
 const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-export function WorkspaceHeatmap() {
-  const cells = getWorkspaceHeatmap();
-
+export function WorkspaceHeatmap({ data = [] }: { data?: HeatmapCell[] }) {
   const byDay: Record<string, number[]> = {};
   DAYS.forEach((d) => { byDay[d] = []; });
-  cells.forEach((c) => byDay[c.day].push(c.value));
+  data.forEach((c) => byDay[c.day].push(c.value));
 
-  const peak = cells.reduce((max, c) => c.value > max.value ? c : max, cells[0]);
+  const peak = data.length > 0 ? data.reduce((max, c) => c.value > max.value ? c : max, data[0]) : null;
 
   return (
     <Card className="relative overflow-hidden border-border/80 bg-card/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/25 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-red-500/25 to-transparent" />
       <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <div>
@@ -52,7 +50,7 @@ export function WorkspaceHeatmap() {
             </p>
           </div>
           <div className="text-right text-[10px] text-muted-foreground/60">
-            Peak: <span className="font-semibold text-foreground/80">{peak.day} {HOURS[peak.hour]}</span>
+            Peak: <span className="font-semibold text-foreground/80">{peak?.day} {peak ? HOURS[peak.hour] : ""}</span>
           </div>
         </div>
       </CardHeader>
@@ -113,14 +111,13 @@ const clConfig = {
   drafts:    { label: "Drafts",     color: "hsl(var(--chart-5))" },
 };
 
-export function ChangelogChart() {
-  const data = getChangelogTimeline();
+export function ChangelogChart({ data = [] }: { data?: ChangelogPoint[] }) {
   const totalPublished = data.reduce((s, d) => s + d.published, 0);
   const totalDrafts    = data.reduce((s, d) => s + d.drafts, 0);
 
   return (
     <Card className="relative overflow-hidden border-border/80 bg-card/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-cyan-500/30 to-transparent" />
       <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <div>

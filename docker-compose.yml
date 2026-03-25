@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: launch-forge-backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./server/.env
+    environment:
+      - NODE_ENV=production
+    restart: always
+
+# If you need a local database for testing
+#  postgres:
+#    image: postgres:15-alpine
+#    container_name: launch-forge-db
+#    ports:
+#      - "5432:5432"
+#    environment:
+#      - POSTGRES_USER=user
+#      - POSTGRES_PASSWORD=pass
+#      - POSTGRES_DB=launch-forge
+#    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+
+# volumes:
+#  postgres_data:

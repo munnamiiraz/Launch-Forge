@@ -29,7 +29,7 @@ function KpiCard({ icon, label, value, sub, accent, val_c, badge, index }: Pill)
       transition={{ delay: index * 0.05, duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
     >
       <Card className="group relative overflow-hidden border-border/80 bg-card/40 transition-all duration-300 hover:bg-card/60 hover:shadow-lg hover:shadow-black/20">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-red-500/20" />
+        <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-red-500/20" />
         <CardContent className="p-4">
           <div className="mb-2 flex items-center justify-between">
             <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{label}</p>

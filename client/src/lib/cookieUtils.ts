@@ -10,9 +10,9 @@ export const setCookie = async (
     const cookieStore = await cookies();
 
     cookieStore.set(name, value, {
-        httpOnly : true,
+        httpOnly : false,
         secure : true,
-        sameSite : "strict",
+        sameSite : "lax",
         path : "/",
         maxAge : maxAgeInSeconds,
     })
