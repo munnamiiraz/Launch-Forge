@@ -17,18 +17,31 @@ export default async function LeaderboardPage() {
   const cookieStore = await cookies();
   const activeWorkspaceId = cookieStore.get("activeWorkspaceId")?.value;
 
+  let errorMessage = "";
   const [leaderboards, stats] = await Promise.all([
-    fetchLeaderboardCards(activeWorkspaceId).catch(() => []),
-    fetchLeaderboardDashboardStats(activeWorkspaceId).catch(() => ({
-      totalWaitlists: 0,
-      totalReferrals: 0,
-      totalReferrers: 0,
-      topViralScore:  0,
-    })),
+    fetchLeaderboardCards(activeWorkspaceId).catch((err) => {
+      errorMessage = err.message || JSON.stringify(err);
+      console.error("[Leaderboards Fetch Error]", err);
+      return [];
+    }),
+    fetchLeaderboardDashboardStats(activeWorkspaceId).catch((err) => {
+      console.error("[Stats Fetch Error]", err);
+      return {
+        totalWaitlists: 0,
+        totalReferrals: 0,
+        totalReferrers: 0,
+        topViralScore:  0,
+      };
+    }),
   ]);
 
   return (
     <div className="flex flex-col">
+      {errorMessage && (
+        <div className="bg-red-500/20 text-red-500 p-4 m-4 rounded-lg">
+          Fetch Error: {errorMessage}
+        </div>
+      )}
 
       {/* ── Sticky header ───────────────────────────────────────── */}
       <DashboardHeader

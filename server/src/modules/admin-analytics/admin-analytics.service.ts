@@ -58,6 +58,17 @@ async function assertAdmin(userId: string): Promise<void> {
   }
 }
 
+/**
+ * Prisma groupBy typings model `_count` as optional and sometimes as `true | object`.
+ * This helper keeps the analytics code simple and TS-safe.
+ */
+function countGroupAll(group: unknown): number {
+  const c = (group as any)?._count;
+  if (!c || c === true) return 0;
+  // We request `_count: { _all: true }` in groupBy calls.
+  return Number((c as any)._all ?? 0);
+}
+
 export const adminAnalyticsService = {
 
   /* ──────────────────────────────────────────────────────────────
@@ -459,7 +470,8 @@ export const adminAnalyticsService = {
       prisma.waitlist.groupBy({
         by:     ["isOpen"],
         where:  { deletedAt: null },
-        _count: { id: true },
+        orderBy: { isOpen: "asc" },
+        _count: { _all: true },
       }),
     ]);
 
@@ -487,8 +499,8 @@ export const adminAnalyticsService = {
     }));
 
     /* Stats ─────────────────────────────────────────────────────── */
-    const openCount   = waitlistStatus.find((s) => s.isOpen === true)?._count.id  ?? 0;
-    const closedCount = waitlistStatus.find((s) => s.isOpen === false)?._count.id ?? 0;
+    const openCount   = countGroupAll(waitlistStatus.find((s) => s.isOpen === true));
+    const closedCount = countGroupAll(waitlistStatus.find((s) => s.isOpen === false));
     const total       = openCount + closedCount;
 
     const sorted = [...subCounts].sort((a, b) => a - b);
@@ -642,10 +654,11 @@ export const adminAnalyticsService = {
     const statusGroups = await prisma.featureRequest.groupBy({
       by:     ["status"],
       where:  { deletedAt: null },
-      _count: { id: true },
+      orderBy: { status: "asc" },
+      _count: { _all: true },
     });
 
-    const totalRequests = statusGroups.reduce((s, g) => s + g._count.id, 0);
+    const totalRequests = statusGroups.reduce((s, g) => s + countGroupAll(g), 0);
 
     const STATUS_LABELS: Record<string, string> = {
       UNDER_REVIEW: "Under review",
@@ -657,8 +670,8 @@ export const adminAnalyticsService = {
 
     const statusBreakdown: FeedbackStatusBreakdown[] = statusGroups.map((g) => ({
       status: STATUS_LABELS[g.status] ?? g.status,
-      count:  g._count.id,
-      pct:    pct(g._count.id, totalRequests),
+      count:  countGroupAll(g),
+      pct:    pct(countGroupAll(g), totalRequests),
       fill:   FEEDBACK_STATUS_FILLS[g.status] ?? "hsl(240 4% 30%)",
     }));
 
@@ -728,8 +741,8 @@ export const adminAnalyticsService = {
     });
 
     /* Summary stats ─────────────────────────────────────────────── */
-    const completedCount    = statusGroups.find((g) => g.status === "COMPLETED")?._count.id ?? 0;
-    const underReviewCount  = statusGroups.find((g) => g.status === "UNDER_REVIEW")?._count.id ?? 0;
+    const completedCount    = countGroupAll(statusGroups.find((g) => g.status === "COMPLETED"));
+    const underReviewCount  = countGroupAll(statusGroups.find((g) => g.status === "UNDER_REVIEW"));
 
     return {
       statusBreakdown,
@@ -763,12 +776,13 @@ export const adminAnalyticsService = {
       prisma.roadmapItem.groupBy({
         by:     ["status"],
         where:  { deletedAt: null },
-        _count: { id: true },
+        orderBy: { status: "asc" },
+        _count: { _all: true },
       }),
       prisma.roadmap.count({ where: { deletedAt: null } }),
     ]);
 
-    const totalItems = statusGroups.reduce((s, g) => s + g._count.id, 0);
+    const totalItems = statusGroups.reduce((s, g) => s + countGroupAll(g), 0);
 
     const STATUS_LABELS: Record<string, string> = {
       PLANNED:     "Planned",
@@ -778,14 +792,14 @@ export const adminAnalyticsService = {
 
     const progress: RoadmapProgressItem[] = statusGroups.map((g) => ({
       status: STATUS_LABELS[g.status] ?? g.status,
-      count:  g._count.id,
-      pct:    pct(g._count.id, totalItems),
+      count:  countGroupAll(g),
+      pct:    pct(countGroupAll(g), totalItems),
       fill:   ROADMAP_STATUS_FILLS[g.status] ?? "hsl(240 4% 30%)",
     }));
 
-    const completedCount    = statusGroups.find((g) => g.status === "COMPLETED")?._count.id  ?? 0;
-    const inProgressCount   = statusGroups.find((g) => g.status === "IN_PROGRESS")?._count.id ?? 0;
-    const plannedCount      = statusGroups.find((g) => g.status === "PLANNED")?._count.id     ?? 0;
+    const completedCount    = countGroupAll(statusGroups.find((g) => g.status === "COMPLETED"));
+    const inProgressCount   = countGroupAll(statusGroups.find((g) => g.status === "IN_PROGRESS"));
+    const plannedCount      = countGroupAll(statusGroups.find((g) => g.status === "PLANNED"));
 
     return {
       progress,

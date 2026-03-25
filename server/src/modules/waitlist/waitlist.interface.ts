@@ -17,6 +17,8 @@ export interface GetWaitlistsQuery {
   limit?: number;
   search?: string;
   isOpen?: boolean;
+  /** When true, list endpoints return both archived + non-archived waitlists. */
+  includeArchived?: boolean;
 }
 
 /* ── Service-layer types ─────────────────────────────────────────── */
@@ -42,6 +44,7 @@ export type WaitlistItem = Pick<
   | "description"
   | "logoUrl"
   | "isOpen"
+  | "archivedAt"
   | "createdAt"
   | "updatedAt"
 > & {
@@ -101,6 +104,7 @@ export type WaitlistDetail = Pick<
   | "logoUrl"
   | "theme"
   | "isOpen"
+  | "archivedAt"
   | "createdAt"
   | "updatedAt"
 > & {
@@ -108,6 +112,20 @@ export type WaitlistDetail = Pick<
     subscribers: number;
   };
 };
+
+export interface UpdateWaitlistStatusPayload {
+  waitlistId:        string;
+  workspaceId:       string;
+  requestingUserId:  string;
+  isOpen:            boolean;
+}
+
+export interface ArchiveWaitlistPayload {
+  waitlistId:        string;
+  workspaceId:       string;
+  requestingUserId:  string;
+  archived:          boolean;
+}
 
 /**
  * DELETE /:id returns a lightweight confirmation object —

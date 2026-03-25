@@ -40,8 +40,13 @@ export const validateQuery = (zodSchema: z.ZodTypeAny) => {
             return next(parsedResult.error);
         }
 
-        // Overwrite req.query with the coerced result (strings → numbers etc.)
-        req.query = parsedResult.data as typeof req.query;
+        // Re-define req.query if it's a read-only getter to avoid crash
+        Object.defineProperty(req, 'query', {
+            value: parsedResult.data,
+            writable: true,
+            configurable: true,
+            enumerable: true
+        });
         next();
     };
 };

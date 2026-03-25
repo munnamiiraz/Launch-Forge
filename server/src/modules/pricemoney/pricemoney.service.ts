@@ -22,6 +22,7 @@ import {
   toPublicPrizeRow,
   sortPrizesByRank,
 } from "./pricemoney.utils";
+import { assertPlanFeature } from "../../middlewares/checkPlanFeature";
 
 /* ── Shared Prisma select ────────────────────────────────────────── */
 
@@ -57,7 +58,10 @@ export const prizeService = {
       rankFrom, rankTo, imageUrl, expiresAt,
     } = payload;
 
-    /* 1. Verify membership and require OWNER role ────────────────── */
+    /* 1. Plan gate — require Pro or higher ──────────────────────── */
+    await assertPlanFeature(workspaceId, "prizeAnnouncements");
+
+    /* 2. Verify membership and require OWNER role ────────────────── */
     const membership = await prisma.workspaceMember.findUnique({
       where: {
         workspaceId_userId: { workspaceId, userId: requestingUserId },

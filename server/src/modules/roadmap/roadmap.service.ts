@@ -18,6 +18,7 @@ import {
   buildStatusFilter,
   buildUpdateData,
 } from "./roadmap.utils";
+import { assertPlanFeature } from "../../middlewares/checkPlanFeature";
 
 /* Shared Prisma select for a RoadmapItemRow */
 const ROADMAP_ITEM_SELECT = {
@@ -52,7 +53,10 @@ export const roadmapService = {
       eta,
     } = payload;
 
-    /* 1. Verify workspace membership ────────────────────────────── */
+    /* 1. Plan gate — require Pro or higher ──────────────────────── */
+    await assertPlanFeature(workspaceId, "roadmap");
+
+    /* 2. Verify workspace membership ────────────────────────────── */
     const membership = await prisma.workspaceMember.findUnique({
       where: {
         workspaceId_userId: { workspaceId, userId: requestingUserId },
@@ -198,7 +202,10 @@ export const roadmapService = {
   ): Promise<UpdateRoadmapItemResult> {
     const { itemId, workspaceId, requestingUserId } = payload;
 
-    /* 1. Verify workspace membership ────────────────────────────── */
+    /* 1. Plan gate — require Pro or higher ──────────────────────── */
+    await assertPlanFeature(workspaceId, "roadmap");
+
+    /* 2. Verify workspace membership ────────────────────────────── */
     const membership = await prisma.workspaceMember.findUnique({
       where: {
         workspaceId_userId: { workspaceId, userId: requestingUserId },

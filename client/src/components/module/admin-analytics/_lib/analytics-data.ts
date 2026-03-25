@@ -151,10 +151,19 @@ function fmtDate(d: Date) {
 function fmtMonth(d: Date) {
   return d.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
 }
-function rng(a: number, b: number) {
+function rng(a: number, b: number, seed?: number) {
+  if (seed !== undefined) {
+    // Simple deterministic pseudo-random based on seed
+    const x = Math.sin(seed) * 10000;
+    return Math.floor((x - Math.floor(x)) * (b - a + 1)) + a;
+  }
   return Math.floor(Math.random() * (b - a + 1)) + a;
 }
-function pick<T>(arr: T[]): T {
+function pick<T>(arr: T[], seed?: number): T {
+  if (seed !== undefined) {
+    const x = Math.sin(seed) * 10000;
+    return arr[Math.floor((x - Math.floor(x)) * arr.length)];
+  }
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
@@ -175,11 +184,12 @@ export function getEngagementTimeline(days = 60): EngagementPoint[] {
   let mau = 3_200;
   for (let i = days; i >= 0; i--) {
     const d = daysAgo(i);
+    const seed = d.getTime();
     const isWeekend = [0, 6].includes(d.getDay());
-    const dau    = rng(isWeekend ? 480 : 700, isWeekend ? 760 : 980);
-    const wau    = rng(2_400, 3_100);
-    const newReg = rng(8, 28);
-    mau = Math.max(2_800, mau + rng(-20, 60));
+    const dau    = rng(isWeekend ? 480 : 700, isWeekend ? 760 : 980, seed);
+    const wau    = rng(2_400, 3_100, seed + 1);
+    const newReg = rng(8, 28, seed + 2);
+    mau = Math.max(2_800, mau + rng(-20, 60, seed + 3));
     pts.push({ date: fmtDate(d), dau, wau, mau, newReg });
   }
   return pts;
@@ -207,8 +217,9 @@ export function getPlatformSubscriberGrowth(): PlatformSubscriberPoint[] {
   const pts: PlatformSubscriberPoint[] = [];
   let cumulative = 840_000;
   for (let i = 11; i >= 0; i--) {
-    const newSubs    = rng(28_000, 72_000);
-    const referralSubs = Math.floor(newSubs * (0.28 + Math.random() * 0.14));
+    const seed = i * 12345;
+    const newSubs    = rng(28_000, 72_000, seed);
+    const referralSubs = Math.floor(newSubs * (0.28 + (rng(0, 14, seed + 1) / 100)));
     cumulative += newSubs;
     pts.push({
       month:          fmtMonth(monthsAgo(i)),
@@ -250,15 +261,16 @@ export function getReferralNetworkTimeline(): ReferralNetworkPoint[] {
   const pts: ReferralNetworkPoint[] = [];
   let cumRefs = 280_000;
   for (let i = 11; i >= 0; i--) {
-    const total  = rng(22_000, 48_000);
-    const chain  = Math.floor(total * (0.18 + Math.random() * 0.12));
+    const seed = i * 54321;
+    const total  = rng(22_000, 48_000, seed);
+    const chain  = Math.floor(total * (0.18 + (rng(0, 12, seed + 1) / 100)));
     cumRefs += total;
     pts.push({
       month:          fmtMonth(monthsAgo(i)),
       totalReferrals: total,
       chainReferrals: chain,
-      referrers:      rng(8_000, 18_000),
-      avgChainDepth:  parseFloat((1.4 + Math.random() * 0.8).toFixed(2)),
+      referrers:      rng(8_000, 18_000, seed + 2),
+      avgChainDepth:  parseFloat((1.4 + (rng(0, 80, seed + 3) / 100)).toFixed(2)),
     });
   }
   return pts;
@@ -290,11 +302,13 @@ export function getFeedbackStatusBreakdown(): FeedbackStatusBreakdown[] {
 export function getFeedbackTimeline(): FeedbackCategoryPoint[] {
   const pts: FeedbackCategoryPoint[] = [];
   for (let i = 29; i >= 0; i--) {
+    const d = daysAgo(i);
+    const seed = d.getTime();
     pts.push({
-      date:     fmtDate(daysAgo(i)),
-      requests: rng(30, 120),
-      votes:    rng(200, 900),
-      comments: rng(20, 80),
+      date:     fmtDate(d),
+      requests: rng(30, 120, seed),
+      votes:    rng(200, 900, seed + 1),
+      comments: rng(20, 80, seed + 2),
     });
   }
   return pts;
@@ -335,10 +349,11 @@ export function getRoadmapStats(): RoadmapStats {
 export function getChangelogTimeline(): ChangelogPoint[] {
   const pts: ChangelogPoint[] = [];
   for (let i = 11; i >= 0; i--) {
+    const seed = i * 67890;
     pts.push({
       month:     fmtMonth(monthsAgo(i)),
-      published: rng(40, 180),
-      drafts:    rng(10, 60),
+      published: rng(40, 180, seed),
+      drafts:    rng(10, 60, seed + 1),
     });
   }
   return pts;
@@ -348,12 +363,14 @@ export function getChangelogTimeline(): ChangelogPoint[] {
 export function getWorkspaceHeatmap(): HeatmapCell[] {
   const days  = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
   const cells: HeatmapCell[] = [];
-  for (const day of days) {
+  for (let dIdx = 0; dIdx < days.length; dIdx++) {
+    const day = days[dIdx];
     const isWeekend = day === "Sat" || day === "Sun";
     for (let hour = 0; hour < 24; hour++) {
+      const seed = dIdx * 24 + hour;
       const isPeak = hour >= 9 && hour <= 18 && !isWeekend;
       const isEvening = hour >= 19 && hour <= 22;
-      const base  = isPeak ? rng(55, 95) : isEvening ? rng(30, 65) : rng(2, 25);
+      const base  = isPeak ? rng(55, 95, seed) : isEvening ? rng(30, 65, seed) : rng(2, 25, seed);
       cells.push({ day, hour, value: isWeekend ? Math.floor(base * 0.45) : base });
     }
   }

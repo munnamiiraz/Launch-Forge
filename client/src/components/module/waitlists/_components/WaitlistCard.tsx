@@ -56,7 +56,7 @@ export function WaitlistCard({ waitlist, index }: WaitlistCardProps) {
         "hover:-translate-y-0.5"
       )}>
         {/* Top accent line */}
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-indigo-500/30" />
+        <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-indigo-500/30" />
 
         {/* Corner glow */}
         <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-indigo-500/5 blur-2xl opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
@@ -67,7 +67,7 @@ export function WaitlistCard({ waitlist, index }: WaitlistCardProps) {
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0">
               <Avatar className="h-9 w-9 shrink-0 rounded-xl">
-                <AvatarFallback className={cn("rounded-xl bg-gradient-to-br text-xs font-bold text-white", gradient)}>
+                <AvatarFallback className={cn("rounded-xl bg-linear-to-br text-xs font-bold text-white", gradient)}>
                   {waitlist.name.slice(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
@@ -106,7 +106,7 @@ export function WaitlistCard({ waitlist, index }: WaitlistCardProps) {
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-44 border-zinc-800 bg-background/95 backdrop-blur-xl">
                   <DropdownMenuItem asChild className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60">
-                    <Link href={`/dashboard/waitlists/${waitlist.id}`}>
+                    <Link href={`/dashboard/waitlists/${waitlist.slug}`}>
                       <TrendingUp size={12} />View analytics
                     </Link>
                   </DropdownMenuItem>
@@ -171,7 +171,7 @@ export function WaitlistCard({ waitlist, index }: WaitlistCardProps) {
           </div>
 
           {/* CTA */}
-          <Link href={`/dashboard/waitlists/${waitlist.id}`}>
+          <Link href={`/dashboard/waitlists/${waitlist.slug}`}>
             <Button
               variant="ghost"
               size="sm"

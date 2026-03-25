@@ -216,13 +216,13 @@ export function AnalyticsMockUI() {
                   backgroundImage: "radial-gradient(circle at 50% 50%, rgba(99,102,241,0.3) 0%, transparent 70%)",
                 }}
               />
-              {GEO_DOTS.map((dot) => (
+              {GEO_DOTS.map((dot, i) => (
                 <motion.div
                   key={dot.label}
                   initial={{ scale: 0, opacity: 0 }}
                   whileInView={{ scale: 1, opacity: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.8 + Math.random() * 0.3, type: "spring", stiffness: 300 }}
+                  transition={{ delay: 0.8 + i * 0.1, type: "spring", stiffness: 300 }}
                   className="absolute -translate-x-1/2 -translate-y-1/2"
                   style={{ left: dot.x, top: dot.y }}
                 >

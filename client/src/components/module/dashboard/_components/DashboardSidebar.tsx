@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
@@ -31,14 +31,29 @@ import { cn } from "@/src/lib/utils";
 import type { DashboardUser } from "../_types";
 import { useWorkspace } from "@/src/provider/WorkspaceProvider";
 import { logoutAction } from "@/src/services/auth/logout.action";
+import { isFeatureAvailable, isWithinLimit, type PlanTier, type FeatureKey } from "@/src/lib/plan-limits";
 
 /* ── Nav structure ───────────────────────────────────────────────── */
-const NAV_GROUPS = [
+type NavItem = {
+  id?: string;
+  label: string;
+  href: string;
+  icon: React.ComponentType<{ size?: number; className?: string }>;
+  badge?: string;
+  featureGate?: FeatureKey; // If set, check plan access
+};
+
+type NavGroup = {
+  label: string;
+  items: NavItem[];
+};
+
+const NAV_GROUPS: NavGroup[] = [
   {
     label: "Overview",
     items: [
       { label: "Dashboard",   href: "/dashboard",            icon: LayoutDashboard },
-      { label: "Analytics",   href: "/dashboard/analytics",  icon: BarChart3 },
+      { label: "Analytics",   href: "/dashboard/analytics",  icon: BarChart3, featureGate: "analytics" },
     ],
   },
   {
@@ -46,7 +61,7 @@ const NAV_GROUPS = [
     items: [
       { label: "All Waitlists",  href: "/dashboard/waitlists",              icon: Users },
       { label: "Leaderboard",    href: "/dashboard/leaderboard",            icon: Trophy },
-      { label: "Prizes",         href: "/dashboard/prizes",                 icon: Gift },
+      { label: "Prizes",         href: "/dashboard/prizes",                 icon: Gift, featureGate: "prizeAnnouncements" },
     ],
   },
   {
@@ -84,8 +99,9 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
   const { activeWorkspace, setActiveWorkspace } = useWorkspace();
   const [collapsed, setCollapsed] = useState(false);
 
-  // Use activeWorkspace from context everywhere now.
-  // No more local activeWs!
+  // Derive current plan from active workspace
+  const currentPlan: PlanTier = (activeWorkspace?.plan?.toUpperCase() as PlanTier) || "FREE";
+  const canCreateWorkspace = isWithinLimit(currentPlan, "workspaces", initialWorkspaces.length);
 
   const handleSetActive = (ws: Workspace) => {
     setActiveWorkspace(ws);
@@ -93,6 +109,41 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
 
   const [showNewWsDialog, setShowNewWsDialog] = useState(false);
   const [showEditWsDialog, setShowEditWsDialog] = useState(false);
+
+  // State for new workspace form
+  const [newWsName, setNewWsName] = useState("");
+  const [newWsSlug, setNewWsSlug] = useState("");
+  const [slugStatus, setSlugStatus] = useState<"idle" | "checking" | "available" | "taken">("idle");
+
+  // Debounced slug check
+  useEffect(() => {
+    if (!newWsSlug || newWsSlug.length < 3) {
+      setSlugStatus("idle");
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setSlugStatus("checking");
+      try {
+        const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
+        const res = await fetch(`${baseUrl}/workspaces/check-slug/${newWsSlug}`, {
+          credentials: "include",
+        });
+        if (res.ok) {
+          const json = await res.json();
+          setSlugStatus(json.data.available ? "available" : "taken");
+        } else {
+          setSlugStatus("idle");
+        }
+      } catch (error) {
+        console.error(error);
+        setSlugStatus("idle");
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [newWsSlug]);
+
 
   const handleDeleteWorkspace = async (workspaceId: string) => {
     if (!confirm("Are you sure you want to delete this workspace? This action cannot be undone.")) return;
@@ -116,19 +167,19 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
 
   const handleCreateWorkspace = async (e: React.FormEvent) => {
     e.preventDefault();
-    const name = (document.getElementById("ws-name") as HTMLInputElement).value;
-    const slug = (document.getElementById("ws-slug") as HTMLInputElement).value;
-    if (!name || !slug) return;
+    if (!newWsName || !newWsSlug || slugStatus !== "available") return;
     try {
       const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
       const res = await fetch(`${baseUrl}/workspaces`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ name, slug })
+        body: JSON.stringify({ name: newWsName, slug: newWsSlug })
       });
       if (res.ok) {
         setShowNewWsDialog(false);
+        setNewWsName("");
+        setNewWsSlug("");
         window.location.reload();
       } else {
         const err = await res.json();
@@ -239,13 +290,23 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                       <div className="py-2 px-3 text-xs text-muted-foreground/80">No workspaces found</div>
                     )}
                     <DropdownMenuSeparator className="bg-muted/60" />
-                    <DropdownMenuItem 
-                      onSelect={() => setShowNewWsDialog(true)}
-                      className="cursor-pointer gap-2 text-xs text-muted-foreground/80 hover:bg-muted/60 hover:text-foreground focus:bg-muted/60"
-                    >
-                      <Plus size={13} />
-                      New workspace
-                    </DropdownMenuItem>
+                    {canCreateWorkspace ? (
+                      <DropdownMenuItem 
+                        onSelect={() => setShowNewWsDialog(true)}
+                        className="cursor-pointer gap-2 text-xs text-muted-foreground/80 hover:bg-muted/60 hover:text-foreground focus:bg-muted/60"
+                      >
+                        <Plus size={13} />
+                        New workspace
+                      </DropdownMenuItem>
+                    ) : (
+                      <DropdownMenuItem 
+                        onSelect={() => router.push("/dashboard/billing")}
+                        className="cursor-pointer gap-2 text-xs text-indigo-400 hover:bg-indigo-500/10 focus:bg-indigo-500/10"
+                      >
+                        <Sparkles size={13} />
+                        Upgrade for more workspaces
+                      </DropdownMenuItem>
+                    )}
                     {activeWorkspace && (
                       <>
                         <DropdownMenuSeparator className="bg-muted/60" />
@@ -341,9 +402,10 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
               {group.items.map((item) => {
                 const itemId = 'id' in item ? item.id : item.href;
                 const isActive = pathname === item.href ||
-                  (item.href !== "/dashboard" && pathname.startsWith(item.href));
+                  (item.href !== "/dashboard" && item.href !== "" && pathname.startsWith(item.href));
                 const Icon = item.icon;
                 const isDisabled = !item.href || item.href === "";
+                const isGated = item.featureGate && !isFeatureAvailable(currentPlan, item.featureGate);
 
                 const link = isDisabled ? (
                   <div
@@ -394,12 +456,17 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                     {!collapsed && (
                       <>
                         <span className="flex-1 truncate">{item.label}</span>
+                        {isGated && (
+                          <Badge className="h-4 rounded-full border-indigo-500/30 bg-indigo-500/12 px-1.5 py-0 text-[9px] font-semibold text-indigo-400">
+                            Pro
+                          </Badge>
+                        )}
                         {"badge" in item && item.badge && (
                           <Badge className="h-4 rounded-full border-emerald-500/30 bg-emerald-500/12 px-1.5 py-0 text-[9px] font-semibold text-emerald-400">
                             {item.badge}
                           </Badge>
                         )}
-                        {isActive && (
+                        {isActive && !isGated && (
                           <span className="h-1.5 w-1.5 rounded-full bg-indigo-400" />
                         )}
                       </>
@@ -408,10 +475,10 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                 );
 
                 return collapsed ? (
-                  <Tooltip key={item.href}>
+                  <Tooltip key={itemId}>
                     <TooltipTrigger asChild>{link}</TooltipTrigger>
                     <TooltipContent side="right" className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80">
-                      {item.label}
+                      {item.label}{isGated ? " (Pro)" : ""}
                     </TooltipContent>
                   </Tooltip>
                 ) : link;
@@ -510,15 +577,50 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
           <form onSubmit={handleCreateWorkspace} className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="ws-name">Workspace Name</Label>
-              <Input id="ws-name" placeholder="Acme Inc." className="border-zinc-800 bg-zinc-900 focus-visible:ring-indigo-500" required />
+              <Input 
+                id="ws-name" 
+                placeholder="Acme Inc." 
+                className="border-zinc-800 bg-zinc-900 focus-visible:ring-indigo-500" 
+                required 
+                value={newWsName} 
+                onChange={(e) => setNewWsName(e.target.value)}
+              />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="ws-slug">Workspace Slug</Label>
-              <Input id="ws-slug" placeholder="acme" className="border-zinc-800 bg-zinc-900 focus-visible:ring-indigo-500" required />
+              <div className="flex items-center justify-between">
+                <Label htmlFor="ws-slug">Workspace Slug</Label>
+                {slugStatus === "checking" && <span className="text-[10px] text-muted-foreground animate-pulse">Checking availability...</span>}
+                {slugStatus === "available" && <span className="text-[10px] text-emerald-400">Available</span>}
+                {slugStatus === "taken" && <span className="text-[10px] text-rose-400">Already taken</span>}
+              </div>
+              <Input 
+                id="ws-slug" 
+                placeholder="acme" 
+                className={cn(
+                  "border-zinc-800 bg-zinc-900 focus-visible:ring-indigo-500",
+                  slugStatus === "available" && "border-emerald-500/50 focus-visible:ring-emerald-500",
+                  slugStatus === "taken" && "border-rose-500/50 focus-visible:ring-rose-500"
+                )} 
+                required 
+                value={newWsSlug}
+                onChange={(e) => setNewWsSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))}
+              />
+              <p className="text-[10px] text-muted-foreground/60 px-1">
+                Only lowercase, numbers, and dashes.
+              </p>
             </div>
             <DialogFooter>
               <Button type="button" variant="ghost" onClick={() => setShowNewWsDialog(false)} className="hover:bg-zinc-800 hover:text-foreground">Cancel</Button>
-              <Button type="submit" className="bg-indigo-600 hover:bg-indigo-500 text-white">Create Workspace</Button>
+              <Button 
+                type="submit" 
+                className={cn(
+                  "bg-indigo-600 hover:bg-indigo-500 text-white",
+                  (slugStatus !== "available" || !newWsName) && "opacity-50 cursor-not-allowed"
+                )}
+                disabled={slugStatus !== "available" || !newWsName}
+              >
+                Create Workspace
+              </Button>
             </DialogFooter>
           </form>
         </DialogContent>

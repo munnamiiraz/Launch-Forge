@@ -147,4 +147,64 @@ export const waitlistByIdController = {
       next(error);
     }
   },
+
+  /* ── PATCH /api/v1/waitlists/:workspaceId/:id/status ───────────── */
+
+  async updateWaitlistStatus(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const waitlistId       = req.params.id as string;
+      const workspaceId      = req.params.workspaceId as string;
+      const requestingUserId = req.user!.id;
+      const { isOpen }       = req.body as { isOpen: boolean };
+
+      const updated = await waitlistByIdService.updateWaitlistStatus({
+        waitlistId,
+        workspaceId,
+        requestingUserId,
+        isOpen,
+      });
+
+      res.status(status.OK).json({
+        success: true,
+        message: WAITLIST_BY_ID_MESSAGES.STATUS_UPDATED,
+        data:    updated,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /* ── PATCH /api/v1/waitlists/:workspaceId/:id/archive ──────────── */
+
+  async setWaitlistArchived(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const waitlistId       = req.params.id as string;
+      const workspaceId      = req.params.workspaceId as string;
+      const requestingUserId = req.user!.id;
+      const { archived }     = req.body as { archived: boolean };
+
+      const updated = await waitlistByIdService.setWaitlistArchived({
+        waitlistId,
+        workspaceId,
+        requestingUserId,
+        archived,
+      });
+
+      res.status(status.OK).json({
+        success: true,
+        message: archived ? WAITLIST_BY_ID_MESSAGES.ARCHIVED : WAITLIST_BY_ID_MESSAGES.UNARCHIVED,
+        data:    updated,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 };

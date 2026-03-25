@@ -65,6 +65,7 @@ export interface AddMemberPayload {
 export interface GetDashboardOverviewPayload {
   requestingUserId: string;
   workspaceId?:      string;
+  includeArchived?: boolean;
 }
 
 export interface RemoveMemberPayload {
@@ -150,4 +151,8 @@ export interface MemberPaginationMeta {
   totalPages:     number;
   hasNextPage:    boolean;
   hasPreviousPage:boolean;
+}
+
+export interface CheckSlugAvailabilityPayload {
+  slug: string;
 }

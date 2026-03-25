@@ -2,12 +2,12 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Loader2, RefreshCw, Trash2, ArrowRight, Globe, Lock, Calendar } from "lucide-react";
 import Link from "next/link";
+import { Loader2, RefreshCw, Trash2, Globe, Lock, Calendar, MoreHorizontal, Archive, Plus } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useWorkspace } from "@/src/provider/WorkspaceProvider";
 import { Button } from "@/src/components/ui/button";
-import { Badge } from "@/src/components/ui/badge";
+import { Switch } from "@/src/components/ui/switch";
 import { cn } from "@/src/lib/utils";
 import {
   AlertDialog,
@@ -19,6 +19,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/src/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/src/components/ui/dropdown-menu";
 
 interface ApiWaitlist {
   id:          string;
@@ -27,6 +34,7 @@ interface ApiWaitlist {
   description: string | null;
   logoUrl:     string | null;
   isOpen:      boolean;
+  archivedAt?: string | null;
   createdAt:   string;
   updatedAt:   string;
   _count:      { subscribers: number };
@@ -43,13 +51,18 @@ export function WorkspaceWaitlistsClient() {
   const [error,     setError]         = useState<string | null>(null);
   const [deleteId,  setDeleteId]      = useState<string | null>(null);
   const [deleting,  setDeleting]      = useState(false);
+  const [includeArchived, setIncludeArchived] = useState(false);
 
   const fetchWaitlists = useCallback(async () => {
     if (!activeWorkspace) return;
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`${BASE_URL}/waitlists/${activeWorkspace.id}`, {
+      const url = includeArchived
+        ? `${BASE_URL}/waitlists/${activeWorkspace.id}?includeArchived=true`
+        : `${BASE_URL}/waitlists/${activeWorkspace.id}`;
+
+      const res = await fetch(url, {
         credentials: "include",
         cache: "no-store",
       });
@@ -61,11 +74,44 @@ export function WorkspaceWaitlistsClient() {
     } finally {
       setLoading(false);
     }
-  }, [activeWorkspace]);
+  }, [activeWorkspace, includeArchived]);
 
   useEffect(() => {
     fetchWaitlists();
   }, [fetchWaitlists]);
+
+  const patchStatus = async (waitlistId: string, isOpen: boolean) => {
+    if (!activeWorkspace) return;
+    const res = await fetch(`${BASE_URL}/waitlists/${activeWorkspace.id}/${waitlistId}/status`, {
+      method: "PATCH",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ isOpen }),
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.message || "Failed to update status");
+    const data = json.data as { id: string; isOpen: boolean; archivedAt: string | null };
+    setWaitlists((prev) => prev.map((w) => (w.id === data.id ? { ...w, isOpen: data.isOpen, archivedAt: data.archivedAt } : w)));
+  };
+
+  const patchArchive = async (waitlistId: string, archived: boolean) => {
+    if (!activeWorkspace) return;
+    const res = await fetch(`${BASE_URL}/waitlists/${activeWorkspace.id}/${waitlistId}/archive`, {
+      method: "PATCH",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ archived }),
+    });
+    const json = await res.json();
+    if (!res.ok) throw new Error(json.message || "Failed to update archive");
+    const data = json.data as { id: string; isOpen: boolean; archivedAt: string | null };
+
+    setWaitlists((prev) => {
+      // If we're not including archived, an archive action should immediately hide it.
+      if (!includeArchived && archived) return prev.filter((w) => w.id !== data.id);
+      return prev.map((w) => (w.id === data.id ? { ...w, isOpen: data.isOpen, archivedAt: data.archivedAt } : w));
+    });
+  };
 
   const handleDelete = async () => {
     if (!deleteId || !activeWorkspace) return;
@@ -152,9 +198,31 @@ export function WorkspaceWaitlistsClient() {
   /* ── Grid ──────────────────────────────────────────────────────── */
   return (
     <>
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          <Switch
+            size="sm"
+            checked={includeArchived}
+            onCheckedChange={(v) => setIncludeArchived(Boolean(v))}
+          />
+          <span className="text-xs text-muted-foreground/70">Show archived</span>
+        </div>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={fetchWaitlists}
+          className="gap-2 text-xs text-muted-foreground/60 hover:text-muted-foreground"
+        >
+          <RefreshCw size={11} /> Refresh
+        </Button>
+      </div>
+
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <AnimatePresence mode="popLayout">
-          {waitlists.map((wl, i) => (
+          {waitlists
+            .slice()
+            .sort((a, b) => Number(Boolean(a.archivedAt)) - Number(Boolean(b.archivedAt)))
+            .map((wl, i) => (
             <motion.div
               key={wl.id}
               initial={{ opacity: 0, y: 12 }}
@@ -162,32 +230,93 @@ export function WorkspaceWaitlistsClient() {
               exit={{ opacity: 0, scale: 0.97 }}
               transition={{ delay: i * 0.04, duration: 0.3 }}
               className="group relative flex flex-col gap-3 rounded-xl border border-border/80 bg-card/40 p-5 hover:border-zinc-700/80 hover:bg-card/60 transition-all duration-200 cursor-pointer"
-              onClick={() => router.push(`/explore/${wl.slug}`)}
+              onClick={() => router.push(`/dashboard/waitlists/${wl.slug}`)}
             >
               {/* Status badge */}
               <div className="flex items-center justify-between">
                 <span
                   className={cn(
                     "flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold",
-                    wl.isOpen
+                    wl.archivedAt
+                      ? "border-zinc-700/60 bg-muted/40 text-muted-foreground/60"
+                      : wl.isOpen
                       ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
                       : "border-zinc-700/60 bg-muted/40 text-muted-foreground/60"
                   )}
                 >
-                  {wl.isOpen ? <Globe size={9} /> : <Lock size={9} />}
-                  {wl.isOpen ? "Open" : "Closed"}
+                  {wl.archivedAt ? <Archive size={9} /> : wl.isOpen ? <Globe size={9} /> : <Lock size={9} />}
+                  {wl.archivedAt ? "Archived" : wl.isOpen ? "Open" : "Closed"}
                 </span>
 
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setDeleteId(wl.id);
-                  }}
-                  className="rounded-md p-1.5 text-muted-foreground/40 opacity-0 transition-all group-hover:opacity-100 hover:bg-red-500/10 hover:text-red-400"
-                  title="Delete waitlist"
-                >
-                  <Trash2 size={13} />
-                </button>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => e.stopPropagation()}
+                      className="h-7 w-7 rounded-md text-muted-foreground/60 opacity-0 transition-all group-hover:opacity-100 hover:bg-muted/60 hover:text-foreground/80"
+                    >
+                      <MoreHorizontal size={13} />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align="end"
+                    className="w-44 border-zinc-800 bg-background/95 backdrop-blur-xl"
+                  >
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/dashboard/waitlists/${wl.id}`);
+                      }}
+                      className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60"
+                    >
+                      View details
+                    </DropdownMenuItem>
+
+                    <DropdownMenuSeparator className="bg-muted/60" />
+
+                    <DropdownMenuItem
+                      disabled={Boolean(wl.archivedAt)}
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        try {
+                          await patchStatus(wl.id, !wl.isOpen);
+                        } catch (err: any) {
+                          alert(err.message || "Failed to update status");
+                        }
+                      }}
+                      className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60"
+                    >
+                      {wl.isOpen ? "Mark as closed" : "Mark as open"}
+                    </DropdownMenuItem>
+
+                    <DropdownMenuItem
+                      onClick={async (e) => {
+                        e.stopPropagation();
+                        try {
+                          await patchArchive(wl.id, !wl.archivedAt);
+                        } catch (err: any) {
+                          alert(err.message || "Failed to update archive");
+                        }
+                      }}
+                      className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60"
+                    >
+                      {wl.archivedAt ? "Unarchive" : "Archive"}
+                    </DropdownMenuItem>
+
+                    <DropdownMenuSeparator className="bg-muted/60" />
+
+                    <DropdownMenuItem
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteId(wl.id);
+                      }}
+                      className="cursor-pointer gap-2 text-xs text-red-400 hover:bg-red-500/8 hover:text-red-400 focus:bg-red-500/8"
+                    >
+                      <Trash2 size={12} /> Delete
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
 
               {/* Name + description */}
@@ -221,18 +350,6 @@ export function WorkspaceWaitlistsClient() {
             </motion.div>
           ))}
         </AnimatePresence>
-      </div>
-
-      {/* Refresh button */}
-      <div className="mt-2 flex justify-end">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={fetchWaitlists}
-          className="gap-2 text-xs text-muted-foreground/60 hover:text-muted-foreground"
-        >
-          <RefreshCw size={11} /> Refresh
-        </Button>
       </div>
 
       {/* Delete confirmation dialog */}

@@ -73,11 +73,15 @@ export const workspaceController = {
   ): Promise<void> {
     try {
       const requestingUserId = req.user!.id;
-      const { workspaceId }  = req.query;
+      const { workspaceId, includeArchived } = req.query as {
+        workspaceId?: string;
+        includeArchived?: string;
+      };
 
       const overview = await workspaceService.getDashboardOverview({
         requestingUserId,
         workspaceId: workspaceId as string,
+        includeArchived: includeArchived === "true",
       });
 
       res.status(status.OK).json({
@@ -249,6 +253,28 @@ export const workspaceController = {
       res.status(status.OK).json({
         success: true,
         message: WORKSPACE_MESSAGES.MEMBER_REMOVED,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /* ── GET /api/workspaces/check-slug/:slug ───────────────────── */
+
+  async checkSlugAvailability(
+    req:  Request,
+    res:  Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { slug } = req.params;
+
+      const result = await workspaceService.checkSlugAvailability({ slug: slug as string });
+
+      res.status(status.OK).json({
+        success: true,
+        message: result.available ? "Slug is available." : "Slug is already taken.",
+        data:    result,
       });
     } catch (error) {
       next(error);

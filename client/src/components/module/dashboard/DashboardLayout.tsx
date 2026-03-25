@@ -22,40 +22,47 @@ export async function DashboardLayout({ children }: DashboardLayoutProps) {
   const cookieHeader = cookieStore.getAll().map(c => `${c.name}=${c.value}`).join('; ');
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
 
-  const [userRes, wsRes] = await Promise.all([
-    fetch(`${baseUrl}/auth/me`, { headers: { Cookie: cookieHeader }, cache: "no-store" }),
-    fetch(`${baseUrl}/workspaces?limit=100`, { headers: { Cookie: cookieHeader }, cache: "no-store" }),
-  ]);
-
-  if (!userRes.ok) console.error("[DashboardLayout] /auth/me failed:", userRes.status, await userRes.text().catch(() => ""));
-  if (!wsRes.ok)   console.error("[DashboardLayout] /workspaces failed:", wsRes.status, await wsRes.text().catch(() => ""));
-
   let user = STUB_USER;
-  if (userRes.ok) {
-    const resJson = await userRes.json().catch(() => null);
-    if (resJson?.data) {
-      const nameParts = (resJson.data.name || "").split(" ").filter(Boolean);
-      const initials  = nameParts.length >= 2
-        ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase()
-        : (resJson.data.name || "UU").slice(0, 2).toUpperCase();
-      user = {
-        id:             resJson.data.id,
-        name:           resJson.data.name,
-        email:          resJson.data.email,
-        avatar:         resJson.data.image,
-        avatarInitials: initials,
-        avatarColor:    "from-indigo-500 to-violet-600",
-        plan:           resJson.data.plan || "free",
-      };
-    }
-  }
-
   let workspaces: { id: string; name: string; slug: string; plan: string }[] = [];
-  if (wsRes.ok) {
-    const wsJson = await wsRes.json().catch(() => null);
-    if (wsJson?.data) {
-      workspaces = wsJson.data;
+
+  try {
+    const [userRes, wsRes] = await Promise.all([
+      fetch(`${baseUrl}/auth/me`, { headers: { Cookie: cookieHeader }, cache: "no-store" }),
+      fetch(`${baseUrl}/workspaces?limit=100`, { headers: { Cookie: cookieHeader }, cache: "no-store" }),
+    ]);
+
+    if (userRes.ok) {
+      const resJson = await userRes.json();
+      if (resJson?.data) {
+        const nameParts = (resJson.data.name || "").split(" ").filter(Boolean);
+        const initials  = nameParts.length >= 2
+          ? (nameParts[0][0] + nameParts[nameParts.length - 1][0]).toUpperCase()
+          : (resJson.data.name || "UU").slice(0, 2).toUpperCase();
+        user = {
+          id:             resJson.data.id,
+          name:           resJson.data.name,
+          email:          resJson.data.email,
+          avatar:         resJson.data.image,
+          avatarInitials: initials,
+          avatarColor:    "from-indigo-500 to-violet-600",
+          plan:           resJson.data.plan || "free",
+        };
+      }
+    } else {
+      console.error("[DashboardLayout] /auth/me failed:", userRes.status);
     }
+
+    if (wsRes.ok) {
+      const wsJson = await wsRes.json();
+      if (wsJson?.data) {
+        workspaces = wsJson.data;
+      }
+    } else {
+      console.error("[DashboardLayout] /workspaces failed:", wsRes.status);
+    }
+  } catch (error) {
+    console.error("[DashboardLayout] Fetch Error:", error);
+    // Continue with fallbacks (STUB_USER and empty workspaces)
   }
 
   return (

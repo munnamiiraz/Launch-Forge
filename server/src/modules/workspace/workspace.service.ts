@@ -15,6 +15,7 @@ import {
   PaginatedWorkspaces,
   PaginatedMembers,
   MemberRow,
+  CheckSlugAvailabilityPayload,
 } from "./workspace.interface";
 import { WORKSPACE_MESSAGES } from "./workspace.constant";
 import {
@@ -68,7 +69,35 @@ export const workspaceService = {
       throw new AppError(status.NOT_FOUND, WORKSPACE_MESSAGES.USER_NOT_FOUND);
     }
 
-    /* 2. Slug must be globally unique ───────────────────────────── */
+    /* 2. Enforce plan-based workspace limits ────────────────────── */
+    const WORKSPACE_PLAN_LIMITS: Record<string, number> = {
+      FREE:    1,
+      STARTER: 1,
+      PRO:     Infinity,
+      GROWTH:  Infinity,
+    };
+
+    // Get the user's highest plan across all their existing workspaces
+    const existingWorkspaces = await prisma.workspace.findMany({
+      where: { ownerId: requestingUserId, deletedAt: null },
+      select: { plan: true },
+    });
+
+    const highestPlan = existingWorkspaces.reduce((best, ws) => {
+      const planRank: Record<string, number> = { FREE: 0, STARTER: 1, PRO: 2, GROWTH: 3 };
+      return (planRank[ws.plan] ?? 0) > (planRank[best] ?? 0) ? ws.plan : best;
+    }, "FREE" as string);
+
+    const wsLimit = WORKSPACE_PLAN_LIMITS[highestPlan] ?? 1;
+
+    if (wsLimit !== Infinity && existingWorkspaces.length >= wsLimit) {
+      throw new AppError(
+        status.PAYMENT_REQUIRED,
+        "Your current plan allows only " + wsLimit + " workspace" + (wsLimit !== 1 ? "s" : "") + ". Please upgrade to create more.",
+      );
+    }
+
+    /* 3. Slug must be globally unique ───────────────────────────── */
     const slugConflict = await prisma.workspace.findUnique({
       where:  { slug },
       select: { id: true },
@@ -78,7 +107,7 @@ export const workspaceService = {
       throw new AppError(status.CONFLICT, WORKSPACE_MESSAGES.SLUG_TAKEN);
     }
 
-    /* 3. Create workspace + owner membership atomically ─────────── */
+    /* 4. Create workspace + owner membership atomically ─────────── */
     const workspace = await prisma.$transaction(async (tx) => {
       const ws = await tx.workspace.create({
         data: {
@@ -103,6 +132,19 @@ export const workspaceService = {
     });
 
     return toWorkspaceItem(workspace);
+  },
+
+  async checkSlugAvailability(
+    payload: CheckSlugAvailabilityPayload,
+  ): Promise<{ available: boolean }> {
+    const { slug } = payload;
+
+    const existing = await prisma.workspace.findUnique({
+      where:  { slug },
+      select: { id: true },
+    });
+
+    return { available: !existing };
   },
 
   /* ──────────────────────────────────────────────────────────────
@@ -170,7 +212,7 @@ export const workspaceService = {
   async getDashboardOverview(
     payload: GetDashboardOverviewPayload,
   ) {
-    const { requestingUserId, workspaceId } = payload;
+    const { requestingUserId, workspaceId, includeArchived } = payload;
 
     // 1. Get all workspaces the user is a member of
     const memberships = await prisma.workspaceMember.findMany({
@@ -182,7 +224,7 @@ export const workspaceService = {
 
     // If a specific workspaceId is requested, Filter to only that one
     // (and verify the user is actually a member of it)
-    if (workspaceId) {
+    if (workspaceId && workspaceId !== "undefined") {
        if (!workspaceIds.includes(workspaceId)) {
           throw new AppError(status.FORBIDDEN, "You do not have access to this workspace.");
        }
@@ -191,13 +233,18 @@ export const workspaceService = {
 
     // 2. Fetch waitlists with their subscriber counts and top 3 referrers
     const waitlists = await prisma.waitlist.findMany({
-      where: { workspaceId: { in: workspaceIds }, deletedAt: null },
+      where: {
+        workspaceId: { in: workspaceIds },
+        deletedAt: null,
+        ...(includeArchived ? {} : { archivedAt: null }),
+      },
       select: {
          id: true,
          name: true,
          slug: true,
          logoUrl: true,
          isOpen: true,
+         archivedAt: true,
          createdAt: true,
          _count: {
             select: {
@@ -207,7 +254,7 @@ export const workspaceService = {
          subscribers: {
             where: { deletedAt: null, referralsCount: { gt: 0 } },
             orderBy: [{ referralsCount: "desc" }, { createdAt: "asc" }],
-            take: 3,
+            take: 5,
             select: {
                id: true,
                name: true,
@@ -259,6 +306,7 @@ export const workspaceService = {
           slug: w.slug,
           logoUrl: w.logoUrl,
           isOpen: w.isOpen,
+          archivedAt: w.archivedAt ? w.archivedAt.toISOString() : null,
           subscribers: w._count.subscribers,
           totalReferrals: s.totalReferrals,
           activeReferrers: s.activeReferrers,

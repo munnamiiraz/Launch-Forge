@@ -13,6 +13,7 @@ import {
   LeaderboardPaginationMeta,
   GetPublicLeaderboardPayload,
   PaginatedPublicLeaderboard,
+  PublicLeaderboardEntry,
 } from "./leaderboard.interface";
 import { LEADERBOARD_MESSAGES } from "./leaderboard.constants";
 import {
@@ -25,8 +26,8 @@ import {
   filterByTier,
   normaliseLeaderboardPagination,
   buildLeaderboardMeta,
+  maskEmail,
 } from "./leaderboard.utils";
-import { PublicLeaderboardEntry } from "../public-waitlist/public-waitlist.interface";
 
 export const leaderboardService = {
 

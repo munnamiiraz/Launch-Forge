@@ -124,7 +124,7 @@ export function GrowthChart() {
                   key={i}
                   className="mx-1 animate-pulse rounded-t bg-zinc-800"
                   style={{
-                    height: `${Math.random() * 60 + 20}%`,
+                    height: `${[45, 62, 38, 55, 72, 48, 60][i] || 50}%`,
                     width: `${100 / 8}%`,
                   }}
                 />
@@ -184,7 +184,7 @@ export function GrowthChart() {
                     <motion.circle
                       cx={p.x}
                       cy={p.y}
-                      r={hoveredPoint?.day === p.day ? 6 : 3.5}
+                      r={hoveredPoint === p ? 6 : 3.5}
                       fill="rgb(99,102,241)"
                       initial={{ scale: 0, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
@@ -199,15 +199,20 @@ export function GrowthChart() {
               {/* Tooltip */}
               {hoveredPoint && (
                 <div
-                  className="absolute z-10 rounded-lg bg-zinc-900 px-3 py-2 shadow-lg border border-zinc-700"
+                  className="pointer-events-none absolute z-10 rounded-lg bg-zinc-900 px-3 py-2 shadow-lg border border-zinc-700 transition-all duration-200"
                   style={{
-                    left: `${(points.find(p => p.day === hoveredPoint.day)?.x || 0) / W * 100}%`,
-                    top: '0',
-                    transform: 'translateX(-50%)',
+                    left: `${(points.find(p => p === hoveredPoint)?.x || 0) / W * 100}%`,
+                    top: '-10px',
+                    transform: 'translate(-50%, -100%)',
                   }}
                 >
-                  <p className="text-xs font-medium text-white">{hoveredPoint.day}</p>
-                  <p className="text-[10px] text-zinc-400">{hoveredPoint.value} signups</p>
+                  <div className="flex flex-col items-center">
+                    <p className="text-[10px] font-bold text-indigo-400 uppercase tracking-wider">{hoveredPoint.day}</p>
+                    <p className="text-sm font-black text-white">{hoveredPoint.value.toLocaleString()}</p>
+                    <p className="text-[9px] text-zinc-500">signups</p>
+                  </div>
+                  {/* Tooltip arrow */}
+                  <div className="absolute left-1/2 top-full h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rotate-45 border-b border-r border-zinc-700 bg-zinc-900" />
                 </div>
               )}
             </div>

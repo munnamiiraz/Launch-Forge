@@ -41,6 +41,8 @@ export interface PublicWaitlistPageData {
   description:      string | null;
   logoUrl:          string | null;
   isOpen:           boolean;
+  /** End date of the waitlist (when it closes) */
+  endDate:          string | null;
   totalSubscribers: number;
   /** Top 5 referrers for the public leaderboard widget */
   topReferrers:     PublicLeaderboardEntry[];

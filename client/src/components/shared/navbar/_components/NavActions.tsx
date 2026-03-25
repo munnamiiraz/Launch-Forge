@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { Github } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { Separator } from "@/src/components/ui/separator";
 import { UserMenu } from "./UserMenu";
@@ -35,20 +34,6 @@ export function NavActions({ isAuthenticated, user }: NavActionsProps) {
   // Guest state
   return (
     <div className="flex items-center gap-2">
-      {/* GitHub star — desktop only */}
-      <a
-        href="https://github.com/launchforge"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="hidden items-center gap-1.5 rounded-md px-2.5 py-1.5 text-sm text-muted-foreground/80 transition-all duration-150 hover:bg-zinc-800/50 hover:text-foreground/80 md:flex"
-        aria-label="Star LaunchForge on GitHub"
-      >
-        <Github size={14} />
-        <span className="text-xs">Star us</span>
-      </a>
-
-      <Separator orientation="vertical" className="hidden h-4 bg-zinc-800 md:block" />
-
       <Button
         asChild
         variant="ghost"

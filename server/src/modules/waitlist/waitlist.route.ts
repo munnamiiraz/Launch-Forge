@@ -1,23 +1,22 @@
 import { Router } from "express";
 import { waitlistController, waitlistByIdController } from "./waitlist.controller";
-import { 
-  validateRequest, 
-  validateQuery 
-} from "../../middlewares/validateRequest";
+import { validateRequest, validateQuery } from "../../middlewares/validateRequest";
 import { validateParams } from "../../middlewares/validateParams";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { multerUpload } from "../../config/multer.config";
-import { 
-  createWaitlistSchema, 
+import {
+  createWaitlistSchema,
   getWaitlistsQuerySchema,
+  updateWaitlistStatusSchema,
+  archiveWaitlistSchema,
   workspaceIdParamSchema,
-  waitlistByIdParamSchema 
+  waitlistByIdParamSchema,
 } from "./waitlist.validation";
 import { Role } from "../../constraint/index";
 
 const router = Router();
 
-/* ── Lookup by ID/slug (NOT workspace-scoped) ───────────────────── */
+/* Lookup by ID/slug (NOT workspace-scoped) */
 // NOTE: This must come BEFORE "/:workspaceId/:id" or "by-id" will be treated as a workspaceId.
 router
   .route("/by-id/:id")
@@ -30,7 +29,7 @@ router
  * Mounted under /api/v1/waitlists in IndexRoutes
  */
 
-/* ── Collection-level (scoped by Workspace) ───────────────────────── */
+/* Collection-level (scoped by Workspace) */
 router
   .route("/:workspaceId")
   .post(
@@ -44,11 +43,30 @@ router
   .get(
     checkAuth(Role.OWNER, Role.ADMIN),
     validateParams(workspaceIdParamSchema),
-    // validateQuery(getWaitlistsQuerySchema),
+    validateQuery(getWaitlistsQuerySchema),
     waitlistController.getWaitlists,
   );
 
-/* ── Item-level (scoped by Workspace + ID) ────────────────────────── */
+/* Status + archive operations (scoped by Workspace + ID) */
+router
+  .route("/:workspaceId/:id/status")
+  .patch(
+    checkAuth(Role.OWNER, Role.ADMIN),
+    validateParams(waitlistByIdParamSchema),
+    validateRequest(updateWaitlistStatusSchema),
+    waitlistByIdController.updateWaitlistStatus,
+  );
+
+router
+  .route("/:workspaceId/:id/archive")
+  .patch(
+    checkAuth(Role.OWNER, Role.ADMIN),
+    validateParams(waitlistByIdParamSchema),
+    validateRequest(archiveWaitlistSchema),
+    waitlistByIdController.setWaitlistArchived,
+  );
+
+/* Item-level (scoped by Workspace + ID) */
 router
   .route("/:workspaceId/:id")
   .get(
@@ -64,3 +82,4 @@ router
 
 export const waitlistRouter = router;
 export const waitlistByIdRouter = router; // Keep for compatibility but redundant
+

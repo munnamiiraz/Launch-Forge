@@ -40,9 +40,13 @@ export function WorkspaceProvider({ initialWorkspaces, children }: WorkspaceProv
       const match = initialWorkspaces.find((ws) => ws.id === stored);
       if (match) {
         setActiveWorkspaceState(match);
-        // Also sync the cookie
+        // Also sync the cookies
         document.cookie = `activeWorkspaceId=${match.id}; path=/; max-age=31536000; SameSite=Lax`;
+        document.cookie = `activeWorkspacePlan=${match.plan}; path=/; max-age=31536000; SameSite=Lax`;
       }
+    } else if (initialWorkspaces[0]) {
+      // First visit — set plan cookie for the default workspace
+      document.cookie = `activeWorkspacePlan=${initialWorkspaces[0].plan}; path=/; max-age=31536000; SameSite=Lax`;
     }
   }, [initialWorkspaces]);
 
@@ -64,8 +68,9 @@ export function WorkspaceProvider({ initialWorkspaces, children }: WorkspaceProv
   const setActiveWorkspace = (ws: Workspace) => {
     setActiveWorkspaceState(ws);
     localStorage.setItem("activeWorkspaceId", ws.id);
-    // Set a cookie so Server Components/Actions can also see it
+    // Set cookies so Server Components/Actions can also see workspace ID and plan
     document.cookie = `activeWorkspaceId=${ws.id}; path=/; max-age=31536000; SameSite=Lax`;
+    document.cookie = `activeWorkspacePlan=${ws.plan}; path=/; max-age=31536000; SameSite=Lax`;
   };
 
   return (

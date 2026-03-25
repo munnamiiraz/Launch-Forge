@@ -3,6 +3,7 @@ import { roadmapController }   from "./roadmap.controller";
 import { validateRequest, validateQuery } from "../../middlewares/validateRequest";
 import { validateParams }      from "../../middlewares/validateParams";
 import { checkAuth }           from "../../middlewares/checkAuth";
+import { checkPlanFeature }    from "../../middlewares/checkPlanFeature";
 import {
   createRoadmapItemSchema,
   getRoadmapQuerySchema,
@@ -13,32 +14,26 @@ import {
 import { Role } from "../../constraint/index";
 
 /**
- * Mount in app.ts:
- *
- *   import { roadmapRouter } from "./modules/roadmap/route";
- *   app.use("/api/roadmap", roadmapRouter);
- *
- * Resulting routes:
- *   POST   /api/roadmap              → create roadmap item   (auth required)
+ * Routes:
+ *   POST   /api/roadmap              → create roadmap item   (auth required, Pro+)
  *   GET    /api/roadmap/:roadmapId   → get public roadmap    (no auth)
- *   PATCH  /api/roadmap/:id          → update roadmap item   (auth required)
- *
- * Auth split rationale:
- *   - POST / PATCH are workspace-member operations (private, write).
- *   - GET is publicly readable (matches isPublic gate in the service).
+ *   PATCH  /api/roadmap/:id          → update roadmap item   (auth required, Pro+)
  */
 const router = Router();
+
+const planGate = checkPlanFeature("roadmap");
 
 /* POST /api/roadmap */
 router
   .route("/")
   .post(
     checkAuth(Role.USER, Role.ADMIN),
+    planGate,
     validateRequest(createRoadmapItemSchema),
     roadmapController.createRoadmapItem,
   );
 
-/* GET /api/roadmap/:roadmapId — public, no auth */
+/* GET /api/roadmap/:roadmapId — public, no auth, no plan gate */
 router
   .route("/:roadmapId")
   .get(
@@ -52,6 +47,7 @@ router
   .route("/:id")
   .patch(
     checkAuth(Role.USER, Role.ADMIN),
+    planGate,
     validateParams(roadmapItemIdParamSchema),
     validateRequest(updateRoadmapItemSchema),
     roadmapController.updateRoadmapItem,

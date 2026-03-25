@@ -14,6 +14,7 @@ export interface DashboardWaitlist {
   slug:        string;
   logoUrl:     string | null;
   isOpen:      boolean;
+  archivedAt?: string | null;
   subscribers: number;
   referrals:   number;
   createdAt:   string;

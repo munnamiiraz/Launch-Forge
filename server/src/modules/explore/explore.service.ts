@@ -87,6 +87,7 @@ export const exploreService = {
     /* 1. Build the where clause ──────────────────────────────────── */
     const where: Prisma.WaitlistWhereInput = {
       deletedAt: null,
+      archivedAt: null,
     };
 
     if (query.search?.trim()) {
@@ -208,7 +209,7 @@ export const exploreService = {
     const { slug } = payload;
 
     const raw = await prisma.waitlist.findFirst({
-      where:  { slug, deletedAt: null },
+      where:  { slug, deletedAt: null, archivedAt: null },
       select: WAITLIST_CARD_SELECT,
     });
 

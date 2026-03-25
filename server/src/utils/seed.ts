@@ -2,15 +2,15 @@
  * seed.ts — LaunchForge full database seed
  *
  * Generates:
- *   - 500 users   (global name combinations, mixed roles/statuses)
- *   - 500 sessions + accounts (one per user)
- *   - 500 workspaces (one per user — owner model)
- *   - ~150 workspace members (multi-member workspaces for paid plans)
- *   - ~800 waitlists (1–4 per workspace, realistic slugs)
- *   - ~35,000 subscribers (50–200 per waitlist with referral chains)
- *   - ~180 feedback boards + ~1,200 feature requests + votes + comments
- *   - ~120 roadmaps + ~800 roadmap items
- *   - ~300 changelogs (mix of published + drafts)
+ *   - 100 users   (global name combinations, mixed roles/statuses)
+ *   - 100 sessions + accounts (one per user)
+ *   - 100 workspaces (one per user — owner model)
+ *   - ~30 workspace members (multi-member workspaces for paid plans)
+ *   - ~150 waitlists (1–4 per workspace, realistic slugs)
+ *   - ~500 subscribers (2–5 per waitlist with referral chains)
+ *   - ~40 feedback boards + ~200 feature requests + votes + comments
+ *   - ~30 roadmaps + ~150 roadmap items
+ *   - ~80 changelogs (mix of published + drafts)
  *   - ~220 payments (paid users across PRO/GROWTH × MONTHLY/YEARLY)
  *
  * Usage:
@@ -568,7 +568,7 @@ async function seedSubscribers(waitlists: { id: string; createdAt: Date }[]) {
   const usedEmails  = new Set<string>();
 
   for (const wl of waitlists) {
-    const subCount = rng(20, 250);
+    const subCount = rng(2, 5);
     const subs: {
       id: string; waitlistId: string; name: string; email: string;
       referralCode: string; referredById: string | null;
@@ -643,6 +643,7 @@ async function seedSubscribers(waitlists: { id: string; createdAt: Date }[]) {
   }
 
   success(`Created ${totalSubs.toLocaleString()} subscribers`);
+  return totalSubs;
 }
 
 async function seedFeedback(workspaces: { id: string; plan: string; createdAt: Date }[]) {
@@ -680,7 +681,7 @@ async function seedFeedback(workspaces: { id: string; plan: string; createdAt: D
       }
       boardCount++;
 
-      const numRequests = rng(4, 18);
+      const numRequests = rng(2, 5);
       const titles = pickN(FEATURE_REQUEST_TITLES as unknown as string[], numRequests);
 
       for (const title of titles) {
@@ -790,7 +791,7 @@ async function seedRoadmaps(workspaces: { id: string; plan: string; createdAt: D
       }
       roadmapCount++;
 
-      const numItems  = rng(5, 18);
+      const numItems  = rng(2, 5);
       const itemTitles = pickN(ROADMAP_ITEM_TITLES as unknown as string[], numItems);
       const STATUSES  = ["PLANNED", "PLANNED", "PLANNED", "IN_PROGRESS", "IN_PROGRESS", "COMPLETED"] as const;
 
@@ -938,7 +939,7 @@ async function main() {
   success("Cleared existing data");
 
   // ── Step 1: Users
-  const users = await seedUsers(500);
+  const users = await seedUsers(100);
 
   // ── Step 2: Accounts + Sessions
   await seedAccountsAndSessions(users);
@@ -950,7 +951,7 @@ async function main() {
   const waitlists = await seedWaitlists(workspaces);
 
   // ── Step 5: Subscribers (biggest step)
-  await seedSubscribers(waitlists);
+  const totalSubs = await seedSubscribers(waitlists);
 
   // ── Step 6: Feedback
   await seedFeedback(workspaces);
@@ -971,11 +972,11 @@ async function main() {
   console.log("\x1b[1m\x1b[32m═══════════════════════════════════════════\x1b[0m\n");
 
   console.log("  Summary:");
-  console.log(`  • 500 users (all roles, statuses, and plan distributions)`);
-  console.log(`  • 500 accounts (credential provider) + ~300 active sessions`);
-  console.log(`  • 500 workspaces with members for paid plans`);
+  console.log(`  • 100 users (all roles, statuses, and plan distributions)`);
+  console.log(`  • 100 accounts (credential provider) + ~60 active sessions`);
+  console.log(`  • 100 workspaces with members for paid plans`);
   console.log(`  • ~${waitlists.length} waitlists across all workspaces`);
-  console.log(`  • ~35k+ subscribers with referral chains`);
+  console.log(`  • ~${totalSubs.toLocaleString()} subscribers with referral chains`);
   console.log(`  • Feedback boards, feature requests, votes & comments`);
   console.log(`  • Roadmaps with PLANNED / IN_PROGRESS / COMPLETED items`);
   console.log(`  • Published + draft changelogs`);

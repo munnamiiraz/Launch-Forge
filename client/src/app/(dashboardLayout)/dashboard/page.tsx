@@ -35,6 +35,7 @@ type ApiWaitlist = {
   slug?: string;
   logoUrl?: string | null;
   isOpen?: boolean;
+  archivedAt?: string | null;
   subscribers?: number;
   totalReferrals?: number;
   referrals?: number;
@@ -84,6 +85,7 @@ export default function DashboardPage() {
         slug:        w.slug ?? "",
         logoUrl:     w.logoUrl ?? null,
         isOpen:      Boolean(w.isOpen),
+        archivedAt:  w.archivedAt ?? null,
         subscribers: Number(w.subscribers ?? w._count?.subscribers ?? 0),
         referrals:   Number(w.totalReferrals ?? w.referrals ?? 0),
         createdAt:   w.createdAt ?? "",

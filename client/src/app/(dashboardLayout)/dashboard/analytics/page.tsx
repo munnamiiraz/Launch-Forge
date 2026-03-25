@@ -1,4 +1,5 @@
 import { type Metadata } from "next";
+import { cookies } from "next/headers";
 import { Download } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 
@@ -9,7 +10,9 @@ import { ReferralFunnelChart, SignupSourceChart } from "@/src/components/module/
 import { ViralKFactorChart, WaitlistComparisonChart } from "@/src/components/module/owners-analytics/_components/ViralKFactorChart";
 import { ConfirmationRateChart, TopReferrersChart } from "@/src/components/module/owners-analytics/_components/ConfirmationRateChart";
 import { RevenueMrrChart, PlanDistributionChart } from "@/src/components/module/owners-analytics/_components/RevenueMrrChart";
-import { CohortRetentionChart, FeedbackActivityChart } from "@/src/components/module/owners-analytics/_components/CohortRetentionChart";
+import { CohortRetentionChart } from "@/src/components/module/owners-analytics/_components/CohortRetentionChart";
+import { UpgradeGate } from "@/src/components/shared/UpgradeGate";
+import { isFeatureAvailable, type PlanTier } from "@/src/lib/plan-limits";
 
 export const metadata: Metadata = {
   title:       "Analytics — LaunchForge",
@@ -35,7 +38,11 @@ function SectionDivider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function AnalyticsPage() {
+export default async function AnalyticsPage() {
+  const cookieStore = await cookies();
+  const activePlan = (cookieStore.get("activeWorkspacePlan")?.value?.toUpperCase() || "FREE") as PlanTier;
+  const hasAnalytics = isFeatureAvailable(activePlan, "analytics");
+
   return (
     <div className="flex flex-col">
 
@@ -54,123 +61,114 @@ export default function AnalyticsPage() {
         </Button>
       </DashboardHeader>
 
-      <div className="flex flex-col gap-8 p-6">
+      {!hasAnalytics ? (
+        <UpgradeGate
+          featureName="Analytics"
+          requiredPlan="PRO"
+          description="Unlock subscriber growth charts, referral funnels, viral coefficient tracking, cohort retention, and revenue analytics with the Pro plan."
+        />
+      ) : (
+        <div className="flex flex-col gap-8 p-6">
 
-        {/* ── KPI strip ─────────────────────────────────────────── */}
-        <section className="flex flex-col gap-4">
-          <SectionHeader
-            title="Overview"
-            description="Key metrics across all your waitlists and revenue"
-          />
-          <AnalyticsKpiStrip />
-        </section>
+          {/* ── KPI strip ─────────────────────────────────────────── */}
+          <section className="flex flex-col gap-4">
+            <SectionHeader
+              title="Overview"
+              description="Key metrics across all your waitlists and revenue"
+            />
+            <AnalyticsKpiStrip />
+          </section>
 
-        {/* ── Growth ────────────────────────────────────────────── */}
-        <SectionDivider>
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
-            Growth
-          </span>
-        </SectionDivider>
+          {/* ── Growth ────────────────────────────────────────────── */}
+          <SectionDivider>
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
+              Growth
+            </span>
+          </SectionDivider>
 
-        <section className="flex flex-col gap-4">
-          <SectionHeader
-            title="Subscriber growth"
-            description="New signups and cumulative total — toggle between 7D / 30D / 90D / 12M"
-          />
-          <SubscriberGrowthChart />
-        </section>
+          <section className="flex flex-col gap-4">
+            <SectionHeader
+              title="Subscriber growth"
+              description="New signups and cumulative total — toggle between 7D / 30D / 90D / 12M"
+            />
+            <SubscriberGrowthChart />
+          </section>
 
-        {/* ── Referrals ─────────────────────────────────────────── */}
-        <SectionDivider>
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
-            Referrals
-          </span>
-        </SectionDivider>
+          {/* ── Referrals ─────────────────────────────────────────── */}
+          <SectionDivider>
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
+              Referrals
+            </span>
+          </SectionDivider>
 
-        <section className="flex flex-col gap-4">
-          <SectionHeader
-            title="Referral & viral metrics"
-            description="Funnel depth, signup sources, viral coefficient, and top performers"
-          />
-          <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
-            <ReferralFunnelChart />
-            <SignupSourceChart />
-          </div>
-          <div className="grid gap-4 lg:grid-cols-2">
-            <ViralKFactorChart />
-            <TopReferrersChart />
-          </div>
-        </section>
+          <section className="flex flex-col gap-4">
+            <SectionHeader
+              title="Referral & viral metrics"
+              description="Funnel depth, signup sources, viral coefficient, and top performers"
+            />
+            <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
+              <ReferralFunnelChart />
+              <SignupSourceChart />
+            </div>
+            <div className="grid gap-4 lg:grid-cols-2">
+              <ViralKFactorChart />
+              <TopReferrersChart />
+            </div>
+          </section>
 
-        {/* ── Waitlist health ───────────────────────────────────── */}
-        <SectionDivider>
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
-            Waitlist health
-          </span>
-        </SectionDivider>
+          {/* ── Waitlist health ───────────────────────────────────── */}
+          <SectionDivider>
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
+              Waitlist health
+            </span>
+          </SectionDivider>
 
-        <section className="flex flex-col gap-4">
-          <SectionHeader
-            title="Waitlist performance"
-            description="Compare subscribers, referrals, and confirmation rates across all waitlists"
-          />
-          <div className="grid gap-4 lg:grid-cols-2">
-            <WaitlistComparisonChart />
-            <ConfirmationRateChart />
-          </div>
-        </section>
+          <section className="flex flex-col gap-4">
+            <SectionHeader
+              title="Waitlist performance"
+              description="Compare subscribers, referrals, and confirmation rates across all waitlists"
+            />
+            <div className="grid gap-4 lg:grid-cols-2">
+              <WaitlistComparisonChart />
+              <ConfirmationRateChart />
+            </div>
+          </section>
 
-        {/* ── Retention ─────────────────────────────────────────── */}
-        <SectionDivider>
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
-            Retention
-          </span>
-        </SectionDivider>
+          {/* ── Retention ─────────────────────────────────────────── */}
+          <SectionDivider>
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
+              Retention
+            </span>
+          </SectionDivider>
 
-        <section className="flex flex-col gap-4">
-          <SectionHeader
-            title="Cohort retention"
-            description="How many subscribers from each weekly cohort remain active over time"
-          />
-          <CohortRetentionChart />
-        </section>
+          <section className="flex flex-col gap-4">
+            <SectionHeader
+              title="Cohort retention"
+              description="How many subscribers from each weekly cohort remain active over time"
+            />
+            <CohortRetentionChart />
+          </section>
 
-        {/* ── Revenue ───────────────────────────────────────────── */}
-        <SectionDivider>
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
-            Revenue
-          </span>
-        </SectionDivider>
+          {/* ── Revenue ───────────────────────────────────────────── */}
+          <SectionDivider>
+            <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
+              Revenue
+            </span>
+          </SectionDivider>
 
-        <section className="flex flex-col gap-4">
-          <SectionHeader
-            title="Revenue & plan analytics"
-            description="MRR trend and plan distribution derived from Payment records"
-          />
-          <div className="grid gap-4 lg:grid-cols-[1fr_340px]">
-            <RevenueMrrChart />
-            <PlanDistributionChart />
-          </div>
-        </section>
+          <section className="flex flex-col gap-4">
+            <SectionHeader
+              title="Revenue & plan analytics"
+              description="MRR trend and plan distribution derived from Payment records"
+            />
+            <div className="grid gap-4 lg:grid-cols-[1fr_340px]">
+              <RevenueMrrChart />
+              <PlanDistributionChart />
+            </div>
+          </section>
 
-        {/* ── Engagement ────────────────────────────────────────── */}
-        {/*
-        <SectionDivider>
-          <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
-            Engagement
-          </span>
-        </SectionDivider>
-
-        <section className="flex flex-col gap-4">
-          <SectionHeader
-            title="Feedback & engagement"
-            description="FeatureRequest submissions and Vote activity over the last 30 days"
-          />
-          <FeedbackActivityChart />
-        </section>
-        */}
-
-      </div>
+        </div>
+      )}
     </div>
   );
 }

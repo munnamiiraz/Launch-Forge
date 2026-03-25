@@ -31,7 +31,7 @@ export const publicWaitlistService = {
           at the public layer because it includes the subdomain in production,
           but here we just resolve by slug + not deleted) ─────────── */
     const waitlist = await prisma.waitlist.findFirst({
-      where: { slug, deletedAt: null },
+      where: { slug, deletedAt: null, archivedAt: null },
       select: {
         id:          true,
         name:        true,
@@ -39,6 +39,7 @@ export const publicWaitlistService = {
         description: true,
         logoUrl:     true,
         isOpen:      true,
+        endDate:     true,
       },
     });
 
@@ -66,6 +67,7 @@ export const publicWaitlistService = {
       description:      waitlist.description,
       logoUrl:          waitlist.logoUrl,
       isOpen:           waitlist.isOpen,
+      endDate:          waitlist.endDate?.toISOString() ?? null,
       totalSubscribers,
       topReferrers:     buildLeaderboard(topReferrers),
     };
@@ -80,7 +82,7 @@ export const publicWaitlistService = {
 
     /* 1. Resolve the waitlist ────────────────────────────────────── */
     const waitlist = await prisma.waitlist.findFirst({
-      where: { slug, deletedAt: null },
+      where: { slug, deletedAt: null, archivedAt: null },
       select: { id: true, slug: true, isOpen: true },
     });
 
@@ -226,7 +228,7 @@ export const publicWaitlistService = {
 
     /* 1. Find waitlist by slug */
     const waitlist = await prisma.waitlist.findFirst({
-      where: { slug, deletedAt: null },
+      where: { slug, deletedAt: null, archivedAt: null },
       select: { id: true, slug: true },
     });
 

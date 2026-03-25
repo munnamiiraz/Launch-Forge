@@ -39,7 +39,8 @@ export const waitlistService = {
 
     if (planLimit !== Infinity) {
       const existingCount = await prisma.waitlist.count({
-        where: { workspaceId, deletedAt: null },
+        // Archived waitlists do not count against "active" plan limits.
+        where: { workspaceId, deletedAt: null, archivedAt: null },
       });
 
       if (existingCount >= planLimit) {
@@ -77,6 +78,7 @@ export const waitlistService = {
         description: true,
         logoUrl:     true,
         isOpen:      true,
+        archivedAt:  true,
         createdAt:   true,
         updatedAt:   true,
         _count: { select: { subscribers: true } },
@@ -109,6 +111,7 @@ export const waitlistService = {
     const where = {
       workspaceId,
       deletedAt: null,
+      ...(query.includeArchived ? {} : { archivedAt: null }),
       ...(query.search
         ? {
             OR: [
@@ -136,6 +139,7 @@ export const waitlistService = {
           description: true,
           logoUrl:     true,
           isOpen:      true,
+          archivedAt:  true,
           createdAt:   true,
           updatedAt:   true,
           _count: { select: { subscribers: true } },
@@ -154,6 +158,8 @@ export const waitlistService = {
 import {
   GetWaitlistByIdPayload,
   DeleteWaitlistPayload,
+  UpdateWaitlistStatusPayload,
+  ArchiveWaitlistPayload,
   WaitlistDetail,
   DeletedWaitlistAck,
 } from "./waitlist.interface";
@@ -174,6 +180,7 @@ const WAITLIST_DETAIL_SELECT = {
   logoUrl:     true,
   theme:       true,
   isOpen:      true,
+  archivedAt:  true,
   createdAt:   true,
   updatedAt:   true,
   _count: { select: { subscribers: true } },
@@ -343,5 +350,113 @@ export const waitlistByIdService = {
       name:      waitlist.name,
       deletedAt,
     };
+  },
+
+  /* ── PATCH /api/v1/waitlists/:workspaceId/:id/status ──────────── */
+
+  async updateWaitlistStatus(
+    payload: UpdateWaitlistStatusPayload,
+  ): Promise<Pick<WaitlistDetail, "id" | "isOpen" | "archivedAt" | "updatedAt">> {
+    const { waitlistId, workspaceId, requestingUserId, isOpen } = payload;
+
+    const membership = await prisma.workspaceMember.findUnique({
+      where: {
+        workspaceId_userId: { workspaceId, userId: requestingUserId },
+        deletedAt: null,
+      },
+      select: { role: true },
+    });
+
+    if (!membership) {
+      throw new AppError(status.FORBIDDEN, WAITLIST_BY_ID_MESSAGES.UNAUTHORIZED);
+    }
+
+    if (!isWorkspaceOwner(membership.role)) {
+      throw new AppError(status.FORBIDDEN, WAITLIST_BY_ID_MESSAGES.FORBIDDEN);
+    }
+
+    const waitlist = await prisma.waitlist.findUnique({
+      where: { id: waitlistId, deletedAt: null },
+      select: { id: true, workspaceId: true, archivedAt: true },
+    });
+
+    if (!waitlist) {
+      throw new AppError(status.NOT_FOUND, WAITLIST_BY_ID_MESSAGES.NOT_FOUND);
+    }
+
+    try {
+      assertWaitlistBelongsToWorkspace(waitlist, workspaceId);
+    } catch (err) {
+      if (err instanceof CrossWorkspaceAccessError) {
+        throw new AppError(status.NOT_FOUND, WAITLIST_BY_ID_MESSAGES.NOT_FOUND);
+      }
+      throw err;
+    }
+
+    if (waitlist.archivedAt && isOpen) {
+      throw new AppError(status.BAD_REQUEST, WAITLIST_BY_ID_MESSAGES.CANNOT_OPEN_ARCHIVED);
+    }
+
+    const updated = await prisma.waitlist.update({
+      where: { id: waitlistId },
+      data:  { isOpen },
+      select: { id: true, isOpen: true, archivedAt: true, updatedAt: true },
+    });
+
+    return updated;
+  },
+
+  /* ── PATCH /api/v1/waitlists/:workspaceId/:id/archive ─────────── */
+
+  async setWaitlistArchived(
+    payload: ArchiveWaitlistPayload,
+  ): Promise<Pick<WaitlistDetail, "id" | "isOpen" | "archivedAt" | "updatedAt">> {
+    const { waitlistId, workspaceId, requestingUserId, archived } = payload;
+
+    const membership = await prisma.workspaceMember.findUnique({
+      where: {
+        workspaceId_userId: { workspaceId, userId: requestingUserId },
+        deletedAt: null,
+      },
+      select: { role: true },
+    });
+
+    if (!membership) {
+      throw new AppError(status.FORBIDDEN, WAITLIST_BY_ID_MESSAGES.UNAUTHORIZED);
+    }
+
+    if (!isWorkspaceOwner(membership.role)) {
+      throw new AppError(status.FORBIDDEN, WAITLIST_BY_ID_MESSAGES.FORBIDDEN);
+    }
+
+    const waitlist = await prisma.waitlist.findUnique({
+      where: { id: waitlistId, deletedAt: null },
+      select: { id: true, workspaceId: true },
+    });
+
+    if (!waitlist) {
+      throw new AppError(status.NOT_FOUND, WAITLIST_BY_ID_MESSAGES.NOT_FOUND);
+    }
+
+    try {
+      assertWaitlistBelongsToWorkspace(waitlist, workspaceId);
+    } catch (err) {
+      if (err instanceof CrossWorkspaceAccessError) {
+        throw new AppError(status.NOT_FOUND, WAITLIST_BY_ID_MESSAGES.NOT_FOUND);
+      }
+      throw err;
+    }
+
+    const data = archived
+      ? { archivedAt: new Date(), isOpen: false }
+      : { archivedAt: null };
+
+    const updated = await prisma.waitlist.update({
+      where: { id: waitlistId },
+      data,
+      select: { id: true, isOpen: true, archivedAt: true, updatedAt: true },
+    });
+
+    return updated;
   },
 };

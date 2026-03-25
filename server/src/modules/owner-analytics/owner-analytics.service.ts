@@ -24,10 +24,14 @@ import {
   countChain, buildChildrenMap,
   pct, round1, PLAN_META,
 } from "./owner-analytics.utils";
+import { assertPlanFeature } from "../../middlewares/checkPlanFeature";
 
 /* ── Shared auth guard ───────────────────────────────────────────── */
 
 async function assertMember(workspaceId: string, userId: string) {
+  // Plan gate — require Pro or higher for analytics
+  await assertPlanFeature(workspaceId, "analytics");
+
   const member = await prisma.workspaceMember.findUnique({
     where: {
       workspaceId_userId: { workspaceId, userId },

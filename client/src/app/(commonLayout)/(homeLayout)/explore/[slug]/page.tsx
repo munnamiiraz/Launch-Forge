@@ -3,7 +3,7 @@ import { notFound }       from "next/navigation";
 import Link               from "next/link";
 import {
   ExternalLink, Users, Share2, Zap,
-  Globe, Lock, Calendar, ArrowLeft, Trophy,
+  Globe, Lock, Calendar, ArrowLeft, Trophy, Clock,
 } from "lucide-react";
 
 import { Badge }    from "@/src/components/ui/badge";
@@ -45,6 +45,7 @@ function mapToPublicWaitlist(data: any, prizes: any[] = []): PublicWaitlistData 
     recentJoins: 0,
     referralCount: data.topReferrers?.reduce((acc: number, r: any) => acc + r.referralCount, 0) || 0,
     viralScore: 0,
+    endDate: data.endDate || null,
     expiresAt: null,
     ownerName: "Founder",
     ownerAvatarInitials: "F",
@@ -121,6 +122,17 @@ export default async function PublicWaitlistPage({ params }: Props) {
     ? new Date(wl.expiresAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
     : null;
 
+  // Format endDate for display
+  const endDateStr = wl.endDate
+    ? new Date(wl.endDate).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })
+    : null;
+
+  // Calculate days remaining until endDate
+  const daysRemaining = wl.endDate
+    ? Math.ceil((new Date(wl.endDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24))
+    : null;
+  const isEndingSoon = daysRemaining !== null && daysRemaining > 0 && daysRemaining <= 7;
+
   return (
     <div className="min-h-screen bg-[#070707]">
 
@@ -177,6 +189,21 @@ export default async function PublicWaitlistPage({ params }: Props) {
                     )}>
                       {wl.isOpen ? <><Globe size={10} />Open</> : <><Lock size={10} />Closed</>}
                     </Badge>
+                    {endDateStr && (
+                      <Badge className={cn(
+                        "gap-1 rounded-full px-2.5 py-1 text-xs font-semibold",
+                        isEndingSoon
+                          ? "border-orange-500/25 bg-orange-500/10 text-orange-400 animate-pulse"
+                          : "border-indigo-500/25 bg-indigo-500/10 text-indigo-400",
+                      )}>
+                        <Clock size={10} />
+                        {isEndingSoon && daysRemaining === 1
+                          ? "Closes tomorrow!"
+                          : isEndingSoon
+                            ? `Closes in ${daysRemaining} days`
+                            : `Closes ${endDateStr}`}
+                      </Badge>
+                    )}
                   </div>
                   <p className="mt-1 text-base text-muted-foreground">{wl.tagline}</p>
 

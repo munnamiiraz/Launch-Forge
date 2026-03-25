@@ -55,6 +55,13 @@ router
   );
 
 router
+  .route("/check-slug/:slug")
+  .get(
+    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
+    workspaceController.checkSlugAvailability,
+  );
+
+router
   .route("/:workspaceId")
   .get(
     checkAuth(Role.USER, Role.OWNER, Role.ADMIN),

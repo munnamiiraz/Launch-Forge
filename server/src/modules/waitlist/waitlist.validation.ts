@@ -77,6 +77,25 @@ export const getWaitlistsQuerySchema = z.object({
       if (val === "false") return false;
       return undefined;
     }),
+
+  includeArchived: z
+    .string()
+    .optional()
+    .transform((val) => {
+      if (val === "true") return true;
+      if (val === "false") return false;
+      return undefined;
+    }),
+});
+
+/* ── PATCH bodies ──────────────────────────────────────────────── */
+
+export const updateWaitlistStatusSchema = z.object({
+  isOpen: z.boolean(),
+});
+
+export const archiveWaitlistSchema = z.object({
+  archived: z.boolean(),
 });
 
 /* ── Workspace ID param ──────────────────────────────────────────── */
@@ -111,3 +130,5 @@ export type WaitlistByIdParamDto = z.infer<typeof waitlistByIdParamSchema>;
 
 export type CreateWaitlistDto    = z.infer<typeof createWaitlistSchema>;
 export type GetWaitlistsQueryDto = z.infer<typeof getWaitlistsQuerySchema>;
+export type UpdateWaitlistStatusDto = z.infer<typeof updateWaitlistStatusSchema>;
+export type ArchiveWaitlistDto      = z.infer<typeof archiveWaitlistSchema>;

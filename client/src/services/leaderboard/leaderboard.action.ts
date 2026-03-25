@@ -129,7 +129,7 @@ export async function fetchLeaderboard(
  * 4. Fetch overview stats for the entire leaderboard dashboard (all waitlists)
  */
 export async function fetchLeaderboardDashboardStats(workspaceId?: string): Promise<LeaderboardPageStats> {
-  const url = workspaceId 
+  const url = workspaceId && workspaceId !== 'undefined'
     ? `${BACKEND}/workspaces/dashboard/overview?workspaceId=${workspaceId}` 
     : `${BACKEND}/workspaces/dashboard/overview`;
   const res = await authFetch(url);
@@ -150,7 +150,7 @@ export async function fetchLeaderboardDashboardStats(workspaceId?: string): Prom
  * 5. Fetch a list of leaderboard summary cards for all waitlists
  */
 export async function fetchLeaderboardCards(workspaceId?: string): Promise<WaitlistLeaderboardCard[]> {
-  const url = workspaceId 
+  const url = workspaceId && workspaceId !== 'undefined'
     ? `${BACKEND}/workspaces/dashboard/overview?workspaceId=${workspaceId}` 
     : `${BACKEND}/workspaces/dashboard/overview`;
   const res = await authFetch(url);

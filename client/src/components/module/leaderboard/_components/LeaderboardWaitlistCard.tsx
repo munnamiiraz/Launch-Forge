@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   Users, Share2, ArrowUpRight, Globe, Lock,
@@ -43,6 +44,7 @@ interface LeaderboardWaitlistCardProps {
 }
 
 export function LeaderboardWaitlistCard({ data, index }: LeaderboardWaitlistCardProps) {
+  const router = useRouter();
   const gradient   = CARD_GRADIENTS[index % CARD_GRADIENTS.length];
   const accentLine = TOP_ACCENT_LINES[index % TOP_ACCENT_LINES.length];
   const viralScore = data.totalSubscribers > 0
@@ -58,14 +60,17 @@ export function LeaderboardWaitlistCard({ data, index }: LeaderboardWaitlistCard
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: index * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       >
-        <Card className={cn(
-          "group relative flex flex-col overflow-hidden",
-          "border-border/80 bg-card/40 backdrop-blur-sm",
-          "transition-all duration-300 hover:border-zinc-700/60 hover:bg-card/60 hover:shadow-2xl hover:shadow-black/25",
-        )}>
+        <Card 
+          onClick={() => router.push(`/dashboard/leaderboard/${data.waitlistId}`)}
+          className={cn(
+            "group relative flex flex-col overflow-hidden cursor-pointer",
+            "border-border/80 bg-card/40 backdrop-blur-sm",
+            "transition-all duration-300 hover:border-zinc-700/60 hover:bg-card/60 hover:shadow-2xl hover:shadow-black/25",
+          )}
+        >
           {/* Top accent line */}
           <div className={cn(
-            "absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent",
+            "absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent",
             accentLine
           )} />
 
@@ -81,7 +86,7 @@ export function LeaderboardWaitlistCard({ data, index }: LeaderboardWaitlistCard
                 <Avatar className="h-9 w-9 shrink-0 rounded-xl">
                   <AvatarFallback
                     className={cn(
-                      "rounded-xl bg-gradient-to-br text-xs font-bold text-white",
+                      "rounded-xl bg-linear-to-br text-xs font-bold text-white",
                       gradient
                     )}
                   >
@@ -194,7 +199,10 @@ export function LeaderboardWaitlistCard({ data, index }: LeaderboardWaitlistCard
               </div>
 
               {/* Navigation button */}
-              <Link href={`/dashboard/leaderboard/${data.waitlistId}`}>
+              <Link 
+                href={`/dashboard/leaderboard/${data.waitlistId}`}
+                onClick={(e) => e.stopPropagation()}
+              >
                 <Button
                   size="sm"
                   className={cn(
@@ -203,8 +211,8 @@ export function LeaderboardWaitlistCard({ data, index }: LeaderboardWaitlistCard
                     "relative overflow-hidden"
                   )}
                 >
-                  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-500 group-hover/btn:translate-x-full" />
-                  View waitlist
+                  <span className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-500 group-hover/btn:translate-x-full" />
+                  View Leaderboard
                   <ArrowUpRight
                     size={12}
                     className="transition-transform duration-200 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5"

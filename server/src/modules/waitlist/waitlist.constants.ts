@@ -50,6 +50,9 @@ export const WAITLIST_FIELD = {
 export const WAITLIST_BY_ID_MESSAGES = {
   FETCHED:      "Waitlist fetched successfully.",
   DELETED:      "Waitlist deleted successfully.",
+  STATUS_UPDATED:"Waitlist status updated successfully.",
+  ARCHIVED:     "Waitlist archived successfully.",
+  UNARCHIVED:   "Waitlist unarchived successfully.",
   NOT_FOUND:    "Waitlist not found or has already been deleted.",
   WRONG_WORKSPACE:
     "This waitlist does not belong to the specified workspace.",
@@ -57,6 +60,8 @@ export const WAITLIST_BY_ID_MESSAGES = {
   FORBIDDEN:    "You do not have permission to perform this action.",
   HAS_SUBSCRIBERS:
     "Cannot delete a waitlist that still has active subscribers. Remove all subscribers first or archive the waitlist instead.",
+  CANNOT_OPEN_ARCHIVED:
+    "Cannot open an archived waitlist. Unarchive it first.",
 } as const;
 
 /* ── Soft-delete audit ───────────────────────────────────────────── */

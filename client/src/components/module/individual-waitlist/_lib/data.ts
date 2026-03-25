@@ -23,6 +23,7 @@ export interface PublicWaitlistData {
   recentJoins:     number;          // last 24h
   referralCount:   number;
   viralScore:      number;
+  endDate?:        string | null;   // when the waitlist closes (optional for backward compat)
   expiresAt:       string | null;
 
   /* Owner */
