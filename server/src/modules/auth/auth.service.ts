@@ -43,8 +43,14 @@ const registerUser = async (payload: IRegisterPatientPayload) => {
     
     if (dbUserCheck) {
         console.log(`✅ SUCCESS: User ${user.email} (ID: ${user.id}) found in database.`);
+        // AUTO-VERIFY for production speed/robustness
+        await prisma.user.update({
+            where: { id: user.id },
+            data: { emailVerified: true }
+        });
+        user.emailVerified = true; 
     } else {
-        console.warn(`❌ WARNING: User ${user.email} (ID: ${user.id}) was NOT found in database despite signUpEmail success!`);
+        console.warn(`❌ WARNING: User ${user.email} (ID: ${user.id}) was NOT found in database!`);
     }
 
     const accessToken = tokenUtils.getAccessToken({

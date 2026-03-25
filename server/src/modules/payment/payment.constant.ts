@@ -104,3 +104,41 @@ export const CHECKOUT_CONFIG = {
   SUCCESS_URL: `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/dashboard/billing?success=true&session_id={CHECKOUT_SESSION_ID}`,
   CANCEL_URL:  `${process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000"}/pricing?cancelled=true`,
 } as const;
+
+/* ─────────────────────────────────────────────────────────────────
+   Plan Limits
+   Used by the usage endpoint to show quota vs usage.
+   null = Unlimited
+   ──────────────────────────────────────────────────────────────── */
+
+export type UsagePlan = "FREE" | "PRO" | "GROWTH";
+
+export const PLAN_LIMITS: Record<UsagePlan, { 
+  waitlists:      number | null; 
+  subscribers:    number | null; 
+  teamMembers:    number | null; 
+  prizes:         number | null; 
+  feedbackBoards: number | null;
+}> = {
+  FREE: {
+    waitlists:      1,
+    subscribers:    100,
+    teamMembers:    1,
+    prizes:         0,
+    feedbackBoards: 0,
+  },
+  PRO: {
+    waitlists:      10,
+    subscribers:    10000,
+    teamMembers:    5,
+    prizes:         10,
+    feedbackBoards: null, // Unlimited
+  },
+  GROWTH: {
+    waitlists:      null, // Unlimited
+    subscribers:    null, // Unlimited
+    teamMembers:    20,
+    prizes:         null, // Unlimited
+    feedbackBoards: null, // Unlimited
+  }
+};

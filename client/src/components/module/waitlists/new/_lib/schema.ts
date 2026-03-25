@@ -29,7 +29,7 @@ export const createWaitlistFormSchema = z.object({
     .optional()
     .or(z.literal("")),
 
-  isOpen: z.boolean().default(true),
+  isOpen: z.boolean(),
 
   endDate: z
     .string()

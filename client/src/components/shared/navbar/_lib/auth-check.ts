@@ -63,28 +63,23 @@ export async function getNavAuthState(): Promise<AuthCheckResult> {
     return { isAuthenticated: false, user: null };
   }
 
-  // Get the access token to make authenticated API call
-  const accessToken = cookieStore.get("accessToken")?.value;
-
-  if (!accessToken) {
-    return { isAuthenticated: false, user: null };
-  }
-
   try {
     // Fetch user data from the API
     const allCookies = cookieStore.getAll().map(c => `${c.name}=${c.value}`).join('; ');
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:5000/api/v1';
 
+    // Get the access token if it exists for the Authorization header (optional for backend)
+    const accessToken = cookieStore.get("accessToken")?.value;
+
     const response = await fetch(`${baseUrl}/auth/me`, {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${accessToken}`,
+        "Authorization": accessToken ? `Bearer ${accessToken}` : "",
         "Content-Type": "application/json",
         "Cookie": allCookies,
       },
       cache: "no-store",
     });
-    console.log(allCookies);
 
     if (!response.ok) {
       console.error("Failed to fetch user data:", response.status);

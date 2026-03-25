@@ -112,39 +112,13 @@ export default async function SettingsPage() {
       {/* ── Sticky header ───────────────────────────────────── */}
       <DashboardHeader
         title="Settings"
-        subtitle="Manage your profile, workspace, and security"
+        subtitle="Manage your personal information and profile settings"
       />
 
-      <div className="flex gap-8 p-6 overflow-hidden">
-
-        {/* ── Left: sticky tab nav (desktop only) ─────────── */}
-        <SettingsNav />
-
-        {/* ── Right: all sections ─────────────────────────── */}
-        <div className="flex flex-1 flex-col gap-10 min-w-0">
-          <ProfileSection       profile={data.profile}               />
-          <WorkspaceSection     workspace={data.workspace}            />
-          {/*
-          <section className="space-y-4">
-            <div>
-              <h3 className="text-lg font-semibold">Appearance</h3>
-              <p className="text-sm text-muted-foreground">
-                Customize how the application looks and feels.
-              </p>
-            </div>
-            <div className="flex items-center gap-4">
-              <ThemeToggle variant="outline" />
-            </div>
-          </section>
-          <NotificationsSection prefs={data.notifications}           />
-          <SecuritySection
-            sessions={data.sessions}
-            apiKeys={data.apiKeys}
-            hasTwoFactor={data.hasTwoFactor}
-          />
-          */}
+        {/* ── Only Profile section in a single column ────────── */}
+        <div className="mx-auto flex w-full max-w-3xl flex-col gap-10">
+          <ProfileSection profile={data.profile} />
         </div>
-      </div>
     </div>
   );
 }

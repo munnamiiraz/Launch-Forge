@@ -132,7 +132,7 @@ export async function fetchLeaderboardBySlug(
 /**
  * Fetch public leaderboard by waitlist slug (with masked emails)
  * Endpoint: GET /leaderboard/public/:waitlistSlug
- * @deprecated Use fetchLeaderboardBySlug for authenticated access
+ * NOTE: This is a PUBLIC endpoint — do NOT use authFetch (cookies)
  */
 export async function fetchPublicLeaderboard(
   waitlistSlug: string,
@@ -154,7 +154,11 @@ export async function fetchPublicLeaderboard(
   const url = `${BACKEND}/leaderboard/public/${waitlistSlug}?${queryParams}`;
   console.log(`[Action] Fetching public leaderboard: ${url}`);
 
-  const res = await authFetch(url);
+  const res = await fetch(url, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+    next: { revalidate: 60 },
+  });
   const json = await res.json();
 
   if (!res.ok) {

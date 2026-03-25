@@ -40,7 +40,7 @@ const router = Router();
 router
   .route("/checkout")
   .post(
-    checkAuth(Role.OWNER, Role.ADMIN),
+    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
     express.json(),                       // parse JSON just for this route
     validateRequest(createCheckoutSchema),
     paymentController.createCheckoutSession,
@@ -50,7 +50,7 @@ router
 router
   .route("/confirm")
   .post(
-    checkAuth(Role.OWNER, Role.ADMIN),
+    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
     express.json(),
     validateRequest(confirmCheckoutSchema),
     paymentController.confirmCheckoutSession,
@@ -72,7 +72,7 @@ router
 router
   .route("/status")
   .get(
-    checkAuth(Role.OWNER, Role.ADMIN),
+    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
     paymentController.getPaymentStatus,
   );
 
@@ -80,7 +80,7 @@ router
 router
   .route("/invoices")
   .get(
-    checkAuth(Role.OWNER, Role.ADMIN),
+    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
     paymentController.getInvoices,
   );
 
@@ -88,7 +88,7 @@ router
 router
   .route("/portal")
   .post(
-    checkAuth(Role.OWNER, Role.ADMIN),
+    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
     express.json(),
     paymentController.createPortalSession,
   );
@@ -97,9 +97,17 @@ router
 router
   .route("/cancel")
   .post(
-    checkAuth(Role.OWNER, Role.ADMIN),
+    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
     express.json(),
     paymentController.cancelSubscription,
+  );
+
+/* GET /api/payment/usage */
+router
+  .route("/usage")
+  .get(
+    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
+    paymentController.getUsage,
   );
 
 export const paymentRouter = router;

@@ -9,7 +9,7 @@ import {
   Zap, LayoutDashboard, Users, Trophy, MessageSquare,
   Map, Megaphone, CreditCard, Settings, ChevronLeft,
   ChevronRight, Plus, LogOut, Sparkles, BarChart3,
-  Gift, ChevronDown, Building2, Check, Edit, Trash2
+  Gift, ChevronDown, Building2, Check, Edit, Trash2, Home
 } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
@@ -53,6 +53,7 @@ const NAV_GROUPS: NavGroup[] = [
   {
     label: "Overview",
     items: [
+      { label: "Home",        href: "/",                     icon: Home            },
       { label: "Dashboard",   href: "/dashboard",            icon: LayoutDashboard },
       { label: "Analytics",   href: "/dashboard/analytics",  icon: BarChart3, featureGate: "analytics" },
     ],

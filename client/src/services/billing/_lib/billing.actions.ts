@@ -175,3 +175,24 @@ export async function getInvoicesAction(): Promise<{
     return { success: false, message: "Network error." };
   }
 }
+
+export async function getUsageAction(): Promise<{
+  success: boolean;
+  data?:   { usage: any[] };
+  message?: string;
+}> {
+  try {
+    const res = await fetch(`${API_BASE}/payment/usage`, {
+      method:  "GET",
+      headers: await authHeader(),
+      cache:   "no-store",
+    });
+
+    const json = await res.json();
+    if (!res.ok) return { success: false, message: json.message };
+    return { success: true, data: json.data };
+  } catch (err) {
+    console.error("[billing] usage error:", err);
+    return { success: false, message: "Network error." };
+  }
+}

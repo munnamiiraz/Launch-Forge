@@ -14,7 +14,7 @@ import { Button } from "@/src/components/ui/button";
 import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
 import { cn }     from "@/src/lib/utils";
 import type { FullLeaderboardEntry } from "../_lib/data";
-import type { PublicPrize }          from "../../waitlist-page/_lib/data";
+import type { PublicPrize }          from "../../individual-waitlist/_lib/data";
 import { getPrizeForRank }           from "../_lib/data";
 
 const PAGE_SIZE = 15;
@@ -187,7 +187,7 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
                   initial={{ opacity: 0, x: -6 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0 }}
-                  transition={{ delay: i * 0.03, duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ delay: i * 0.03, duration: 0.3, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
                   className={cn(
                     "grid grid-cols-[44px_1fr_80px_80px] items-center gap-3 px-4 py-3 transition-colors sm:grid-cols-[44px_1fr_auto_80px_80px]",
                     rowBg,
@@ -205,7 +205,7 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
                   <div className="flex min-w-0 flex-col gap-1.5">
                     <div className="flex flex-wrap items-center gap-2">
                       <Avatar className="h-6 w-6 shrink-0 rounded-lg">
-                        <AvatarFallback className={cn("rounded-lg bg-gradient-to-br text-[9px] font-bold text-white", grad)}>
+                        <AvatarFallback className={cn("rounded-lg bg-linear-to-br text-[9px] font-bold text-white", grad)}>
                           {initials}
                         </AvatarFallback>
                       </Avatar>
@@ -229,7 +229,7 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${barPct}%` }}
-                        transition={{ delay: i * 0.03 + 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                        transition={{ delay: i * 0.03 + 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
                         className={cn(
                           "h-full rounded-full",
                           entry.rank === 1 ? "bg-amber-400"     :

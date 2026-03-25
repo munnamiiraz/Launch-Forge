@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
 import { Badge }   from "@/src/components/ui/badge";
 import { cn }      from "@/src/lib/utils";
 import type { FullLeaderboardEntry } from "../_lib/data";
-import type { PublicPrize } from "@/src/components/module/waitlist-page/_lib/data";
+import type { PublicPrize } from "@/src/components/module/individual-waitlist/_lib/data";
 import { getPrizeForRank } from "../_lib/data";
 
 const PODIUM_CONFIG = [
@@ -76,7 +76,7 @@ export function PodiumSection({ top3, prizes }: PodiumSectionProps) {
                   slot.border,
                 )}>
                   <AvatarFallback className={cn(
-                    "bg-gradient-to-br font-black text-white",
+                    "bg-linear-to-br font-black text-white",
                     slot.crown ? "rounded-2xl text-base" : "rounded-xl text-sm",
                     GRADS[entryIdx],
                   )}>
@@ -111,7 +111,7 @@ export function PodiumSection({ top3, prizes }: PodiumSectionProps) {
                 "flex w-20 sm:w-24 items-center justify-center rounded-t-xl border-t border-l border-r transition-all",
                 slot.height,
                 slot.border,
-                "bg-gradient-to-b from-zinc-800/40 to-zinc-900/40",
+                "bg-linear-to-b from-zinc-800/40 to-zinc-900/40",
               )}>
                 <span className="text-xl">{slot.medal}</span>
               </div>

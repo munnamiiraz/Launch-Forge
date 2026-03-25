@@ -1,4 +1,4 @@
-export type UserRole = "SUPER_ADMIN" | "ADMIN" | "DOCTOR" | "PATIENT";
+export type UserRole = "ADMIN" | "OWNER" | "USER";
 
 export const authRoutes = [ "/login", "/register", "/forgot-password", "/reset-password", "/verify-email" ];
 
@@ -16,24 +16,14 @@ export const commonProtectedRoutes : RouteConfig = {
     pattern : []
 }
 
-export const doctorProtectedRoutes : RouteConfig = {
-    pattern: [/^\/doctor\/dashboard/ ], // Matches any path that starts with /doctor/dashboard
-    exact : []
-}
-
 export const adminProtectedRoutes : RouteConfig = {
-    pattern: [/^\/admin\/dashboard/ ], // Matches any path that starts with /admin/dashboard
+    pattern: [/^\/admin/ ], // Matches any path that starts with /admin
     exact : []
 }
 
-// export const superAdminProtectedRoutes : RouteConfig = {
-//     pattern: [/^\/admin\/dashboard/ ], // Matches any path that starts with /super-admin/dashboard
-//     exact : []
-// }
-
-export const patientProtectedRoutes : RouteConfig = {
+export const ownerProtectedRoutes : RouteConfig = {
     pattern: [/^\/dashboard/ ], // Matches any path that starts with /dashboard
-    exact : [ "/payment/success"]
+    exact : [ "/payment/success", "/payment/cancel"]
 };
 
 export const isRouteMatches = (pathname : string, routes : RouteConfig) => {
@@ -43,21 +33,13 @@ export const isRouteMatches = (pathname : string, routes : RouteConfig) => {
     return routes.pattern.some((pattern : RegExp) => pattern.test(pathname));
 }
 
-export const getRouteOwner = (pathname : string) : "SUPER_ADMIN" | "ADMIN" | "DOCTOR" | "PATIENT" | "COMMON" | null => {
-    if(isRouteMatches(pathname, doctorProtectedRoutes)) {
-        return "DOCTOR";
-    }
-
-    // if (isRouteMatches(pathname, superAdminProtectedRoutes)) {
-    //     return "SUPER_ADMIN";
-    // }
-
+export const getRouteOwner = (pathname : string) : "ADMIN" | "OWNER" | "USER" | "COMMON" | null => {
     if(isRouteMatches(pathname, adminProtectedRoutes)) {
         return "ADMIN";
     }
     
-    if(isRouteMatches(pathname, patientProtectedRoutes)) {
-        return "PATIENT";
+    if(isRouteMatches(pathname, ownerProtectedRoutes)) {
+        return "OWNER";
     }
 
     if(isRouteMatches(pathname, commonProtectedRoutes)) {
@@ -68,13 +50,10 @@ export const getRouteOwner = (pathname : string) : "SUPER_ADMIN" | "ADMIN" | "DO
 }
 
 export const getDefaultDashboardRoute = (role : UserRole) => {
-    if(role === "ADMIN" || role === "SUPER_ADMIN") {
+    if(role === "ADMIN") {
         return "/admin/dashboard";
     }
-    if(role === "DOCTOR") {
-        return "/doctor/dashboard";
-    }
-    if(role === "PATIENT") {
+    if(role === "OWNER" || role === "USER") {
         return "/dashboard";
     }
 
@@ -82,10 +61,6 @@ export const getDefaultDashboardRoute = (role : UserRole) => {
 }
 
 export const isValidRedirectForRole = (redirectPath : string, role : UserRole) => {
-    const unifySuperAdminAndAdminRole = role === "SUPER_ADMIN" ? "ADMIN" : role;
-
-    role = unifySuperAdminAndAdminRole;
-
     const routeOwner = getRouteOwner(redirectPath);
 
     if(routeOwner === null || routeOwner === "COMMON"){
@@ -96,5 +71,9 @@ export const isValidRedirectForRole = (redirectPath : string, role : UserRole) =
         return true;
     }
 
+    // Owner and User share the dashboard in this project
+    if(role === "OWNER" && routeOwner === "OWNER") return true;
+    if(role === "USER" && routeOwner === "OWNER") return true;
+
     return false;
-}
+}

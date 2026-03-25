@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { Badge } from "@/src/components/ui/badge";
@@ -12,7 +12,7 @@ import { RecentSignupsTicker } from "./RecentSignupsTicker";
 import { QueryProvider } from "./QueryProvider";
 import type { WaitlistStats, RecentSignup } from "../_types";
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({
     opacity: 1,
@@ -20,7 +20,7 @@ const fadeUp = {
     transition: {
       delay: i * 0.1,
       duration: 0.55,
-      ease: [0.22, 1, 0.36, 1],
+      ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
     },
   }),
 };
@@ -109,7 +109,7 @@ function HeroContent({ initialStats, initialRecent }: HeroSectionProps) {
                 <motion.div
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.6, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ delay: 0.6, duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
                   className="absolute -bottom-1 left-0 right-0 h-px origin-left bg-gradient-to-r from-indigo-500/60 via-violet-500/60 to-transparent"
                 />
               </span>

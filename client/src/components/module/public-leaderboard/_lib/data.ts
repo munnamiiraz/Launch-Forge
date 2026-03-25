@@ -88,6 +88,7 @@ export function getLeaderboardPage(slug: string): LeaderboardPageData | null {
     tagline: product.tagline,
     description: product.description,
     ownerMessage: product.ownerMessage || null,
+    logoUrl: product.logoUrl || null,
     logoInitials: product.logoInitials,
     logoGradient: product.logoGradient,
     websiteUrl: product.websiteUrl,

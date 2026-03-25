@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function RegisterPage() {
   return (
-    <main className="relative flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-background px-4">
+    <main className="relative flex min-h-screen w-full flex-col items-center justify-start sm:justify-center bg-background px-4 py-12 sm:py-20">
       {/* ── Dynamic background architecture ───────────────────────────── */}
 
       {/* Primary accent glow */}
@@ -39,7 +39,10 @@ export default function RegisterPage() {
       </div>
 
       {/* ── Footer decoration ─────────────────────────────────────────── */}
-      <div className="absolute bottom-8 left-0 right-0 flex justify-center opacity-30">
+      <div 
+        aria-hidden 
+        className="pointer-events-none absolute bottom-8 left-0 right-0 flex justify-center opacity-30"
+      >
         <div className="h-px w-32 bg-linear-to-r from-transparent via-zinc-500 to-transparent" />
       </div>
     </main>

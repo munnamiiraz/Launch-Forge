@@ -1,7 +1,7 @@
 "use server";
 
 import { z } from "zod";
-import { HeroWaitlistJoinResult } from "../../_types";
+import { HeroWaitlistJoinResult } from "@/src/components/module/home/hero-section/_types";
 
 const schema = z.object({
   email: z.string().email("Please enter a valid email address"),
@@ -18,7 +18,7 @@ export async function joinWaitlistAction(
 
   const parsed = schema.safeParse(raw);
   if (!parsed.success) {
-    const first = parsed.error.errors[0];
+    const first = parsed.error.issues[0];
     return {
       success: false,
       fieldError: first.message,

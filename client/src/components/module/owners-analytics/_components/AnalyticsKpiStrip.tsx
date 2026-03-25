@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import {
   Users,
   Share2,
@@ -19,12 +19,12 @@ import { useWorkspace } from "@/src/provider/WorkspaceProvider";
 import { fetchAnalyticsSummary } from "@/src/services/analytics/analytics.action";
 import type { AnalyticsSummary } from "../_types";
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 16 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { delay: i * 0.07, duration: 0.44, ease: [0.22, 1, 0.36, 1] },
+    transition: { delay: i * 0.07, duration: 0.44, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
   }),
 };
 
@@ -42,7 +42,7 @@ function KpiCard({ label, value, delta, deltaType, icon, iconClass, index }: Kpi
   return (
     <motion.div custom={index} variants={fadeUp} initial="hidden" animate="visible">
       <Card className="group relative overflow-hidden border-border/80 bg-card/40 transition-all duration-300 hover:bg-card/60 hover:shadow-lg hover:shadow-black/20">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-indigo-500/30" />
+        <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-indigo-500/30" />
         <CardContent className="p-4">
           <div className="mb-2.5 flex items-center justify-between">
             <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">

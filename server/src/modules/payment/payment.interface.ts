@@ -140,3 +140,33 @@ export interface WebhookHandledResult {
   processed: boolean;
   eventType: string;
 }
+
+/* ─────────────────────────────────────────────────────────────────
+   Usage tracking
+   ──────────────────────────────────────────────────────────────── */
+
+export interface UsageItem {
+  label: string;
+  used:  number;
+  limit: number | null;
+  unit:  string;
+}
+
+export interface GetPaymentUsageResult {
+  usage: UsageItem[];
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   Usage tracking
+   ──────────────────────────────────────────────────────────────── */
+
+export interface UsageItem {
+  label: string;
+  used:  number;
+  limit: number | null;
+  unit:  string;
+}
+
+export interface GetPaymentUsageResult {
+  usage: UsageItem[];
+}

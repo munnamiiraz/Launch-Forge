@@ -1,7 +1,20 @@
 import { Request, Response, NextFunction } from "express";
 import status from "http-status";
-import { paymentService }   from "./payment.service";
-import { PAYMENT_MESSAGES } from "./payment.constant";
+import { paymentService } from "./payment.service";
+import {
+  ActiveSubscriptionInfo,
+  GetPaymentUsageResult,
+  UsageItem,
+} from "./payment.interface";
+import {
+  PAYMENT_MESSAGES,
+  STRIPE_PRICE_IDS,
+  CHECKOUT_CONFIG,
+  HANDLED_STRIPE_EVENTS,
+  PAYMENT_TYPE_TO_WORKSPACE_PLAN,
+  PLAN_LIMITS,
+  UsagePlan,
+} from "./payment.constant";
 
 export const paymentController = {
 
@@ -190,6 +203,29 @@ export const paymentController = {
         success: true,
         message: "Subscription will be cancelled at the end of the billing period. No refund will be issued.",
         data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
+  /* ──────────────────────────────────────────────────────────────
+     GET /api/payment/usage
+     ────────────────────────────────────────────────────────────── */
+
+  async getUsage(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const requestingUserId = req.user!.id;
+      const result = await paymentService.getUsage({ requestingUserId });
+
+      res.status(status.OK).json({
+        success: true,
+        message: "Usage data fetched successfully.",
+        data:    result,
       });
     } catch (error) {
       next(error);

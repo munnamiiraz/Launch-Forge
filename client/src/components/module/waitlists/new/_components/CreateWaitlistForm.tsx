@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, Variants } from "framer-motion";
 import {
   Loader2, AlertCircle, Globe, Lock, Zap, ArrowRight,
   CheckCircle2, ImageIcon, ChevronDown, ChevronUp, Info, Calendar,
@@ -39,11 +39,11 @@ function slugify(str: string): string {
     .replace(/^-|-$/g, "");
 }
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden:  { opacity: 0, y: 12 },
   visible: (i: number) => ({
     opacity: 1, y: 0,
-    transition: { delay: i * 0.06, duration: 0.42, ease: [0.22, 1, 0.36, 1] },
+    transition: { delay: i * 0.06, duration: 0.42, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
   }),
 };
 
@@ -424,7 +424,7 @@ export function CreateWaitlistForm() {
                   initial={{ height: 0, opacity: 0 }}
                   animate={{ height: "auto", opacity: 1 }}
                   exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+                  transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
                   className="overflow-hidden"
                 >
                   <div className="mt-3 rounded-xl border border-border/80 bg-card/30 p-5">
@@ -582,7 +582,7 @@ export function CreateWaitlistForm() {
                 "disabled:pointer-events-none disabled:opacity-60"
               )}
             >
-              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
+              <span className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
               {isSubmitting ? (
                 <>
                   <Loader2 size={15} className="animate-spin" />

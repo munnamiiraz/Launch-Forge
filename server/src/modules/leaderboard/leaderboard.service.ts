@@ -241,7 +241,7 @@ export const leaderboardService = {
 
     /* 2. Fetch all non-deleted, confirmed subscribers ─────────────── */
     const allRaw: RawSubscriberRow[] = await prisma.subscriber.findMany({
-      where: { waitlistId: waitlist.id, deletedAt: null, isConfirmed: true },
+      where: { waitlistId: waitlist.id, deletedAt: null },
       orderBy: [
         { referralsCount: "desc" },
         { createdAt:      "asc"  },

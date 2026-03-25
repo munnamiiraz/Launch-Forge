@@ -2,7 +2,7 @@ import type {
   PlanDefinition, BillingPageData, ActiveSubscription,
   Invoice, UsageItem,
 } from "../_types";
-import { getPaymentStatusAction, getInvoicesAction } from "@/src/services/billing/_lib/billing.actions";
+import { getPaymentStatusAction, getInvoicesAction, getUsageAction } from "@/src/services/billing/_lib/billing.actions";
 
 /* ─────────────────────────────────────────────────────────────────
    Plan definitions — single source of truth
@@ -100,24 +100,15 @@ export const PLANS: PlanDefinition[] = [
    ──────────────────────────────────────────────────────────────── */
 
 export async function getBillingData(): Promise<BillingPageData> {
-  const [statusRes, invoicesRes] = await Promise.all([
+  const [statusRes, invoicesRes, usageRes] = await Promise.all([
     getPaymentStatusAction(),
     getInvoicesAction(),
+    getUsageAction(),
   ]);
 
   const subscription: ActiveSubscription | null = statusRes.data?.subscription ?? null;
-
-  const invoices: Invoice[] = invoicesRes.data ?? [];
-
-  // TODO: Add real usage data when implemented in backend
-  const usage: UsageItem[] = [
-    { label: "Waitlists",        used: 0,     limit: null,   unit: "waitlists"   },
-    { label: "Subscribers",      used: 0,     limit: 10_000, unit: "subscribers" },
-    { label: "Team members",     used: 0,     limit: 5,      unit: "members"     },
-    { label: "Active prizes",    used: 0,     limit: 10,     unit: "prizes"      },
-    { label: "Feedback boards",  used: 0,     limit: null,   unit: "boards"      },
-    { label: "API calls (30d)",  used: 0,     limit: null,   unit: "calls"       },
-  ];
+  const invoices:     Invoice[]           = invoicesRes.data ?? [];
+  const usage:        UsageItem[]         = usageRes.data?.usage ?? [];
 
   return { subscription, invoices, usage };
 

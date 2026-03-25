@@ -15,7 +15,7 @@ import { cn }       from "@/src/lib/utils";
 import { PodiumSection }      from "@/src/components/module/public-leaderboard/_components/PodiumSection";
 import { LeaderboardTable }   from "@/src/components/module/public-leaderboard/_components/LeaderboardTable";
 import { FindMyRankWidget }   from "@/src/components/module/public-leaderboard/_components/FindMyRankWidget";
-import { fetchLeaderboardBySlug, fetchWaitlistBySlug } from "@/src/services/leaderboard/leaderboard-public.action";
+import { fetchPublicLeaderboard, fetchWaitlistBySlug } from "@/src/services/leaderboard/leaderboard-public.action";
 import type { FullLeaderboardEntry } from "@/src/components/module/public-leaderboard/_lib/data";
 import type { PublicWaitlistData, PublicPrize } from "@/src/components/module/individual-waitlist/_lib/data";
 
@@ -89,7 +89,7 @@ export default async function PublicLeaderboardPage({ params }: Props) {
       console.error("[Leaderboard Page] Error fetching waitlist:", e);
       return null;
     }),
-    fetchLeaderboardBySlug(slug, { limit: 10, page: 1 }).catch((e) => {
+    fetchPublicLeaderboard(slug, { limit: 10, page: 1 }).catch((e) => {
       console.error("[Leaderboard Page] Error fetching leaderboard:", e);
       return null;
     }),

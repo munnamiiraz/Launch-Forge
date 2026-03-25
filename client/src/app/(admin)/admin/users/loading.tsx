@@ -1,9 +1,9 @@
 import { MainLoader } from "@/src/components/shared/MainLoader";
 
-export default function AdminLoading() {
+export default function Loading() {
   return (
     <div className="flex-1 flex items-center justify-center p-8">
-      <MainLoader label="Admin Console" />
+      <MainLoader size="md" label="Loading Users" />
     </div>
   );
 }

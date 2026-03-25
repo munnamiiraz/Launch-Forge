@@ -13,6 +13,8 @@ import {
   PaymentStatusResult,
   WebhookHandledResult,
   ActiveSubscriptionInfo,
+  GetPaymentUsageResult,
+  UsageItem,
 } from "./payment.interface";
 import {
   PAYMENT_MESSAGES,
@@ -20,6 +22,8 @@ import {
   CHECKOUT_CONFIG,
   HANDLED_STRIPE_EVENTS,
   PAYMENT_TYPE_TO_WORKSPACE_PLAN,
+  PLAN_LIMITS,
+  UsagePlan,
 } from "./payment.constant";
 import {
   isHandledEvent,
@@ -725,5 +729,61 @@ export const paymentService = {
     } catch {
       throw new AppError(status.BAD_GATEWAY, PAYMENT_MESSAGES.STRIPE_ERROR);
     }
+  },
+
+  /* ──────────────────────────────────────────────────────────────
+     GET /api/payment/usage
+     Calculate current usage (waitlists, subs, team) across user's
+     workspaces and compare against current plan limits.
+     ────────────────────────────────────────────────────────────── */
+
+  async getUsage(payload: { requestingUserId: string }): Promise<GetPaymentUsageResult> {
+    const { requestingUserId } = payload;
+
+    // 1. Resolve current plan
+    const payment = await prisma.payment.findUnique({
+      where:  { userId: requestingUserId },
+      select: { status: true, planType: true },
+    });
+
+    const activePlan: UsagePlan = (payment?.status === "PAID") ? payment.planType : "FREE";
+    const limits = PLAN_LIMITS[activePlan];
+
+    // 2. Fetch all workspaces owned by the user
+    const workspaces = await prisma.workspace.findMany({
+      where:  { ownerId: requestingUserId, deletedAt: null },
+      select: { id: true },
+    });
+    const workspaceIds = workspaces.map((ws) => ws.id);
+
+    // 3. Aggregate counts
+    const [waitlistCount, subscriberCount, memberCount, prizeCount, boardCount] = await Promise.all([
+      prisma.waitlist.count({
+        where: { workspaceId: { in: workspaceIds }, deletedAt: null }
+      }),
+      prisma.subscriber.count({
+        where: { waitlist: { workspaceId: { in: workspaceIds } }, deletedAt: null }
+      }),
+      prisma.workspaceMember.count({
+        where: { workspaceId: { in: workspaceIds }, deletedAt: null }
+      }),
+      prisma.leaderboardPrize.count({
+        where: { waitlist: { workspaceId: { in: workspaceIds } }, deletedAt: null }
+      }),
+      prisma.feedbackBoard.count({
+        where: { workspaceId: { in: workspaceIds }, deletedAt: null }
+      }),
+    ]);
+
+    const usage: UsageItem[] = [
+      { label: "Waitlists",       used: waitlistCount,    limit: limits.waitlists,      unit: "waitlists"   },
+      { label: "Subscribers",     used: subscriberCount,  limit: limits.subscribers,    unit: "subscribers" },
+      { label: "Team members",    used: memberCount,      limit: limits.teamMembers,    unit: "members"     },
+      { label: "Active prizes",   used: prizeCount,       limit: limits.prizes,         unit: "prizes"      },
+      { label: "Feedback boards", used: boardCount,       limit: limits.feedbackBoards, unit: "boards"      },
+      { label: "API calls (30d)", used: 0,                limit: null,                  unit: "calls"       },
+    ];
+
+    return { usage };
   },
 };

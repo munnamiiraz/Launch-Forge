@@ -51,7 +51,7 @@ export function RegisterForm() {
       toast.success("Account created successfully!");
 
       setTimeout(() => {
-        router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+        router.push("/dashboard");
       }, 1500);
     });
   };
@@ -118,17 +118,17 @@ export function RegisterForm() {
               className="flex flex-col items-center gap-4 py-8 text-center"
             >
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500/10 border border-emerald-500/20 shadow-[0_0_20px_-5px_rgba(16,185,129,0.3)]">
-                <Mail size={28} className="text-emerald-400" />
+                <CheckCircle2 size={28} className="text-emerald-400" />
               </div>
               <div className="space-y-2">
-                <p className="text-lg font-semibold text-white tracking-tight">Check your email</p>
+                <p className="text-lg font-semibold text-white tracking-tight">Account forge complete!</p>
                 <p className="text-sm text-muted-foreground leading-relaxed px-4">
-                  We've sent a verification link to your email. Please verify your account to continue.
+                  Welcome aboard. Your account has been automatically verified.
                 </p>
               </div>
               <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground/80 animate-pulse">
                 <Loader2 size={12} className="animate-spin" />
-                Redirecting to verification page...
+                Entering the dashboard...
               </div>
             </motion.div>
           ) : (
@@ -256,25 +256,25 @@ export function RegisterForm() {
             </motion.div>
           )}
         </AnimatePresence>
-      </motion.div>
 
-      {/* Sign-in link */}
-      {!success && (
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.8, duration: 0.4 }}
-          className="mt-6 text-center text-sm text-muted-foreground/80"
-        >
-          Already part of the forge?{" "}
-          <Link
-            href="/login"
-            className="font-semibold text-indigo-400 transition-colors hover:text-indigo-300 underline-offset-4 hover:underline"
+        {/* Sign-in link - Moved inside the card for absolute clickability */}
+        {!success && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8, duration: 0.4 }}
+            className="mt-8 text-center text-sm text-muted-foreground/60 border-t border-zinc-800/50 pt-6"
           >
-            Sign in here
-          </Link>
-        </motion.p>
-      )}
+            Already part of the forge?{" "}
+            <Link
+              href="/login"
+              className="font-semibold text-indigo-400 transition-colors hover:text-indigo-300 underline-offset-4 hover:underline"
+            >
+              Sign in here
+            </Link>
+          </motion.p>
+        )}
+      </motion.div>
     </div>
   );
 }

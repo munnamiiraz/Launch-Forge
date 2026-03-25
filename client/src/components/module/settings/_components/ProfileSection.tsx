@@ -4,7 +4,7 @@ import { useState, useTransition, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   User, Mail, Globe, Clock, Camera,
-  Eye, EyeOff, CheckCircle2, AlertCircle, Loader2, Lock,
+  Eye, EyeOff, CheckCircle2, AlertCircle, Loader2, Lock, Shield,
 } from "lucide-react";
 
 import { Card, CardContent, CardHeader } from "@/src/components/ui/card";
@@ -94,12 +94,6 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Password section
-  const [pwForm,     setPwForm]    = useState({ current: "", next: "", confirm: "" });
-  const [showPw,     setShowPw]    = useState(false);
-  const [pwSuccess,  setPwSuccess] = useState(false);
-  const [pwError,    setPwError]   = useState<string | null>(null);
-  const [pwPending,  startPwTx]   = useTransition();
 
   const set = (k: keyof ProfileForm, v: string) => {
     if (k === "email") return; // email changes are not supported
@@ -161,19 +155,6 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
     });
   };
 
-  const handlePwSave = () => {
-    setPwError(null);
-    if (!pwForm.current) { setPwError("Current password is required."); return; }
-    if (pwForm.next.length < 8) { setPwError("New password must be at least 8 characters."); return; }
-    if (pwForm.next !== pwForm.confirm) { setPwError("Passwords do not match."); return; }
-    startPwTx(async () => {
-      const r = await changePasswordAction(pwForm.current, pwForm.next);
-      if (r.success) {
-        setPwSuccess(true); setPwForm({ current: "", next: "", confirm: "" });
-        setTimeout(() => setPwSuccess(false), 3000);
-      } else setPwError(r.message);
-    });
-  };
 
   const initials = form.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase();
 
@@ -308,94 +289,38 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
         </CardContent>
       </Card>
 
-      {/* ── Change password ──────────────────────────────────── */}
+      {/* ── Security & Password ───────────────────────────── */}
       <Card className="relative overflow-hidden border-border/80 bg-card/40">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
         <CardHeader className="border-b border-border/60 px-5 py-4">
           <div className="flex items-center gap-2">
             <Lock size={14} className="text-muted-foreground/60" />
             <p className="text-sm font-semibold text-foreground/90">Change password</p>
           </div>
           <p className="text-[11px] text-muted-foreground/60">
-            Use a strong password with letters, numbers, and symbols.
+            For your security, password management is handled on a dedicated page.
           </p>
         </CardHeader>
-        <CardContent className="flex flex-col gap-4 p-5">
-          <PasswordField
-            id="pw-current" label="Current password"
-            value={pwForm.current} onChange={(v) => setPwForm((f) => ({ ...f, current: v }))}
-            show={showPw} onToggle={() => setShowPw((s) => !s)}
-          />
-          <div className="grid gap-4 sm:grid-cols-2">
-            <PasswordField
-              id="pw-new" label="New password"
-              value={pwForm.next} onChange={(v) => setPwForm((f) => ({ ...f, next: v }))}
-              show={showPw} onToggle={() => setShowPw((s) => !s)}
-            />
-            <PasswordField
-              id="pw-confirm" label="Confirm new password"
-              value={pwForm.confirm} onChange={(v) => setPwForm((f) => ({ ...f, confirm: v }))}
-              show={showPw} onToggle={() => setShowPw((s) => !s)}
-            />
-          </div>
-
-          {/* Strength hints */}
-          {pwForm.next && (
-            <div className="flex flex-wrap gap-1.5">
-              {[
-                { label: "8+ chars",    ok: pwForm.next.length >= 8 },
-                { label: "Uppercase",   ok: /[A-Z]/.test(pwForm.next) },
-                { label: "Lowercase",   ok: /[a-z]/.test(pwForm.next) },
-                { label: "Number",      ok: /\d/.test(pwForm.next) },
-                { label: "Symbol",      ok: /[^a-zA-Z0-9]/.test(pwForm.next) },
-              ].map((r) => (
-                <span
-                  key={r.label}
-                  className={cn(
-                    "rounded-full px-2 py-0.5 text-[10px] font-medium",
-                    r.ok
-                      ? "bg-emerald-500/12 text-emerald-400"
-                      : "bg-muted/60 text-muted-foreground/60",
-                  )}
-                >
-                  {r.ok ? "✓" : "·"} {r.label}
-                </span>
-              ))}
+        <CardContent className="p-5">
+          <div className="flex items-center justify-between rounded-xl border border-border/60 bg-card/30 px-4 py-4">
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-700/60 bg-muted/40 text-muted-foreground/60">
+                <Shield size={15} />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-foreground/90">Authentication security</p>
+                <p className="text-xs text-muted-foreground/60">Update your credentials to keep your account safe.</p>
+              </div>
             </div>
-          )}
-
-          <AnimatePresence>
-            {(pwSuccess || pwError) && (
-              <motion.div
-                initial={{ opacity: 0, y: 4 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className={cn(
-                  "flex items-center gap-2 rounded-lg border px-3 py-2 text-xs",
-                  pwSuccess
-                    ? "border-emerald-500/25 bg-emerald-500/8 text-emerald-400"
-                    : "border-red-500/25 bg-red-500/8 text-red-400",
-                )}
-              >
-                {pwSuccess
-                  ? <><CheckCircle2 size={13} />Password changed successfully.</>
-                  : <><AlertCircle  size={13} />{pwError}</>
-                }
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          <div className="flex justify-end">
             <Button
-              onClick={handlePwSave}
-              disabled={pwPending}
+              asChild
               size="sm"
-              className="gap-1.5 bg-indigo-600 text-xs text-white hover:bg-indigo-500 disabled:opacity-60"
+              variant="outline"
+              className="border-zinc-700/80 bg-transparent text-xs text-muted-foreground hover:bg-muted/60"
             >
-              {pwPending
-                ? <><Loader2 size={12} className="animate-spin" />Saving…</>
-                : "Update password"
-              }
+              <a href="/reset-password">
+                Go to Change Password
+              </a>
             </Button>
           </div>
         </CardContent>
@@ -429,30 +354,3 @@ function Field({
   );
 }
 
-function PasswordField({
-  id, label, value, onChange, show, onToggle,
-}: {
-  id: string; label: string; value: string;
-  onChange: (v: string) => void; show: boolean; onToggle: () => void;
-}) {
-  return (
-    <div className="flex flex-col gap-1.5">
-      <Label htmlFor={id} className="text-xs font-medium text-muted-foreground">{label}</Label>
-      <div className="relative">
-        <Input
-          id={id} type={show ? "text" : "password"} value={value}
-          placeholder="••••••••"
-          onChange={(e) => onChange(e.target.value)}
-          className="border-zinc-800 bg-card/60 pr-9 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40"
-        />
-        <button
-          type="button"
-          onClick={onToggle}
-          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-muted-foreground"
-        >
-          {show ? <EyeOff size={13} /> : <Eye size={13} />}
-        </button>
-      </div>
-    </div>
-  );
-}
