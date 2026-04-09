@@ -8,6 +8,7 @@ import { catchAsync } from "../../shared/catchAsync";
 import { sendResponse } from "../../shared/sendResponce";
 import { tokenUtils } from "../../utils/token";
 import { AuthService } from "./auth.service";
+import { CookieUtils } from "../../utils/cookie";
 
 const registerUser = catchAsync(
     async (req: Request, res: Response) => {
@@ -82,12 +83,12 @@ const getMe = catchAsync(
 
 const getNewToken = catchAsync(
     async (req: Request, res: Response) => {
-        const refreshToken = req.cookies.refreshToken;
-        const betterAuthSessionToken = req.cookies["better-auth.session_token"];
+        const refreshToken = CookieUtils.getCookie(req, "refreshToken");
+        const betterAuthSessionToken = CookieUtils.getCookie(req, "better-auth.session_token");
         if (!refreshToken) {
             throw new AppError(status.UNAUTHORIZED, "Refresh token is missing");
         }
-        const result = await AuthService.getNewToken(refreshToken, betterAuthSessionToken);
+        const result = await AuthService.getNewToken(refreshToken, betterAuthSessionToken as string);
 
         const { accessToken, refreshToken: newRefreshToken, sessionToken } = result;
 
@@ -111,9 +112,9 @@ const getNewToken = catchAsync(
 const changePassword = catchAsync(
     async (req: Request, res: Response) => {
         const payload = req.body;
-        const betterAuthSessionToken = req.cookies["better-auth.session_token"];
+        const betterAuthSessionToken = CookieUtils.getCookie(req, "better-auth.session_token");
 
-        const result = await AuthService.changePassword(payload, betterAuthSessionToken);
+        const result = await AuthService.changePassword(payload, betterAuthSessionToken as string);
 
         const { accessToken, refreshToken, session, token } = result as any;
 
@@ -139,8 +140,8 @@ const changePassword = catchAsync(
 
 const logoutUser = catchAsync(
     async (req: Request, res: Response) => {
-        const betterAuthSessionToken = req.cookies["better-auth.session_token"];
-        const result = await AuthService.logoutUser(betterAuthSessionToken);
+        const betterAuthSessionToken = CookieUtils.getCookie(req, "better-auth.session_token");
+        const result = await AuthService.logoutUser(betterAuthSessionToken as string);
         tokenUtils.clearAuthCookies(res);
 
         sendResponse(res, {
@@ -217,7 +218,7 @@ const googleLogin = catchAsync((req: Request, res: Response) => {
 const googleLoginSuccess = catchAsync(async (req: Request, res: Response) => {
     const redirectPath = req.query.redirect as string || "/dashboard";
 
-    const sessionToken = req.cookies["better-auth.session_token"];
+    const sessionToken = CookieUtils.getCookie(req, "better-auth.session_token");
 
     if(!sessionToken){
         return res.redirect(`${envVars.FRONTEND_URL}/login?error=oauth_failed`);
