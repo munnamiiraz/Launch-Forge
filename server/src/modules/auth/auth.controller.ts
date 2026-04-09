@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import status from "http-status";
 import ms, { StringValue } from "ms";
+import { fromNodeHeaders } from "better-auth/node";
 import { envVars } from "../../config/env";
 import AppError from "../../errorHelpers/AppError";
 import { auth } from "../../lib/auth";
@@ -225,9 +226,7 @@ const googleLoginSuccess = catchAsync(async (req: Request, res: Response) => {
     }
 
     const session = await auth.api.getSession({
-        headers:{
-            "Cookie" : `better-auth.session_token=${sessionToken}`
-        }
+        headers: fromNodeHeaders(req.headers)
     })
 
     if (!session) {
@@ -243,13 +242,19 @@ const googleLoginSuccess = catchAsync(async (req: Request, res: Response) => {
 
     const {accessToken, refreshToken} = result;
 
-    tokenUtils.setAccessTokenCookie(res, accessToken);
-    tokenUtils.setRefreshTokenCookie(res, refreshToken);
- // ?redirect=//profile -> /profile
+    // Cookies set on the backend domain can't be read by the frontend (different domains).
+    // Pass tokens to the frontend via a dedicated callback route that sets them on the
+    // Vercel domain, then redirects to the final destination.
     const isValidRedirectPath = redirectPath.startsWith("/") && !redirectPath.startsWith("//");
     const finalRedirectPath = isValidRedirectPath ? redirectPath : "/dashboard";
 
-    res.redirect(`${envVars.FRONTEND_URL}${finalRedirectPath}`);
+    const callbackParams = new URLSearchParams({
+        accessToken,
+        refreshToken,
+        redirect: finalRedirectPath,
+    });
+
+    res.redirect(`${envVars.FRONTEND_URL}/api/auth/google/callback?${callbackParams.toString()}`);
 })
 
 const handleOAuthError = catchAsync((req: Request, res: Response) => {

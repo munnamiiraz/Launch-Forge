@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from "express";
 import status from "http-status";
+import { fromNodeHeaders } from "better-auth/node";
 import { Role, UserStatus } from "../constraint/index";
 import { envVars } from "../config/env";
 import AppError from "../errorHelpers/AppError";
@@ -20,9 +21,7 @@ export const checkAuth = (...authRoles: Role[]) => async (req: Request, res: Res
             
             try {
                 const sessionExists = await auth.api.getSession({
-                    headers: {
-                        "cookie": `better-auth.session_token=${sessionToken}`
-                    }
+                    headers: fromNodeHeaders(req.headers)
                 });
 
                 if (sessionExists && sessionExists.user) {

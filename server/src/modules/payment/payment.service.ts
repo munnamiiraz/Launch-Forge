@@ -737,6 +737,153 @@ export const paymentService = {
      workspaces and compare against current plan limits.
      ────────────────────────────────────────────────────────────── */
 
+  /* ──────────────────────────────────────────────────────────────
+     POST /api/payment/sync
+     Pull the user's live Stripe subscription status and write it
+     to the DB. Use this when webhooks are delayed or misconfigured,
+     or when a user paid but the plan shows as FREE.
+     ────────────────────────────────────────────────────────────── */
+
+  async syncSubscription(payload: { requestingUserId: string }): Promise<{
+    synced: boolean;
+    plan: "FREE" | "PRO" | "GROWTH";
+    message: string;
+  }> {
+    const { requestingUserId } = payload;
+
+    const user = await prisma.user.findUnique({
+      where: { id: requestingUserId },
+      select: { id: true, email: true },
+    });
+    if (!user) throw new AppError(status.NOT_FOUND, "User not found.");
+
+    // 1. Check existing payment record for a subscription ID
+    const existing = await prisma.payment.findUnique({
+      where: { userId: requestingUserId },
+      select: { transactionId: true, status: true, planType: true },
+    });
+
+    let subscription: any = null;
+
+    if (existing?.transactionId?.startsWith("sub_")) {
+      // Fetch subscription directly by ID
+      try {
+        subscription = await stripe.subscriptions.retrieve(existing.transactionId);
+      } catch {
+        // subscription might be deleted; fall through to customer search
+      }
+    }
+
+    if (!subscription) {
+      // Search for customer by email and find active subscriptions
+      const customers = await stripe.customers.search({
+        query: `email:"${user.email}"`,
+        limit: 1,
+      });
+
+      if (customers.data.length === 0) {
+        return { synced: false, plan: "FREE", message: "No Stripe customer found for this email." };
+      }
+
+      const customerId = customers.data[0].id;
+      const subs = await stripe.subscriptions.list({
+        customer: customerId,
+        status: "active",
+        limit: 1,
+        expand: ["data.items.data.price"],
+      });
+
+      if (subs.data.length === 0) {
+        return { synced: false, plan: "FREE", message: "No active Stripe subscription found." };
+      }
+
+      subscription = subs.data[0];
+    }
+
+    // Determine plan from subscription metadata or price ID
+    const meta = extractMetadata((subscription.metadata ?? {}) as Record<string, string>);
+    if (!meta || meta.userId !== requestingUserId) {
+      // Try to infer plan from price ID
+      const priceId = subscription.items?.data?.[0]?.price?.id ?? "";
+      let planType: "PRO" | "GROWTH" = "PRO";
+      if (
+        priceId === process.env.STRIPE_GROWTH_MONTHLY_PRICE_ID ||
+        priceId === process.env.STRIPE_GROWTH_YEARLY_PRICE_ID
+      ) {
+        planType = "GROWTH";
+      }
+
+      const isActive = ["active", "trialing"].includes(subscription.status);
+      if (!isActive) {
+        return { synced: false, plan: "FREE", message: "Subscription exists but is not active." };
+      }
+
+      await prisma.$transaction(async (tx) => {
+        await tx.payment.upsert({
+          where: { userId: requestingUserId },
+          create: {
+            userId: requestingUserId,
+            amount: centsToDollars(subscription.items?.data?.[0]?.price?.unit_amount ?? 0),
+            transactionId: subscription.id,
+            stripeEventId: null,
+            status: "PAID",
+            planType,
+            planMode: subscription.items?.data?.[0]?.price?.recurring?.interval === "year" ? "YEARLY" : "MONTHLY",
+            paymentGatewayData: subscription as unknown as object,
+          },
+          update: {
+            transactionId: subscription.id,
+            status: "PAID",
+            planType,
+            planMode: subscription.items?.data?.[0]?.price?.recurring?.interval === "year" ? "YEARLY" : "MONTHLY",
+            paymentGatewayData: subscription as unknown as object,
+          },
+        });
+        await tx.workspace.updateMany({
+          where: { ownerId: requestingUserId, deletedAt: null },
+          data: { plan: PAYMENT_TYPE_TO_WORKSPACE_PLAN[planType] },
+        });
+      });
+
+      return { synced: true, plan: planType, message: `Plan synced to ${planType} from Stripe.` };
+    }
+
+    const isActive = ["active", "trialing"].includes(subscription.status);
+    const newStatus = isActive ? "PAID" as const : "UNPAID" as const;
+
+    await prisma.$transaction(async (tx) => {
+      await tx.payment.upsert({
+        where: { userId: requestingUserId },
+        create: {
+          userId: requestingUserId,
+          amount: centsToDollars(subscription.items?.data?.[0]?.price?.unit_amount ?? 0),
+          transactionId: subscription.id,
+          stripeEventId: null,
+          status: newStatus,
+          planType: meta.planType,
+          planMode: meta.planMode,
+          paymentGatewayData: subscription as unknown as object,
+        },
+        update: {
+          transactionId: subscription.id,
+          status: newStatus,
+          planType: meta.planType,
+          planMode: meta.planMode,
+          paymentGatewayData: subscription as unknown as object,
+        },
+      });
+
+      const workspacePlan = isActive ? PAYMENT_TYPE_TO_WORKSPACE_PLAN[meta.planType] : ("FREE" as const);
+      await tx.workspace.updateMany({
+        where: { ownerId: requestingUserId, deletedAt: null },
+        data: { plan: workspacePlan },
+      });
+    });
+
+    const finalPlan = isActive ? meta.planType : "FREE";
+    return { synced: true, plan: finalPlan, message: `Plan synced to ${finalPlan} from Stripe.` };
+  },
+
   async getUsage(payload: { requestingUserId: string }): Promise<GetPaymentUsageResult> {
     const { requestingUserId } = payload;
 

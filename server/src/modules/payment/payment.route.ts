@@ -102,6 +102,15 @@ router
     paymentController.cancelSubscription,
   );
 
+/* POST /api/payment/sync — pull live Stripe subscription and write to DB */
+router
+  .route("/sync")
+  .post(
+    checkAuth(Role.USER, Role.OWNER, Role.ADMIN),
+    express.json(),
+    paymentController.syncSubscription,
+  );
+
 /* GET /api/payment/usage */
 router
   .route("/usage")

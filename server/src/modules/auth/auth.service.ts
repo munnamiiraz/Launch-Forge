@@ -132,40 +132,50 @@ const loginUser = async (payload: ILoginUserPayload) => {
 }
 
 const getMe = async (user : IRequestUser) => {
-    const isUserExists = await prisma.user.findUnique({
-        where : {
-            id : user.id,
-        },
-        select : {
-            id : true,
-            name : true,
-            email : true,
-            image : true,
-            role : true,
-            status : true,
-            isDeleted : true,
-            emailVerified : true,
-            createdAt : true,
-            updatedAt : true,
-        }
-    })
+    const [isUserExists, workspace, payment] = await Promise.all([
+        prisma.user.findUnique({
+            where : { id : user.id },
+            select : {
+                id : true,
+                name : true,
+                email : true,
+                image : true,
+                role : true,
+                status : true,
+                isDeleted : true,
+                emailVerified : true,
+                createdAt : true,
+                updatedAt : true,
+            }
+        }),
+        prisma.workspace.findFirst({
+            where: { ownerId: user.id, deletedAt: null },
+            select: { plan: true },
+        }),
+        prisma.payment.findUnique({
+            where: { userId: user.id },
+            select: { status: true, planType: true },
+        }),
+    ]);
 
     if (!isUserExists) {
         throw new AppError(status.NOT_FOUND, "User not found");
     }
 
-    // Get the user's workspace to fetch the plan
-    const workspace = await prisma.workspace.findFirst({
-        where: {
-            ownerId: user.id,
-            deletedAt: null,
-        },
-        select: {
-            plan: true,
-        },
-    });
+    let plan: string = workspace?.plan || "FREE";
 
-    const plan = workspace?.plan || "FREE";
+    // Auto-reconcile: Payment says PAID but workspace is still FREE.
+    // This happens when the Stripe webhook was missed or the confirm flow
+    // didn't reach the workspace update. Fix it automatically on every
+    // dashboard load so the user sees their correct plan immediately.
+    if (payment?.status === "PAID" && plan === "FREE") {
+        const upgradedPlan = payment.planType; // "PRO" | "GROWTH"
+        await prisma.workspace.updateMany({
+            where: { ownerId: user.id, deletedAt: null, plan: "FREE" },
+            data: { plan: upgradedPlan },
+        });
+        plan = upgradedPlan;
+    }
 
     return {
         ...isUserExists,

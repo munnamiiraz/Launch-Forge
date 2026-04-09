@@ -10,9 +10,10 @@ const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5000/
 /* ── Forward the session cookie to the backend ────────────────────── */
 async function authHeader(): Promise<HeadersInit> {
   const jar = await cookies();
+  const cookieStr = jar.getAll().map(c => `${c.name}=${c.value}`).join("; ");
   return {
     "Content-Type": "application/json",
-    Cookie: jar.toString(),
+    Cookie: cookieStr,
   };
 }
 
@@ -172,6 +173,28 @@ export async function getInvoicesAction(): Promise<{
     return { success: true, data: json.data };
   } catch (err) {
     console.error("[billing] invoices error:", err);
+    return { success: false, message: "Network error." };
+  }
+}
+
+export async function syncPlanAction(): Promise<{
+  success: boolean;
+  synced?: boolean;
+  plan?: string;
+  message?: string;
+}> {
+  try {
+    const res = await fetch(`${API_BASE}/payment/sync`, {
+      method:  "POST",
+      headers: await authHeader(),
+      cache:   "no-store",
+    });
+
+    const json = await res.json();
+    if (!res.ok) return { success: false, message: json.message ?? "Sync failed." };
+    return { success: true, synced: json.data?.synced, plan: json.data?.plan, message: json.data?.message };
+  } catch (err) {
+    console.error("[billing] sync error:", err);
     return { success: false, message: "Network error." };
   }
 }

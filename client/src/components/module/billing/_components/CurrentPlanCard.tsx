@@ -12,7 +12,7 @@ import { Badge }   from "@/src/components/ui/badge";
 import { Button }  from "@/src/components/ui/button";
 import { Separator } from "@/src/components/ui/separator";
 import { cn }      from "@/src/lib/utils";
-import { createPortalAction } from "@/src/services/billing/_lib/billing.actions";
+import { createPortalAction, syncPlanAction } from "@/src/services/billing/_lib/billing.actions";
 import { PLANS }   from "@/src/components/module/billing/_lib/data";
 import type { ActiveSubscription } from "@/src/components/module/billing/_types";
 
@@ -36,7 +36,9 @@ interface CurrentPlanCardProps {
 
 export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
   const [isPending, startTx] = useTransition();
+  const [isSyncing, startSync] = useTransition();
   const [portalError, setPortalError] = useState<string | null>(null);
+  const [syncMsg, setSyncMsg] = useState<string | null>(null);
 
   const plan       = subscription?.planTier ?? "FREE";
   const planDef    = PLANS.find((p) => p.tier === plan) ?? PLANS[0];
@@ -67,6 +69,19 @@ export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
         window.location.href = res.url;
       } else {
         setPortalError(res.message ?? "Unable to open billing portal.");
+      }
+    });
+  };
+
+  const syncPlan = () => {
+    setSyncMsg(null);
+    startSync(async () => {
+      const res = await syncPlanAction();
+      if (res.success && res.synced) {
+        setSyncMsg(`Plan synced to ${res.plan}. Refreshing…`);
+        setTimeout(() => window.location.reload(), 1500);
+      } else {
+        setSyncMsg(res.message ?? "Nothing to sync — no active Stripe subscription found.");
       }
     });
   };
@@ -219,6 +234,26 @@ export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
                   </Button>
                 )}
               </div>
+
+              {/* Sync plan button — recovers plan when webhook was missed */}
+              <Button
+                onClick={syncPlan}
+                disabled={isSyncing}
+                variant="ghost"
+                size="sm"
+                className="gap-1.5 text-xs text-muted-foreground/60 hover:bg-muted/40 hover:text-muted-foreground"
+              >
+                {isSyncing
+                  ? <><Loader2 size={11} className="animate-spin" />Syncing…</>
+                  : <><RefreshCw size={11} />Sync plan from Stripe</>
+                }
+              </Button>
+
+              {syncMsg && (
+                <p className={`text-xs ${syncMsg.includes("synced") ? "text-emerald-500" : "text-amber-400"}`}>
+                  {syncMsg}
+                </p>
+              )}
 
               {portalError && (
                 <p className="text-xs text-red-400">{portalError}</p>

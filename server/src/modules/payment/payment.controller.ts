@@ -213,6 +213,25 @@ export const paymentController = {
      GET /api/payment/usage
      ────────────────────────────────────────────────────────────── */
 
+  async syncSubscription(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const requestingUserId = req.user!.id;
+      const result = await paymentService.syncSubscription({ requestingUserId });
+
+      res.status(status.OK).json({
+        success: true,
+        message: result.message,
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
+
   async getUsage(
     req: Request,
     res: Response,
