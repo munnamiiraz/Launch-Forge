@@ -44,6 +44,7 @@ export interface PublicPrizeSummary {
   title:   string;
   emoji:   string;
   value:   string | null;
+  expiresAt: string | null;
 }
 
 export interface PublicReferrer {
@@ -104,9 +105,9 @@ export const MOCK_PRODUCTS: PublicProduct[] = [
     createdAt: "2025-01-10", expiresAt: "2025-04-30",
     ownerName: "Sarah Kim",
     prizes: [
-      { rank: "#1",   title: "💵 $1,000 Cash",        emoji: "💵", value: "$1,000" },
-      { rank: "#2–#3",title: "🎁 $300 Gift Card",     emoji: "🎁", value: "$300"  },
-      { rank: "#4–#10",title:"♾️ Lifetime Access",    emoji: "♾️", value: null    },
+      { rank: "#1",   title: "💵 $1,000 Cash",        emoji: "💵", value: "$1,000", expiresAt: null },
+      { rank: "#2–#3",title: "🎁 $300 Gift Card",     emoji: "🎁", value: "$300",  expiresAt: null },
+      { rank: "#4–#10",title:"♾️ Lifetime Access",    emoji: "♾️", value: null,    expiresAt: null },
     ],
     topReferrers: [
       { maskedName: "Sarah K.",  referralCount: 47, rank: 1 },
@@ -125,7 +126,7 @@ export const MOCK_PRODUCTS: PublicProduct[] = [
     createdAt: "2025-01-22", expiresAt: null,
     ownerName: "Priya Mehta",
     prizes: [
-      { rank: "#1",   title: "✨ Founder Badge + Free Year", emoji: "✨", value: null },
+      { rank: "#1",   title: "✨ Founder Badge + Free Year", emoji: "✨", value: null, expiresAt: null },
     ],
     topReferrers: [
       { maskedName: "Chen W.",  referralCount: 31, rank: 1 },
@@ -158,8 +159,8 @@ export const MOCK_PRODUCTS: PublicProduct[] = [
     createdAt: "2025-02-14", expiresAt: "2025-05-01",
     ownerName: "Anna Schmidt",
     prizes: [
-      { rank: "#1",   title: "💵 $2,000 Cash",     emoji: "💵", value: "$2,000" },
-      { rank: "#2–#5",title: "🏷️ 50% Off — 1 Year",emoji: "🏷️", value: null    },
+      { rank: "#1",   title: "💵 $2,000 Cash",     emoji: "💵", value: "$2,000", expiresAt: null },
+      { rank: "#2–#5",title: "🏷️ 50% Off — 1 Year",emoji: "🏷️", value: null,    expiresAt: null },
     ],
     topReferrers: [
       { maskedName: "Anna S.", referralCount: 22, rank: 1 },
@@ -177,7 +178,7 @@ export const MOCK_PRODUCTS: PublicProduct[] = [
     createdAt: "2025-02-20", expiresAt: null,
     ownerName: "Omar Farooq",
     prizes: [
-      { rank: "#1–#5", title: "♾️ Lifetime Access", emoji: "♾️", value: null },
+      { rank: "#1–#5", title: "♾️ Lifetime Access", emoji: "♾️", value: null, expiresAt: null },
     ],
     topReferrers: [
       { maskedName: "Omar F.", referralCount: 31, rank: 1 },
@@ -207,8 +208,8 @@ export const MOCK_PRODUCTS: PublicProduct[] = [
     createdAt: "2025-03-05", expiresAt: "2025-06-01",
     ownerName: "Mei Ling",
     prizes: [
-      { rank: "#1",   title: "🎓 Free Premium — 1 Year", emoji: "🎓", value: null },
-      { rank: "#2–#3",title: "🎁 $50 Gift Card",          emoji: "🎁", value: "$50" },
+      { rank: "#1",   title: "🎓 Free Premium — 1 Year", emoji: "🎓", value: null, expiresAt: null },
+      { rank: "#2–#3",title: "🎁 $50 Gift Card",          emoji: "🎁", value: "$50",  expiresAt: null },
     ],
     topReferrers: [
       { maskedName: "Mei L.",  referralCount: 42, rank: 1 },
@@ -239,7 +240,7 @@ export const MOCK_PRODUCTS: PublicProduct[] = [
     createdAt: "2025-03-12", expiresAt: null,
     ownerName: "Isabel Costa",
     prizes: [
-      { rank: "#1–#3", title: "📦 Health Monitor Device", emoji: "📦", value: null },
+      { rank: "#1–#3", title: "📦 Health Monitor Device", emoji: "📦", value: null, expiresAt: null },
     ],
     topReferrers: [
       { maskedName: "Isabel C.", referralCount: 19, rank: 1 },
@@ -269,8 +270,8 @@ export const MOCK_PRODUCTS: PublicProduct[] = [
     createdAt: "2025-01-28", expiresAt: null,
     ownerName: "Lucas Oliveira",
     prizes: [
-      { rank: "#1",    title: "💵 $500 Cash",       emoji: "💵", value: "$500" },
-      { rank: "#2–#5", title: "♾️ Lifetime Pro",    emoji: "♾️", value: null   },
+      { rank: "#1",    title: "💵 $500 Cash",       emoji: "💵", value: "$500",  expiresAt: null },
+      { rank: "#2–#5", title: "♾️ Lifetime Pro",    emoji: "♾️", value: null,   expiresAt: null },
     ],
     topReferrers: [
       { maskedName: "Lucas O.", referralCount: 38, rank: 1 },
@@ -288,7 +289,7 @@ export const MOCK_PRODUCTS: PublicProduct[] = [
     createdAt: "2025-02-08", expiresAt: "2025-05-15",
     ownerName: "Fatima Al-Amin",
     prizes: [
-      { rank: "#1", title: "🎁 $200 Gift Card", emoji: "🎁", value: "$200" },
+      { rank: "#1", title: "🎁 $200 Gift Card", emoji: "🎁", value: "$200", expiresAt: null },
     ],
     topReferrers: [
       { maskedName: "Fatima A.", referralCount: 24, rank: 1 },
@@ -305,7 +306,7 @@ export const MOCK_PRODUCTS: PublicProduct[] = [
     createdAt: "2025-03-18", expiresAt: null,
     ownerName: "John Doe",
     prizes: [
-      { rank: "#1", title: "🎁 $100 Gift Card", emoji: "🎁", value: "$100" },
+      { rank: "#1", title: "🎁 $100 Gift Card", emoji: "🎁", value: "$100", expiresAt: null },
     ],
     topReferrers: [
       { maskedName: "Jane D.", referralCount: 10, rank: 1 },
@@ -315,10 +316,10 @@ export const MOCK_PRODUCTS: PublicProduct[] = [
 
 export function getWaitlistBySlug(slug: string): PublicProduct | null {
   const normalized = slug ? slug.trim().toLowerCase() : "";
-  console.log(`DEBUG: getWaitlistBySlug("${slug}") -> normalized: "${normalized}"`);
-  console.log("DEBUG: Available slugs:", MOCK_PRODUCTS.map(p => p.slug));
+  // console.log(`DEBUG: getWaitlistBySlug("${slug}") -> normalized: "${normalized}"`);
+  // console.log("DEBUG: Available slugs:", MOCK_PRODUCTS.map(p => p.slug));
   const result = MOCK_PRODUCTS.find((p) => p.slug.toLowerCase() === normalized) ?? null;
-  console.log("DEBUG: Result found:", !!result);
+  // console.log("DEBUG: Result found:", !!result);
   return result;
 }
 

@@ -51,19 +51,19 @@ export function AnalyticsMockUI() {
   const areaPath = `${linePath} L ${W},${H} L 0,${H} Z`;
 
   return (
-    <div className="relative w-full overflow-hidden rounded-2xl border border-border/80 bg-background/95 shadow-2xl shadow-black/60 backdrop-blur-xl">
+    <div className="relative w-full overflow-hidden rounded-2xl border border-border/80 bg-background/95 shadow-2xl shadow-indigo-500/5 dark:shadow-black/60 backdrop-blur-xl">
       {/* Top gradient line */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/50 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-indigo-500/50 to-transparent" />
 
       {/* Window chrome */}
       <div className="flex items-center gap-2 border-b border-border/60 px-4 py-2.5">
         <div className="flex gap-1.5">
-          {["bg-zinc-700", "bg-zinc-700", "bg-zinc-700"].map((c, i) => (
-            <div key={i} className={cn("h-2 w-2 rounded-full", c)} />
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="h-2 w-2 rounded-full bg-muted-foreground/20" />
           ))}
         </div>
-        <div className="mx-auto flex items-center gap-1.5 rounded-md border border-zinc-800 bg-card/60 px-3 py-0.5">
-          <div className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+        <div className="mx-auto flex items-center gap-1.5 rounded-md border border-border bg-muted/30 px-3 py-0.5">
+          <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
           <span className="text-[10px] text-muted-foreground/80">launchforge.app/analytics</span>
         </div>
         <div className="flex items-center gap-1 rounded-full border border-indigo-500/20 bg-indigo-500/8 px-2 py-0.5 text-[9px] font-semibold text-indigo-400">
@@ -85,7 +85,7 @@ export function AnalyticsMockUI() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 + i * 0.07, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-              className="rounded-xl border border-border/60 bg-zinc-900/50 p-3"
+              className="rounded-xl border border-border/60 bg-muted/20 p-3"
             >
               <div className="mb-1.5 flex items-center justify-between">
                 <span className="text-[9px] text-muted-foreground/60">{s.label}</span>
@@ -182,7 +182,7 @@ export function AnalyticsMockUI() {
               {CHANNEL_ROWS.map((row, i) => (
                 <div key={row.label} className="flex items-center gap-2">
                   <span className="w-16 shrink-0 text-[10px] text-muted-foreground/80">{row.label}</span>
-                  <div className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-zinc-800">
+                  <div className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
                     <motion.div
                       initial={{ width: 0 }}
                       whileInView={{ width: `${row.pct}%` }}

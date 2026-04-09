@@ -95,7 +95,7 @@ export function GrowthChart() {
           </div>
           <div className="flex items-center gap-3">
             <div className="text-right">
-              <p className="text-xl font-black tracking-tight text-indigo-300">
+              <p className="text-xl font-black tracking-tight text-indigo-600 dark:text-indigo-300">
                 {loading ? "..." : total.toLocaleString()}
               </p>
               <p className="text-[10px] text-muted-foreground/60">total signups</p>
@@ -118,7 +118,7 @@ export function GrowthChart() {
               {[1, 2, 3, 4, 5, 6, 7].map((i) => (
                 <div
                   key={i}
-                  className="mx-1 animate-pulse rounded-t bg-zinc-800"
+                  className="mx-1 animate-pulse rounded-t bg-muted"
                   style={{
                     height: `${[45, 62, 38, 55, 72, 48, 60][i] || 50}%`,
                     width: `${100 / 8}%`,
@@ -128,7 +128,7 @@ export function GrowthChart() {
             </div>
             <div className="flex justify-between">
               {[1, 2, 3, 4, 5, 6, 7].map((i) => (
-                <div key={i} className="h-3 w-8 animate-pulse rounded bg-zinc-800" />
+                <div key={i} className="h-3 w-8 animate-pulse rounded bg-muted" />
               ))}
             </div>
           </div>
@@ -141,7 +141,7 @@ export function GrowthChart() {
                   <stop offset="100%" stopColor="hsl(var(--chart-1))" stopOpacity={0}   />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" vertical={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="currentColor" strokeOpacity={0.06} className="text-border" vertical={false} />
               <XAxis 
                 dataKey="day" 
                 tick={{ fill: "rgb(113,113,122)", fontSize: 10 }}

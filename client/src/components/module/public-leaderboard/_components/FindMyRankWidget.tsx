@@ -84,7 +84,7 @@ export function FindMyRankWidget({ slug }: FindMyRankWidgetProps) {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="you@example.com"
           disabled={isPending}
-          className="h-9 flex-1 border-zinc-800 bg-card/60 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/40 focus-visible:ring-1 focus-visible:ring-indigo-500/20"
+          className="h-9 flex-1 border-border bg-card/40 dark:bg-card/60 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/40 focus-visible:ring-1 focus-visible:ring-indigo-500/20"
         />
         <Button
           type="submit"
@@ -108,15 +108,15 @@ export function FindMyRankWidget({ slug }: FindMyRankWidgetProps) {
           >
             {/* Position + refs */}
             <div className="grid grid-cols-2 gap-2">
-              <div className="flex flex-col gap-0.5 rounded-xl border border-indigo-500/20 bg-indigo-500/8 px-3 py-2.5">
-                <p className="text-[10px] text-muted-foreground/60">Your position</p>
-                <p className="text-xl font-black tabular-nums text-indigo-300">#{result.position.toLocaleString()}</p>
-                <p className="text-[10px] text-muted-foreground/60">of {result.totalInQueue.toLocaleString()}</p>
+              <div className="flex flex-col gap-0.5 rounded-xl border border-indigo-500/20 bg-indigo-500/10 dark:bg-indigo-500/8 px-3 py-2.5">
+                <p className="text-[10px] text-muted-foreground/70 dark:text-muted-foreground/60">Your position</p>
+                <p className="text-xl font-black tabular-nums text-indigo-700 dark:text-indigo-300">#{result.position.toLocaleString()}</p>
+                <p className="text-[10px] text-muted-foreground/70 dark:text-muted-foreground/60">of {result.totalInQueue.toLocaleString()}</p>
               </div>
-              <div className="flex flex-col gap-0.5 rounded-xl border border-border/60 bg-card/40 px-3 py-2.5">
-                <p className="text-[10px] text-muted-foreground/60">Your referrals</p>
+              <div className="flex flex-col gap-0.5 rounded-xl border border-border bg-card/40 px-3 py-2.5 shadow-xs">
+                <p className="text-[10px] text-muted-foreground/70 dark:text-muted-foreground/60">Your referrals</p>
                 <p className="text-xl font-black tabular-nums text-foreground/90">{result.referralCount}</p>
-                <p className="text-[10px] text-muted-foreground/60">
+                <p className="text-[10px] text-muted-foreground/70 dark:text-muted-foreground/60">
                   {result.referralCount === 0 ? "share to earn" : "people referred"}
                 </p>
               </div>
@@ -124,9 +124,9 @@ export function FindMyRankWidget({ slug }: FindMyRankWidgetProps) {
 
             {/* Move up nudge */}
             {result.referralCount === 0 && (
-              <div className="flex items-start gap-2 rounded-xl border border-emerald-500/15 bg-emerald-500/6 px-3 py-2.5">
-                <ChevronUp size={13} className="mt-0.5 shrink-0 text-emerald-400" />
-                <p className="text-xs text-emerald-300">
+              <div className="flex items-start gap-2 rounded-xl border border-emerald-500/20 bg-emerald-500/10 dark:bg-emerald-500/6 px-3 py-2.5">
+                <ChevronUp size={13} className="mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                <p className="text-xs text-emerald-700 dark:text-emerald-300">
                   Share your referral link to start moving up the queue.
                 </p>
               </div>
@@ -159,7 +159,7 @@ export function FindMyRankWidget({ slug }: FindMyRankWidgetProps) {
             className="text-xs text-muted-foreground/80"
           >
             No account found for that email.{" "}
-            <a href={`/w/${slug}`} className="text-indigo-400 hover:underline">
+            <a href={`/explore/${slug}`} className="text-indigo-600 dark:text-indigo-400 font-medium hover:underline">
               Join the waitlist →
             </a>
           </motion.p>

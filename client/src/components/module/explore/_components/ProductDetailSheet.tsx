@@ -37,11 +37,11 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
     <Sheet open={open} onOpenChange={(v) => { if (!v) onClose(); }}>
       <SheetContent
         side="right"
-        className="flex w-full flex-col gap-0 overflow-hidden border-border/80 bg-[#0a0a0a] p-0 sm:max-w-[520px]"
+        className="flex w-full flex-col gap-0 overflow-hidden border-border bg-background p-0 sm:max-w-[520px]"
       >
         {/* Gradient top accent */}
         <div className={cn(
-          "absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent",
+          "absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent",
           "via-indigo-500/50",
         )} />
 
@@ -61,7 +61,7 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
                   />
                 ) : (
                   <AvatarFallback className={cn(
-                    "rounded-xl bg-gradient-to-br text-base font-black text-white",
+                    "rounded-xl bg-linear-to-br text-base font-black text-white",
                     product.logoGradient,
                   )}>
                     {product.logoInitials}
@@ -76,10 +76,10 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
                   <Badge className={cn(
                     "gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold shrink-0",
                     product.isOpen
-                      ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
-                      : "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",
+                      ? "border-emerald-500/20 dark:border-emerald-500/25 bg-emerald-500/8 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                      : "border-border bg-muted/40 text-muted-foreground/80",
                   )}>
-                    {product.isOpen ? <><Globe size={8} />Open</> : <><Lock size={8} />Closed</>}
+                    {product.isOpen ? <><Globe size={9} />Open</> : <><Lock size={9} />Closed</>}
                   </Badge>
                 </div>
                 <p className="mt-0.5 text-xs text-muted-foreground/80 leading-snug">{product.tagline}</p>
@@ -95,11 +95,11 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
 
           {/* Category + tags */}
           <div className="mt-3 flex flex-wrap items-center gap-1.5">
-            <Badge className="border-indigo-500/25 bg-indigo-500/10 text-[10px] text-indigo-400">
+            <Badge className="border-indigo-500/20 dark:border-indigo-500/25 bg-indigo-500/8 dark:bg-indigo-500/10 text-[10px] text-indigo-700 dark:text-indigo-400">
               {product.category}
             </Badge>
             {product.tags.map((tag) => (
-              <Badge key={tag} className="border-zinc-800 bg-card/60 text-[10px] text-muted-foreground/60">
+              <Badge key={tag} className="border-border bg-card/60 text-[10px] text-muted-foreground/70">
                 {tag}
               </Badge>
             ))}
@@ -113,17 +113,17 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
             {/* Stats row */}
             <div className="grid grid-cols-3 gap-3">
               <StatBox
-                icon={<Users size={13} className="text-indigo-400" />}
+                icon={<Users size={14} className="text-indigo-600 dark:text-indigo-400" />}
                 label="Joined"
                 value={product.totalSubscribers.toLocaleString()}
               />
               <StatBox
-                icon={<Share2 size={13} className="text-violet-400" />}
+                icon={<Share2 size={14} className="text-violet-600 dark:text-violet-400" />}
                 label="Referrals"
                 value={product.referralCount.toLocaleString()}
               />
               <StatBox
-                icon={<Zap size={13} className="text-amber-400" />}
+                icon={<Zap size={14} className="text-amber-600 dark:text-amber-400" />}
                 label="Viral score"
                 value={`${product.viralScore}×`}
               />
@@ -136,7 +136,7 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
                   <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
                 </span>
-                <p className="text-xs text-emerald-300">
+                <p className="text-xs text-emerald-700 dark:text-emerald-300">
                   <span className="font-bold">{product.recentJoins}</span> people joined in the last 24 hours
                 </p>
               </div>
@@ -166,23 +166,23 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
                         className={cn(
                           "flex items-center justify-between gap-3 rounded-xl border px-4 py-3",
                           i === 0
-                            ? "border-amber-500/30 bg-amber-500/8"
-                            : "border-border/60 bg-card/30",
+                            ? "border-amber-500/30 bg-amber-500/5 dark:bg-amber-500/8 shadow-sm shadow-amber-500/5"
+                            : "border-border bg-card/50",
                         )}
                       >
                         <div className="flex items-center gap-2.5">
                           <span className="text-lg">{prize.emoji}</span>
                           <div>
-                            <p className={cn("text-xs font-semibold", i === 0 ? "text-amber-200" : "text-foreground/80")}>
+                            <p className={cn("text-xs font-semibold", i === 0 ? "text-amber-700 dark:text-amber-200" : "text-foreground")}>
                               {prize.title}
                             </p>
-                            <p className="text-[10px] text-muted-foreground/60">{prize.rank} place</p>
+                            <p className="text-[10px] text-muted-foreground/70">{prize.rank} place</p>
                           </div>
                         </div>
                         {prize.value && (
                           <span className={cn(
                             "text-sm font-black tabular-nums",
-                            i === 0 ? "text-amber-300" : "text-foreground/80",
+                            i === 0 ? "text-amber-600 dark:text-amber-300" : "text-foreground/90",
                           )}>
                             {prize.value}
                           </span>
@@ -207,7 +207,7 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
                       <div key={ref.rank} className="flex items-center gap-3">
                         <span className="w-5 text-center text-sm">{RANK_MEDAL[i] ?? `#${ref.rank}`}</span>
                         <div className="flex-1">
-                          <div className="h-1 overflow-hidden rounded-full bg-zinc-800">
+                          <div className="h-1.5 overflow-hidden rounded-full bg-muted">
                             <motion.div
                               initial={{ width: 0 }}
                               animate={{ width: `${(ref.referralCount / product.topReferrers[0].referralCount) * 100}%` }}
@@ -217,7 +217,7 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
                           </div>
                         </div>
                         <p className="text-xs text-muted-foreground/80">{ref.maskedName}</p>
-                        <p className="w-8 text-right text-xs font-bold tabular-nums text-foreground/80">{ref.referralCount}</p>
+                        <p className="w-10 text-right text-xs font-bold tabular-nums text-foreground/90">{ref.referralCount}</p>
                       </div>
                     ))}
                   </div>
@@ -244,13 +244,13 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
         </div>
 
         {/* Sticky footer CTA */}
-        <div className="border-t border-border/60 bg-[#0a0a0a] px-6 py-4">
+        <div className="border-t border-border bg-background px-6 py-5">
           <div className="flex gap-3">
             {product.websiteUrl && (
               <Button
                 asChild
                 variant="outline"
-                className="gap-2 border-zinc-700/80 bg-transparent text-sm text-muted-foreground hover:border-zinc-600 hover:bg-muted/60 hover:text-foreground/90"
+                className="gap-2 border-border bg-transparent text-sm text-muted-foreground hover:bg-muted/60 hover:text-foreground"
               >
                 <a href={product.websiteUrl} target="_blank" rel="noopener noreferrer">
                   <ExternalLink size={13} />
@@ -261,14 +261,14 @@ export function ProductDetailSheet({ product, open, onClose, onJoin }: ProductDe
             {product.isOpen ? (
               <Button
                 onClick={() => { onClose(); onJoin(product); }}
-                className="group relative flex-1 overflow-hidden bg-indigo-600 text-sm font-bold text-white hover:bg-indigo-500"
+                className="group relative flex-1 overflow-hidden bg-indigo-600 text-sm font-bold text-white hover:bg-indigo-500 shadow-lg shadow-indigo-500/10"
               >
-                <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
-                <ArrowRight size={14} />
+                <span className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-500 group-hover/btn:translate-x-full" />
+                <ArrowRight size={15} />
                 Join waitlist
               </Button>
             ) : (
-              <div className="flex-1 rounded-xl border border-zinc-700/60 bg-zinc-800/30 py-2 text-center text-sm text-muted-foreground/60">
+              <div className="flex-1 rounded-xl border border-border bg-muted/40 py-2.5 text-center text-[11px] font-semibold text-muted-foreground/60 uppercase tracking-tight">
                 Waitlist closed
               </div>
             )}

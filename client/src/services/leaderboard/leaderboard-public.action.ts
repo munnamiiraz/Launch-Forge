@@ -68,7 +68,7 @@ async function authFetch(url: string, options: RequestInit = {}) {
  */
 export async function fetchWaitlistBySlug(slug: string) {
   const url = `${BACKEND}/public/waitlist/${slug}`;
-  console.log(`[Action] Fetching waitlist info: ${url}`);
+  // console.log(`[Action] Fetching waitlist info: ${url}`);
 
   const res = await fetch(url, {
     method: "GET",
@@ -113,13 +113,13 @@ export async function fetchLeaderboardBySlug(
 
   // Use the by-slug endpoint which handles waitlist lookup internally
   const url = `${BACKEND}/leaderboard/by-slug/${waitlistSlug}?${queryParams}`;
-  console.log(`[Leaderboard Action] Fetching leaderboard from: ${url}`);
+  // console.log(`[Leaderboard Action] Fetching leaderboard from: ${url}`);
 
   const res = await authFetch(url);
-  console.log(`[Leaderboard Action] Response status:`, res.status);
+  // console.log(`[Leaderboard Action] Response status:`, res.status);
   
   const json = await res.json();
-  console.log(`[Leaderboard Action] Response data:`, json);
+  // console.log(`[Leaderboard Action] Response data:`, json);
 
   if (!res.ok) {
     console.error("[Leaderboard Action] API error:", json);

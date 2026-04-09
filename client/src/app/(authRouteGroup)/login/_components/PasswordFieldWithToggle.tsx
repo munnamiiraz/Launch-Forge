@@ -24,8 +24,8 @@ export function PasswordFieldWithToggle({
         {...props}
         type={show ? "text" : "password"}
         className={cn(
-          "border-zinc-800 bg-card/60 pr-10 text-foreground placeholder:text-muted-foreground/60",
-          "focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/50",
+          "h-11 rounded-xl border-border/80 dark:border-zinc-800 bg-card/60 pl-4 pr-10 text-foreground placeholder:text-muted-foreground/60",
+          "focus-visible:border-ring/40 focus-visible:ring-1 focus-visible:ring-ring/20",
           "transition-all duration-200",
           hasError &&
             "border-red-500/60 focus-visible:border-red-500 focus-visible:ring-red-500/20",

@@ -77,10 +77,10 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
-      <DialogContent className="overflow-hidden border-border/80 bg-[#0a0a0a] p-0 shadow-2xl shadow-black/80 sm:max-w-md">
+      <DialogContent className="overflow-hidden border-border bg-background p-0 shadow-2xl shadow-indigo-500/10 dark:shadow-black/80 sm:max-w-md">
 
         {/* Top accent */}
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-indigo-500/60 to-transparent" />
 
         <AnimatePresence mode="wait">
           {result ? (
@@ -107,8 +107,8 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
                 transition={{ type: "spring", stiffness: 240, damping: 16, delay: 0.1 }}
                 className="relative"
               >
-                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-indigo-500/30 bg-indigo-500/10">
-                  <CheckCircle2 size={36} className="text-indigo-400" />
+                <div className="flex h-20 w-20 items-center justify-center rounded-full border border-indigo-500/20 dark:border-indigo-500/30 bg-indigo-500/5 dark:bg-indigo-500/10">
+                  <CheckCircle2 size={36} className="text-indigo-600 dark:text-indigo-400" />
                 </div>
                 {/* Floating emoji decorations */}
                 <span className="absolute -right-2 -top-2 text-2xl">🎉</span>
@@ -128,33 +128,33 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
               <div className="flex w-full items-center justify-between rounded-2xl border border-border/60 bg-card/40 px-5 py-4">
                 <div className="flex flex-col items-start gap-0.5">
                   <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Queue position</p>
-                  <p className="text-3xl font-black tracking-tight tabular-nums text-indigo-300">
+                  <p className="text-3xl font-black tracking-tight tabular-nums text-indigo-600 dark:text-indigo-400">
                     #{result.position.toLocaleString()}
                   </p>
-                  <p className="text-[11px] text-muted-foreground/60">
+                  <p className="text-[11px] text-muted-foreground/70">
                     of {result.totalInQueue.toLocaleString()} people
                   </p>
                 </div>
                 <div className="flex flex-col items-end gap-0.5">
                   <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Move up by</p>
-                  <div className="flex items-center gap-1.5 text-sm font-semibold text-emerald-400">
+                  <div className="flex items-center gap-1.5 text-sm font-semibold text-emerald-600 dark:text-emerald-400">
                     <Share2 size={14} />
                     Referring friends
                   </div>
-                  <p className="text-[11px] text-muted-foreground/60">Each referral = +1 spot</p>
+                  <p className="text-[11px] text-muted-foreground/70">Each referral = +1 spot</p>
                 </div>
               </div>
 
               {/* Prizes teaser */}
               {product.prizes.length > 0 && (
                 <div className="w-full rounded-xl border border-amber-500/20 bg-amber-500/6 px-4 py-3 text-left">
-                  <div className="flex items-center gap-2 text-xs font-semibold text-amber-300">
-                    <Trophy size={12} />
+                  <div className="flex items-center gap-2 text-xs font-semibold text-amber-600 dark:text-amber-400">
+                    <Trophy size={13} />
                     Prizes up for grabs
                   </div>
                   <div className="mt-1.5 flex flex-wrap gap-1.5">
                     {product.prizes.map((p) => (
-                      <span key={p.rank} className="rounded-full border border-amber-500/20 bg-amber-500/8 px-2 py-0.5 text-[10px] text-amber-400">
+                      <span key={p.rank} className="rounded-full border border-amber-500/20 dark:border-amber-500/25 bg-amber-500/8 dark:bg-amber-500/10 px-2.5 py-0.5 text-[10px] text-amber-700 dark:text-amber-400">
                         {p.emoji} {p.rank} {p.value ?? p.title.split(" ").slice(0, 2).join(" ")}
                       </span>
                     ))}
@@ -224,7 +224,7 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
                       />
                     ) : (
                       <AvatarFallback className={cn(
-                        "rounded-xl bg-gradient-to-br text-sm font-black text-white",
+                        "rounded-xl bg-linear-to-br text-sm font-black text-white",
                         product.logoGradient,
                       )}>
                         {product.logoInitials}
@@ -240,15 +240,15 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
                 {/* Social proof */}
                 <div className="mt-4 flex items-center gap-3 text-[11px] text-muted-foreground/60">
                   <span className="flex items-center gap-1">
-                    <Users size={11} className="text-indigo-400" />
-                    <span className="font-semibold text-muted-foreground">{product.totalSubscribers.toLocaleString()}</span> joined
+                    <Users size={12} className="text-indigo-600 dark:text-indigo-400" />
+                    <span className="font-semibold text-foreground/80">{product.totalSubscribers.toLocaleString()}</span> joined
                   </span>
                   {product.recentJoins > 0 && (
                     <>
-                      <span className="h-3 w-px bg-zinc-800" />
-                      <span className="flex items-center gap-1">
-                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-                        <span className="font-semibold text-emerald-400">{product.recentJoins}</span> joined today
+                      <span className="h-3 w-px bg-border" />
+                      <span className="flex items-center gap-1.5">
+                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+                        <span className="font-semibold text-emerald-600 dark:text-emerald-500">{product.recentJoins}</span> joined today
                       </span>
                     </>
                   )}
@@ -268,7 +268,7 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
                     placeholder="Ada Lovelace"
                     disabled={isPending}
                     autoFocus
-                    className="border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
+                    className="border-border bg-card/60 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
                   />
                 </div>
 
@@ -283,7 +283,7 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="ada@example.com"
                     disabled={isPending}
-                    className="border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
+                    className="border-border bg-card/60 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
                   />
                 </div>
 
@@ -302,9 +302,9 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
 
                 {/* Prizes teaser (compact) */}
                 {product.prizes.length > 0 && (
-                  <div className="flex items-center gap-2 rounded-xl border border-amber-500/15 bg-amber-500/5 px-3 py-2">
-                    <Trophy size={12} className="shrink-0 text-amber-400" />
-                    <p className="text-[11px] text-amber-300/80">
+                  <div className="flex items-center gap-2 rounded-xl border border-amber-500/15 dark:border-amber-500/20 bg-amber-500/5 dark:bg-amber-500/8 px-3.5 py-2.5">
+                    <Trophy size={13} className="shrink-0 text-amber-600 dark:text-amber-400" />
+                    <p className="text-[11px] font-medium text-amber-700/80 dark:text-amber-300/80">
                       {product.prizes[0].emoji} {product.prizes[0].title} awaits top referrers
                     </p>
                   </div>
@@ -315,7 +315,7 @@ export function JoinWaitlistModal({ product, open, onClose }: JoinWaitlistModalP
                   disabled={isPending}
                   className="group relative h-11 overflow-hidden bg-indigo-600 text-sm font-bold text-white hover:bg-indigo-500 disabled:opacity-60"
                 >
-                  <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
+                  <span className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
                   {isPending
                     ? <><Loader2 size={15} className="animate-spin" />Joining…</>
                     : <><ArrowRight size={15} />Join waitlist</>

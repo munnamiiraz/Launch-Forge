@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import {
   Users, DollarSign, BarChart3, Zap,
   TrendingUp, TrendingDown, UserCheck,
-  Globe, Share2, MessageSquare,
+  Globe, Share2, MessageSquare, Layers,
 } from "lucide-react";
 import { Card, CardContent } from "@/src/components/ui/card";
 import { Badge } from "@/src/components/ui/badge";
@@ -52,10 +52,10 @@ export function AdminKpiGrid({ kpis }: AdminKpiGridProps) {
       valueColor: "text-violet-300",
     },
     {
-      label: "Active 30d",
-      value: kpis.activeUsers30d.toLocaleString(),
-      sub:   `${Math.round((kpis.activeUsers30d / kpis.totalUsers) * 100)}% of total users`,
-      icon: <Zap size={14} />,
+      label: "Total workspaces",
+      value: kpis.totalWorkspaces.toLocaleString(),
+      sub:   "active tenant organizations",
+      icon: <Layers size={14} />,
       accent: "border-amber-500/30 bg-amber-500/12",
       valueColor: "text-amber-300",
     },
@@ -95,39 +95,34 @@ export function AdminKpiGrid({ kpis }: AdminKpiGridProps) {
       accent: "border-zinc-700/60 bg-zinc-800/30",
       valueColor: "text-foreground/80",
     },
-    {
-      label: "Churned this month",
-      value: kpis.churnedThisMonth.toString(),
-      sub:   `${((kpis.churnedThisMonth / kpis.paidUsers) * 100).toFixed(1)}% churn rate`,
-      icon: <TrendingDown size={14} />,
-      accent: "border-red-500/25 bg-red-500/8",
-      valueColor: "text-red-300",
-    },
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 xl:grid-cols-3">
+    <div className="grid grid-cols-2 gap-3 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
       {cards.map((card, i) => (
         <motion.div
           key={card.label}
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.05, duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+          className="h-full"
         >
-          <Card className="group relative overflow-hidden border-border/80 bg-card/40 transition-all duration-300 hover:bg-card/60 hover:shadow-lg hover:shadow-black/20">
+          <Card className="group relative h-full overflow-hidden border-border/80 bg-card/40 transition-all duration-300 hover:bg-card/60 hover:shadow-lg hover:shadow-black/20">
             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-red-500/20" />
-            <CardContent className="p-4">
-              <div className="mb-2.5 flex items-center justify-between">
-                <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{card.label}</p>
-                <div className={cn("flex h-7 w-7 items-center justify-center rounded-lg border text-current transition-transform group-hover:scale-110", card.accent, card.valueColor)}>
-                  {card.icon}
+            <CardContent className="flex h-full flex-col justify-between p-4">
+              <div>
+                <div className="mb-2.5 flex items-center justify-between">
+                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{card.label}</p>
+                  <div className={cn("flex h-7 w-7 items-center justify-center rounded-lg border text-current transition-transform group-hover:scale-110", card.accent, card.valueColor)}>
+                    {card.icon}
+                  </div>
                 </div>
+                <p className={cn("text-2xl font-black tracking-tight tabular-nums", card.valueColor)}>{card.value}</p>
+                <p className="mt-1 text-[10px] text-muted-foreground/60">{card.sub}</p>
               </div>
-              <p className={cn("text-2xl font-black tracking-tight tabular-nums", card.valueColor)}>{card.value}</p>
-              <p className="mt-1 text-[10px] text-muted-foreground/60">{card.sub}</p>
               {card.delta && (
                 <div className={cn(
-                  "mt-1.5 flex items-center gap-1 text-[10px] font-semibold",
+                  "mt-2.5 flex items-center gap-1 text-[10px] font-semibold",
                   card.deltaUp ? "text-emerald-400" : "text-red-400",
                 )}>
                   {card.deltaUp ? <TrendingUp size={10} /> : <TrendingDown size={10} />}

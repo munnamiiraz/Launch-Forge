@@ -104,60 +104,81 @@ export function PrizesPageClient() {
   }, [waitlists]);
 
   return (
-    <div className="flex flex-col">
-      <DashboardHeader
-        title="Prizes"
-        subtitle={
-          loading
-            ? "Loadingâ€¦"
-            : `${totals.totalActivePrizes} active prize${totals.totalActivePrizes !== 1 ? "s" : ""} Â· $${totals.totalPool.toLocaleString()} total pool`
-        }
-      />
+    <div className="relative flex min-h-screen flex-col bg-zinc-50/50 dark:bg-[#0f1115]">
+      {/* Premium Background Mesh - Adjusted for slightly lighter base */}
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute -left-[10%] -top-[10%] h-[600px] w-[600px] rounded-full bg-indigo-500/15 blur-[120px] dark:bg-indigo-500/[0.08]" />
+        <div className="absolute -right-[5%] top-[10%] h-[500px] w-[500px] rounded-full bg-amber-500/15 blur-[100px] dark:bg-amber-500/[0.06]" />
+        <div className="absolute bottom-[20%] left-[15%] h-[550px] w-[550px] rounded-full bg-violet-500/15 blur-[130px] dark:bg-violet-500/[0.07]" />
+        
+        {/* Animated noise/grain texture for depth */}
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] brightness-100 contrast-150" />
+      </div>
 
-      <div className="flex flex-col gap-6 p-6">
-        <div className="relative overflow-hidden rounded-2xl border border-amber-500/20 bg-card/30 px-6 py-5">
-          <div aria-hidden className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-amber-500/8 blur-3xl" />
-          <div aria-hidden className="pointer-events-none absolute -left-8 bottom-0 h-32 w-64 rounded-full bg-indigo-500/5 blur-3xl" />
+      <div className="relative z-10 flex flex-col">
+        <DashboardHeader
+          title="Prizes"
+          subtitle={
+            loading
+              ? "Loadingâ€¦"
+              : `${totals.totalActivePrizes} active prize${totals.totalActivePrizes !== 1 ? "s" : ""} Â· $${totals.totalPool.toLocaleString()} total pool`
+          }
+        />
 
-          <div className="relative flex items-start gap-4">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-amber-500/30 bg-amber-500/12">
-              <Trophy size={20} className="text-amber-400" />
-            </div>
-            <div className="flex-1">
-              <h1 className="text-base font-bold text-foreground">Prize pool management</h1>
-              <p className="mt-1 max-w-xl text-xs leading-relaxed text-muted-foreground/80">
-                Announce monetary rewards, gift cards, lifetime access, or custom prizes for top
-                referrers on each waitlist. Prizes appear on the public leaderboard to motivate
-                sharing â€” the more you offer, the more your subscribers will recruit.
-              </p>
+        <div className="flex flex-col gap-6 p-6">
+          {/* Enhanced Promo/Info Banner - Lighter glassmorphism */}
+          <div className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white/60 px-6 py-6 shadow-sm transition-all duration-300 hover:shadow-md dark:border-amber-500/25 dark:bg-zinc-900/60 dark:backdrop-blur-xl">
+            {/* Animated accent line */}
+            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            
+            <div aria-hidden className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-amber-500/10 blur-3xl transition-all duration-500 group-hover:bg-amber-500/15" />
+            <div aria-hidden className="pointer-events-none absolute -left-8 bottom-0 h-32 w-64 rounded-full bg-indigo-500/5 blur-3xl" />
+
+            <div className="relative flex items-center gap-5 sm:flex-row">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-amber-500/20 bg-amber-500/10 transition-transform duration-300 group-hover:scale-110 dark:border-amber-500/30 dark:bg-amber-500/15">
+                <Trophy size={22} className="text-amber-600 dark:text-amber-400" />
+              </div>
+              <div className="flex-1">
+                <h1 className="text-lg font-bold tracking-tight text-foreground">Prize pool management</h1>
+                <p className="mt-1 max-w-2xl text-xs leading-relaxed text-muted-foreground/80">
+                  Announce monetary rewards, gift cards, lifetime access, or custom prizes for top
+                  referrers on each waitlist. Prizes appear on the public leaderboard to motivate
+                  sharing â€” the more you offer, the more your subscribers will recruit.
+                </p>
+              </div>
             </div>
           </div>
+
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-32 text-muted-foreground/80">
+              <RefreshCw size={24} className="mb-4 animate-spin text-zinc-400 opacity-50" />
+              <span className="text-sm font-medium tracking-wide">Syncing prize inventory...</span>
+            </div>
+          ) : error ? (
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-red-500/20 bg-red-500/[0.02] py-20 text-center dark:bg-red-500/[0.05]">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10 text-red-500">
+                <RefreshCw size={20} />
+              </div>
+              <p className="text-sm font-semibold text-red-600 dark:text-red-400">{error}</p>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={fetchData}
+                className="mt-6 border-red-500/20 text-xs hover:bg-red-500/10"
+              >
+                Try reconnecting
+              </Button>
+            </div>
+          ) : (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-700 ease-out">
+              <PrizesClient
+                key={activeWorkspace?.id ?? "no-ws"}
+                waitlists={waitlists}
+                initialPrizes={initialPrizes}
+              />
+            </div>
+          )}
         </div>
-
-        {loading ? (
-          <div className="flex items-center justify-center py-20 text-muted-foreground/80">
-            <Loader2 size={20} className="mr-2 animate-spin" />
-            <span className="text-sm">Loading prizesâ€¦</span>
-          </div>
-        ) : error ? (
-          <div className="flex flex-col items-center justify-center rounded-2xl border border-red-500/20 bg-red-500/5 py-16 text-center">
-            <p className="text-sm font-medium text-red-400">{error}</p>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={fetchData}
-              className="mt-4 gap-2 text-muted-foreground/80 hover:text-foreground/80"
-            >
-              <RefreshCw size={13} /> Retry
-            </Button>
-          </div>
-        ) : (
-          <PrizesClient
-            key={activeWorkspace?.id ?? "no-ws"}
-            waitlists={waitlists}
-            initialPrizes={initialPrizes}
-          />
-        )}
       </div>
     </div>
   );

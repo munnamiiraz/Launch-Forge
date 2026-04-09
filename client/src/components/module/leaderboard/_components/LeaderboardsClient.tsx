@@ -88,7 +88,7 @@ export function LeaderboardsClient({ leaderboards }: LeaderboardsClientProps) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search leaderboards…"
-            className="h-9 border-zinc-800 bg-card/60 pl-8 text-xs text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-0"
+            className="h-9 border-zinc-200 dark:border-zinc-800 bg-card/60 pl-8 text-xs text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-300 dark:focus-visible:border-zinc-600 focus-visible:ring-0"
           />
         </div>
 
@@ -98,7 +98,7 @@ export function LeaderboardsClient({ leaderboards }: LeaderboardsClientProps) {
             <Button
               variant="outline"
               size="sm"
-              className="h-9 gap-2 border-zinc-800 bg-card/60 text-xs text-muted-foreground hover:border-zinc-700 hover:bg-muted/60 hover:text-foreground/90"
+              className="h-9 gap-2 border-zinc-200 dark:border-zinc-800 bg-card/60 text-xs text-muted-foreground hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-muted/60 hover:text-foreground/90"
             >
               <ArrowDownUp size={12} />
               Sort: {activeSortLabel}
@@ -106,7 +106,7 @@ export function LeaderboardsClient({ leaderboards }: LeaderboardsClientProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-44 border-zinc-800 bg-background/95 backdrop-blur-xl"
+            className="w-44 border-border/80 bg-background/95 backdrop-blur-xl"
           >
             {SORT_OPTIONS.map((opt) => (
               <DropdownMenuItem
@@ -115,16 +115,16 @@ export function LeaderboardsClient({ leaderboards }: LeaderboardsClientProps) {
                 className={cn(
                   "cursor-pointer gap-2 text-xs",
                   sortBy === opt.id
-                    ? "bg-indigo-500/10 text-indigo-300 focus:bg-indigo-500/10 focus:text-indigo-300"
+                    ? "bg-indigo-500/10 text-indigo-600 dark:text-indigo-300 focus:bg-indigo-500/10 focus:text-indigo-600"
                     : "text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60",
                 )}
               >
-                <span className={sortBy === opt.id ? "text-indigo-400" : "text-muted-foreground/60"}>
+                <span className={sortBy === opt.id ? "text-indigo-600 dark:text-indigo-400" : "text-muted-foreground/60"}>
                   {opt.icon}
                 </span>
                 {opt.label}
                 {sortBy === opt.id && (
-                  <span className="ml-auto h-1.5 w-1.5 rounded-full bg-indigo-400" />
+                  <span className="ml-auto h-1.5 w-1.5 rounded-full bg-indigo-500 dark:bg-indigo-400" />
                 )}
               </DropdownMenuItem>
             ))}

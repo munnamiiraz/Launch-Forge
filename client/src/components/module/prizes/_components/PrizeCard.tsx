@@ -28,9 +28,9 @@ import { deletePrizeAction, cancelPrizeAction } from "@/src/services/prizes/priz
 import type { Prize } from "@/src/components/module/prizes/_types";
 
 const STATUS_CONFIG = {
-  ACTIVE:    { label: "Active",    classes: "border-emerald-500/25 bg-emerald-500/10 text-emerald-400", icon: <CheckCircle2 size={9} /> },
-  AWARDED:   { label: "Awarded",   classes: "border-amber-500/25 bg-amber-500/10 text-amber-400",       icon: <Trophy       size={9} /> },
-  CANCELLED: { label: "Cancelled", classes: "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",          icon: <XCircle      size={9} /> },
+  ACTIVE:    { label: "Active",    classes: "border-emerald-500/20 bg-emerald-500/5 text-emerald-600 dark:text-emerald-400", icon: <CheckCircle2 size={9} /> },
+  AWARDED:   { label: "Awarded",   classes: "border-amber-500/20 bg-amber-500/5 text-amber-600 dark:text-amber-400",       icon: <Trophy       size={9} /> },
+  CANCELLED: { label: "Cancelled", classes: "border-zinc-200 dark:border-zinc-700 bg-muted/40 text-muted-foreground/80",          icon: <XCircle      size={9} /> },
 };
 
 interface PrizeCardProps {
@@ -79,7 +79,7 @@ export function PrizeCard({ prize, index, onEdit, onDelete, onCancel }: PrizeCar
       >
         <Card className={cn(
           "group relative overflow-hidden transition-all duration-300",
-          "border-border/80 bg-card/40 hover:bg-card/60",
+          "border-border/80 bg-card/70 hover:bg-card/90",
           isTop1 && prize.status === "ACTIVE"
             ? "border-amber-500/30 shadow-md shadow-amber-500/5 hover:shadow-amber-500/10"
             : "",
@@ -114,11 +114,11 @@ export function PrizeCard({ prize, index, onEdit, onDelete, onCancel }: PrizeCar
                     <Badge variant="outline" className={cn("gap-1 rounded-full px-2 py-0.5 text-[9px] font-semibold", statusCfg.classes)}>
                       {statusCfg.icon}{statusCfg.label}
                     </Badge>
-                    <Badge variant="outline" className="border-zinc-700/60 bg-zinc-800/30 px-2 py-0.5 text-[9px] text-muted-foreground/80">
+                    <Badge variant="outline" className="border-zinc-200 dark:border-zinc-700/60 bg-zinc-100/50 dark:bg-zinc-800/30 px-2 py-0.5 text-[9px] text-muted-foreground/80">
                       {meta.label}
                     </Badge>
                     {isExpired && prize.status === "ACTIVE" && (
-                      <Badge className="border-red-500/25 bg-red-500/10 px-2 py-0.5 text-[9px] text-red-400">
+                      <Badge className="border-red-500/20 bg-red-500/5 px-2 py-0.5 text-[9px] text-red-600 dark:text-red-400">
                         Expired
                       </Badge>
                     )}
@@ -139,7 +139,7 @@ export function PrizeCard({ prize, index, onEdit, onDelete, onCancel }: PrizeCar
                       <MoreHorizontal size={13} />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-44 border-zinc-800 bg-background/95 backdrop-blur-xl">
+                  <DropdownMenuContent align="end" className="w-44 border-zinc-200 dark:border-zinc-800 bg-background/95 backdrop-blur-xl">
                     <DropdownMenuItem
                       onClick={() => onEdit(prize)}
                       className="cursor-pointer gap-2 text-xs text-muted-foreground hover:bg-muted/60 hover:text-foreground focus:bg-muted/60"
@@ -202,7 +202,7 @@ export function PrizeCard({ prize, index, onEdit, onDelete, onCancel }: PrizeCar
 
       {/* Delete confirmation */}
       <AlertDialog open={confirmDelete} onOpenChange={setConfirmDelete}>
-        <AlertDialogContent className="border-zinc-800 bg-background">
+        <AlertDialogContent className="border-zinc-200 dark:border-zinc-800 bg-background">
           <AlertDialogHeader>
             <AlertDialogTitle className="text-foreground">Delete this prize?</AlertDialogTitle>
             <AlertDialogDescription className="text-muted-foreground/80">
@@ -221,7 +221,7 @@ export function PrizeCard({ prize, index, onEdit, onDelete, onCancel }: PrizeCar
 
       {/* Cancel confirmation */}
       <AlertDialog open={confirmCancel} onOpenChange={setConfirmCancel}>
-        <AlertDialogContent className="border-zinc-800 bg-background">
+        <AlertDialogContent className="border-zinc-200 dark:border-zinc-800 bg-background">
           <AlertDialogHeader>
             <AlertDialogTitle className="flex items-center gap-2 text-foreground">
               <AlertTriangle size={16} className="text-amber-400" />
@@ -233,7 +233,7 @@ export function PrizeCard({ prize, index, onEdit, onDelete, onCancel }: PrizeCar
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="border-zinc-800 bg-transparent text-muted-foreground hover:bg-muted/60">Keep it</AlertDialogCancel>
+            <AlertDialogCancel className="border-zinc-200 dark:border-zinc-800 bg-transparent text-muted-foreground hover:bg-muted/60">Keep it</AlertDialogCancel>
             <AlertDialogAction onClick={handleCancel} className="bg-amber-600 text-white hover:bg-amber-500">
               Cancel prize
             </AlertDialogAction>
@@ -261,7 +261,7 @@ function Detail({
       </div>
       <p className={cn(
         "text-sm font-bold tabular-nums",
-        danger     ? "text-red-400" :
+        danger     ? "text-red-600 dark:text-red-400" :
         highlight  ? "text-foreground" :
                      "text-foreground/80",
       )}>

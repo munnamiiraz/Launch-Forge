@@ -20,38 +20,38 @@ const ACCENT: Record<
   }
 > = {
   indigo: {
-    icon:   "border-indigo-500/30 bg-indigo-500/12 text-indigo-400",
+    icon:   "border-indigo-500/20 dark:border-indigo-500/30 bg-indigo-500/10 dark:bg-indigo-500/12 text-indigo-700 dark:text-indigo-400",
     border: "hover:border-indigo-500/30",
     glow:   "group-hover:shadow-indigo-500/8",
-    num:    "text-indigo-500/40",
-    tag:    "border-indigo-500/25 bg-indigo-500/8 text-indigo-400",
+    num:    "text-indigo-500/30 dark:text-indigo-500/40",
+    tag:    "border-indigo-500/20 dark:border-indigo-500/25 bg-indigo-500/8 text-indigo-700 dark:text-indigo-400",
     line:   "from-indigo-500/60 to-indigo-500/0",
     dot:    "bg-indigo-500",
   },
   violet: {
-    icon:   "border-violet-500/30 bg-violet-500/12 text-violet-400",
+    icon:   "border-violet-500/20 dark:border-violet-500/30 bg-violet-500/10 dark:bg-violet-500/12 text-violet-700 dark:text-violet-400",
     border: "hover:border-violet-500/30",
     glow:   "group-hover:shadow-violet-500/8",
-    num:    "text-violet-500/40",
-    tag:    "border-violet-500/25 bg-violet-500/8 text-violet-400",
+    num:    "text-violet-500/30 dark:text-violet-500/40",
+    tag:    "border-violet-500/20 dark:border-violet-500/25 bg-violet-500/8 text-violet-700 dark:text-violet-400",
     line:   "from-violet-500/60 to-violet-500/0",
     dot:    "bg-violet-500",
   },
   cyan: {
-    icon:   "border-cyan-500/30 bg-cyan-500/12 text-cyan-400",
+    icon:   "border-cyan-500/20 dark:border-cyan-500/30 bg-cyan-500/10 dark:bg-cyan-500/12 text-cyan-700 dark:text-cyan-400",
     border: "hover:border-cyan-500/30",
     glow:   "group-hover:shadow-cyan-500/8",
-    num:    "text-cyan-500/40",
-    tag:    "border-cyan-500/25 bg-cyan-500/8 text-cyan-400",
+    num:    "text-cyan-500/30 dark:text-cyan-500/40",
+    tag:    "border-cyan-500/20 dark:border-cyan-500/25 bg-cyan-500/8 text-cyan-700 dark:text-cyan-400",
     line:   "from-cyan-500/60 to-cyan-500/0",
     dot:    "bg-cyan-500",
   },
   emerald: {
-    icon:   "border-emerald-500/30 bg-emerald-500/12 text-emerald-400",
+    icon:   "border-emerald-500/20 dark:border-emerald-500/30 bg-emerald-500/10 dark:bg-emerald-500/12 text-emerald-700 dark:text-emerald-400",
     border: "hover:border-emerald-500/30",
     glow:   "group-hover:shadow-emerald-500/8",
-    num:    "text-emerald-500/40",
-    tag:    "border-emerald-500/25 bg-emerald-500/8 text-emerald-400",
+    num:    "text-emerald-500/30 dark:text-emerald-500/40",
+    tag:    "border-emerald-500/20 dark:border-emerald-500/25 bg-emerald-500/8 text-emerald-700 dark:text-emerald-400",
     line:   "from-emerald-500/60 to-emerald-500/0",
     dot:    "bg-emerald-500",
   },
@@ -85,7 +85,7 @@ export function StepCard({ step, isLast, index }: StepCardProps) {
           className="absolute left-[calc(50%+44px)] right-0 top-[28px] hidden h-px lg:block"
         >
           {/* Static track */}
-          <div className="absolute inset-0 bg-zinc-800" />
+          <div className="absolute inset-0 bg-border/60" />
           {/* Animated fill */}
           <motion.div
             initial={{ scaleX: 0 }}
@@ -97,12 +97,12 @@ export function StepCard({ step, isLast, index }: StepCardProps) {
               ease: [0.22, 1, 0.36, 1],
             }}
             className={cn(
-              "absolute inset-y-0 left-0 origin-left bg-gradient-to-r",
+              "absolute inset-y-0 left-0 origin-left bg-linear-to-r",
               a.line
             )}
           />
           {/* Arrow head */}
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 border-b-[3px] border-r-[3px] border-zinc-700 h-2 w-2 rotate-[-45deg]" />
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 border-b-[3px] border-r-[3px] border-border h-2 w-2 -rotate-45" />
         </div>
       )}
 
@@ -119,7 +119,7 @@ export function StepCard({ step, isLast, index }: StepCardProps) {
         {/* Top gradient line */}
         <div
           className={cn(
-            "absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent",
+            "absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent",
             `via-${step.accentColor}-500/40`
           )}
         />
@@ -207,7 +207,7 @@ export function StepCard({ step, isLast, index }: StepCardProps) {
               ease: [0.22, 1, 0.36, 1],
             }}
             className={cn(
-              "h-8 w-px origin-top bg-gradient-to-b",
+              "h-8 w-px origin-top bg-linear-to-b",
               a.line
             )}
           />

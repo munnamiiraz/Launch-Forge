@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting to Google...</title>
+    <style>
+        body {
+            background-color: #09090b;
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        .loader {
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top: 3px solid #6366f1;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        p {
+            font-size: 14px;
+            color: #a1a1aa;
+        }
+    </style>
+</head>
+<body>
+    <div class="loader"></div>
+    <p>Securely redirecting to Google Login...</p>
+
+    <script type="module">
+        const callbackURL = "<%= callbackURL %>";
+        const betterAuthUrl = "<%= betterAuthUrl %>";
+        
+        async function initiateLogin() {
+            try {
+                const response = await fetch(`${betterAuthUrl}/api/auth/sign-in/social`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        provider: 'google',
+                        callbackURL: callbackURL
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (data.url) {
+                    window.location.href = data.url;
+                } else if (data.redirect) {
+                    window.location.href = data.redirect;
+                } else {
+                    console.error("No valid redirect URL found in response", data);
+                    window.location.href = "/login?error=invalid_oauth_response";
+                }
+            } catch (error) {
+                console.error("OAuth initiation failed", error);
+                window.location.href = "/login?error=initiation_failed";
+            }
+        }
+        
+        initiateLogin();
+    </script>
+</body>
+</html>

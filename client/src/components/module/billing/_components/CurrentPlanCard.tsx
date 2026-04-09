@@ -17,17 +17,17 @@ import { PLANS }   from "@/src/components/module/billing/_lib/data";
 import type { ActiveSubscription } from "@/src/components/module/billing/_types";
 
 const STATUS_CONFIG = {
-  active:    { label: "Active",    classes: "border-emerald-500/25 bg-emerald-500/10 text-emerald-400", icon: <CheckCircle2 size={10} />, dot: "bg-emerald-400" },
-  trialing:  { label: "Trial",     classes: "border-indigo-500/25 bg-indigo-500/10 text-indigo-400",   icon: <Clock        size={10} />, dot: "bg-indigo-400"  },
-  past_due:  { label: "Past due",  classes: "border-red-500/25 bg-red-500/10 text-red-400",            icon: <AlertTriangle size={10}/>,dot: "bg-red-400"     },
-  cancelled: { label: "Cancelled", classes: "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",         icon: <XCircle      size={10} />, dot: "bg-zinc-600"    },
-  none:      { label: "No plan",   classes: "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",         icon: <XCircle      size={10} />, dot: "bg-zinc-600"    },
+  active:    { label: "Active",    classes: "border-emerald-500/25 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400", icon: <CheckCircle2 size={10} />, dot: "bg-emerald-500" },
+  trialing:  { label: "Trial",     classes: "border-indigo-500/25 bg-indigo-500/10 text-indigo-600 dark:text-indigo-400",   icon: <Clock        size={10} />, dot: "bg-indigo-500"  },
+  past_due:  { label: "Past due",  classes: "border-red-500/25 bg-red-500/10 text-red-600 dark:text-red-400",            icon: <AlertTriangle size={10}/>,dot: "bg-red-500"     },
+  cancelled: { label: "Cancelled", classes: "border-zinc-200 dark:border-zinc-700/60 bg-muted/40 text-muted-foreground/80",          icon: <XCircle      size={10} />, dot: "bg-zinc-400 dark:bg-zinc-600"    },
+  none:      { label: "No plan",   classes: "border-zinc-200 dark:border-zinc-700/60 bg-muted/40 text-muted-foreground/80",          icon: <XCircle      size={10} />, dot: "bg-zinc-400 dark:bg-zinc-600"    },
 };
 
 const PLAN_ACCENT = {
-  FREE:   { bg: "from-zinc-800/80 to-zinc-900/60",             border: "border-zinc-700/60",         value: "text-foreground/80",   badge: "border-zinc-700 bg-zinc-800 text-muted-foreground" },
-  PRO:    { bg: "from-indigo-950/80 via-zinc-900/80 to-zinc-950", border: "border-indigo-500/30",    value: "text-indigo-300", badge: "border-indigo-500/40 bg-indigo-500/15 text-indigo-300" },
-  GROWTH: { bg: "from-violet-950/80 via-zinc-900/80 to-zinc-950", border: "border-violet-500/30",   value: "text-violet-300", badge: "border-violet-500/40 bg-violet-500/15 text-violet-300" },
+  FREE:   { bg: "bg-white dark:bg-zinc-900/60 dark:bg-gradient-to-br dark:from-zinc-800/80 dark:to-zinc-900/60", border: "border-zinc-200 dark:border-zinc-700/60", value: "text-zinc-700 dark:text-foreground/80", badge: "border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-muted-foreground" },
+  PRO:    { bg: "bg-indigo-50/30 dark:bg-zinc-950 dark:bg-gradient-to-br dark:from-indigo-950/80 dark:via-zinc-900/80 dark:to-zinc-950", border: "border-indigo-200 dark:border-indigo-500/30", value: "text-indigo-600 dark:text-indigo-300", badge: "border-indigo-200 dark:border-indigo-500/40 bg-indigo-100 dark:bg-indigo-500/15 text-indigo-700 dark:text-indigo-300" },
+  GROWTH: { bg: "bg-violet-50/30 dark:bg-zinc-950 dark:bg-gradient-to-br dark:from-violet-950/80 dark:via-zinc-900/80 dark:to-zinc-950", border: "border-violet-200 dark:border-violet-500/30", value: "text-violet-600 dark:text-violet-300", badge: "border-violet-200 dark:border-violet-500/40 bg-violet-100 dark:bg-violet-500/15 text-violet-700 dark:text-violet-300" },
 };
 
 interface CurrentPlanCardProps {
@@ -99,10 +99,10 @@ export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
             <div className="flex flex-col gap-4">
               <div className="flex items-center gap-3">
                 <div className={cn(
-                  "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border",
-                  plan === "FREE"   ? "border-zinc-700 bg-muted/60 text-muted-foreground" :
-                  plan === "PRO"    ? "border-indigo-500/30 bg-indigo-500/15 text-indigo-400" :
-                                      "border-violet-500/30 bg-violet-500/15 text-violet-400",
+                  "flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border shadow-sm",
+                  plan === "FREE"   ? "border-zinc-200 dark:border-zinc-700 bg-white dark:bg-muted/60 text-muted-foreground" :
+                  plan === "PRO"    ? "border-indigo-200 dark:border-indigo-500/30 bg-indigo-100 dark:bg-indigo-500/15 text-indigo-600 dark:text-indigo-400" :
+                                      "border-violet-200 dark:border-violet-500/30 bg-violet-100 dark:bg-violet-500/15 text-violet-600 dark:text-violet-400",
                 )}>
                   <Zap size={20} />
                 </div>
@@ -127,7 +127,7 @@ export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
                   </span>
                   <span className="text-sm text-muted-foreground/60">/mo</span>
                   {subscription.billingMode === "YEARLY" && (
-                    <Badge className="ml-1 border-emerald-500/25 bg-emerald-500/10 text-[10px] text-emerald-400">
+                    <Badge className="ml-1 border-emerald-500/25 bg-emerald-500/10 text-[10px] text-emerald-600 dark:text-emerald-400">
                       Billed yearly · Save 20%
                     </Badge>
                   )}
@@ -146,7 +146,7 @@ export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
                   {statusCfg.label}
                 </Badge>
                 {subscription?.billingMode && (
-                  <Badge className="border-zinc-700/60 bg-muted/40 text-[10px] text-muted-foreground/80">
+                  <Badge className="border-zinc-200 dark:border-zinc-700/60 bg-white dark:bg-muted/40 text-[10px] text-muted-foreground/80 shadow-sm">
                     {subscription.billingMode === "MONTHLY" ? "Monthly billing" : "Annual billing"}
                   </Badge>
                 )}
@@ -167,7 +167,7 @@ export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
                     <Row
                       label="Cancels on"
                       value={cancelDate}
-                      valueClass="text-amber-400"
+                      valueClass="text-amber-600 dark:text-amber-400 font-bold"
                     />
                   )}
                   {subscription.transactionId && (
@@ -183,11 +183,11 @@ export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
               {/* Actions */}
               <div className="flex flex-col gap-2">
                 {plan !== "FREE" ? (
-                  <Button
+                   <Button
                     onClick={openPortal}
                     disabled={isPending}
                     variant="outline"
-                    className="gap-2 border-zinc-700/80 bg-transparent text-sm text-foreground/80 hover:border-zinc-600 hover:bg-muted/60 hover:text-foreground"
+                    className="gap-2 border-zinc-200 dark:border-zinc-700/80 bg-white dark:bg-transparent text-sm text-foreground/80 hover:border-zinc-300 dark:hover:border-zinc-600 hover:bg-muted/60 hover:text-foreground"
                   >
                     {isPending
                       ? <><Loader2 size={14} className="animate-spin" />Opening portal…</>
@@ -230,11 +230,11 @@ export function CurrentPlanCard({ subscription }: CurrentPlanCardProps) {
           {subscription?.cancelAt && (
             <>
               <Separator className="my-4 bg-muted/60" />
-              <div className="flex items-start gap-2.5 rounded-xl border border-amber-500/20 bg-amber-500/8 px-4 py-3">
-                <AlertTriangle size={14} className="mt-0.5 shrink-0 text-amber-400" />
-                <p className="text-xs text-amber-300">
+               <div className="flex items-start gap-2.5 rounded-xl border border-amber-500/20 bg-amber-500/10 dark:bg-amber-500/8 px-4 py-3 shadow-sm">
+                <AlertTriangle size={14} className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
+                <p className="text-xs text-amber-700 dark:text-amber-300 font-medium">
                   Your subscription is scheduled to cancel on{" "}
-                  <span className="font-semibold">{cancelDate}</span>. You'll keep Pro
+                  <span className="font-black underline">{cancelDate}</span>. You'll keep Pro
                   access until then. To resume, open the billing portal.
                 </p>
               </div>

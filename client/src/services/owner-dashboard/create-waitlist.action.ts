@@ -46,6 +46,7 @@ export async function createWaitlistAction(
       slug: values.slug,
       description: values.description || undefined,
       isOpen: values.isOpen,
+      category: values.category || undefined,
       endDate: values.endDate || undefined,
     }));
 

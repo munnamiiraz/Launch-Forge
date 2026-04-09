@@ -1,4 +1,4 @@
-import { Roadmap, RoadmapItem } from "../../../generated/client";
+import { Roadmap, RoadmapItem } from "../../generated/client";
 
 /* ─────────────────────────────────────────────────────────────────
    Status enum mirror (matches Prisma RoadmapStatus)

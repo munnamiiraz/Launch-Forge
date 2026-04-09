@@ -21,7 +21,11 @@ import { Badge }    from "@/src/components/ui/badge";
 import {
   Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,
 } from "@/src/components/ui/tooltip";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/src/components/ui/select";
 import { cn } from "@/src/lib/utils";
+import { CATEGORIES } from "@/src/components/module/explore/_lib/data";
 
 import { createWaitlistFormSchema, type CreateWaitlistFormSchema } from "../_lib/schema";
 import { createWaitlistAction } from "@/src/services/owner-dashboard/create-waitlist.action";
@@ -66,7 +70,7 @@ export function CreateWaitlistForm() {
 
   const form = useForm<CreateWaitlistFormSchema>({
     resolver:      zodResolver(createWaitlistFormSchema),
-    defaultValues: { name: "", slug: "", description: "", isOpen: true, endDate: "" },
+    defaultValues: { name: "", slug: "", description: "", category: "Other", isOpen: true, endDate: "" },
     mode:          "onChange",
   });
 
@@ -132,6 +136,7 @@ export function CreateWaitlistForm() {
         name:        values.name,
         slug:        values.slug,
         description: values.description ?? "",
+        category:    values.category ?? "Other",
         isOpen:      values.isOpen,
         endDate:     values.endDate ?? "",
       },
@@ -315,6 +320,35 @@ export function CreateWaitlistForm() {
                     </motion.p>
                   )}
                 </AnimatePresence>
+              </div>
+
+              {/* Category */}
+              <div className="flex flex-col gap-1.5">
+                <Label
+                  htmlFor="category"
+                  className="text-xs font-medium uppercase tracking-wide text-muted-foreground"
+                >
+                  Product Category <span className="text-red-500">*</span>
+                </Label>
+                <Select
+                  disabled={isSubmitting}
+                  value={watchedValues.category || "Other"}
+                  onValueChange={(v) => setValue("category", v, { shouldValidate: true })}
+                >
+                  <SelectTrigger className="w-full border-zinc-800 bg-card/60 text-foreground">
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent className="border-zinc-800 bg-zinc-900 text-foreground">
+                    {CATEGORIES.map((cat) => (
+                      <SelectItem key={cat} value={cat}>
+                        {cat}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.category && (
+                  <p className="text-xs text-red-400">{errors.category.message}</p>
+                )}
               </div>
 
               {/* Description */}
@@ -598,6 +632,19 @@ export function CreateWaitlistForm() {
           </motion.div>
         </form>
 
+        {/* ── Right: preview ────────────────────────────────────── */}
+        <div className="hidden lg:block">
+          <div className="sticky top-8">
+            <LivePreview
+              name={watchedValues.name}
+              slug={watchedValues.slug}
+              description={watchedValues.description ?? ""}
+              isOpen={watchedValues.isOpen}
+              logoSrc={logoPreviewUrl}
+              category={watchedValues.category || "Other"}
+            />
+          </div>
+        </div>
       </div>
     </TooltipProvider>
   );

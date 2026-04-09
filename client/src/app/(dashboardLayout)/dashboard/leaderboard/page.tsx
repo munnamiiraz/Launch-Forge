@@ -66,7 +66,7 @@ export default async function LeaderboardPage() {
 
           <div className="relative flex items-center gap-4">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-amber-500/25 bg-amber-500/10">
-              <Trophy size={18} className="text-amber-400" />
+              <Trophy size={18} className="text-amber-600 dark:text-amber-400" />
             </div>
             <div>
               <h1 className="text-base font-bold tracking-tight text-foreground">
@@ -75,7 +75,7 @@ export default async function LeaderboardPage() {
               <p className="mt-0.5 text-xs text-muted-foreground/80">
                 Each card shows your top 5 referrers per waitlist.
                 Click{" "}
-                <span className="text-indigo-400">View waitlist</span>{" "}
+                <span className="text-indigo-600 dark:text-indigo-400 font-medium">View waitlist</span>{" "}
                 to open the full leaderboard with search, tier filters, and chain referral counts.
               </p>
             </div>

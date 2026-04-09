@@ -127,12 +127,13 @@ export default async function PublicWaitlistPage({ params }: Props) {
   const isEndingSoon = daysRemaining !== null && daysRemaining > 0 && daysRemaining <= 7;
 
   return (
-    <div className="flex min-h-screen flex-col items-center overflow-x-hidden bg-[#020202] text-zinc-100 selection:bg-indigo-500/30">
+    <div className="flex min-h-screen flex-col items-center overflow-x-hidden bg-background text-foreground selection:bg-indigo-500/30">
       {/* ── Background & Ambient ── */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] opacity-[0.03]" />
-        <div className="absolute -left-1/4 top-0 h-[600px] w-[800px] rounded-full bg-indigo-500/5 blur-[120px]" />
-        <div className="absolute -right-1/4 top-1/4 h-[600px] w-[800px] rounded-full bg-blue-500/5 blur-[120px]" />
+        <div className="absolute inset-x-0 top-0 h-[800px] bg-linear-to-b from-indigo-500/10 via-background to-transparent opacity-60 dark:opacity-100" />
+        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)] opacity-[0.03] dark:opacity-[0.05]" />
+        <div className="absolute -left-1/4 top-0 h-[600px] w-[800px] rounded-full bg-indigo-500/5 dark:bg-indigo-500/10 blur-[120px]" />
+        <div className="absolute -right-1/4 top-1/4 h-[600px] w-[800px] rounded-full bg-blue-500/5 dark:bg-blue-500/10 blur-[120px]" />
       </div>
 
       <main className="relative z-10 flex w-full max-w-4xl flex-col items-center px-6 pb-32 pt-28">
@@ -141,12 +142,12 @@ export default async function PublicWaitlistPage({ params }: Props) {
         <section className="animate-in fade-in slide-in-from-top-4 flex flex-col items-center text-center duration-1000 ease-out fill-mode-both">
           
           <div className="group relative mb-8">
-             <div className="absolute -inset-1.5 rounded-[2.2rem] bg-gradient-to-r from-blue-500/20 to-indigo-600/20 blur opacity-40 transition duration-1000 group-hover:opacity-60"></div>
-             <Avatar className="relative h-20 w-20 rounded-[1.8rem] border border-zinc-800/80 bg-black/80 p-1">
+             <div className="absolute -inset-1.5 rounded-[2.2rem] bg-linear-to-r from-blue-500/20 to-indigo-600/20 blur opacity-40 transition duration-1000 group-hover:opacity-60 dark:opacity-30"></div>
+             <Avatar className="relative h-20 w-20 rounded-[1.8rem] border border-border bg-card p-1">
                {wl.logoUrl ? (
                  <AvatarImage src={wl.logoUrl} alt={wl.name} className="rounded-[1.6rem] object-cover" />
                ) : (
-                 <AvatarFallback className={cn("rounded-[1.6rem] bg-gradient-to-br text-xl font-black text-white", wl.logoGradient)}>
+                 <AvatarFallback className={cn("rounded-[1.6rem] bg-linear-to-br text-xl font-black text-white", wl.logoGradient)}>
                    {wl.logoInitials}
                  </AvatarFallback>
                )}
@@ -156,11 +157,11 @@ export default async function PublicWaitlistPage({ params }: Props) {
           <div className="mb-6 flex flex-wrap items-center justify-center gap-2">
             <Badge className={cn(
               "rounded-full border px-3 py-0.5 text-[10px] font-bold tracking-wider uppercase backdrop-blur-md",
-              wl.isOpen ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" : "bg-zinc-800/50 text-zinc-400 border-zinc-700/50"
+              wl.isOpen ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20" : "bg-muted text-muted-foreground border-border"
             )}>
               {wl.isOpen ? (
                 <span className="flex items-center gap-1.5">
-                  <span className="h-1 w-1 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
                   Live Access
                 </span>
               ) : "Closed"}
@@ -169,21 +170,21 @@ export default async function PublicWaitlistPage({ params }: Props) {
             {endDateStr && (
               <Badge className={cn(
                 "rounded-full border px-3 py-0.5 text-[10px] font-bold tracking-wider uppercase backdrop-blur-md",
-                isEndingSoon ? "bg-orange-500/10 text-orange-400 border-orange-500/20" : "bg-indigo-500/10 text-indigo-300 border-indigo-500/20"
+                isEndingSoon ? "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/20" : "bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/20"
               )}>
                 <div className="flex items-center gap-1.5">
-                  <CalendarDays size={10} className={isEndingSoon ? "text-orange-400" : "text-indigo-400"} />
+                  <CalendarDays size={10} className={isEndingSoon ? "text-orange-600 dark:text-orange-400" : "text-indigo-600 dark:text-indigo-400"} />
                   {isEndingSoon ? `Ends in ${daysRemaining}d` : `Ends ${endDateStr}`}
                 </div>
               </Badge>
             )}
           </div>
 
-          <h1 className="mb-6 text-3xl font-black tracking-tight text-white sm:text-4xl md:text-5xl">
+          <h1 className="mb-6 text-3xl font-black tracking-tight text-foreground sm:text-4xl md:text-5xl">
             {wl.name}
           </h1>
 
-          <p className="mb-10 max-w-xl text-[15px] leading-relaxed text-zinc-400 md:text-base">
+          <p className="mb-10 max-w-xl text-[15px] leading-relaxed text-muted-foreground md:text-base">
             {wl.description}
           </p>
 
@@ -195,10 +196,10 @@ export default async function PublicWaitlistPage({ params }: Props) {
                   <ArrowRight size={16} className="ml-2 transition-transform group-hover:translate-x-1" />
                 </Button>
               </DialogTrigger>
-              <DialogContent className="border-zinc-800 bg-zinc-950 p-6 shadow-2xl sm:max-w-md sm:rounded-3xl">
+              <DialogContent className="border-border bg-background p-5 sm:p-6 shadow-2xl w-[calc(100%-2rem)] sm:max-w-md sm:rounded-3xl overflow-hidden">
                 <DialogHeader className="mb-4">
                   <DialogTitle className="text-xl font-bold">Claim early access</DialogTitle>
-                  <DialogDescription className="text-zinc-500">
+                  <DialogDescription className="text-muted-foreground">
                     Be the first in line for {wl.name}.
                   </DialogDescription>
                 </DialogHeader>
@@ -207,7 +208,7 @@ export default async function PublicWaitlistPage({ params }: Props) {
             </Dialog>
 
             {wl.websiteUrl && (
-              <Button asChild variant="outline" size="lg" className="h-12 rounded-full border-zinc-800 bg-zinc-900/40 px-8 text-[14px] text-zinc-300 backdrop-blur-sm hover:bg-zinc-800 hover:text-white">
+              <Button asChild variant="outline" size="lg" className="h-12 rounded-full border-border bg-card/40 px-8 text-[14px] text-foreground/80 backdrop-blur-sm hover:bg-muted hover:text-foreground">
                 <a href={wl.websiteUrl} target="_blank" rel="noreferrer">
                   <Globe size={14} className="mr-2 opacity-60" />
                   Website
@@ -220,18 +221,18 @@ export default async function PublicWaitlistPage({ params }: Props) {
         {/* Stats Grid */}
         <section className="animate-in fade-in slide-in-from-bottom-8 mt-20 grid w-full grid-cols-1 gap-4 duration-1000 ease-out fill-mode-both sm:grid-cols-3">
           {[
-            { label: "Subscribers", value: wl.totalSubscribers, icon: Users, color: "text-blue-400", bg: "bg-blue-500/5", border: "border-blue-500/10" },
-            { label: "Referrals", value: wl.referralCount, icon: Share2, color: "text-indigo-400", bg: "bg-indigo-500/5", border: "border-indigo-500/10" },
-            { label: "Potential", value: wl.viralScore, icon: Zap, color: "text-amber-400", bg: "bg-amber-500/5", border: "border-amber-500/10" }
+            { label: "Subscribers", value: wl.totalSubscribers, icon: Users, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-500/5", border: "border-blue-500/10" },
+            { label: "Referrals", value: wl.referralCount, icon: Share2, color: "text-indigo-600 dark:text-indigo-400", bg: "bg-indigo-500/5", border: "border-indigo-500/10" },
+            { label: "Potential", value: wl.viralScore, icon: Zap, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-500/5", border: "border-amber-500/10" }
           ].map((stat, i) => (
             <div key={i} className={cn("flex flex-col items-center justify-center rounded-3xl border p-6 backdrop-blur-md", stat.bg, stat.border)}>
               <div className="mb-3">
                 <stat.icon size={16} className={stat.color} />
               </div>
-              <p className="text-2xl font-black tabular-nums text-white">
+              <p className="text-2xl font-black tabular-nums text-foreground">
                 {typeof stat.value === 'number' && stat.value >= 1000 ? `${(stat.value / 1000).toFixed(1)}k` : stat.value.toLocaleString()}
               </p>
-              <p className="mt-1 text-[9px] font-bold uppercase tracking-[0.2em] text-zinc-500">{stat.label}</p>
+              <p className="mt-1 text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground/60">{stat.label}</p>
             </div>
           ))}
         </section>
@@ -243,11 +244,11 @@ export default async function PublicWaitlistPage({ params }: Props) {
           {hasPrizes && (
             <section id="prizes" className="scroll-mt-24">
               <div className="mb-10 flex flex-col items-center text-center">
-                <h2 className="mb-2 text-xl font-black tracking-tight text-white uppercase">Waitlist Rewards</h2>
+                <h2 className="mb-2 text-xl font-black tracking-tight text-foreground uppercase">Waitlist Rewards</h2>
                 <div className="h-1 w-12 rounded-full bg-indigo-500/40 mb-3" />
-                <p className="text-xs text-zinc-500">Climb the leaderboard to unlock these exclusive early perks.</p>
+                <p className="text-xs text-muted-foreground/70">Climb the leaderboard to unlock these exclusive early perks.</p>
               </div>
-              <div className="rounded-[2rem] border border-zinc-800/80 bg-zinc-900/20 p-8 sm:p-12 backdrop-blur-xl shadow-2xl shadow-black/50">
+              <div className="rounded-[2rem] border border-border bg-card/30 p-8 sm:p-12 backdrop-blur-xl shadow-2xl shadow-black/5 dark:shadow-black/50">
                 <PrizePoolSection prizes={wl.prizes.map((p, i) => ({ ...p, id: String(i) })) as any} />
               </div>
             </section>
@@ -258,18 +259,18 @@ export default async function PublicWaitlistPage({ params }: Props) {
             <section>
               <div className="mb-10 flex flex-col items-center justify-between gap-6 sm:flex-row sm:items-end">
                 <div className="text-center sm:text-left">
-                  <h2 className="mb-2 text-xl font-black tracking-tight text-white uppercase">Top Referrers</h2>
+                  <h2 className="mb-2 text-xl font-black tracking-tight text-foreground uppercase">Top Referrers</h2>
                   <div className="h-1 w-12 rounded-full bg-blue-500/40 mb-3 ml-auto sm:ml-0" />
-                  <p className="text-xs text-zinc-500">Active contributors fueling the growth of {wl.name}.</p>
+                  <p className="text-xs text-muted-foreground/70">Active contributors fueling the growth of {wl.name}.</p>
                 </div>
-                <Button asChild variant="ghost" className="group h-10 rounded-full text-indigo-400 hover:bg-indigo-500/10 hover:text-indigo-300">
+                <Button asChild variant="ghost" className="group h-10 rounded-full text-indigo-600 dark:text-indigo-400 hover:bg-indigo-500/10">
                   <Link href={`/explore/${wl.slug}/leaderboard`} className="flex items-center">
                     Full Leaderboard
                     <ArrowLeft size={14} className="ml-2 rotate-180 transition-transform group-hover:translate-x-1" />
                   </Link>
                 </Button>
               </div>
-              <div className="rounded-[2rem] border border-zinc-800/80 bg-zinc-900/20 p-8 sm:p-12 backdrop-blur-xl shadow-2xl shadow-black/50">
+              <div className="rounded-[2rem] border border-border bg-card/30 p-8 sm:p-12 backdrop-blur-xl shadow-2xl shadow-black/5 dark:shadow-black/50">
                 <PublicLeaderboard
                   entries={wl.leaderboard as any}
                   prizes={wl.prizes as any}
@@ -282,16 +283,16 @@ export default async function PublicWaitlistPage({ params }: Props) {
         </div>
 
         {/* Platform Badge */}
-        <div className="mt-32 flex items-center gap-2.5 rounded-full border border-zinc-900 bg-zinc-950/50 px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-zinc-500 shadow-xl">
-           <ShieldCheck size={12} className="text-indigo-500" />
+        <div className="mt-32 flex items-center gap-2.5 rounded-full border border-border bg-card/50 px-5 py-2.5 text-[9px] font-bold uppercase tracking-widest text-muted-foreground/60 shadow-xl">
+           <ShieldCheck size={12} className="text-indigo-600 dark:text-indigo-400" />
            Verified by LaunchForge
         </div>
 
       </main>
 
-      <footer className="mt-10 w-full border-t border-zinc-900 px-6 pb-20 pt-16 text-center">
-        <p className="text-[11px] text-zinc-600">
-          Powered by <Link href="/" className="font-bold text-zinc-400 transition-colors hover:text-white">LaunchForge</Link>
+      <footer className="mt-10 w-full border-t border-border px-6 pb-20 pt-16 text-center">
+        <p className="text-[11px] text-muted-foreground/60">
+          Powered by <Link href="/" className="font-bold text-foreground/60 transition-colors hover:text-indigo-600 dark:hover:text-white">LaunchForge</Link>
           <br />
           Built for teams who build remarkable products.
         </p>

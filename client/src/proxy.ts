@@ -18,6 +18,11 @@ async function refreshTokenMiddleware (refreshToken : string) : Promise<boolean>
 export async function proxy (request : NextRequest) {
    try {
        const { pathname } = request.nextUrl; 
+
+       if (pathname === "/admin/dashboard") {
+            return NextResponse.redirect(new URL("/admin", request.url));
+       }
+
        const pathWithQuery = `${pathname}${request.nextUrl.search}`;
        
        const accessToken = request.cookies.get("accessToken")?.value;

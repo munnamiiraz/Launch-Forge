@@ -52,22 +52,22 @@ export default async function BillingPage({ searchParams }: BillingPageProps) {
         
         {/* Stripe Success Banner */}
         {showSuccess && (
-          <div className="mx-6 mt-6 flex items-start gap-3 rounded-2xl border border-emerald-500/25 bg-emerald-500/8 px-5 py-4">
-            <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-emerald-400" />
+          <div className="mx-6 mt-6 flex items-start gap-3 rounded-2xl border border-emerald-500/25 bg-emerald-500/10 dark:bg-emerald-500/8 px-5 py-4">
+            <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
             <div>
-              <p className="text-sm font-semibold text-emerald-300">Payment successful — welcome to your new plan!</p>
-              <p className="mt-0.5 text-xs text-emerald-500/70">Your subscription is now active. It may take a moment to reflect.</p>
+              <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">Payment successful — welcome to your new plan!</p>
+              <p className="mt-0.5 text-xs text-emerald-600/70 dark:text-emerald-500/70">Your subscription is now active. It may take a moment to reflect.</p>
             </div>
           </div>
         )}
 
         {/* Stripe Cancelled Banner */}
         {showCancelled && (
-          <div className="mx-6 mt-6 flex items-start gap-3 rounded-2xl border border-amber-500/25 bg-amber-500/8 px-5 py-4">
-            <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-400" />
+          <div className="mx-6 mt-6 flex items-start gap-3 rounded-2xl border border-amber-500/25 bg-amber-500/10 dark:bg-amber-500/8 px-5 py-4">
+            <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-600 dark:text-amber-400" />
             <div>
-              <p className="text-sm font-semibold text-amber-300">Checkout cancelled — no charge was made.</p>
-              <p className="mt-0.5 text-xs text-amber-500/70">You can upgrade whenever you're ready.</p>
+              <p className="text-sm font-semibold text-amber-700 dark:text-amber-300">Checkout cancelled — no charge was made.</p>
+              <p className="mt-0.5 text-xs text-amber-600/70 dark:text-amber-500/70">You can upgrade whenever you're ready.</p>
             </div>
           </div>
         )}

@@ -23,6 +23,8 @@ export interface EngagementStats {
   dauOverMau:  number;   // stickiness ratio %
   avgSessionsPerUser: number;
   avgSessionLengthMin: number;
+  newUsersToday:       number;
+  activeWorkspaces30d: number;
 }
 
 /* ── Feature adoption ────────────────────────────────────────────── */
@@ -184,6 +186,8 @@ export function getEngagementStats(): EngagementStats {
     dauOverMau:         22.2,   // stickiness
     avgSessionsPerUser:  3.4,
     avgSessionLengthMin: 8.7,
+    newUsersToday:       24,
+    activeWorkspaces30d: 842,
   };
 }
 

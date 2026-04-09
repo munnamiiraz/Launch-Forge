@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react";
-import { type Metadata } from "next";
 import Link from "next/link";
 import {
   Zap, ArrowRight, Share2, Trophy, Users, DollarSign,
@@ -102,7 +101,7 @@ export default function HowToEarnPage() {
       {/* Background grid */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.011)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.011)_1px,transparent_1px)] bg-[size:52px_52px]"
+        className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.011)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.011)_1px,transparent_1px)] bg-size-[52px_52px]"
       />
       {/* Ambient blobs */}
       <div aria-hidden className="pointer-events-none fixed left-0 top-0 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-indigo-500/6 blur-[120px]" />
@@ -120,7 +119,7 @@ export default function HowToEarnPage() {
             <div className="flex flex-col gap-4">
               <h1 className="text-5xl font-black tracking-tight text-foreground sm:text-6xl lg:text-7xl">
                 Refer friends.{" "}
-                <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-indigo-400 bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-indigo-400 via-violet-400 to-indigo-400 bg-clip-text text-transparent">
                   Win prizes.
                 </span>
               </h1>
@@ -850,7 +849,7 @@ export default function HowToEarnPage() {
                   value={`item-${i}`}
                   className="rounded-2xl border border-border/60 bg-card/30 px-5"
                 >
-                  <AccordionTrigger className="py-4 text-sm font-semibold text-foreground/90 hover:text-foreground hover:no-underline [&[data-state=open]]:text-indigo-300">
+                  <AccordionTrigger className="py-4 text-sm font-semibold text-foreground/90 hover:text-foreground hover:no-underline data-[state=open]:text-indigo-300">
                     {item.q}
                   </AccordionTrigger>
                   <AccordionContent className="pb-4 text-sm leading-relaxed text-muted-foreground/80">

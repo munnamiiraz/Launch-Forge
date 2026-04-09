@@ -126,9 +126,9 @@ export function ProfileSection({ profile }: ProfileSectionProps) {
     setIsUploading(true);
 
     try {
-      console.log("[Avatar] Starting upload for file:", file.name, file.size);
+      // console.log("[Avatar] Starting upload for file:", file.name, file.size);
       const result = await uploadAvatarAction(file);
-      console.log("[Avatar] Upload result:", result);
+      // console.log("[Avatar] Upload result:", result);
       
       if (result.success && result.imageUrl) {
         setForm((f) => ({ ...f, image: result.imageUrl }));

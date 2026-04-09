@@ -37,7 +37,7 @@ export const FormField = forwardRef<HTMLInputElement, FormFieldProps>(
             id={props.id ?? props.name}
             type={resolvedType}
             className={cn(
-              "w-full rounded-lg border bg-card/60 px-3 py-2.5 text-sm text-foreground",
+              "w-full rounded-xl border bg-card/60 px-3 py-2.5 text-sm text-foreground",
               "placeholder:text-muted-foreground/60",
               "transition-all duration-200 outline-none",
               "border-zinc-800 focus:border-zinc-600 focus:ring-1 focus:ring-zinc-600/50",

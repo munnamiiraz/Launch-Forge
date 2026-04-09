@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowRight, Loader2, CheckCircle2, Copy,
-  Users, Link2, Twitter, Mail, AlertCircle,
+  Users, Link2, AlertCircle,
   ChevronUp,
 } from "lucide-react";
 
@@ -88,21 +88,12 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const shareOnTwitter = () => {
-    if (!result) return;
-    const text = `I just joined the waitlist for ${waitlist.name}! Join me and let's both move up the queue 🚀`;
-    window.open(
-      `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(result.referralUrl)}`,
-      "_blank",
-    );
-  };
-
   /* ── Closed state ────────────────────────────────────────────── */
   if (!waitlist.isOpen) {
     return (
       <div className="flex flex-col items-center gap-4 rounded-3xl border border-border/60 bg-card/30 px-6 py-10 text-center">
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-zinc-800 bg-card/60">
-          <Users size={20} className="text-muted-foreground/60" />
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-border bg-card/60">
+          <Users size={20} className="text-muted-foreground/80" />
         </div>
         <div>
           <p className="text-base font-bold text-muted-foreground">Waitlist is closed</p>
@@ -121,10 +112,10 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className="flex flex-col gap-5"
+        className="flex flex-col gap-4 sm:gap-5 w-full max-w-full overflow-hidden"
       >
         {/* Queue position hero */}
-        <div className="relative overflow-hidden rounded-3xl border border-indigo-500/25 bg-linear-to-br from-indigo-950/60 via-zinc-900/60 to-zinc-950 p-6">
+        <div className="relative overflow-hidden rounded-3xl border border-indigo-500/25 bg-linear-to-br from-indigo-50 dark:from-indigo-950/60 via-background dark:via-zinc-900/60 to-muted dark:to-zinc-950 p-4 sm:p-6">
           <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-indigo-500/10 blur-3xl" />
 
           <div className="relative flex flex-col items-center gap-4 text-center">
@@ -132,9 +123,9 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
               initial={{ scale: 0.5, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", stiffness: 240, damping: 16, delay: 0.15 }}
-              className="flex h-16 w-16 items-center justify-center rounded-2xl border border-indigo-500/30 bg-indigo-500/15"
+              className="flex h-16 w-16 items-center justify-center rounded-2xl border border-indigo-500/20 dark:border-indigo-500/30 bg-indigo-500/10 dark:bg-indigo-500/15"
             >
-              <CheckCircle2 size={32} className="text-indigo-400" />
+              <CheckCircle2 size={32} className="text-indigo-600 dark:text-indigo-400" />
             </motion.div>
 
             <div>
@@ -145,29 +136,29 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
             </div>
 
             {/* Position */}
-            <div className="flex w-full items-stretch gap-3">
-              <div className="flex flex-1 flex-col items-center gap-1 rounded-2xl border border-border/60 bg-card/40 py-3">
-                <p className="text-3xl font-black tabular-nums text-indigo-300">
+            <div className="flex w-full items-stretch gap-2 sm:gap-3">
+              <div className="flex flex-1 min-w-0 flex-col items-center gap-1 rounded-2xl border border-border bg-background py-2 sm:py-3 dark:bg-card/40">
+                <p className="text-2xl sm:text-3xl font-black tabular-nums text-indigo-600 dark:text-indigo-300 truncate w-full text-center px-1">
                   #{result.position.toLocaleString()}
                 </p>
-                <p className="text-[11px] text-muted-foreground/60">your position</p>
+                <p className="text-[10px] sm:text-[11px] text-muted-foreground/70 dark:text-muted-foreground/60">your position</p>
               </div>
-              <div className="flex flex-1 flex-col items-center gap-1 rounded-2xl border border-border/60 bg-card/40 py-3">
-                <p className="text-3xl font-black tabular-nums text-foreground/80">
+              <div className="flex flex-1 min-w-0 flex-col items-center gap-1 rounded-2xl border border-border bg-background py-2 sm:py-3 dark:bg-card/40">
+                <p className="text-2xl sm:text-3xl font-black tabular-nums text-foreground/80 truncate w-full text-center px-1">
                   {result.totalInQueue.toLocaleString()}
                 </p>
-                <p className="text-[11px] text-muted-foreground/60">total in queue</p>
+                <p className="text-[10px] sm:text-[11px] text-muted-foreground/70 dark:text-muted-foreground/60">total in queue</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Move up callout */}
-        <div className="flex items-start gap-3 rounded-2xl border border-emerald-500/20 bg-emerald-500/6 px-4 py-3.5">
-          <ChevronUp size={16} className="mt-0.5 shrink-0 text-emerald-400" />
+        <div className="flex items-start gap-3 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 dark:bg-emerald-500/6 px-4 py-3.5">
+          <ChevronUp size={16} className="mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
           <div>
-            <p className="text-sm font-semibold text-emerald-300">Refer friends to move up</p>
-            <p className="mt-0.5 text-xs text-muted-foreground/80">
+            <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">Refer friends to move up</p>
+            <p className="mt-0.5 text-xs text-muted-foreground/70 dark:text-muted-foreground/80">
               Every person who joins using your link moves you one spot higher.
               {hasPrizes && " Top referrers win prizes — see the prize pool below."}
             </p>
@@ -181,7 +172,7 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
           </p>
           <div className="flex items-center gap-2 overflow-hidden rounded-xl border border-border/80 bg-card/60 px-3 py-2.5">
             <Link2 size={13} className="shrink-0 text-muted-foreground/40" />
-            <code className="flex-1 truncate text-xs text-muted-foreground">{result.referralUrl}</code>
+            <code className="flex-1 min-w-0 truncate text-xs text-muted-foreground">{result.referralUrl}</code>
             <Button
               size="sm"
               onClick={copyLink}
@@ -199,29 +190,6 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
           </div>
         </div>
 
-        {/* Share buttons */}
-        <div className="flex gap-2">
-          <Button
-            onClick={shareOnTwitter}
-            variant="outline"
-            className="flex-1 gap-2 border-border/80 bg-transparent text-xs text-muted-foreground hover:border-zinc-700 hover:bg-muted/40 hover:text-foreground/90"
-          >
-            <Twitter size={13} />
-            Share on X
-          </Button>
-          <Button
-            onClick={() => {
-              const subject = `You should join ${waitlist.name}`;
-              const body = `Hey! I just joined the waitlist for ${waitlist.name}. You should too — use my link to join and we'll both move up the queue: ${result.referralUrl}`;
-              window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            }}
-            variant="outline"
-            className="flex-1 gap-2 border-border/80 bg-transparent text-xs text-muted-foreground hover:border-zinc-700 hover:bg-muted/40 hover:text-foreground/90"
-          >
-            <Mail size={13} />
-            Share via email
-          </Button>
-        </div>
       </motion.div>
     );
   }
@@ -234,13 +202,13 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
         <motion.div
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-center gap-2 rounded-xl border border-emerald-500/15 bg-emerald-500/6 px-4 py-2.5"
+          className="flex items-center gap-2 rounded-xl border border-emerald-500/15 bg-emerald-500/10 dark:bg-emerald-500/6 px-4 py-2.5"
         >
           <span className="relative flex h-2 w-2 shrink-0">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
-            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
           </span>
-          <p className="text-xs text-emerald-300">
+          <p className="text-xs text-emerald-700 dark:text-emerald-300">
             <span className="font-bold">{waitlist.recentJoins.toLocaleString()}</span> people joined in the last 24 hours
           </p>
         </motion.div>
@@ -259,7 +227,7 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
             placeholder="Your name"
             disabled={isPending}
             autoFocus
-            className="h-11 border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
+            className="h-11 border-border bg-card/40 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
           />
         </div>
 
@@ -274,7 +242,7 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
             disabled={isPending}
-            className="h-11 border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
+            className="h-11 border-border bg-card/40 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
           />
         </div>
 
@@ -290,7 +258,7 @@ export function JoinSection({ waitlist }: JoinSectionProps) {
             disabled={isPending}
             inputMode="text"
             autoCapitalize="characters"
-            className="h-11 border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
+            className="h-11 border-border bg-card/40 text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/50 focus-visible:ring-1 focus-visible:ring-indigo-500/30"
           />
           <p className="text-[11px] text-muted-foreground/60">
             Have a referral code? Enter it to help your referrer move up the queue.

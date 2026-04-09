@@ -34,15 +34,15 @@ export function SocialProofSection() {
         >
           <Badge
             variant="outline"
-            className="gap-2 border-indigo-500/25 bg-indigo-500/8 px-3.5 py-1.5 text-xs font-medium text-indigo-300"
+            className="gap-2 border-indigo-500/20 dark:border-indigo-500/25 bg-indigo-500/8 px-3.5 py-1.5 text-xs font-medium text-indigo-700 dark:text-indigo-300"
           >
-            <span className="flex h-1.5 w-1.5 rounded-full bg-indigo-400" />
+            <span className="flex h-1.5 w-1.5 rounded-full bg-indigo-400 dark:bg-indigo-400" />
             Social Proof
           </Badge>
 
           <h2 className="max-w-3xl text-4xl font-bold tracking-tight text-foreground md:text-5xl">
             Founders who launched{" "}
-            <span className="bg-linear-to-r from-indigo-400 via-violet-400 to-indigo-300 bg-clip-text text-transparent">
+            <span className="bg-linear-to-r from-indigo-600 dark:from-indigo-400 via-violet-600 dark:via-violet-400 to-indigo-500 dark:to-indigo-300 bg-clip-text text-transparent">
               with momentum
             </span>
           </h2>
@@ -77,7 +77,7 @@ export function SocialProofSection() {
         </div>
 
         {/* ── Divider ────────────────────────────────────────── */}
-        <Separator className="bg-zinc-800/50" />
+        <Separator className="bg-border/60" />
 
         {/* ── Logo strip ─────────────────────────────────────── */}
         <LogoStrip />

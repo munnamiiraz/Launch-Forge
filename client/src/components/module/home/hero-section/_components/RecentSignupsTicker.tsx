@@ -50,8 +50,8 @@ export function RecentSignupsTicker({ initialRecent }: RecentSignupsTickerProps)
       className="relative w-full overflow-hidden"
     >
       {/* Fade edges */}
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-zinc-950 to-transparent" />
-      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-16 bg-gradient-to-l from-zinc-950 to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-20 bg-gradient-to-r from-background to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-background to-transparent" />
 
       {/* Scrolling track */}
       <div
@@ -77,7 +77,7 @@ function TickerCard({
   const avatarUrl = signup.avatar || FALLBACK_AVATARS[index % FALLBACK_AVATARS.length];
   
   return (
-    <div className="flex shrink-0 items-center gap-2.5 rounded-xl border border-border/60 bg-zinc-900/50 px-3.5 py-2.5 backdrop-blur-sm">
+    <div className="flex shrink-0 items-center gap-2.5 rounded-xl border border-border/60 bg-card/50 px-3.5 py-2.5 backdrop-blur-sm">
       {/* Avatar */}
       <img
         src={avatarUrl}
@@ -87,11 +87,11 @@ function TickerCard({
 
       {/* Info */}
       <div>
-        <p className="text-xs font-medium text-foreground/80">{signup.name}</p>
-        <div className="flex items-center gap-1 text-[10px] text-muted-foreground/60">
+        <p className="text-xs font-semibold text-foreground">{signup.name}</p>
+        <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
           <MapPin size={9} />
           <span>{signup.location}</span>
-          <span className="mx-0.5 text-zinc-800">·</span>
+          <span className="mx-0.5 text-border">·</span>
           <span>{signup.timeAgo}</span>
         </div>
       </div>

@@ -113,7 +113,11 @@ export default async function AdminAnalyticsPage() {
   ]);
   
   // Safe fallbacks — only real data or empty defaults (NO MOCK FALLBACKS)
-  const safeEngStats   = engStatsRes?.data || { dauToday: 0, wauThisWeek: 0, mauThisMonth: 0, dauOverMau: 0, avgSessionsPerUser: 0, avgSessionLengthMin: 0 };
+  const safeEngStats   = engStatsRes?.data || { 
+    dauToday: 0, wauThisWeek: 0, mauThisMonth: 0, 
+    dauOverMau: 0, avgSessionsPerUser: 0, avgSessionLengthMin: 0,
+    newUsersToday: 0, activeWorkspaces30d: 0 
+  };
   const safeEngTl      = engTimelineRes?.data || [];
   const safeFeatures   = featureAdoptionRes?.data || [];
   const safeSubTl      = subscriberDataRes?.data || [];

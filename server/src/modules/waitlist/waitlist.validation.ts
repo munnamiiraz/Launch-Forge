@@ -33,6 +33,13 @@ export const createWaitlistSchema = z.object({
   theme: z
     .string()
     .optional(),
+  
+  category: z
+    .string()
+    .trim()
+    .toUpperCase()
+    .optional()
+    .default("OTHER"),
 
   isOpen: z
     .boolean()
@@ -86,6 +93,12 @@ export const getWaitlistsQuerySchema = z.object({
       if (val === "false") return false;
       return undefined;
     }),
+
+  category: z
+    .string()
+    .trim()
+    .toUpperCase()
+    .optional(),
 });
 
 /* ── PATCH bodies ──────────────────────────────────────────────── */

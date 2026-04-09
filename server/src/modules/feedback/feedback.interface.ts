@@ -1,4 +1,4 @@
-import { FeatureRequest, FeedbackBoard } from "../../../generated/client";
+import { FeatureRequest, FeedbackBoard } from "../../generated/client";
 
 /* ─────────────────────────────────────────────────────────────────
    Status enum mirror

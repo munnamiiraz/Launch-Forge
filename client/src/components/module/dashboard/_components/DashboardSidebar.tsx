@@ -250,7 +250,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
               >
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
-                    <button className="group flex w-full items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-zinc-800/50 transition-colors">
+                    <button className="group flex w-full items-center gap-2 rounded-lg px-2 py-1.5 hover:bg-zinc-800/10 dark:hover:bg-zinc-800/50 transition-colors">
                       <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-indigo-500/30 bg-indigo-500/15">
                         <Zap size={12} className="text-indigo-400" />
                       </div>
@@ -264,7 +264,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="start"
-                    className="w-52 border-zinc-800 bg-background/95 backdrop-blur-xl"
+                    className="w-52 border-border bg-popover/95 backdrop-blur-xl"
                   >
                     <DropdownMenuLabel className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
                       Workspaces
@@ -399,8 +399,9 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
 
               {group.items.map((item) => {
                 const itemId = 'id' in item ? item.id : item.href;
-                const isActive = pathname === item.href ||
-                  (item.href !== "/dashboard" && item.href !== "" && pathname.startsWith(item.href));
+                const isActive = item.href === "/" 
+                  ? pathname === "/" 
+                  : pathname === item.href || (item.href !== "/dashboard" && item.href !== "" && pathname.startsWith(item.href));
                 const Icon = item.icon;
                 const isDisabled = !item.href || item.href === "";
                 const isGated = item.featureGate && !isFeatureAvailable(currentPlan, item.featureGate);
@@ -439,8 +440,8 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                     className={cn(
                       "group flex items-center gap-2.5 rounded-lg px-2 py-2 text-sm transition-all duration-150",
                       isActive
-                        ? "bg-indigo-500/12 text-indigo-300"
-                        : "text-muted-foreground/80 hover:bg-zinc-800/50 hover:text-foreground/80",
+                        ? "bg-indigo-500/10 dark:bg-indigo-500/12 text-indigo-700 dark:text-indigo-300"
+                        : "text-muted-foreground/80 hover:bg-muted/50 dark:hover:bg-zinc-800/50 hover:text-foreground/80",
                       collapsed && "justify-center px-0"
                     )}
                   >
@@ -475,7 +476,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                 return collapsed ? (
                   <Tooltip key={itemId}>
                     <TooltipTrigger asChild>{link}</TooltipTrigger>
-                    <TooltipContent side="right" className="border-zinc-800 bg-zinc-900 text-xs text-foreground/80">
+                    <TooltipContent side="right" className="border-border bg-popover text-xs text-foreground/80">
                       {item.label}{isGated ? " (Pro)" : ""}
                     </TooltipContent>
                   </Tooltip>
@@ -492,7 +493,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
               <button
                 className={cn(
                   "flex w-full items-center gap-2.5 rounded-lg p-2",
-                  "hover:bg-zinc-800/50 transition-colors",
+                  "hover:bg-muted/50 dark:hover:bg-zinc-800/50 transition-colors",
                   collapsed && "justify-center"
                 )}
               >
@@ -523,7 +524,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
               align="start"
               side="top"
               sideOffset={8}
-              className="w-56 border-zinc-800 bg-background/95 backdrop-blur-xl"
+              className="w-56 border-border bg-popover/95 backdrop-blur-xl"
             >
               <DropdownMenuLabel className="px-3 py-2.5">
                 <div className="flex items-center gap-2.5">
@@ -565,7 +566,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
 
       {/* ── Create Workspace Modal ── */}
       <Dialog open={showNewWsDialog} onOpenChange={setShowNewWsDialog}>
-        <DialogContent className="border-zinc-800 bg-background text-foreground">
+        <DialogContent className="border-border bg-background text-foreground">
           <DialogHeader>
             <DialogTitle>Create Workspace</DialogTitle>
             <DialogDescription className="text-muted-foreground">
@@ -578,7 +579,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
               <Input 
                 id="ws-name" 
                 placeholder="Acme Inc." 
-                className="border-zinc-800 bg-zinc-900 focus-visible:ring-indigo-500" 
+                className="border-border bg-muted/30 focus-visible:ring-indigo-500" 
                 required 
                 value={newWsName} 
                 onChange={(e) => setNewWsName(e.target.value)}
@@ -595,7 +596,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                 id="ws-slug" 
                 placeholder="acme" 
                 className={cn(
-                  "border-zinc-800 bg-zinc-900 focus-visible:ring-indigo-500",
+                  "border-border bg-muted/30 focus-visible:ring-indigo-500",
                   slugStatus === "available" && "border-emerald-500/50 focus-visible:ring-emerald-500",
                   slugStatus === "taken" && "border-rose-500/50 focus-visible:ring-rose-500"
                 )} 
@@ -626,7 +627,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
 
       {/* ── Edit Workspace Modal ── */}
       <Dialog open={showEditWsDialog} onOpenChange={setShowEditWsDialog}>
-        <DialogContent className="border-zinc-800 bg-background text-foreground">
+        <DialogContent className="border-border bg-background text-foreground">
           <DialogHeader>
             <DialogTitle>Edit Workspace</DialogTitle>
             <DialogDescription className="text-muted-foreground">
@@ -636,11 +637,11 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
           <form key={activeWorkspace?.id || "form"} onSubmit={handleEditWorkspace} className="space-y-4 py-4">
             <div className="space-y-2">
               <Label htmlFor="edit-ws-name">Workspace Name</Label>
-              <Input id="edit-ws-name" defaultValue={activeWorkspace?.name} className="border-zinc-800 bg-zinc-900 focus-visible:ring-indigo-500" required />
+              <Input id="edit-ws-name" defaultValue={activeWorkspace?.name} className="border-border bg-muted/30 focus-visible:ring-indigo-500" required />
             </div>
             <div className="space-y-2">
               <Label htmlFor="edit-ws-slug">Workspace Slug</Label>
-              <Input id="edit-ws-slug" defaultValue={activeWorkspace?.slug} className="border-zinc-800 bg-zinc-900 focus-visible:ring-indigo-500" required />
+              <Input id="edit-ws-slug" defaultValue={activeWorkspace?.slug} className="border-border bg-muted/30 focus-visible:ring-indigo-500" required />
             </div>
             <DialogFooter>
               <Button type="button" variant="ghost" onClick={() => setShowEditWsDialog(false)} className="hover:bg-zinc-800 hover:text-foreground">Cancel</Button>

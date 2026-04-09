@@ -17,11 +17,11 @@ import { cn }        from "@/src/lib/utils";
 import type { LeaderboardEntry } from "../_types";
 
 const RANK_STYLES: Record<number, { num: string; dot: string }> = {
-  1: { num: "text-amber-400 font-black text-base",  dot: "bg-amber-400"  },
-  2: { num: "text-foreground/80 font-bold",              dot: "bg-zinc-500"   },
-  3: { num: "text-orange-500 font-bold",            dot: "bg-orange-500" },
+  1: { num: "text-amber-600 dark:text-amber-400 font-black text-base",  dot: "bg-amber-500"  },
+  2: { num: "text-zinc-600 dark:text-foreground/80 font-bold",              dot: "bg-zinc-400 dark:bg-zinc-500"   },
+  3: { num: "text-orange-600 dark:text-orange-500 font-bold",            dot: "bg-orange-500" },
 };
-const DEFAULT_RANK = { num: "text-muted-foreground/60 font-medium text-sm", dot: "bg-indigo-500/60" };
+const DEFAULT_RANK = { num: "text-muted-foreground/60 font-medium text-sm", dot: "bg-indigo-500/40 dark:bg-indigo-500/60" };
 
 const AVATAR_GRADIENTS = [
   "from-amber-500 to-orange-500",
@@ -68,9 +68,9 @@ export function LeaderboardTableRow({
       {/* Main row */}
       <div
         className={cn(
-          "group grid items-center gap-4 px-5 py-3.5 transition-colors hover:bg-zinc-900/50",
+          "group grid items-center gap-4 px-5 py-3.5 transition-colors hover:bg-muted/40 dark:hover:bg-zinc-900/50",
           "grid-cols-[36px_1fr_auto_auto_auto_auto_auto]",
-          !isLast && !expanded && "border-b border-border/40",
+          !isLast && !expanded && "border-b border-zinc-200 dark:border-border/40",
         )}
       >
         {/* Rank */}
@@ -91,7 +91,7 @@ export function LeaderboardTableRow({
             {/* Rank dot */}
             <span
               className={cn(
-                "absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-zinc-950",
+                "absolute -bottom-0.5 -right-0.5 h-2.5 w-2.5 rounded-full border-2 border-white dark:border-zinc-950",
                 rankStyle.dot,
               )}
             />
@@ -102,7 +102,7 @@ export function LeaderboardTableRow({
                 {entry.name}
               </p>
               {entry.isConfirmed && (
-                <CheckCircle2 size={12} className="shrink-0 text-emerald-500" />
+                <CheckCircle2 size={12} className="shrink-0 text-emerald-600 dark:text-emerald-500" />
               )}
             </div>
             <p className="truncate text-[11px] text-muted-foreground/60">{entry.email}</p>
@@ -122,7 +122,7 @@ export function LeaderboardTableRow({
             </span>
             <span className="text-[10px] text-muted-foreground/60">{entry.sharePercent}%</span>
           </div>
-          <div className="h-1 overflow-hidden rounded-full bg-zinc-800">
+          <div className="h-1 overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${barWidth}%` }}
@@ -198,8 +198,8 @@ export function LeaderboardTableRow({
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
           className={cn(
-            "overflow-hidden border-t border-border/40 bg-zinc-900/20 px-5 py-4",
-            !isLast && "border-b border-border/40"
+            "overflow-hidden border-t border-zinc-200 dark:border-border/40 bg-muted/20 dark:bg-zinc-900/20 px-5 py-4",
+            !isLast && "border-b border-zinc-200 dark:border-border/40"
           )}
         >
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -209,8 +209,8 @@ export function LeaderboardTableRow({
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
                 Referral link
               </p>
-              <div className="flex items-center gap-1.5 rounded-lg border border-zinc-800 bg-card/60 px-2.5 py-1.5">
-                <Link2 size={11} className="shrink-0 text-indigo-400" />
+              <div className="flex items-center gap-1.5 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-card/60 px-2.5 py-1.5">
+                <Link2 size={11} className="shrink-0 text-indigo-600 dark:text-indigo-400" />
                 <span className="flex-1 truncate font-mono text-[11px] text-muted-foreground">
                   launchforge.app/ref/{entry.referralCode}
                 </span>
@@ -229,9 +229,9 @@ export function LeaderboardTableRow({
                 Referred by
               </p>
               {entry.referredBy ? (
-                <div className="flex items-center gap-2 rounded-lg border border-zinc-800 bg-card/60 px-2.5 py-1.5">
+                <div className="flex items-center gap-2 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-card/60 px-2.5 py-1.5">
                   <Avatar className="h-5 w-5 shrink-0 rounded-md">
-                    <AvatarFallback className="rounded-md bg-indigo-500/20 text-[9px] font-bold text-indigo-400">
+                    <AvatarFallback className="rounded-md bg-indigo-500/10 dark:bg-indigo-500/20 text-[9px] font-bold text-indigo-600 dark:text-indigo-400">
                       {entry.referredBy.name.slice(0, 2).toUpperCase()}
                     </AvatarFallback>
                   </Avatar>

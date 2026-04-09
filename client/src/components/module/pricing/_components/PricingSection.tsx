@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Badge } from "@/src/components/ui/badge";
 import { Separator } from "@/src/components/ui/separator";
+import { Sparkles } from "lucide-react";
 
 import { PricingToggle } from "./PricingToggle";
 import { PricingCard }   from "./PricingCard";
@@ -20,10 +21,10 @@ export function PricingSection() {
     <section className="relative w-full overflow-hidden bg-background py-24 md:py-32">
 
       {/* ── Ambient layers ───────────────────────────────────── */}
-      <div aria-hidden className="pointer-events-none absolute left-1/2 top-0 h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-indigo-600/7 blur-[150px]" />
-      <div aria-hidden className="pointer-events-none absolute -right-56 bottom-1/4 h-[350px] w-[450px] rounded-full bg-violet-600/5 blur-[110px]" />
-      <div aria-hidden className="pointer-events-none absolute -left-56 top-1/3 h-[300px] w-[400px] rounded-full bg-cyan-600/4 blur-[110px]" />
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.012)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.012)_1px,transparent_1px)] bg-[size:72px_72px]" />
+      <div aria-hidden className="pointer-events-none absolute left-1/2 top-0 h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-indigo-500/5 dark:bg-indigo-600/7 blur-[150px]" />
+      <div aria-hidden className="pointer-events-none absolute -right-56 bottom-1/4 h-[350px] w-[450px] rounded-full bg-violet-500/5 dark:bg-violet-600/5 blur-[110px]" />
+      <div aria-hidden className="pointer-events-none absolute -left-56 top-1/3 h-[300px] w-[400px] rounded-full bg-cyan-500/5 dark:bg-cyan-600/4 blur-[110px]" />
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(99,102,241,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(99,102,241,0.04)_1px,transparent_1px)] bg-size-[72px_72px]" />
 
       <div className="relative mx-auto flex max-w-6xl flex-col gap-20 px-4 sm:px-6 lg:px-8">
 
@@ -37,16 +38,16 @@ export function PricingSection() {
         >
           <Badge
             variant="outline"
-            className="gap-2 border-indigo-500/25 bg-indigo-500/8 px-3.5 py-1.5 text-xs font-medium text-indigo-300"
+            className="gap-2 border-indigo-500/20 dark:border-indigo-500/25 bg-indigo-500/8 px-3.5 py-1.5 text-xs font-medium text-indigo-700 dark:text-indigo-300"
           >
-            <span className="flex h-1.5 w-1.5 rounded-full bg-indigo-400" />
+            <Sparkles size={11} className="text-indigo-500" />
             Pricing
           </Badge>
 
           <div className="flex flex-col gap-3">
             <h1 className="text-4xl font-bold tracking-tight text-foreground md:text-5xl xl:text-6xl">
               Simple, transparent{" "}
-              <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-indigo-300 bg-clip-text text-transparent">
+              <span className="bg-linear-to-r from-indigo-600 via-violet-600 to-indigo-500 dark:from-indigo-400 dark:via-violet-400 dark:to-indigo-300 bg-clip-text text-transparent">
                 pricing
               </span>
             </h1>
@@ -90,12 +91,12 @@ export function PricingSection() {
           </div>
         </div>
 
-        <Separator className="bg-zinc-800/50" />
+        <Separator className="bg-border" />
 
         {/* ── FAQ ─────────────────────────────────────────────── */}
         <PricingFAQ />
 
-        <Separator className="bg-zinc-800/50" />
+        <Separator className="bg-border" />
 
         {/* ── Bottom CTA ──────────────────────────────────────── */}
         <PricingCTA />

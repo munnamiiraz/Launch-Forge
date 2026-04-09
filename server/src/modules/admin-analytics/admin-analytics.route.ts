@@ -73,7 +73,7 @@ router.get("/engagement",          admin, adminAnalyticsController.getEngagement
 router.get(
   "/engagement/timeline",
   admin,
-  validateRequest(engagementRangeSchema),
+  validateQuery(engagementRangeSchema),
   adminAnalyticsController.getEngagementTimeline,
 );
 

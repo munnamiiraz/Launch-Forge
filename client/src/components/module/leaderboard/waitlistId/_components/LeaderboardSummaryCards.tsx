@@ -22,8 +22,8 @@ function SummaryCard({ icon, label, value, sub, accent, index }: SummaryCardProp
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.07, duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
     >
-      <Card className="group relative overflow-hidden border-border/80 bg-card/40 transition-all duration-300 hover:bg-card/60 hover:shadow-lg hover:shadow-black/20">
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-indigo-500/30" />
+      <Card className="group relative overflow-hidden border-zinc-200 dark:border-border/80 bg-card/40 transition-all duration-300 hover:bg-card/60 hover:shadow-lg hover:shadow-black/20">
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-zinc-200 dark:via-border to-transparent transition-all duration-300 group-hover:via-indigo-500/30" />
         <CardContent className="p-4">
           <div className="mb-2 flex items-center justify-between">
             <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/60">{label}</p>
@@ -48,35 +48,35 @@ export function LeaderboardSummaryCards({ summary }: LeaderboardSummaryCardsProp
     <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
       <SummaryCard
         index={0}
-        icon={<Users size={13} className="text-indigo-400" />}
+        icon={<Users size={13} className="text-indigo-600 dark:text-indigo-400" />}
         label="Total subscribers"
         value={summary.totalSubscribers.toLocaleString()}
         sub="in this waitlist"
-        accent="border-indigo-500/30 bg-indigo-500/12"
+        accent="border-indigo-500/30 bg-indigo-500/10 dark:bg-indigo-500/12"
       />
       <SummaryCard
         index={1}
-        icon={<Share2 size={13} className="text-violet-400" />}
+        icon={<Share2 size={13} className="text-violet-600 dark:text-violet-400" />}
         label="Total referrals"
         value={summary.totalReferrals.toLocaleString()}
         sub="all time"
-        accent="border-violet-500/30 bg-violet-500/12"
+        accent="border-violet-500/30 bg-violet-500/10 dark:bg-violet-500/12"
       />
       <SummaryCard
         index={2}
-        icon={<TrendingUp size={13} className="text-emerald-400" />}
+        icon={<TrendingUp size={13} className="text-emerald-600 dark:text-emerald-400" />}
         label="Active referrers"
         value={summary.activeReferrers.toLocaleString()}
         sub={`avg ${summary.avgReferralsPerReferrer.toFixed(1)} refs each`}
-        accent="border-emerald-500/30 bg-emerald-500/12"
+        accent="border-emerald-500/30 bg-emerald-500/10 dark:bg-emerald-500/12"
       />
       <SummaryCard
         index={3}
-        icon={<Trophy size={13} className="text-amber-400" />}
+        icon={<Trophy size={13} className="text-amber-600 dark:text-amber-400" />}
         label="Top referral count"
         value={summary.topReferralCount.toString()}
         sub="by #1 champion"
-        accent="border-amber-500/30 bg-amber-500/12"
+        accent="border-amber-500/30 bg-amber-500/10 dark:bg-amber-500/12"
       />
     </div>
   );

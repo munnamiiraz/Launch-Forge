@@ -1,4 +1,4 @@
-import { Waitlist, Workspace } from "../../../generated/client";
+import { Waitlist, Workspace } from "../../generated/client";
 
 /* ── Request payloads ────────────────────────────────────────────── */
 
@@ -8,6 +8,7 @@ export interface CreateWaitlistInput {
   description?: string;
   logoUrl?: string;
   theme?: string;
+  category?: string;
   isOpen?: boolean;
   endDate?: Date;
 }
@@ -19,6 +20,7 @@ export interface GetWaitlistsQuery {
   isOpen?: boolean;
   /** When true, list endpoints return both archived + non-archived waitlists. */
   includeArchived?: boolean;
+  category?: string;
 }
 
 /* ── Service-layer types ─────────────────────────────────────────── */
@@ -43,6 +45,7 @@ export type WaitlistItem = Pick<
   | "slug"
   | "description"
   | "logoUrl"
+  | "category"
   | "isOpen"
   | "archivedAt"
   | "createdAt"
@@ -103,6 +106,7 @@ export type WaitlistDetail = Pick<
   | "description"
   | "logoUrl"
   | "theme"
+  | "category"
   | "isOpen"
   | "archivedAt"
   | "createdAt"

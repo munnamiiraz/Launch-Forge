@@ -30,11 +30,10 @@ RUN apt-get update -y && apt-get install -y openssl && rm -rf /var/lib/apt/lists
 # Copy production node_modules (includes tsx)
 COPY --from=build /app/package.json ./package.json
 COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/generated ./generated
-
 # Copy source code (tsx runs TypeScript directly, no compilation needed)
 COPY prisma ./prisma
 COPY src ./src
+COPY --from=build /app/src/generated ./src/generated
 COPY tsconfig.json ./
 
 # Render sets $PORT; we expose 5000 for local runs.

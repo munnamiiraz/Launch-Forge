@@ -73,11 +73,11 @@ async function authFetch(url: string, options: RequestInit = {}) {
  */
 export async function fetchWaitlistInfo(waitlistId: string): Promise<WaitlistInfo> {
   const url = `${BACKEND}/waitlists/by-id/${waitlistId}`;
-  console.log(`[Action] Resolving waitlist: ${url}`);
+  // console.log(`[Action] Resolving waitlist: ${url}`);
 
   const res = await authFetch(url);
   const json = await res.json();
-  console.log("[Action] Waitlist info response", json);
+  // console.log("[Action] Waitlist info response", json);
   
   if (!res.ok) throw new Error(json.message || "Failed to fetch waitlist info");
   
@@ -111,7 +111,7 @@ export async function fetchLeaderboard(
   if (params.search) queryParams.set("search", params.search);
 
   const url = `${BACKEND}/workspaces/${workspaceId}/waitlists/${waitlistId}/leaderboard/full?${queryParams}`;
-  console.log(`[Action] Fetching leaderboard: ${url}`);
+  // console.log(`[Action] Fetching leaderboard: ${url}`);
 
   const res = await authFetch(url);
   const json = await res.json();
@@ -205,7 +205,7 @@ export async function fetchLeaderboardBySlug(
   if (params.search) queryParams.set("search", params.search);
 
   const url = `${BACKEND}/workspaces/${workspaceId}/waitlists/${waitlistId}/leaderboard/${waitlistSlug}?${queryParams}`;
-  console.log(`[Action] Fetching leaderboard by slug: ${url}`);
+  // console.log(`[Action] Fetching leaderboard by slug: ${url}`);
 
   const res = await authFetch(url);
   const json = await res.json();

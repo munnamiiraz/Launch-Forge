@@ -8,6 +8,7 @@ import { StatCard }             from "@/src/components/module/dashboard/_compone
 import { GrowthChart }          from "@/src/components/module/dashboard/_components/GrowthChart";
 import { RecentActivityFeed }   from "@/src/components/module/dashboard/_components/RecentActivityFeed";
 import { WaitlistsTable }       from "@/src/components/module/dashboard/_components/WaitlistsTable";
+import { AiInsightsCard }     from "@/src/components/module/dashboard/_components/AiInsightsCard";
 import { CreateWaitlistDialog } from "@/src/components/module/dashboard/_components/CreateWaitlistDialog";
 import { authFetch }            from "@/src/lib/axios/authFetch";
 import { useWorkspace }         from "@/src/provider/WorkspaceProvider";
@@ -103,9 +104,6 @@ export default function DashboardPage() {
       <div className="flex flex-col h-full bg-background">
         <DashboardHeader title="Dashboard" subtitle="Please select a workspace" />
         <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900/50 mb-4">
-            <Zap size={20} className="text-muted-foreground/60" />
-          </div>
           <p className="text-sm font-medium text-muted-foreground">No workspace active</p>
           <p className="mt-1 text-xs text-muted-foreground/60">Select a workspace from the sidebar to view your metrics.</p>
         </div>
@@ -186,9 +184,9 @@ export default function DashboardPage() {
             </div>
 
             {/* ── Chart + Activity ──────────────────────────────────── */}
-            <div className="grid gap-4 lg:grid-cols-[1fr_320px]">
+            <div className="grid gap-6 lg:grid-cols-[1fr_360px] items-start">
               <GrowthChart />
-              {/* <RecentActivityFeed /> */}
+              <AiInsightsCard />
             </div>
 
             {/* ── Waitlists table ───────────────────────────────────── */}

@@ -50,14 +50,14 @@ export function PlanCards({ currentPlan }: PlanCardsProps) {
           </p>
         </div>
 
-        <div className="flex items-center gap-2.5 rounded-xl border border-border/80 bg-card/40 px-3.5 py-2">
+        <div className="flex items-center gap-2.5 rounded-xl border border-zinc-200 dark:border-border/80 bg-muted/40 dark:bg-card/40 px-3.5 py-2 shadow-sm">
           <span className={cn("text-xs font-medium", !yearly ? "text-foreground/90" : "text-muted-foreground/60")}>
             Monthly
           </span>
           <Switch
             checked={yearly}
             onCheckedChange={setYearly}
-            className="data-[state=checked]:bg-indigo-600 data-[state=unchecked]:bg-zinc-700"
+            className="data-[state=checked]:bg-indigo-600 data-[state=unchecked]:bg-zinc-200 dark:data-[state=unchecked]:bg-zinc-700"
           />
           <span className={cn("text-xs font-medium", yearly ? "text-foreground/90" : "text-muted-foreground/60")}>
             Yearly
@@ -69,7 +69,7 @@ export function PlanCards({ currentPlan }: PlanCardsProps) {
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.85 }}
               >
-                <Badge className="border-emerald-500/25 bg-emerald-500/10 px-2 py-0 text-[9px] text-emerald-400">
+                <Badge className="border-emerald-500/25 bg-emerald-500/10 px-2 py-0 text-[9px] text-emerald-600 dark:text-emerald-400 font-bold">
                   Save 20%
                 </Badge>
               </motion.div>
@@ -99,7 +99,7 @@ export function PlanCards({ currentPlan }: PlanCardsProps) {
               {/* Popular pill */}
               {isPopular && (
                 <div className="absolute -top-3 inset-x-0 flex justify-center z-10">
-                  <span className="flex items-center gap-1 rounded-full border border-indigo-500/40 bg-indigo-500/20 px-3 py-0.5 text-[10px] font-bold text-indigo-300">
+                  <span className="flex items-center gap-1 rounded-full border border-indigo-200 dark:border-indigo-500/40 bg-indigo-50 dark:bg-indigo-500/20 px-3 py-0.5 text-[10px] font-bold text-indigo-600 dark:text-indigo-300 shadow-md">
                     <Star size={9} />Most popular
                   </span>
                 </div>
@@ -111,11 +111,11 @@ export function PlanCards({ currentPlan }: PlanCardsProps) {
                 isCurrent
                   ? isPro    ? "border-indigo-500/50 shadow-lg shadow-indigo-500/8"
                   : isGrowth ? "border-violet-500/50 shadow-lg shadow-violet-500/8"
-                             : "border-zinc-700/60"
+                             : "border-zinc-200 dark:border-zinc-700/60"
                   : isPopular  ? "border-indigo-500/30 hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/5"
                   : isGrowth   ? "border-violet-500/20 hover:border-violet-500/40"
-                               : "border-border/80 hover:border-zinc-700/60",
-                "bg-card/40",
+                                : "border-zinc-200 dark:border-border/80 hover:border-zinc-300 dark:hover:border-zinc-700/60",
+                "bg-card dark:bg-card/40",
                 isPopular && "mt-3",
               )}>
                 {/* Top accent line */}
@@ -123,7 +123,7 @@ export function PlanCards({ currentPlan }: PlanCardsProps) {
                   "h-0.5 w-full",
                   isPro    ? "bg-gradient-to-r from-transparent via-indigo-500 to-transparent" :
                   isGrowth ? "bg-gradient-to-r from-transparent via-violet-500 to-transparent" :
-                             "bg-gradient-to-r from-transparent via-zinc-700/60 to-transparent",
+                             "bg-gradient-to-r from-transparent via-zinc-200 dark:via-zinc-700/60 to-transparent",
                 )} />
 
                 <CardContent className="flex flex-1 flex-col p-5">
@@ -132,8 +132,8 @@ export function PlanCards({ currentPlan }: PlanCardsProps) {
                     <div className="flex items-center justify-between">
                       <p className={cn(
                         "text-sm font-bold",
-                        isPro    ? "text-indigo-300" :
-                        isGrowth ? "text-violet-300" :
+                        isPro    ? "text-indigo-600 dark:text-indigo-300" :
+                        isGrowth ? "text-violet-600 dark:text-violet-300" :
                                    "text-muted-foreground",
                       )}>
                         {plan.name}
@@ -141,9 +141,9 @@ export function PlanCards({ currentPlan }: PlanCardsProps) {
                       {isCurrent && (
                         <Badge className={cn(
                           "rounded-full px-2 py-0 text-[9px] font-semibold",
-                          isPro    ? "border-indigo-500/30 bg-indigo-500/15 text-indigo-400" :
-                          isGrowth ? "border-violet-500/30 bg-violet-500/15 text-violet-400" :
-                                     "border-zinc-700 bg-zinc-800 text-muted-foreground/80",
+                          isPro    ? "border-indigo-200 dark:border-indigo-500/30 bg-indigo-100 dark:bg-indigo-500/15 text-indigo-600 dark:text-indigo-400" :
+                          isGrowth ? "border-violet-200 dark:border-violet-500/30 bg-violet-100 dark:bg-violet-500/15 text-violet-600 dark:text-violet-400" :
+                                     "border-zinc-200 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-800 text-muted-foreground/80",
                         )}>
                           Current
                         </Badge>

@@ -1,4 +1,4 @@
-import { Payment } from "../../../generated/client";
+import { Payment } from "../../generated/client";
 
 /* ─────────────────────────────────────────────────────────────────
    Enum mirrors (match Prisma exactly)

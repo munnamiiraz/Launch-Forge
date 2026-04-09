@@ -1,4 +1,4 @@
-import { Workspace, WorkspaceMember, User } from "../../../generated/client";
+import { Workspace, WorkspaceMember, User } from "../../generated/client";
 
 /* ─────────────────────────────────────────────────────────────────
    Query / filter types

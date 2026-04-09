@@ -10,9 +10,9 @@ import type { PublicPrize } from "@/src/components/module/individual-waitlist/_l
 import { getPrizeForRank } from "../_lib/data";
 
 const PODIUM_CONFIG = [
-  /* #2 — left  */ { order: 0, height: "h-20", label: "2nd", medal: "🥈", glow: "bg-zinc-400/8",    border: "border-zinc-600/30",   value: "text-foreground/80", crown: false },
-  /* #1 — centre*/ { order: 1, height: "h-28", label: "1st", medal: "🥇", glow: "bg-amber-400/10",  border: "border-amber-500/35",  value: "text-amber-300", crown: true  },
-  /* #3 — right */ { order: 2, height: "h-14", label: "3rd", medal: "🥉", glow: "bg-orange-500/8",  border: "border-orange-500/25", value: "text-orange-300",crown: false },
+  /* #2 — left  */ { order: 0, height: "h-20", label: "2nd", medal: "🥈", glow: "bg-zinc-400/8",    border: "border-border/60 dark:border-zinc-600/30",   value: "text-foreground/80", crown: false },
+  /* #1 — centre*/ { order: 1, height: "h-28", label: "1st", medal: "🥇", glow: "bg-amber-400/15 dark:bg-amber-400/10",  border: "border-amber-500/30 dark:border-amber-500/35",  value: "text-amber-600 dark:text-amber-300", crown: true  },
+  /* #3 — right */ { order: 2, height: "h-14", label: "3rd", medal: "🥉", glow: "bg-orange-500/10 dark:bg-orange-500/8",  border: "border-orange-500/20 dark:border-orange-500/25", value: "text-orange-600 dark:text-orange-300",crown: false },
 ];
 
 // Display order: 2nd | 1st | 3rd
@@ -111,7 +111,7 @@ export function PodiumSection({ top3, prizes }: PodiumSectionProps) {
                 "flex w-20 sm:w-24 items-center justify-center rounded-t-xl border-t border-l border-r transition-all",
                 slot.height,
                 slot.border,
-                "bg-linear-to-b from-zinc-800/40 to-zinc-900/40",
+                "bg-linear-to-b from-muted dark:from-zinc-800/40 to-background dark:to-zinc-900/40",
               )}>
                 <span className="text-xl">{slot.medal}</span>
               </div>
@@ -127,11 +127,11 @@ export function PodiumSection({ top3, prizes }: PodiumSectionProps) {
           if (!prize) return null;
           const medals = ["🥇", "🥈", "🥉"];
           const accents = [
-            "border-amber-500/25 bg-amber-500/8",
-            "border-zinc-700/60 bg-card/30",
-            "border-orange-500/20 bg-orange-500/6",
+            "border-amber-500/20 dark:border-amber-500/25 bg-amber-500/10 dark:bg-amber-500/8",
+            "border-border bg-card/40 dark:bg-card/30",
+            "border-orange-500/15 dark:border-orange-500/20 bg-orange-500/10 dark:bg-orange-500/6",
           ];
-          const valueColors = ["text-amber-300", "text-foreground/80", "text-orange-300"];
+          const valueColors = ["text-amber-600 dark:text-amber-300", "text-foreground/80", "text-orange-600 dark:text-orange-300"];
 
           return (
             <motion.div

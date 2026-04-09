@@ -1,31 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Bell, Search, X, Command } from "lucide-react";
-import { Button } from "@/src/components/ui/button";
-import { Input } from "@/src/components/ui/input";
-import { Badge } from "@/src/components/ui/badge";
-import {
-  Popover, PopoverContent, PopoverTrigger,
-} from "@/src/components/ui/popover";
-import { Separator } from "@/src/components/ui/separator";
 import { ThemeToggle } from "@/src/components/shared/theme-toggle";
-import { cn } from "@/src/lib/utils";
-
-const MOCK_NOTIFICATIONS = [
-  { id: "1", type: "join",    text: "Sarah K. joined your waitlist",      time: "2m ago",  read: false },
-  { id: "2", type: "referral",text: "Marcus T. referred 3 new signups",   time: "14m ago", read: false },
-  { id: "3", type: "payment", text: "Payment confirmed — Pro plan active", time: "1h ago",  read: false },
-  { id: "4", type: "join",    text: "James L. joined Product Alpha",       time: "3h ago",  read: true  },
-];
-
-const TYPE_DOT: Record<string, string> = {
-  join:     "bg-emerald-500",
-  referral: "bg-indigo-500",
-  payment:  "bg-amber-500",
-  system:   "bg-zinc-600",
-};
 
 interface DashboardHeaderProps {
   title:    string;
@@ -34,9 +9,6 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({ title, subtitle, children }: DashboardHeaderProps) {
-  const [searchOpen, setSearchOpen] = useState(false);
-  const unread = MOCK_NOTIFICATIONS.filter((n) => !n.read).length;
-
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center justify-between border-b border-border/60 bg-background/85 px-6 backdrop-blur-xl">
       {/* Page title */}
@@ -51,98 +23,8 @@ export function DashboardHeader({ title, subtitle, children }: DashboardHeaderPr
       <div className="flex items-center gap-2">
         {children}
 
-        {/* Search */}
-        {searchOpen ? (
-          <motion.div
-            initial={{ width: 0, opacity: 0 }}
-            animate={{ width: 220, opacity: 1 }}
-            transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-            className="relative"
-          >
-            <Search size={13} className="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground/60" />
-            <Input
-              autoFocus
-              placeholder="Search..."
-              className="h-8 border-zinc-800 bg-card/60 pl-7 pr-7 text-xs text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-0"
-            />
-            <button
-              onClick={() => setSearchOpen(false)}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground/60 hover:text-muted-foreground"
-            >
-              <X size={12} />
-            </button>
-          </motion.div>
-        ) : (
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setSearchOpen(true)}
-            className="h-8 w-8 rounded-lg text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80"
-          >
-            <Search size={14} />
-          </Button>
-        )}
-
         {/* Theme Toggle */}
         <ThemeToggle />
-
-        {/* Notifications */}
-        {/*
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="relative h-8 w-8 rounded-lg text-muted-foreground/60 hover:bg-muted/60 hover:text-foreground/80"
-            >
-              <Bell size={14} />
-              {unread > 0 && (
-                <span className="absolute right-1.5 top-1.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-indigo-600 text-[8px] font-bold text-white">
-                  {unread}
-                </span>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent
-            align="end"
-            sideOffset={8}
-            className="w-80 border-zinc-800 bg-background/95 p-0 shadow-xl shadow-black/40 backdrop-blur-xl"
-          >
-            <div className="flex items-center justify-between border-b border-border/60 px-4 py-3">
-              <p className="text-xs font-semibold text-foreground/80">Notifications</p>
-              {unread > 0 && (
-                <Badge className="h-4 rounded-full border-indigo-500/30 bg-indigo-500/12 px-1.5 text-[9px] text-indigo-400">
-                  {unread} new
-                </Badge>
-              )}
-            </div>
-
-            <div className="divide-y divide-border/40">
-              {MOCK_NOTIFICATIONS.map((n) => (
-                <div
-                  key={n.id}
-                  className={cn(
-                    "flex items-start gap-3 px-4 py-3 transition-colors hover:bg-card/40",
-                    !n.read && "bg-zinc-900/20"
-                  )}
-                >
-                  <span className={cn("mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full", TYPE_DOT[n.type] ?? "bg-zinc-600")} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs text-foreground/80">{n.text}</p>
-                    <p className="mt-0.5 text-[10px] text-muted-foreground/60">{n.time}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="border-t border-border/60 px-4 py-2.5">
-              <button className="text-xs text-muted-foreground/60 hover:text-muted-foreground transition-colors">
-                Mark all as read
-              </button>
-            </div>
-          </PopoverContent>
-        </Popover>
-        */}
       </div>
     </header>
   );

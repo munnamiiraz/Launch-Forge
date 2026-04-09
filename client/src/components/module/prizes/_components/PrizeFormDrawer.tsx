@@ -111,6 +111,10 @@ function PrizeFormDialogContent({
       const val = parseFloat(form.value);
       if (isNaN(val) || val <= 0)   return "Value must be a positive number.";
     }
+    if (!form.expiresAt)            return "Expiry date is required.";
+    const exp = new Date(form.expiresAt);
+    if (isNaN(exp.getTime()))       return "Invalid expiry date.";
+    if (exp <= new Date())          return "Expiry date must be in the future.";
     return null;
   };
 
@@ -338,7 +342,7 @@ function PrizeFormDialogContent({
                   <div className="flex flex-col gap-1.5">
                     <Label htmlFor="prize-expiry" className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                       <Calendar size={11} className="text-muted-foreground/60" />
-                      Expiry date <span className="text-muted-foreground/40">(optional)</span>
+                      Expiry date <span className="text-red-500">*</span>
                     </Label>
                     <Input
                       id="prize-expiry"
@@ -349,7 +353,7 @@ function PrizeFormDialogContent({
                       className="border-zinc-800 bg-card/60 text-sm text-muted-foreground focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/40 [color-scheme:dark]"
                     />
                     <p className="text-[10px] text-muted-foreground/40">
-                      Leave blank for no expiry. Prize will hide from public page after this date.
+                      Prize will hide from public page after this date.
                     </p>
                   </div>
 

@@ -22,6 +22,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
+import { Badge } from "@/src/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";
 import { PlanBadge } from "@/src/components/shared/navbar/_components/PlanBadge";
@@ -48,9 +49,9 @@ export function UserMenu({ user }: UserMenuProps) {
         <Button
           variant="ghost"
           className={cn(
-            "group h-auto gap-2 rounded-lg border border-transparent px-2 py-1.5",
-            "hover:border-zinc-800 hover:bg-card/60",
-            "data-[state=open]:border-zinc-800 data-[state=open]:bg-card/60",
+            "group h-9 gap-2 rounded-xl border border-transparent px-2.5",
+            "hover:border-border/80 hover:bg-muted/60",
+            "data-[state=open]:border-border/80 data-[state=open]:bg-muted/60",
             "transition-all duration-150 focus-visible:ring-0 focus-visible:ring-offset-0"
           )}
         >
@@ -66,8 +67,7 @@ export function UserMenu({ user }: UserMenuProps) {
               {user.avatarInitials}
             </AvatarFallback>
           </Avatar>
-
-          {/* Name + plan — hidden on mobile */}
+          {/* Name — hidden on mobile */}
           <div className="hidden flex-col items-start gap-0.5 md:flex">
             <span className="max-w-[100px] truncate text-xs font-medium text-foreground/80 group-hover:text-foreground transition-colors">
               {user.name.split(" ")[0]}
@@ -84,7 +84,7 @@ export function UserMenu({ user }: UserMenuProps) {
       <DropdownMenuContent
         align="end"
         sideOffset={8}
-        className="w-64 border-zinc-800 bg-background/95 p-1.5 shadow-xl shadow-black/40 backdrop-blur-xl"
+        className="w-64 border-border bg-popover p-1.5 shadow-xl shadow-black/5 dark:shadow-black/40 backdrop-blur-xl"
       >
         {/* User identity header */}
         <DropdownMenuLabel className="px-2 py-2">
@@ -111,7 +111,7 @@ export function UserMenu({ user }: UserMenuProps) {
           </div>
 
           {/* Plan badge row */}
-          <div className="mt-3 flex items-center justify-between rounded-lg border border-border/80 bg-zinc-900/50 px-2.5 py-2">
+          <div className="mt-3 flex items-center justify-between rounded-lg border border-border bg-muted/40 px-2.5 py-2">
             <div className="flex items-center gap-2">
               <PlanBadge plan={user.plan} />
               <span className="text-[11px] text-muted-foreground/80">Current plan</span>

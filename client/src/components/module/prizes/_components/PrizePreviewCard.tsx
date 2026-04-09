@@ -64,10 +64,10 @@ export function PrizePreviewCard({ form, prize, compact }: PrizePreviewCardProps
           "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-bold",
           compact ? "text-[10px]" : "text-xs",
           isTop1
-            ? "border-amber-500/40 bg-amber-500/15 text-amber-300"
-            : "border-zinc-700/60 bg-muted/40 text-muted-foreground",
+            ? "border-amber-500/40 bg-amber-500/15 text-amber-700 dark:text-amber-300"
+            : "border-zinc-200 dark:border-zinc-700/60 bg-muted/40 text-muted-foreground",
         )}>
-          {isTop1 && <Trophy size={compact ? 9 : 11} className="text-amber-400" />}
+          {isTop1 && <Trophy size={compact ? 9 : 11} className="text-amber-600 dark:text-amber-400" />}
           {rankLabel}
         </div>
 
@@ -88,7 +88,7 @@ export function PrizePreviewCard({ form, prize, compact }: PrizePreviewCardProps
           <p className={cn(
             "font-black tracking-tight tabular-nums",
             compact ? "text-xl" : "text-3xl",
-            isTop1 ? "text-amber-300" : "text-foreground",
+            isTop1 ? "text-amber-600 dark:text-amber-300" : "text-foreground",
           )}>
             {sym}{value.toLocaleString()}
           </p>
@@ -107,7 +107,7 @@ export function PrizePreviewCard({ form, prize, compact }: PrizePreviewCardProps
           <div className={cn(
             "flex items-center gap-1",
             compact ? "text-[9px]" : "text-[10px]",
-            expired ? "text-red-400" : "text-muted-foreground/60",
+            expired ? "text-red-600 dark:text-red-400" : "text-muted-foreground/60",
           )}>
             <Clock size={compact ? 9 : 10} />
             {expired
@@ -119,9 +119,9 @@ export function PrizePreviewCard({ form, prize, compact }: PrizePreviewCardProps
 
         {/* Motivational chip for top prize */}
         {isTop1 && !compact && (
-          <div className="mt-1 flex items-center gap-1.5 rounded-lg border border-amber-500/20 bg-amber-500/8 px-2.5 py-1.5">
-            <Star size={10} className="text-amber-400" />
-            <span className="text-[10px] font-medium text-amber-400">
+          <div className="mt-1 flex items-center gap-1.5 rounded-lg border border-amber-500/20 bg-amber-500/5 dark:bg-amber-500/8 px-2.5 py-1.5">
+            <Star size={10} className="text-amber-600 dark:text-amber-400" />
+            <span className="text-[10px] font-medium text-amber-700 dark:text-amber-400">
               Refer the most people to claim this prize
             </span>
           </div>

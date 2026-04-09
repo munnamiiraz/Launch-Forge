@@ -22,7 +22,8 @@ export type FeatureKey =
   | "feedbackBoard"
   | "roadmap"
   | "apiAccess"
-  | "prioritySupport";
+  | "prioritySupport"
+  | "aiInsights";
 
 export type PlanTier = "FREE" | "STARTER" | "PRO" | "GROWTH";
 
@@ -40,6 +41,7 @@ const PLAN_FEATURES: Record<PlanTier, Set<FeatureKey>> = {
     "prizeAnnouncements",
     "feedbackBoard",
     "roadmap",
+    "aiInsights",
   ]),
   GROWTH: new Set([
     "analytics",
@@ -48,6 +50,7 @@ const PLAN_FEATURES: Record<PlanTier, Set<FeatureKey>> = {
     "roadmap",
     "apiAccess",
     "prioritySupport",
+    "aiInsights",
   ]),
 };
 

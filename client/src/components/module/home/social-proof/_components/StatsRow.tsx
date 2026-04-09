@@ -7,19 +7,19 @@ import { STATS } from "../_lib/social-proof-data";
 import { cn } from "@/src/lib/utils";
 
 const ACCENT_VALUE: Record<string, string> = {
-  indigo:  "text-indigo-300",
-  violet:  "text-violet-300",
-  emerald: "text-emerald-300",
-  amber:   "text-amber-300",
-  cyan:    "text-cyan-300",
+  indigo:  "text-indigo-600 dark:text-indigo-300",
+  violet:  "text-violet-600 dark:text-violet-300",
+  emerald: "text-emerald-600 dark:text-emerald-300",
+  amber:   "text-amber-600 dark:text-amber-300",
+  cyan:    "text-cyan-600 dark:text-cyan-300",
 };
 
 const ACCENT_TREND: Record<string, string> = {
-  indigo:  "text-indigo-400/80",
-  violet:  "text-violet-400/80",
-  emerald: "text-emerald-400/80",
-  amber:   "text-amber-400/80",
-  cyan:    "text-cyan-400/80",
+  indigo:  "text-indigo-700/80 dark:text-indigo-400/80",
+  violet:  "text-violet-700/80 dark:text-violet-400/80",
+  emerald: "text-emerald-700/80 dark:text-emerald-400/80",
+  amber:   "text-amber-700/80 dark:text-amber-400/80",
+  cyan:    "text-cyan-700/80 dark:text-cyan-400/80",
 };
 
 const ACCENT_BAR: Record<string, string> = {
@@ -40,7 +40,7 @@ export function StatsRow() {
       className="relative overflow-hidden rounded-2xl border border-border/80 bg-card/40 backdrop-blur-sm"
     >
       {/* Top gradient line */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/40 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-indigo-500/40 to-transparent" />
 
       <div className="grid grid-cols-2 divide-x divide-y divide-border/60 md:grid-cols-4 md:divide-y-0">
         {STATS.map((stat, i) => (
@@ -55,7 +55,7 @@ export function StatsRow() {
             {/* Hover glow */}
             <div className={cn(
               "pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100",
-              "bg-gradient-to-b from-white/[0.02] to-transparent"
+              "bg-linear-to-b from-indigo-500/3 to-transparent"
             )} />
 
             {/* Value */}

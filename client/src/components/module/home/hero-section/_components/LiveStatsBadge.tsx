@@ -66,9 +66,9 @@ function StatChip({
   color: "indigo" | "violet" | "amber";
 }) {
   const colors = {
-    indigo: "border-indigo-500/20 bg-indigo-500/8 text-indigo-400",
-    violet: "border-violet-500/20 bg-violet-500/8 text-violet-400",
-    amber: "border-amber-500/20 bg-amber-500/8 text-amber-400",
+    indigo: "border-indigo-500/15 dark:border-indigo-500/20 bg-indigo-500/8 text-indigo-700 dark:text-indigo-400",
+    violet: "border-violet-500/15 dark:border-violet-500/20 bg-violet-500/8 text-violet-700 dark:text-violet-400",
+    amber: "border-amber-500/15 dark:border-amber-500/20 bg-amber-500/8 text-amber-700 dark:text-amber-400",
   };
 
   return (

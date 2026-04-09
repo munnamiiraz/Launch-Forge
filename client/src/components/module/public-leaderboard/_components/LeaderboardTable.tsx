@@ -30,10 +30,10 @@ const TIER_TABS: { id: TierFilter; label: string; icon: React.ReactNode }[] = [
 ];
 
 const TIER_BADGE: Record<FullLeaderboardEntry["tier"], string> = {
-  champion: "border-amber-500/35 bg-amber-500/12 text-amber-300",
-  top10:    "border-zinc-600/40 bg-zinc-700/20 text-foreground/80",
-  top25:    "border-orange-600/30 bg-orange-600/10 text-orange-400",
-  rising:   "border-indigo-500/25 bg-indigo-500/10 text-indigo-400",
+  champion: "border-amber-500/30 bg-amber-500/10 dark:bg-amber-500/12 text-amber-700 dark:text-amber-300",
+  top10:    "border-border bg-muted text-muted-foreground",
+  top25:    "border-orange-500/20 bg-orange-500/10 dark:bg-orange-500/6 text-orange-600 dark:text-orange-400",
+  rising:   "border-indigo-500/20 bg-indigo-500/10 dark:bg-indigo-500/6 text-indigo-600 dark:text-indigo-400",
 };
 
 const AVATAR_GRADS = [
@@ -97,7 +97,7 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
                 {active && (
                   <motion.div
                     layoutId="lb-tier-active"
-                    className="absolute inset-0 rounded-lg bg-zinc-800"
+                    className="absolute inset-0 rounded-lg bg-background shadow-sm dark:bg-zinc-800"
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}
@@ -106,7 +106,7 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
                   {label}
                   <span className={cn(
                     "rounded-full px-1.5 py-0 text-[9px] font-bold tabular-nums",
-                    active ? "bg-zinc-700 text-foreground/80" : "bg-muted/60 text-muted-foreground/60",
+                    active ? "bg-muted dark:bg-zinc-700 text-foreground/80" : "bg-muted/60 text-muted-foreground/60",
                   )}>
                     {count}
                   </span>
@@ -123,7 +123,7 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
             value={search}
             onChange={(e) => handleSearch(e.target.value)}
             placeholder="Search by name…"
-            className="h-9 border-border/80 bg-card/60 pl-8 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/40 focus-visible:ring-1 focus-visible:ring-indigo-500/20"
+            className="h-9 border-border bg-card/40 dark:bg-card/60 pl-8 text-sm text-foreground placeholder:text-muted-foreground/60 focus-visible:border-indigo-500/40 focus-visible:ring-1 focus-visible:ring-indigo-500/20"
           />
           {search && (
             <button
@@ -159,7 +159,7 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
                 exit={{ opacity: 0 }}
                 className="flex flex-col items-center gap-3 py-14 text-center"
               >
-                <Trophy size={28} className="text-zinc-800" />
+                <Trophy size={28} className="text-muted-foreground/20 dark:text-zinc-800" />
                 <p className="text-sm text-muted-foreground/60">No entries match your filters.</p>
               </motion.div>
             ) : paginated.map((entry, i) => {
@@ -170,15 +170,15 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
               const barPct    = Math.round((entry.referralCount / maxRefs) * 100);
 
               const rankStyle =
-                entry.rank === 1 ? "text-amber-400 text-base font-black"  :
-                entry.rank === 2 ? "text-foreground/80  text-sm  font-bold"    :
-                entry.rank === 3 ? "text-orange-400 text-sm font-bold"    :
-                                   "text-muted-foreground/60   text-sm  font-medium";
+                entry.rank === 1 ? "text-amber-600 dark:text-amber-400 text-base font-black"  :
+                entry.rank === 2 ? "text-foreground/80 text-sm font-bold"    :
+                entry.rank === 3 ? "text-orange-600 dark:text-orange-400 text-sm font-bold"    :
+                                   "text-muted-foreground/60 text-sm font-medium";
 
               const rowBg =
-                entry.rank === 1 ? "bg-amber-500/5 border-l-2 border-l-amber-500/40" :
-                entry.rank <= 3  ? "bg-card/30" :
-                                   "hover:bg-zinc-900/20";
+                entry.rank === 1 ? "bg-amber-500/10 dark:bg-amber-500/5 border-l-2 border-l-amber-500/40" :
+                entry.rank <= 3  ? "bg-card/40 dark:bg-card/30" :
+                                   "hover:bg-muted/50 dark:hover:bg-zinc-900/20";
 
               return (
                 <motion.div
@@ -217,22 +217,22 @@ export function LeaderboardTable({ entries, prizes }: LeaderboardTableProps) {
                         <Badge className={cn(
                           "hidden shrink-0 rounded-full px-1.5 py-0 text-[9px] sm:inline-flex",
                           entry.rank === 1
-                            ? "border-amber-500/30 bg-amber-500/12 text-amber-300"
-                            : "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",
+                            ? "border-amber-500/30 bg-amber-500/10 dark:bg-amber-500/12 text-amber-700 dark:text-amber-300"
+                            : "border-border bg-muted text-muted-foreground/80",
                         )}>
                           {prize.emoji}
                         </Badge>
                       )}
                     </div>
                     {/* Progress bar */}
-                    <div className="h-1 w-full overflow-hidden rounded-full bg-zinc-800">
+                    <div className="h-1 w-full overflow-hidden rounded-full bg-muted dark:bg-zinc-800">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${barPct}%` }}
                         transition={{ delay: i * 0.03 + 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
                         className={cn(
                           "h-full rounded-full",
-                          entry.rank === 1 ? "bg-amber-400"     :
+                          entry.rank === 1 ? "bg-amber-500 dark:bg-amber-400"     :
                           entry.rank === 2 ? "bg-zinc-400"      :
                           entry.rank === 3 ? "bg-orange-500"    :
                                              "bg-indigo-500/60",

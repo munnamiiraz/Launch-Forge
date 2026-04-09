@@ -93,11 +93,10 @@ export const createPrizeSchema = z
       .optional(),
 
     expiresAt: z
-      .string()
+      .string("Expires at is required.")
       .datetime({ message: "expiresAt must be a valid ISO-8601 datetime string." })
       .transform((v) => new Date(v))
-      .refine((d) => d > new Date(), "expiresAt must be a future date.")
-      .optional(),
+      .refine((d) => d > new Date(), "expiresAt must be a future date."),
   })
   .refine(rankRangeRefinement, rankRangeError);
 

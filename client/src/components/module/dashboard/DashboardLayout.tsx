@@ -3,6 +3,7 @@ import { WorkspaceProvider } from "@/src/provider/WorkspaceProvider";
 import type { DashboardUser } from "./_types";
 
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 const STUB_USER: DashboardUser = {
   id:             "usr_01",
@@ -50,6 +51,9 @@ export async function DashboardLayout({ children }: DashboardLayoutProps) {
       }
     } else {
       console.error("[DashboardLayout] /auth/me failed:", userRes.status);
+      if (userRes.status === 401) {
+        redirect("/login");
+      }
     }
 
     if (wsRes.ok) {

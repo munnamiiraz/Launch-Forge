@@ -11,12 +11,12 @@ function fmtExpiry(iso: string) {
 }
 
 const PRIZE_ACCENT: Record<string, { card: string; value: string; bar: string }> = {
-  CASH:            { card: "border-emerald-500/25 bg-emerald-500/8",  value: "text-emerald-300", bar: "bg-emerald-500" },
-  GIFT_CARD:       { card: "border-amber-500/20 bg-amber-500/6",      value: "text-amber-300",   bar: "bg-amber-500"  },
-  PRODUCT:         { card: "border-cyan-500/20 bg-cyan-500/6",        value: "text-cyan-300",    bar: "bg-cyan-500"   },
-  LIFETIME_ACCESS: { card: "border-violet-500/20 bg-violet-500/6",    value: "text-violet-300",  bar: "bg-violet-500" },
-  DISCOUNT:        { card: "border-rose-500/20 bg-rose-500/6",        value: "text-rose-300",    bar: "bg-rose-500"   },
-  CUSTOM:          { card: "border-indigo-500/20 bg-indigo-500/6",    value: "text-indigo-300",  bar: "bg-indigo-500" },
+  CASH:            { card: "border-emerald-500/20 bg-emerald-500/10 dark:bg-emerald-500/8",  value: "text-emerald-600 dark:text-emerald-300", bar: "bg-emerald-500" },
+  GIFT_CARD:       { card: "border-amber-500/20 bg-amber-500/10 dark:bg-amber-500/6",      value: "text-amber-600 dark:text-amber-300",   bar: "bg-amber-500"  },
+  PRODUCT:         { card: "border-cyan-500/20 bg-cyan-500/10 dark:bg-cyan-500/6",        value: "text-cyan-600 dark:text-cyan-300",    bar: "bg-cyan-500"   },
+  LIFETIME_ACCESS: { card: "border-violet-500/20 bg-violet-500/10 dark:bg-violet-500/6",    value: "text-violet-600 dark:text-violet-300",  bar: "bg-violet-500" },
+  DISCOUNT:        { card: "border-rose-500/20 bg-rose-500/10 dark:bg-rose-500/6",        value: "text-rose-600 dark:text-rose-300",    bar: "bg-rose-500"   },
+  CUSTOM:          { card: "border-indigo-500/20 bg-indigo-500/10 dark:bg-indigo-500/6",    value: "text-indigo-600 dark:text-indigo-300",  bar: "bg-indigo-500" },
 };
 
 interface PrizePoolSectionProps {
@@ -34,8 +34,8 @@ export function PrizePoolSection({ prizes }: PrizePoolSectionProps) {
     <section className="flex flex-col gap-6" id="prizes">
       <div className="flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-amber-500/25 bg-amber-500/10">
-            <Trophy size={16} className="text-amber-400" />
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-amber-500/20 dark:border-amber-500/25 bg-amber-500/10">
+            <Trophy size={16} className="text-amber-600 dark:text-amber-400" />
           </div>
           <div>
             <h2 className="text-lg font-black tracking-tight text-foreground">Prize pool</h2>
@@ -45,7 +45,7 @@ export function PrizePoolSection({ prizes }: PrizePoolSectionProps) {
           </div>
         </div>
         {totalCash > 0 && (
-          <Badge className="border-emerald-500/25 bg-emerald-500/10 px-3 py-1 text-sm font-black text-emerald-400">
+          <Badge className="border-emerald-500/20 dark:border-emerald-500/25 bg-emerald-500/10 px-3 py-1 text-sm font-black text-emerald-700 dark:text-emerald-400">
             ${totalCash.toLocaleString()} cash
           </Badge>
         )}
@@ -85,8 +85,8 @@ export function PrizePoolSection({ prizes }: PrizePoolSectionProps) {
                       <Badge className={cn(
                         "rounded-full px-2 py-0.5 text-[10px] font-bold",
                         isTop
-                          ? "border-amber-500/40 bg-amber-500/15 text-amber-300"
-                          : "border-zinc-700/60 bg-muted/40 text-muted-foreground",
+                          ? "border-amber-500/30 bg-amber-500/10 dark:bg-amber-500/15 text-amber-700 dark:text-amber-300"
+                          : "border-border bg-muted text-muted-foreground",
                       )}>
                         {prize.rankLabel} place
                       </Badge>

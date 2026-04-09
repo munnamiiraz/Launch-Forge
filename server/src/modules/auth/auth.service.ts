@@ -91,27 +91,9 @@ const loginUser = async (payload: ILoginUserPayload) => {
         }
     })
 
-    // Ensure a session row exists for refresh-token logic (which depends on `prisma.session`).
-    // better-auth may already create this; we upsert defensively using the session token.
+    // better-auth natively handles creating the session in the DB during signInEmail.
     const sessionToken = (data as any)?.session?.token || (data as any)?.token;
-    if (sessionToken) {
-        await prisma.session.upsert({
-            where: { token: sessionToken },
-            update: {
-                userId: data.user.id,
-                expiresAt: new Date(Date.now() + 60 * 60 * 60 * 24 * 1000),
-                updatedAt: new Date(),
-            },
-            create: {
-                id: sessionToken,
-                token: sessionToken,
-                userId: data.user.id,
-                expiresAt: new Date(Date.now() + 60 * 60 * 60 * 24 * 1000),
-                ipAddress: null,
-                userAgent: null,
-            },
-        });
-    }
+
 
     if (data.user.status === UserStatus.SUSPENDED) {
         throw new AppError(status.FORBIDDEN, "User is suspended");

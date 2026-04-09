@@ -30,26 +30,13 @@ export function SectionCTA() {
             className="group relative overflow-hidden bg-indigo-600 px-7 font-semibold text-white hover:bg-indigo-500 transition-all duration-200"
           >
             <Link href="/register">
-              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
+              <span className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
               <Zap size={15} className="text-indigo-300" />
-              Start for free
+              Create your waitlist
               <ArrowRight size={15} className="transition-transform duration-200 group-hover:translate-x-0.5" />
             </Link>
           </Button>
-
-          <Button
-            asChild
-            variant="ghost"
-            size="lg"
-            className="px-7 text-muted-foreground hover:bg-muted/60 hover:text-foreground/90"
-          >
-            <Link href="/demo">Watch a demo</Link>
-          </Button>
         </div>
-
-        <p className="text-xs text-muted-foreground/40">
-          No credit card · Free forever plan · Live in 2 minutes
-        </p>
       </div>
     </motion.div>
   );

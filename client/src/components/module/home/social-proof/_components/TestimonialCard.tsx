@@ -63,7 +63,7 @@ function FeaturedCard({ testimonial: t, index }: TestimonialCardProps) {
       transition={{ delay: index * 0.07, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       className="md:col-span-2"
     >
-      <Card className="group relative overflow-hidden border-indigo-500/20 bg-gradient-to-br from-indigo-500/8 via-zinc-900/60 to-zinc-900/40 backdrop-blur-sm transition-all duration-300 hover:border-indigo-500/35 hover:shadow-xl hover:shadow-black/20 h-full">
+      <Card className="group relative overflow-hidden border-indigo-500/20 bg-gradient-to-br from-indigo-500/8 via-card/60 to-card/40 backdrop-blur-sm transition-all duration-300 hover:border-indigo-500/35 hover:shadow-xl hover:shadow-indigo-500/10 h-full">
         {/* Top accent line */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/60 to-transparent" />
         {/* Corner glow */}
@@ -73,10 +73,10 @@ function FeaturedCard({ testimonial: t, index }: TestimonialCardProps) {
           {/* Top row: quote icon + source badge */}
           <div className="flex items-start justify-between">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-500/25 bg-indigo-500/10">
-              <Quote size={18} className="text-indigo-400" />
+              <Quote size={18} className="text-indigo-600 dark:text-indigo-400" />
             </div>
             {t.source && (
-              <div className="flex items-center gap-1.5 rounded-full border border-border/60 bg-zinc-900/50 px-2.5 py-1">
+              <div className="flex items-center gap-1.5 rounded-full border border-border/60 bg-muted/30 px-2.5 py-1">
                 <SourceIcon source={t.source} />
                 <span className="text-[10px] text-muted-foreground/60">{SOURCE_LABELS[t.source]}</span>
               </div>
@@ -137,7 +137,7 @@ function StandardCard({ testimonial: t, index }: TestimonialCardProps) {
       transition={{ delay: index * 0.07, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       className="h-full"
     >
-      <Card className="group relative h-full overflow-hidden border-border/80 bg-card/40 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-zinc-700/60 hover:bg-card/60 hover:shadow-xl hover:shadow-black/20">
+      <Card className="group relative h-full overflow-hidden border-border/80 bg-card/40 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-border hover:bg-card/60 hover:shadow-xl hover:shadow-indigo-500/5">
         {/* Top line */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-indigo-500/30" />
         {/* Corner glow */}

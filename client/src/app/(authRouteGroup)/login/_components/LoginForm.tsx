@@ -30,7 +30,7 @@ import {
 import { loginAction } from "../_actions/login.action";
 import { LoginActionResult } from "../_types";
 import { SocialAuth } from "../../register/_components/SocialAuth";
-import { PasswordFieldWithToggle } from "../_components/PasswordFieldWithToggle";
+import { PasswordFieldWithToggle } from "./PasswordFieldWithToggle";
 import { cn } from "@/src/lib/utils";
 
 /* ─── animation variants (mirror Register) ─────────────────────────── */
@@ -72,7 +72,7 @@ export function LoginForm() {
             "relative rounded-2xl border border-border/80 bg-background/90",
             "p-8 shadow-2xl shadow-black/60 backdrop-blur-xl",
             "before:absolute before:inset-0 before:-z-10 before:rounded-2xl",
-            "before:bg-gradient-to-b before:from-zinc-800/10 before:to-transparent"
+            "before:bg-linear-to-b before:from-zinc-800/10 before:to-transparent"
           )}
         >
           {/* Logo */}
@@ -107,6 +107,17 @@ export function LoginForm() {
             </p>
           </motion.div>
 
+          {/* Social Auth */}
+          <motion.div
+            custom={2}
+            variants={fadeUp}
+            initial="hidden"
+            animate="visible"
+            className="mb-8"
+          >
+            <SocialAuth />
+          </motion.div>
+
           {/* Divider — shadcn Separator */}
           <motion.div
             custom={3}
@@ -115,9 +126,9 @@ export function LoginForm() {
             animate="visible"
             className="mb-5 flex items-center gap-3"
           >
-            <Separator className="flex-1 bg-zinc-800" />
+            <Separator className="flex-1 bg-border dark:bg-zinc-800" />
             <span className="text-xs text-muted-foreground/60">or continue with email</span>
-            <Separator className="flex-1 bg-zinc-800" />
+            <Separator className="flex-1 bg-border dark:bg-zinc-800" />
           </motion.div>
 
           {/* ── Form body ───────────────────────────────────────────── */}
@@ -170,8 +181,8 @@ export function LoginForm() {
                     autoComplete="email"
                     disabled={isPending}
                     className={cn(
-                      "border-zinc-800 bg-card/60 text-foreground placeholder:text-muted-foreground/60",
-                      "focus-visible:border-zinc-600 focus-visible:ring-1 focus-visible:ring-zinc-600/50",
+                      "h-11 rounded-xl border-border/80 dark:border-zinc-800 bg-card/60 px-4 text-foreground placeholder:text-muted-foreground/60",
+                      "focus-visible:border-ring/40 focus-visible:ring-1 focus-visible:ring-ring/20",
                       "transition-all duration-200",
                       fe("email") &&
                         "border-red-500/60 focus-visible:border-red-500 focus-visible:ring-red-500/20"
@@ -289,19 +300,21 @@ export function LoginForm() {
                   variants={fadeUp}
                   initial="hidden"
                   animate="visible"
+                  className="w-full"
                 >
                   <Button
                     type="submit"
+                    size="xl"
                     disabled={isPending}
                     className={cn(
-                      "group relative w-full overflow-hidden",
-                      "bg-indigo-600 text-sm font-medium text-white",
+                      "group relative w-full overflow-hidden rounded-xl",
+                      "bg-indigo-600 font-semibold text-white",
                       "hover:bg-indigo-500 transition-all duration-200",
                       "disabled:pointer-events-none disabled:opacity-60"
                     )}
                   >
                     {/* shimmer sweep */}
-                    <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
+                    <span className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
 
                     {isPending ? (
                       <>

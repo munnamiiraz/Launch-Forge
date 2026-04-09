@@ -58,7 +58,7 @@ export function LeaderboardToolbar({
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
 
           {/* Tier tabs */}
-          <div className="flex items-center gap-0.5 rounded-lg border border-border/80 bg-card/40 p-1">
+          <div className="flex items-center gap-0.5 rounded-lg border border-zinc-200 dark:border-border/80 bg-muted/40 dark:bg-card/40 p-1">
             {TIER_TABS.map((tab) => {
               const active = tier === tab.id;
               return (
@@ -73,7 +73,7 @@ export function LeaderboardToolbar({
                   {active && (
                     <motion.div
                       layoutId="tier-active"
-                      className="absolute inset-0 rounded-md bg-zinc-800"
+                      className="absolute inset-0 rounded-md bg-white dark:bg-zinc-800 shadow-sm"
                       transition={{ type: "spring", stiffness: 400, damping: 30 }}
                     />
                   )}
@@ -89,7 +89,7 @@ export function LeaderboardToolbar({
           {/* Right: countMode + refetch */}
           <div className="flex items-center gap-2">
             {/* Count mode toggle */}
-            <div className="flex items-center gap-0.5 rounded-lg border border-border/80 bg-card/40 p-1">
+            <div className="flex items-center gap-0.5 rounded-lg border border-zinc-200 dark:border-border/80 bg-muted/40 dark:bg-card/40 p-1">
               {(["all", "confirmed"] as CountMode[]).map((m) => (
                 <button
                   key={m}
@@ -97,7 +97,7 @@ export function LeaderboardToolbar({
                   className={cn(
                     "flex items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs transition-all duration-150",
                     countMode === m
-                      ? "bg-zinc-800 font-medium text-foreground/90"
+                      ? "bg-white dark:bg-zinc-800 font-medium text-foreground/90 shadow-sm"
                       : "text-muted-foreground/60 hover:text-muted-foreground",
                   )}
                 >
@@ -117,7 +117,7 @@ export function LeaderboardToolbar({
                   size="icon"
                   onClick={onRefetch}
                   disabled={isFetching}
-                  className="h-8 w-8 rounded-lg border border-border/80 bg-card/40 text-muted-foreground/60 hover:border-zinc-700 hover:bg-muted/60 hover:text-foreground/80 disabled:opacity-40"
+                  className="h-8 w-8 rounded-lg border border-zinc-200 dark:border-border/80 bg-muted/20 dark:bg-card/40 text-muted-foreground/60 hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-muted/60 hover:text-foreground/80 disabled:opacity-40"
                 >
                   <RefreshCw
                     size={13}
@@ -143,7 +143,7 @@ export function LeaderboardToolbar({
               value={search}
               onChange={(e) => onSearch(e.target.value)}
               placeholder="Search by name or email…"
-              className="h-8 border-zinc-800 bg-card/60 pl-8 text-xs text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-600 focus-visible:ring-0"
+              className="h-8 border-zinc-200 dark:border-zinc-800 bg-card/60 pl-8 text-xs text-foreground placeholder:text-muted-foreground/60 focus-visible:border-zinc-300 dark:focus-visible:border-zinc-600 focus-visible:ring-0"
             />
           </div>
 
@@ -154,7 +154,7 @@ export function LeaderboardToolbar({
             </span>
             {lastUpdated && (
               <>
-                <span className="h-3 w-px bg-zinc-800" />
+                <span className="h-3 w-px bg-zinc-200 dark:bg-zinc-800" />
                 <span className="flex items-center gap-1">
                   {isFetching
                     ? <span className="text-indigo-400">Updating…</span>

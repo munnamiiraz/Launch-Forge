@@ -139,7 +139,7 @@ export function PrizesClient({ waitlists, initialPrizes }: PrizesClientProps) {
           <DropdownMenuTrigger asChild>
             <Button
               variant="outline"
-              className="h-auto gap-2 border-zinc-800 bg-card/60 px-3 py-2 text-left hover:border-zinc-700 hover:bg-muted/60"
+              className="h-auto gap-2 border-zinc-200 dark:border-zinc-800 bg-card/80 px-3 py-2 text-left hover:border-zinc-300 dark:hover:border-zinc-700 hover:bg-card/90"
             >
               {selectedWl ? (
                 <div className="flex items-center gap-2">
@@ -155,8 +155,8 @@ export function PrizesClient({ waitlists, initialPrizes }: PrizesClientProps) {
                   <Badge className={cn(
                     "rounded-full px-1.5 py-0 text-[9px]",
                     selectedWl.isOpen
-                      ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
-                      : "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",
+                      ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-600 dark:text-emerald-400"
+                      : "border-zinc-200 dark:border-zinc-700 bg-muted/40 text-muted-foreground/80",
                   )}>
                     {selectedWl.isOpen ? "Open" : "Closed"}
                   </Badge>
@@ -169,7 +169,7 @@ export function PrizesClient({ waitlists, initialPrizes }: PrizesClientProps) {
           </DropdownMenuTrigger>
           <DropdownMenuContent
             align="end"
-            className="w-72 border-zinc-800 bg-background/95 backdrop-blur-xl"
+            className="w-72 border-zinc-200 dark:border-zinc-800 bg-background/95 backdrop-blur-xl"
           >
             {waitlists.map((wl, i) => {
               const wlPrizes = prizes[wl.id] ?? [];
@@ -215,25 +215,25 @@ export function PrizesClient({ waitlists, initialPrizes }: PrizesClientProps) {
             {/* Summary strip */}
             <div className="grid grid-cols-3 gap-3">
               <SummaryPill
-                icon={<Gift size={13} className="text-indigo-400" />}
+                icon={<Gift size={13} className="text-indigo-600 dark:text-indigo-400" />}
                 label="Active prizes"
                 value={activePrizes.length.toString()}
                 sub={`of ${MAX_PRIZES} max`}
-                accent="border-indigo-500/20 bg-indigo-500/6"
+                accent="border-indigo-500/15 bg-indigo-500/5 dark:bg-indigo-500/10"
               />
               <SummaryPill
-                icon={<DollarSign size={13} className="text-emerald-400" />}
+                icon={<DollarSign size={13} className="text-emerald-600 dark:text-emerald-400" />}
                 label="Prize pool"
                 value={prizePool > 0 ? `$${prizePool.toLocaleString()}` : "—"}
                 sub="cash prizes"
-                accent="border-emerald-500/20 bg-emerald-500/6"
+                accent="border-emerald-500/15 bg-emerald-500/5 dark:bg-emerald-500/10"
               />
               <SummaryPill
-                icon={<Users size={13} className="text-violet-400" />}
+                icon={<Users size={13} className="text-violet-600 dark:text-violet-400" />}
                 label="Eligible"
                 value={selectedWl.subscribers.toLocaleString()}
                 sub="subscribers"
-                accent="border-violet-500/20 bg-violet-500/6"
+                accent="border-violet-500/15 bg-violet-500/5 dark:bg-violet-500/10"
               />
             </div>
 
@@ -255,7 +255,7 @@ export function PrizesClient({ waitlists, initialPrizes }: PrizesClientProps) {
                       {active && (
                         <motion.div
                           layoutId="prize-status-tab"
-                          className="absolute inset-0 rounded-md bg-zinc-800"
+                          className="absolute inset-0 rounded-md bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700"
                           transition={{ type: "spring", stiffness: 400, damping: 30 }}
                         />
                       )}
@@ -263,8 +263,8 @@ export function PrizesClient({ waitlists, initialPrizes }: PrizesClientProps) {
                         {tab.icon}
                         {tab.label}
                         <span className={cn(
-                          "ml-0.5 rounded-full px-1.5 py-0 text-[9px] font-bold tabular-nums",
-                          active ? "bg-zinc-700 text-foreground/80" : "bg-muted/60 text-muted-foreground/60",
+                          "ml-0.5 rounded-full px-1.5 py-0 text-[10px] font-bold tabular-nums",
+                          active ? "bg-zinc-200 dark:bg-zinc-700 text-foreground/80" : "bg-muted dark:bg-muted/40 text-muted-foreground/60",
                         )}>
                           {tabCounts[tab.id]}
                         </span>
@@ -299,7 +299,7 @@ export function PrizesClient({ waitlists, initialPrizes }: PrizesClientProps) {
                   </Button>
                 )}
                 {!canAddMore && (
-                  <Badge className="border-amber-500/25 bg-amber-500/10 text-[10px] text-amber-400">
+                  <Badge className="border-amber-500/20 bg-amber-500/5 text-[10px] text-amber-600 dark:text-amber-400">
                     Max {MAX_PRIZES} prizes reached
                   </Badge>
                 )}
@@ -316,7 +316,7 @@ export function PrizesClient({ waitlists, initialPrizes }: PrizesClientProps) {
                   exit={{ opacity: 0 }}
                   className="flex flex-col items-center gap-4 rounded-2xl border border-dashed border-border/60 py-16 text-center"
                 >
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-zinc-800 bg-card/60">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-card/60">
                     <Trophy size={22} className="text-muted-foreground/40" />
                   </div>
                   <div>
@@ -393,11 +393,11 @@ export function PrizesClient({ waitlists, initialPrizes }: PrizesClientProps) {
                   <div className="overflow-hidden rounded-2xl border border-border/80 bg-background shadow-2xl shadow-black/40">
                     <div className="flex items-center gap-2 border-b border-border/60 bg-card/60 px-3 py-2">
                       <div className="flex gap-1">
-                        <div className="h-1.5 w-1.5 rounded-full bg-zinc-700" />
-                        <div className="h-1.5 w-1.5 rounded-full bg-zinc-700" />
-                        <div className="h-1.5 w-1.5 rounded-full bg-zinc-700" />
+                        <div className="h-1.5 w-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+                        <div className="h-1.5 w-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
+                        <div className="h-1.5 w-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700" />
                       </div>
-                      <div className="flex-1 rounded-md border border-zinc-800 bg-card/60 px-2 py-0.5">
+                      <div className="flex-1 rounded-md border border-zinc-200 dark:border-zinc-800 bg-card/60 px-2 py-0.5">
                         <p className="text-[9px] text-muted-foreground/60">
                           launchforge.app/{selectedWl.slug}#prizes
                         </p>
@@ -414,7 +414,7 @@ export function PrizesClient({ waitlists, initialPrizes }: PrizesClientProps) {
                           <Trophy size={13} className="text-amber-400" />
                           <p className="text-xs font-bold text-foreground/90">Prize Pool</p>
                           {prizePool > 0 && (
-                            <Badge className="border-emerald-500/25 bg-emerald-500/10 text-[9px] text-emerald-400">
+                            <Badge className="border-emerald-500/20 bg-emerald-500/5 text-[9px] text-emerald-600 dark:text-emerald-400">
                               ${prizePool.toLocaleString()} total
                             </Badge>
                           )}

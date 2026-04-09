@@ -1,7 +1,7 @@
 import status from "http-status";
 import { prisma }   from "../../lib/prisma";
 import AppError     from "../../errorHelpers/AppError";
-import type { Prisma } from "../../../generated/client";
+import type { Prisma } from "../../generated/client";
 import {
   GetExploreWaitlistsPayload,
   GetExploreWaitlistBySlugPayload,
@@ -24,7 +24,9 @@ const WAITLIST_CARD_SELECT = {
   name:        true,
   description: true,
   logoUrl:     true,
+  category:    true,
   isOpen:      true,
+  endDate:     true,
   createdAt:   true,
   workspace: {
     select: { slug: true },
@@ -55,6 +57,7 @@ const WAITLIST_CARD_SELECT = {
       prizeType: true,
       value:     true,
       currency:  true,
+      expiresAt: true,
     },
   },
 } as const;
@@ -111,6 +114,10 @@ export const exploreService = {
       where.prizes = {
         some: { deletedAt: null, status: "ACTIVE" },
       };
+    }
+
+    if (query.category) {
+      where.category = { equals: query.category, mode: "insensitive" };
     }
 
     /* 2. Build the orderBy clause ────────────────────────────────── */

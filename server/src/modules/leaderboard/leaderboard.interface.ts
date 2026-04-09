@@ -1,4 +1,4 @@
-import { Subscriber } from "../../../generated/client";
+import { Subscriber } from "../../generated/client";
 
 /* ── Query inputs ────────────────────────────────────────────────── */
 

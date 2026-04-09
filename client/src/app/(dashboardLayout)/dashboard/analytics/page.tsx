@@ -51,14 +51,6 @@ export default async function AnalyticsPage() {
         title="Analytics"
         subtitle="Full picture of your waitlist performance"
       >
-        <Button
-          size="sm"
-          variant="outline"
-          className="gap-1.5 border-zinc-700/80 bg-transparent text-xs text-muted-foreground hover:border-zinc-600 hover:bg-muted/60 hover:text-foreground/90"
-        >
-          <Download size={12} />
-          Export CSV
-        </Button>
       </DashboardHeader>
 
       {!hasAnalytics ? (

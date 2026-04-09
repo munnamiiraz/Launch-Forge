@@ -39,21 +39,21 @@ export function PricingCard({ plan, cycle, index }: PricingCardProps) {
     >
       {/* Featured outer glow */}
       {isFeatured && (
-        <div className="absolute -inset-px rounded-2xl bg-gradient-to-b from-indigo-500/40 via-indigo-500/20 to-violet-500/20 blur-sm" />
+        <div className="absolute -inset-px rounded-2xl bg-linear-to-b from-indigo-500/40 via-indigo-500/20 to-violet-500/20 blur-sm" />
       )}
 
       <Card
         className={cn(
           "group relative flex h-full flex-col overflow-hidden transition-all duration-300",
           isFeatured
-            ? "border-indigo-500/50 bg-gradient-to-b from-indigo-500/10 via-zinc-900/80 to-zinc-900/60 shadow-2xl shadow-indigo-500/10 hover:border-indigo-500/70 hover:shadow-indigo-500/15"
-            : "border-border/80 bg-card/40 hover:border-zinc-700/70 hover:bg-card/60 hover:shadow-xl hover:shadow-black/20"
+            ? "border-indigo-500/50 bg-background dark:bg-zinc-900/80 shadow-2xl shadow-indigo-500/10 hover:border-indigo-500/70 hover:shadow-indigo-500/15"
+            : "border-border bg-card dark:bg-card/40 hover:border-indigo-500/50 dark:hover:border-zinc-700/70 hover:bg-muted/5 dark:hover:bg-card/60 hover:shadow-xl shadow-indigo-500/5 dark:shadow-none"
         )}
       >
         {/* Top accent line */}
         <div
           className={cn(
-            "absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent to-transparent",
+            "absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent",
             isFeatured ? "via-indigo-400/80" : "via-border group-hover:via-zinc-600/50"
           )}
         />
@@ -71,7 +71,7 @@ export function PricingCard({ plan, cycle, index }: PricingCardProps) {
             </span>
 
             {plan.badge && (
-              <Badge className="gap-1 border-indigo-500/30 bg-indigo-500/15 px-2.5 py-0.5 text-[10px] font-semibold text-indigo-300">
+              <Badge className="gap-1 border-indigo-500/20 dark:border-indigo-500/30 bg-indigo-500/10 dark:bg-indigo-500/15 px-2.5 py-0.5 text-[10px] font-semibold text-indigo-700 dark:text-indigo-300">
                 <Sparkles size={9} />
                 {plan.badge}
               </Badge>
@@ -92,7 +92,7 @@ export function PricingCard({ plan, cycle, index }: PricingCardProps) {
                 transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
                 className={cn(
                   "text-5xl font-black tracking-tighter",
-                  isFeatured ? "text-white" : "text-foreground"
+                  isFeatured ? "text-indigo-600 dark:text-white" : "text-foreground"
                 )}
               >
                 {isFree ? "Free" : price}
@@ -147,14 +147,14 @@ export function PricingCard({ plan, cycle, index }: PricingCardProps) {
                     className={cn(
                       "mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full",
                       isFeatured
-                        ? "bg-indigo-500/20 text-indigo-400"
-                        : "bg-zinc-800 text-muted-foreground"
+                        ? "bg-indigo-500/20 text-indigo-600 dark:text-indigo-400"
+                        : "bg-muted text-muted-foreground"
                     )}
                   >
                     <Check size={10} strokeWidth={2.5} />
                   </span>
                 ) : (
-                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-zinc-900 text-muted-foreground/40">
+                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-muted/60 text-muted-foreground/40">
                     <Minus size={10} strokeWidth={2} />
                   </span>
                 )}
@@ -179,15 +179,15 @@ export function PricingCard({ plan, cycle, index }: PricingCardProps) {
             className={cn(
               "group/btn relative w-full overflow-hidden font-semibold transition-all duration-200",
               isFeatured
-                ? "bg-indigo-600 text-white hover:bg-indigo-500"
-                : "border-zinc-600 bg-zinc-800 text-foreground hover:border-zinc-500 hover:bg-zinc-700"
+                ? "bg-indigo-600 text-white hover:bg-indigo-500 shadow-xl shadow-indigo-500/20"
+                : "border-border bg-muted/40 text-foreground hover:bg-muted/60"
             )}
             variant={isFeatured ? "default" : "outline"}
             size="lg"
           >
             <Link href={plan.ctaHref}>
               {isFeatured && (
-                <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-500 group-hover/btn:translate-x-full" />
+                <span className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-500 group-hover/btn:translate-x-full" />
               )}
               {isFeatured ? <Zap size={14} className="text-indigo-300" /> : null}
               {plan.cta}

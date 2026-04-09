@@ -1,3 +1,57 @@
-demo frontend
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+.yarn/
+
+# Build outputs
+dist/
+.next/
+out/
+build/
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env*
+
+# OS & Misc
+.DS_Store
+Thumbs.db
+*.pem
+*.key
+*.cert
+*.log
+logs/
+*.temp
+*.tmp
+
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Testing
+coverage/
+.nyc_output/
+
+# Prisma
+/server/src/generated/
+
+# Project specific temp
+test_result.txt
 check_db.js
-node_modules
+debug_ids.js
+find_id.js
+find_id.ts
+test.js
+test.ts
+demo frontend/

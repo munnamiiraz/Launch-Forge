@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, CheckCircle2, AlertCircle, Loader2, Zap, ShieldCheck, Mail } from "lucide-react";
+import { Button } from "@/src/components/ui/button";
 import { toast } from "sonner";
 
 import { registerAction } from "../_actions/register.action";
 import { FormField } from "./FormField";
+import { SocialAuth } from "./SocialAuth";
 import { PasswordStrength } from "./PasswordStrength";
 import { cn } from "@/src/lib/utils";
 
@@ -25,9 +27,20 @@ export function RegisterForm() {
     e.preventDefault();
     setGlobalError(null);
     const formData = new FormData(e.currentTarget);
-    const email = formData.get("email") as string;
+    const email = (formData.get("email") as string).trim();
     const password = formData.get("password") as string;
     const confirmPassword = formData.get("confirmPassword") as string;
+
+    // Client-side security/validation checks
+    if (password.length < 8) {
+      setGlobalError("Password must be at least 8 characters");
+      return;
+    }
+    
+    if (!/[A-Z]/.test(password) || !/[0-9]/.test(password)) {
+      setGlobalError("Password must contain at least one uppercase letter and one number");
+      return;
+    }
 
     if (password !== confirmPassword) {
       setGlobalError("Passwords do not match");
@@ -59,7 +72,7 @@ export function RegisterForm() {
   return (
     <div className="relative w-full max-w-md">
       {/* Decorative background glow behind the card */}
-      <div className="absolute -inset-1 rounded-[2.5rem] bg-gradient-to-tr from-indigo-500/20 via-purple-500/10 to-transparent blur-2xl transition-opacity animate-pulse" />
+      <div className="absolute -inset-1 rounded-[2.5rem] bg-linear-to-tr from-indigo-500/20 via-purple-500/10 to-transparent blur-2xl transition-opacity animate-pulse" />
 
       <motion.div
         initial={{ opacity: 0, y: 24, scale: 0.98 }}
@@ -133,6 +146,11 @@ export function RegisterForm() {
             </motion.div>
           ) : (
             <motion.div key="form" className="flex flex-col gap-6">
+              
+              <motion.div custom={2} variants={fadeUp} initial="hidden" animate="visible">
+                <SocialAuth />
+              </motion.div>
+
               {/* Divider */}
               <motion.div
                 custom={3}
@@ -141,9 +159,9 @@ export function RegisterForm() {
                 animate="visible"
                 className="flex items-center gap-4"
               >
-                <div className="h-px flex-1 bg-gradient-to-r from-transparent to-zinc-800" />
+                <div className="h-px flex-1 bg-linear-to-r from-transparent to-zinc-800" />
                 <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/60">or use email</span>
-                <div className="h-px flex-1 bg-gradient-to-l from-transparent to-zinc-800" />
+                <div className="h-px flex-1 bg-linear-to-l from-transparent to-zinc-800" />
               </motion.div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
@@ -212,30 +230,31 @@ export function RegisterForm() {
                 </AnimatePresence>
 
                 <motion.div custom={8} variants={fadeUp} initial="hidden" animate="visible" className="pt-2">
-                  <button
-                    type="submit"
-                    disabled={isPending}
-                    className={cn(
-                      "group relative w-full overflow-hidden rounded-xl h-11",
-                      "bg-indigo-600 text-[13px] font-semibold text-white shadow-lg shadow-indigo-600/20",
-                      "transition-all duration-300 hover:bg-indigo-500 hover:shadow-indigo-500/30 hover:-translate-y-0.5",
-                      "active:translate-y-0 active:scale-[0.98]",
-                      "disabled:pointer-events-none disabled:opacity-60",
-                      "flex items-center justify-center gap-2"
-                    )}
-                  >
-                    {isPending ? (
-                      <>
-                        <Loader2 size={16} className="animate-spin" />
-                        Initializing account...
-                      </>
-                    ) : (
-                      <>
-                        Create professional account
-                        <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
-                      </>
-                    )}
-                  </button>
+                    <Button
+                      type="submit"
+                      size="xl"
+                      disabled={isPending}
+                      className={cn(
+                        "group relative w-full overflow-hidden rounded-xl",
+                        "bg-indigo-600 font-semibold text-white shadow-lg shadow-indigo-600/20",
+                        "transition-all duration-300 hover:bg-indigo-500 hover:shadow-indigo-500/30 hover:-translate-y-0.5",
+                        "active:translate-y-0 active:scale-[0.98]",
+                        "disabled:pointer-events-none disabled:opacity-60",
+                        "flex items-center justify-center gap-2"
+                      )}
+                    >
+                      {isPending ? (
+                        <>
+                          <Loader2 size={16} className="animate-spin" />
+                          Initializing account...
+                        </>
+                      ) : (
+                        <>
+                          Create professional account
+                          <ArrowRight size={16} className="transition-transform duration-300 group-hover:translate-x-1" />
+                        </>
+                      )}
+                    </Button>
                 </motion.div>
 
                 <motion.div
@@ -243,14 +262,16 @@ export function RegisterForm() {
                   variants={fadeUp}
                   initial="hidden"
                   animate="visible"
-                  className="flex items-center justify-center gap-4 text-[11px] text-muted-foreground/60"
+                  className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-muted-foreground/60"
                 >
                   <div className="flex items-center gap-1">
                     <ShieldCheck size={12} className="text-muted-foreground/80" />
                     Secure encryption
                   </div>
                   <div className="h-1 w-1 rounded-full bg-zinc-800" />
-                  <Link href="/terms" className="hover:text-muted-foreground transition-colors">Terms of Service</Link>
+                  <Link href="/terms" className="hover:text-muted-foreground transition-colors">Terms</Link>
+                  <div className="h-1 w-1 rounded-full bg-zinc-800" />
+                  <Link href="/privacy" className="hover:text-muted-foreground transition-colors">Privacy</Link>
                 </motion.div>
               </form>
             </motion.div>

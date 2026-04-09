@@ -30,5 +30,9 @@ export const clientHttpClient = {
     async get<T>(endpoint: string, options?: { params?: Record<string, unknown> }): Promise<{ data: T }> {
         const response = await axiosInstance.get(endpoint, { params: options?.params });
         return response.data;
+    },
+    async post<T>(endpoint: string, data: unknown, options?: { params?: Record<string, unknown> }): Promise<{ data: T }> {
+        const response = await axiosInstance.post(endpoint, data, { params: options?.params });
+        return response.data;
     }
 };

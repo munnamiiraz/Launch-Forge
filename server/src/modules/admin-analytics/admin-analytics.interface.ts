@@ -24,6 +24,8 @@ export interface EngagementStats {
   dauOverMau:          number;   // (dau / mau) × 100 — stickiness %
   avgSessionsPerUser:  number;   // total sessions / unique users (30d)
   avgSessionLengthMin: number;   // placeholder — schema has no session.duration
+  newUsersToday:       number;   // new registrations since start of today
+  activeWorkspaces30d: number;   // workspaces with ≥1 session in 30d
 }
 
 /* ─────────────────────────────────────────────────────────────────

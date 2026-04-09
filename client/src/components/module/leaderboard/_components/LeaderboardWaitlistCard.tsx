@@ -64,8 +64,8 @@ export function LeaderboardWaitlistCard({ data, index }: LeaderboardWaitlistCard
           onClick={() => router.push(`/dashboard/leaderboard/${data.waitlistId}`)}
           className={cn(
             "group relative flex flex-col overflow-hidden cursor-pointer",
-            "border-border/80 bg-card/40 backdrop-blur-sm",
-            "transition-all duration-300 hover:border-zinc-700/60 hover:bg-card/60 hover:shadow-2xl hover:shadow-black/25",
+            "border-zinc-200 dark:border-border/80 bg-card/40 backdrop-blur-sm",
+            "transition-all duration-300 hover:border-zinc-300 dark:hover:border-zinc-700/60 hover:bg-card/60 hover:shadow-2xl hover:shadow-black/25",
           )}
         >
           {/* Top accent line */}
@@ -107,8 +107,8 @@ export function LeaderboardWaitlistCard({ data, index }: LeaderboardWaitlistCard
                 className={cn(
                   "shrink-0 gap-1 rounded-full px-2 py-0.5 text-[9px] font-semibold",
                   data.isOpen
-                    ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
-                    : "border-zinc-700/60 bg-muted/40 text-muted-foreground/80"
+                    ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                    : "border-zinc-200 dark:border-zinc-700/60 bg-muted/40 text-muted-foreground/80"
                 )}
               >
                 {data.isOpen ? <Globe size={8} /> : <Lock size={8} />}
@@ -119,17 +119,17 @@ export function LeaderboardWaitlistCard({ data, index }: LeaderboardWaitlistCard
             {/* Quick stat row */}
             <div className="mt-3 grid grid-cols-3 gap-2">
               <QuickStat
-                icon={<Users size={11} className="text-indigo-400" />}
+                icon={<Users size={11} className="text-indigo-600 dark:text-indigo-400" />}
                 value={data.totalSubscribers.toLocaleString()}
                 label="Subscribers"
               />
               <QuickStat
-                icon={<Share2 size={11} className="text-violet-400" />}
+                icon={<Share2 size={11} className="text-violet-600 dark:text-violet-400" />}
                 value={data.totalReferrals.toLocaleString()}
                 label="Referrals"
               />
               <QuickStat
-                icon={<TrendingUp size={11} className="text-emerald-400" />}
+                icon={<TrendingUp size={11} className="text-emerald-600 dark:text-emerald-400" />}
                 value={`${viralScore}×`}
                 label="Viral score"
               />
@@ -141,7 +141,7 @@ export function LeaderboardWaitlistCard({ data, index }: LeaderboardWaitlistCard
             {/* Section label */}
             <div className="flex items-center justify-between border-b border-border/40 px-5 py-2.5">
               <div className="flex items-center gap-2">
-                <Trophy size={12} className="text-amber-400" />
+                <Trophy size={12} className="text-amber-600 dark:text-amber-400" />
                 <span className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">
                   Top referrers
                 </span>
@@ -157,7 +157,7 @@ export function LeaderboardWaitlistCard({ data, index }: LeaderboardWaitlistCard
             {data.topReferrers.length === 0 ? (
               /* Empty leaderboard state */
               <div className="flex flex-col items-center gap-2 py-8 text-center">
-                <Trophy size={24} className="text-zinc-800" />
+                <Trophy size={24} className="text-zinc-300 dark:text-zinc-800" />
                 <p className="text-xs text-muted-foreground/60">No referrals yet</p>
                 <p className="text-[10px] text-muted-foreground/40">
                   Share your waitlist to start building the leaderboard.
@@ -177,21 +177,21 @@ export function LeaderboardWaitlistCard({ data, index }: LeaderboardWaitlistCard
               </div>
             )}
 
-            <Separator className="bg-muted/60" />
+            <Separator className="bg-zinc-200 dark:bg-muted/60" />
 
             {/* ── Footer: stat pills + navigation CTA ─────────────── */}
             <div className="flex items-center justify-between gap-3 px-5 py-3.5">
               {/* Mini stat strip */}
               <div className="flex items-center gap-3 text-[10px] text-muted-foreground/60">
                 <span className="flex items-center gap-1">
-                  <BarChart3 size={10} className="text-indigo-400" />
+                  <BarChart3 size={10} className="text-indigo-600 dark:text-indigo-400" />
                   <span className="text-muted-foreground font-semibold">
                     {data.avgReferrals.toFixed(1)}
                   </span>{" "}avg refs
                 </span>
-                <span className="h-3 w-px bg-zinc-800" />
+                <span className="h-3 w-px bg-zinc-200 dark:bg-zinc-800" />
                 <span className="flex items-center gap-1">
-                  <Trophy size={10} className="text-amber-400" />
+                  <Trophy size={10} className="text-amber-600 dark:text-amber-400" />
                   <span className="text-muted-foreground font-semibold">
                     {data.topReferralCount}
                   </span>{" "}top
@@ -232,7 +232,7 @@ function QuickStat({
   icon, value, label,
 }: { icon: React.ReactNode; value: string; label: string }) {
   return (
-    <div className="flex flex-col gap-0.5 rounded-lg border border-border/60 bg-zinc-900/50 px-2.5 py-2">
+    <div className="flex flex-col gap-0.5 rounded-lg border border-zinc-200 dark:border-border/60 bg-muted/40 dark:bg-zinc-900/50 px-2.5 py-2">
       <div className="flex items-center gap-1">
         {icon}
         <span className="text-sm font-bold tabular-nums text-foreground/90">{value}</span>

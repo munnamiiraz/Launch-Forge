@@ -17,11 +17,11 @@ import { BillingFaq }      from "./BillingFaq";
 function Divider({ label }: { label: string }) {
   return (
     <div className="flex items-center gap-4">
-      <div className="h-px flex-1 bg-zinc-800/60" />
-      <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-700">
+      <div className="h-px flex-1 bg-zinc-300 dark:bg-zinc-800/60" />
+      <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-600 dark:text-zinc-500">
         {label}
       </span>
-      <div className="h-px flex-1 bg-zinc-800/60" />
+      <div className="h-px flex-1 bg-zinc-300 dark:bg-zinc-800/60" />
     </div>
   );
 }
@@ -63,18 +63,18 @@ export function BillingClient({ subscription, invoices, usage }: BillingPageData
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4, duration: 0.5 }}
-        className="flex flex-col items-center gap-2 rounded-2xl border border-zinc-800/40 bg-zinc-900/20 py-10 text-center"
+        className="flex flex-col items-center gap-2 rounded-2xl border border-zinc-300 dark:border-zinc-800/40 bg-zinc-50/50 dark:bg-zinc-900/20 py-10 text-center"
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-800/80 bg-zinc-900/60">
-          <MessageCircle size={16} className="text-zinc-600" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-zinc-300 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/60 text-zinc-600 dark:text-zinc-400">
+          <MessageCircle size={16} />
         </div>
-        <p className="text-sm font-medium text-zinc-400">Questions about your bill?</p>
-        <p className="max-w-xs text-xs text-zinc-600">
+        <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-400">Questions about your bill?</p>
+        <p className="max-w-xs text-xs text-zinc-600 dark:text-zinc-500">
           We're here to help with invoices, refunds, or plan changes. Expect a reply within 24h.
         </p>
         <a
           href="mailto:support@launchforge.app"
-          className="mt-2 flex items-center gap-1.5 rounded-lg border border-zinc-800/80 bg-zinc-900/40 px-4 py-2 text-xs text-zinc-400 transition-all hover:border-zinc-700 hover:bg-zinc-800/60 hover:text-zinc-200"
+          className="mt-2 flex items-center gap-1.5 rounded-lg border border-zinc-300 dark:border-zinc-800/80 bg-white dark:bg-zinc-900/40 px-4 py-2 text-xs font-medium text-zinc-700 dark:text-zinc-300 transition-all hover:border-zinc-400 dark:hover:border-zinc-700 hover:bg-zinc-50 dark:hover:bg-zinc-800/60"
         >
           <MessageCircle size={12} />
           support@launchforge.app

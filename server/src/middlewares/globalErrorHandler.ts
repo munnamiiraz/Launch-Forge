@@ -58,7 +58,7 @@ export const globalErrorHandler = async (err: any, req: Request, res: Response, 
 
     } else if (err?.name === "MulterError") {
         // Common: LIMIT_FILE_SIZE (file too large)
-        statusCode = err.code === "LIMIT_FILE_SIZE" ? status.REQUEST_ENTITY_TOO_LARGE : status.BAD_REQUEST;
+        statusCode = err.code === "LIMIT_FILE_SIZE" ? 400 : status.BAD_REQUEST;
 
         const maxMb = Number(process.env.AVATAR_MAX_MB ?? 10);
         message =

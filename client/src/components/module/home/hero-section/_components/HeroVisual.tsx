@@ -25,18 +25,18 @@ export function HeroVisual() {
       <div className="absolute -inset-4 rounded-3xl bg-indigo-600/8 blur-2xl" />
 
       {/* Main card */}
-      <div className="relative overflow-hidden rounded-2xl border border-border/80 bg-background/95 shadow-2xl shadow-black/50 backdrop-blur-xl">
+      <div className="relative overflow-hidden rounded-2xl border border-border bg-background/95 shadow-2xl shadow-indigo-500/5 backdrop-blur-xl">
 
         {/* Window chrome */}
         <div className="flex items-center gap-2 border-b border-border/60 px-4 py-3">
           <div className="flex gap-1.5">
-            <div className="h-2.5 w-2.5 rounded-full bg-zinc-700" />
-            <div className="h-2.5 w-2.5 rounded-full bg-zinc-700" />
-            <div className="h-2.5 w-2.5 rounded-full bg-zinc-700" />
+            <div className="h-2.5 w-2.5 rounded-full bg-border" />
+            <div className="h-2.5 w-2.5 rounded-full bg-border" />
+            <div className="h-2.5 w-2.5 rounded-full bg-border" />
           </div>
-          <div className="mx-auto flex items-center gap-1.5 rounded-md border border-zinc-800 bg-card/60 px-3 py-1">
-            <div className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-            <span className="text-[10px] text-muted-foreground/80">launchforge.app/dashboard</span>
+          <div className="mx-auto flex items-center gap-1.5 rounded-md border border-border bg-card/60 px-3 py-1">
+            <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <span className="text-[10px] text-muted-foreground">launchforge.app/dashboard</span>
           </div>
         </div>
 
@@ -48,7 +48,7 @@ export function HeroVisual() {
               value="2,847"
               delta="+143 today"
               deltaPositive
-              icon={<Users size={13} className="text-indigo-400" />}
+              icon={<Users size={13} className="text-indigo-600 dark:text-indigo-400" />}
               delay={0.5}
             />
             <StatCard
@@ -56,7 +56,7 @@ export function HeroVisual() {
               value="3.2×"
               delta="+0.4 this week"
               deltaPositive
-              icon={<Share2 size={13} className="text-violet-400" />}
+              icon={<Share2 size={13} className="text-violet-600 dark:text-violet-400" />}
               delay={0.57}
             />
             <StatCard
@@ -64,7 +64,7 @@ export function HeroVisual() {
               value="68%"
               delta="+12% vs avg"
               deltaPositive
-              icon={<TrendingUp size={13} className="text-emerald-400" />}
+              icon={<TrendingUp size={13} className="text-emerald-600 dark:text-emerald-400" />}
               delay={0.64}
             />
           </div>
@@ -78,7 +78,7 @@ export function HeroVisual() {
           >
             <div className="mb-3 flex items-center justify-between">
               <p className="text-xs font-medium text-muted-foreground">Signups growth</p>
-              <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-400">
+              <span className="flex items-center gap-1 text-[10px] font-medium text-emerald-500">
                 <ArrowUpRight size={10} />
                 +34% this month
               </span>
@@ -103,7 +103,7 @@ export function HeroVisual() {
                       ? "bg-indigo-500"
                       : i >= barData.length - 3
                         ? "bg-indigo-500/60"
-                        : "bg-zinc-800"
+                        : "bg-muted"
                   )}
                 />
               ))}
@@ -128,7 +128,7 @@ export function HeroVisual() {
           >
             <div className="mb-3 flex items-center justify-between">
               <p className="text-xs font-medium text-muted-foreground">Top referrers</p>
-              <div className="flex items-center gap-1 rounded-full border border-indigo-500/20 bg-indigo-500/8 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-indigo-400">
+              <div className="flex items-center gap-1 rounded-full border border-indigo-500/20 bg-indigo-500/8 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-indigo-600 dark:text-indigo-400">
                 <Zap size={8} />
                 Live
               </div>
@@ -147,7 +147,7 @@ export function HeroVisual() {
                     {row.name}
                   </div>
                   <div className="flex flex-1 items-center gap-2">
-                    <div className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-zinc-800">
+                    <div className="relative h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${row.pct}%` }}

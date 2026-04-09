@@ -42,6 +42,11 @@ export const exploreQuerySchema = z.object({
     .optional()
     .transform((v) => v === "true")
     .pipe(z.boolean()),
+
+  category: z
+    .string()
+    .trim()
+    .optional(),
 });
 
 /* ── GET /api/explore/waitlists/:slug ────────────────────────────── */

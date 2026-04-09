@@ -115,7 +115,7 @@ export default async function WaitlistLeaderboardPage({ params }: PageProps) {
             <div className="relative flex items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-amber-500/25 bg-amber-500/10">
-                  <Trophy size={20} className="text-amber-400" />
+                  <Trophy size={20} className="text-amber-600 dark:text-amber-400" />
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
@@ -126,8 +126,8 @@ export default async function WaitlistLeaderboardPage({ params }: PageProps) {
                       variant="outline"
                       className={
                         waitlistInfo.isOpen
-                          ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
-                          : "border-zinc-700/60 bg-muted/40 text-muted-foreground/80"
+                          ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                          : "border-zinc-200 dark:border-zinc-700/60 bg-muted/40 text-muted-foreground/80"
                       }
                     >
                       {waitlistInfo.isOpen
@@ -154,7 +154,7 @@ export default async function WaitlistLeaderboardPage({ params }: PageProps) {
                 <Button
                   size="sm"
                   variant="outline"
-                  className="gap-1.5 border-zinc-700/60 bg-transparent text-xs text-muted-foreground hover:border-zinc-600 hover:bg-muted/60 hover:text-foreground/90"
+                  className="gap-1.5 border-zinc-200 dark:border-zinc-700/60 bg-transparent text-xs text-muted-foreground hover:border-zinc-300 dark:hover:border-zinc-600 hover:bg-muted/60 hover:text-foreground/90"
                 >
                   <Users size={12} />
                   Manage waitlist

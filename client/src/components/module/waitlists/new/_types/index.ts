@@ -3,6 +3,7 @@ export interface CreateWaitlistFormValues {
   slug:        string;
   description: string;
   isOpen:      boolean;
+  category?:   string;
   endDate?:    string;
 }
 

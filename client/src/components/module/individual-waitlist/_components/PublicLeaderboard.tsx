@@ -19,11 +19,11 @@ const AVATAR_GRADIENTS = [
 ];
 
 const RANK_STYLES: Record<number, { num: string; row: string }> = {
-  1: { num: "text-amber-400 text-base font-black",  row: "border-amber-500/15 bg-amber-500/5"  },
-  2: { num: "text-foreground/80  text-sm  font-bold",    row: "border-border/60 bg-zinc-900/20"   },
-  3: { num: "text-orange-400 text-sm font-bold",    row: "border-border/60 bg-zinc-900/20"   },
+  1: { num: "text-amber-600 dark:text-amber-400 text-base font-black",  row: "border-amber-500/15 bg-amber-500/5"  },
+  2: { num: "text-foreground/80 dark:text-foreground/80 text-sm font-bold", row: "border-border/60 bg-muted/40 dark:bg-zinc-900/20" },
+  3: { num: "text-orange-600 dark:text-orange-400 text-sm font-bold",    row: "border-border/60 bg-muted/40 dark:bg-zinc-900/20" },
 };
-const DEFAULT_RANK = { num: "text-muted-foreground/60 text-sm font-medium", row: "hover:bg-zinc-900/20" };
+const DEFAULT_RANK = { num: "text-muted-foreground/60 text-sm font-medium", row: "hover:bg-muted/50 dark:hover:bg-zinc-900/20" };
 
 function getPrizeForRank(rank: number, prizes: PublicPrize[]): PublicPrize | null {
   return prizes.find((p) => rank >= p.rankFrom && rank <= p.rankTo) ?? null;
@@ -42,8 +42,8 @@ export function PublicLeaderboard({ entries, prizes, waitlistName }: PublicLeade
     <section className="flex flex-col gap-5" id="leaderboard">
       {/* Section header */}
       <div className="flex items-center gap-3">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-indigo-500/25 bg-indigo-500/10">
-          <Trophy size={16} className="text-indigo-400" />
+        <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-indigo-500/20 dark:border-indigo-500/25 bg-indigo-500/10">
+          <Trophy size={16} className="text-indigo-600 dark:text-indigo-400" />
         </div>
         <div>
           <h2 className="text-lg font-black tracking-tight text-foreground">Leaderboard</h2>
@@ -86,7 +86,7 @@ export function PublicLeaderboard({ entries, prizes, waitlistName }: PublicLeade
                   className={cn(
                     "grid grid-cols-[40px_1fr_auto] items-center gap-3 px-4 py-3 transition-colors",
                     style.row,
-                    entry.rank > 3 && "hover:bg-zinc-900/20",
+                    entry.rank > 3 && "hover:bg-muted/50 dark:hover:bg-zinc-900/20",
                   )}
                 >
                   {/* Rank */}
@@ -101,7 +101,7 @@ export function PublicLeaderboard({ entries, prizes, waitlistName }: PublicLeade
                   <div className="flex min-w-0 flex-col gap-1.5">
                     <div className="flex items-center gap-2">
                       <Avatar className="h-6 w-6 shrink-0 rounded-md">
-                        <AvatarFallback className={cn("rounded-md bg-gradient-to-br text-[9px] font-bold text-white", grad)}>
+                        <AvatarFallback className={cn("rounded-md bg-linear-to-br text-[9px] font-bold text-white", grad)}>
                           {initials}
                         </AvatarFallback>
                       </Avatar>
@@ -112,15 +112,15 @@ export function PublicLeaderboard({ entries, prizes, waitlistName }: PublicLeade
                         <Badge className={cn(
                           "shrink-0 rounded-full px-1.5 py-0 text-[9px]",
                           entry.rank === 1
-                            ? "border-amber-500/30 bg-amber-500/12 text-amber-300"
-                            : "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",
+                            ? "border-amber-500/30 bg-amber-500/10 dark:bg-amber-500/12 text-amber-700 dark:text-amber-300"
+                            : "border-border bg-muted text-muted-foreground/80",
                         )}>
                           {prize.emoji} {prize.rankLabel}
                         </Badge>
                       )}
                     </div>
                     {/* Progress bar */}
-                    <div className="h-1 w-full overflow-hidden rounded-full bg-zinc-800">
+                    <div className="h-1 w-full overflow-hidden rounded-full bg-muted dark:bg-zinc-800">
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${barWidth}%` }}

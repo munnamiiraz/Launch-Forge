@@ -14,6 +14,7 @@ const outfit = Outfit({
 import type { Metadata } from "next";
 import { QueryProvider } from "@/src/provider/QueryProvider";
 import { ThemeProvider } from "@/src/provider/ThemeProvider";
+import { Chatbot } from "@/src/components/shared/Chatbot";
 
 export const metadata: Metadata = {
   title: "LaunchForge",
@@ -34,7 +35,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            {children}
+            <Chatbot />
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>

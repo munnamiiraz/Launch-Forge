@@ -144,13 +144,13 @@ export function WaitlistLeaderboardClient({
         {/* ── Table card ────────────────────────────────────────── */}
         <Card
           id="leaderboard-table"
-          className="overflow-hidden border-border/80 bg-card/40"
+          className="overflow-hidden border-zinc-200 dark:border-border/80 bg-card/40"
         >
           {/* Top accent line */}
           <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/25 to-transparent" />
 
           {/* Toolbar */}
-          <div className="border-b border-border/60 bg-card/60 px-5 py-4">
+          <div className="border-b border-zinc-200 dark:border-border/60 bg-muted/20 px-5 py-4">
             <LeaderboardToolbar
               search={params.search}
               onSearch={handleSearch}
@@ -169,7 +169,7 @@ export function WaitlistLeaderboardClient({
           <div className={cn("transition-opacity duration-200", hydrationSafeIsFetching && "opacity-60")}>
 
             {/* Column headers */}
-            <div className="hidden grid-cols-[36px_1fr_auto_auto_auto_auto_auto] gap-4 border-b border-border/60 bg-card/60 px-5 py-2.5 sm:grid">
+            <div className="hidden grid-cols-[36px_1fr_auto_auto_auto_auto_auto] gap-4 border-b border-zinc-200 dark:border-border/60 bg-muted/20 dark:bg-card/60 px-5 py-2.5 sm:grid">
               <p className="text-center text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">#</p>
               <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">Referrer</p>
               <p className="hidden text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60 sm:block">Tier</p>
@@ -189,7 +189,7 @@ export function WaitlistLeaderboardClient({
                   exit={{ opacity: 0 }}
                   className="flex flex-col items-center gap-3 py-16 text-center"
                 >
-                  <Trophy size={32} className="text-zinc-800" />
+                  <Trophy size={32} className="text-zinc-300 dark:text-zinc-800" />
                   <div>
                     <p className="text-sm font-medium text-muted-foreground/80">No referrers found</p>
                     <p className="text-xs text-muted-foreground/40">
@@ -223,7 +223,7 @@ export function WaitlistLeaderboardClient({
 
           {/* Pagination */}
           {data?.meta && data.meta.totalPages > 1 && (
-            <div className="border-t border-border/60 bg-card/30 px-5 py-3.5">
+            <div className="border-t border-zinc-200 dark:border-border/60 bg-card/30 px-5 py-3.5">
               <LeaderboardPagination
                 meta={data.meta}
                 onPage={handlePage}

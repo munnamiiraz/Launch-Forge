@@ -18,8 +18,8 @@ const SUBSCRIBERS = [
 const STATUS_CONFIG: Record<string, { label: string; classes: string }> = {
   early_access: { label: "Early Access", classes: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400" },
   top_referrer: { label: "Top Referrer", classes: "border-amber-500/30 bg-amber-500/10 text-amber-400" },
-  active:       { label: "Active",       classes: "border-indigo-500/20 bg-indigo-500/8 text-indigo-400" },
-  new:          { label: "New",          classes: "border-zinc-700/60 bg-muted/40 text-muted-foreground/80" },
+  active:       { label: "Active",       classes: "border-indigo-500/20 bg-indigo-500/8 text-indigo-700 dark:text-indigo-400" },
+  new:          { label: "New",          classes: "border-border/60 bg-muted/40 text-muted-foreground/80" },
 };
 
 const NOTIFICATION_ITEMS = [
@@ -30,17 +30,17 @@ const NOTIFICATION_ITEMS = [
 
 export function WaitlistMockUI() {
   return (
-    <div className="relative w-full overflow-hidden rounded-2xl border border-border/80 bg-background/95 shadow-2xl shadow-black/60 backdrop-blur-xl">
+    <div className="relative w-full overflow-hidden rounded-2xl border border-border/80 bg-background/95 shadow-2xl shadow-indigo-500/5 dark:shadow-black/60 backdrop-blur-xl">
       {/* Top accent line */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/50 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-violet-500/50 to-transparent" />
 
       {/* Window chrome */}
       <div className="flex items-center gap-2 border-b border-border/60 px-4 py-2.5">
         <div className="flex gap-1.5">
-          {[0,1,2].map(i => <div key={i} className="h-2 w-2 rounded-full bg-zinc-700" />)}
+          {[0,1,2].map(i => <div key={i} className="h-2 w-2 rounded-full bg-muted-foreground/20" />)}
         </div>
-        <div className="mx-auto flex items-center gap-1.5 rounded-md border border-zinc-800 bg-card/60 px-3 py-0.5">
-          <div className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+        <div className="mx-auto flex items-center gap-1.5 rounded-md border border-border bg-muted/30 px-3 py-0.5">
+          <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
           <span className="text-[10px] text-muted-foreground/80">launchforge.app/waitlist</span>
         </div>
         {/* Notification bell with badge */}
@@ -58,10 +58,10 @@ export function WaitlistMockUI() {
             <p className="text-[10px] text-muted-foreground/60">2,847 total · 143 joined today</p>
           </div>
           <div className="flex items-center gap-1.5">
-            <div className="flex h-6 w-6 items-center justify-center rounded-lg border border-zinc-800 bg-card/60 text-muted-foreground/60 hover:text-foreground/80 transition-colors cursor-pointer">
+            <div className="flex h-6 w-6 items-center justify-center rounded-lg border border-border bg-muted/30 text-muted-foreground/60 hover:text-foreground/80 transition-colors cursor-pointer">
               <Search size={11} />
             </div>
-            <div className="flex h-6 w-6 items-center justify-center rounded-lg border border-zinc-800 bg-card/60 text-muted-foreground/60 hover:text-foreground/80 transition-colors cursor-pointer">
+            <div className="flex h-6 w-6 items-center justify-center rounded-lg border border-border bg-muted/30 text-muted-foreground/60 hover:text-foreground/80 transition-colors cursor-pointer">
               <Filter size={11} />
             </div>
           </div>
@@ -96,7 +96,7 @@ export function WaitlistMockUI() {
 
                 {/* Identity */}
                 <div className="flex min-w-0 items-center gap-2">
-                  <div className={cn("flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br text-[8px] font-bold text-white", sub.gradient)}>
+                  <div className={cn("flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-linear-to-br text-[8px] font-bold text-white", sub.gradient)}>
                     {sub.initials}
                   </div>
                   <div className="min-w-0">
@@ -148,7 +148,7 @@ export function WaitlistMockUI() {
                 transition={{ delay: 0.62 + i * 0.07, duration: 0.3 }}
                 className="flex items-center gap-2.5"
               >
-                <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-zinc-800 bg-zinc-900">
+                <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-border bg-muted">
                   {item.icon}
                 </div>
                 <span className="flex-1 text-[10px] text-muted-foreground">{item.text}</span>

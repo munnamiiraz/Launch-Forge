@@ -17,6 +17,7 @@ export interface DashboardWaitlist {
   archivedAt?: string | null;
   subscribers: number;
   referrals:   number;
+  category?:   string | null;
   createdAt:   string;
 }
 

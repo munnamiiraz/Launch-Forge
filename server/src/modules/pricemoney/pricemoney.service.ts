@@ -97,9 +97,18 @@ export const prizeService = {
       throw new AppError(status.CONFLICT, PRIZE_MESSAGES.MAX_PRIZES);
     }
 
-    /* 4. Rank overlap guard — no two active prizes share ranks ───── */
+    /* 4. Rank overlap guard — no two active/non-expired prizes share ranks ───── */
+    const now = new Date();
     const existingPrizes = await prisma.leaderboardPrize.findMany({
-      where:  { waitlistId, status: "ACTIVE", deletedAt: null },
+      where: {
+        waitlistId,
+        status: "ACTIVE",
+        deletedAt: null,
+        OR: [
+          { expiresAt: null },
+          { expiresAt: { gt: now } },
+        ],
+      },
       select: { id: true, rankFrom: true, rankTo: true },
     });
 
@@ -192,8 +201,17 @@ export const prizeService = {
       payload.rankFrom !== undefined ||
       payload.rankTo   !== undefined
     ) {
+      const now = new Date();
       const siblings = await prisma.leaderboardPrize.findMany({
-        where:  { waitlistId, status: "ACTIVE", deletedAt: null },
+        where: {
+          waitlistId,
+          status: "ACTIVE",
+          deletedAt: null,
+          OR: [
+            { expiresAt: null },
+            { expiresAt: { gt: now } },
+          ],
+        },
         select: { id: true, rankFrom: true, rankTo: true },
       });
 

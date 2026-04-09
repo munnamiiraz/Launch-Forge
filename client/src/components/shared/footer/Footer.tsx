@@ -2,10 +2,8 @@ import { Separator } from "@/src/components/ui/separator";
 
 import { FooterLogo } from "./_components/FooterLogo";
 import { FooterLinkColumn } from "./_components/FooterLinkColumn";
-import { FooterNewsletter } from "./_components/FooterNewsletter";
 import { FooterStatusBadge } from "./_components/FooterStatusBadge";
 import { FooterBottom } from "./_components/FooterBottom";
-import { FooterCTA } from "./_components/FooterCTA";
 import { FOOTER_LINK_GROUPS } from "./_lib/footer-data";
 
 /**
@@ -32,59 +30,48 @@ export function Footer({ showCTA = true }: FooterProps) {
       {/* ── Ambient background ─────────────────────────────── */}
       <div
         aria-hidden
-        className="pointer-events-none absolute -left-64 bottom-0 h-[400px] w-[600px] rounded-full bg-indigo-900/8 blur-[120px]"
+        className="pointer-events-none absolute -left-64 bottom-0 h-[400px] w-[600px] rounded-full bg-indigo-500/5 dark:bg-indigo-900/10 blur-[120px]"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute -right-48 top-0 h-[300px] w-[400px] rounded-full bg-violet-900/6 blur-[100px]"
+        className="pointer-events-none absolute -right-48 top-0 h-[300px] w-[400px] rounded-full bg-violet-500/5 dark:bg-violet-900/8 blur-[100px]"
       />
 
       {/* Subtle grid — same as hero */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.012)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.012)_1px,transparent_1px)] bg-[size:72px_72px]"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(99,102,241,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(99,102,241,0.04)_1px,transparent_1px)] bg-size-[72px_72px]"
       />
 
       <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-        {/* ── Pre-footer CTA band ───────────────────────────── */}
-        {showCTA && (
-          <div className="py-16">
-            <FooterCTA />
-          </div>
-        )}
-
-        {!showCTA && <div className="pt-16" />}
-
-        <Separator className="bg-zinc-800/50" />
-
         {/* ── Main footer grid ──────────────────────────────── */}
-        <div className="grid grid-cols-2 gap-x-8 gap-y-12 py-14 md:grid-cols-3 lg:grid-cols-[240px_repeat(5,_1fr)]">
-
-          {/* Brand column — spans full width on mobile */}
-          <div className="col-span-2 flex flex-col gap-8 md:col-span-3 lg:col-span-1">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-x-8 gap-y-12 py-12">
+          
+          {/* Brand Column — 40% of row */}
+          <div className="col-span-2 flex flex-col gap-6 lg:pr-12">
             <FooterLogo delay={0} />
-
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-sm">
+              Build waitlists that go viral. Turn signups into a compounding growth engine. Empowering makers to build and launch with ease.
+            </p>
             {/* Status badge */}
-            <FooterStatusBadge status="operational" />
+            <div className="pt-2">
+              <FooterStatusBadge status="operational" />
+            </div>
           </div>
 
-          {/* Link columns */}
+          {/* Link Columns — 20% each */}
           {FOOTER_LINK_GROUPS.map((group, i) => (
-            <FooterLinkColumn
-              key={group.title}
-              group={group}
-              delay={0.08 + i * 0.06}
-            />
+            <div key={group.title} className="flex flex-col">
+              <FooterLinkColumn
+                group={group}
+                delay={0.08 + i * 0.06}
+              />
+            </div>
           ))}
         </div>
 
-        {/* Newsletter section - centered, 70% width below links on all screens */}
-        <div className="flex justify-center pb-14">
-          <div className="w-full max-w-[70%]">
-            <FooterNewsletter />
-          </div>
-        </div>
+        <Separator className="bg-border/60" />
 
         {/* ── Bottom bar ────────────────────────────────────── */}
         <FooterBottom year={year} />

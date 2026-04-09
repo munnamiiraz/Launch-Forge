@@ -82,7 +82,7 @@ export default async function PublicLeaderboardPage({ params }: Props) {
   const { slug } = await params;
   
   // Fetch waitlist info and leaderboard data from API
-  console.log("[Leaderboard Page] Fetching data for slug:", slug);
+  // console.log("[Leaderboard Page] Fetching data for slug:", slug);
   
   const [waitlistData, leaderboardData] = await Promise.all([
     fetchWaitlistBySlug(slug).catch((e) => {
@@ -95,11 +95,11 @@ export default async function PublicLeaderboardPage({ params }: Props) {
     }),
   ]);
   
-  console.log("[Leaderboard Page] Waitlist data:", waitlistData);
-  console.log("[Leaderboard Page] Leaderboard data:", leaderboardData);
+  // console.log("[Leaderboard Page] Waitlist data:", waitlistData);
+  // console.log("[Leaderboard Page] Leaderboard data:", leaderboardData);
   
   if (!waitlistData) {
-    console.log("[Leaderboard Page] Waitlist not found, calling notFound()");
+    // console.log("[Leaderboard Page] Waitlist not found, calling notFound()");
     notFound();
   }
   
@@ -128,27 +128,27 @@ export default async function PublicLeaderboardPage({ params }: Props) {
     : null;
 
   return (
-    <div className="min-h-screen bg-[#070707]">
+    <div className="min-h-screen bg-background text-foreground">
 
       {/* Background texture */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-0 bg-[linear-gradient(rgba(255,255,255,0.011)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.011)_1px,transparent_1px)] bg-[size:52px_52px]"
+        className="pointer-events-none fixed inset-0 bg-[linear-gradient(var(--border)_1px,transparent_1px),linear-gradient(90deg,var(--border)_1px,transparent_1px)] bg-size-[52px_52px] opacity-[0.2] dark:opacity-[0.3]"
       />
       {/* Ambient blobs */}
-      <div aria-hidden className="pointer-events-none fixed -left-40 top-0 h-[500px] w-[500px] rounded-full bg-indigo-500/6 blur-[120px]" />
-      <div aria-hidden className="pointer-events-none fixed -right-40 bottom-0 h-[400px] w-[400px] rounded-full bg-amber-500/5 blur-[100px]" />
+      <div aria-hidden className="pointer-events-none fixed -left-40 top-0 h-[500px] w-[500px] rounded-full bg-indigo-500/5 dark:bg-indigo-500/10 blur-[120px]" />
+      <div aria-hidden className="pointer-events-none fixed -right-40 bottom-0 h-[400px] w-[400px] rounded-full bg-amber-500/5 dark:bg-amber-500/10 blur-[100px]" />
 
       {/* ── Hero banner ──────────────────────────────────── */}
       <div className="relative overflow-hidden border-b border-border/60">
-        <div aria-hidden className="pointer-events-none absolute inset-0 bg-gradient-to-b from-amber-500/4 via-transparent to-transparent" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 bg-linear-to-b from-amber-500/4 via-transparent to-transparent" />
 
         <div className="relative mx-auto max-w-5xl px-4 py-10 sm:px-6">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
 
             {/* Product identity */}
             <div className="flex items-start gap-4">
-              <Avatar className="h-14 w-14 shrink-0 rounded-2xl shadow-xl shadow-black/30 outline outline-1 outline-border/20">
+              <Avatar className="h-14 w-14 shrink-0 rounded-2xl shadow-xl shadow-black/30 outline outline-border/20">
                 {waitlist.logoUrl && (
                   <AvatarImage 
                     src={waitlist.logoUrl} 
@@ -157,7 +157,7 @@ export default async function PublicLeaderboardPage({ params }: Props) {
                   />
                 )}
                 <AvatarFallback className={cn(
-                  "rounded-2xl bg-gradient-to-br text-xl font-black text-white",
+                  "rounded-2xl bg-linear-to-br text-xl font-black text-white",
                   waitlist.logoGradient,
                 )}>
                   {waitlist.logoInitials}
@@ -172,8 +172,8 @@ export default async function PublicLeaderboardPage({ params }: Props) {
                   <Badge className={cn(
                     "gap-1 rounded-full px-2.5 py-0.5 text-xs font-semibold",
                     waitlist.isOpen
-                      ? "border-emerald-500/25 bg-emerald-500/10 text-emerald-400"
-                      : "border-zinc-700/60 bg-muted/40 text-muted-foreground/80",
+                      ? "border-emerald-500/20 dark:border-emerald-500/25 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
+                      : "border-border bg-muted text-muted-foreground",
                   )}>
                     {waitlist.isOpen ? <><Globe size={9} />Open</> : <><Lock size={9} />Closed</>}
                   </Badge>
@@ -181,25 +181,25 @@ export default async function PublicLeaderboardPage({ params }: Props) {
                 <p className="mt-1 text-sm text-muted-foreground/80">{waitlist.tagline}</p>
 
                 {/* Stats strip */}
-                <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground/60">
+                <div className="mt-3 flex flex-wrap items-center gap-4 text-xs text-muted-foreground/70 dark:text-muted-foreground/60">
                   <span className="flex items-center gap-1.5">
-                    <Users  size={12} className="text-indigo-400" />
+                    <Users  size={12} className="text-indigo-600 dark:text-indigo-400" />
                     <span className="font-semibold text-muted-foreground">{totalSubscribers.toLocaleString()}</span>
                     in queue
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <Share2 size={12} className="text-violet-400" />
+                    <Share2 size={12} className="text-violet-600 dark:text-violet-400" />
                     <span className="font-semibold text-muted-foreground">{referralCount.toLocaleString()}</span>
                     referrals
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <Zap    size={12} className="text-amber-400" />
+                    <Zap    size={12} className="text-amber-600 dark:text-amber-400" />
                     <span className="font-semibold text-muted-foreground">{waitlist.viralScore}×</span>
                     viral score
                   </span>
                   {expiryDate && (
                     <span className="flex items-center gap-1.5">
-                      <Calendar size={12} className="text-rose-400" />
+                      <Calendar size={12} className="text-rose-600 dark:text-rose-400" />
                       Closes <span className="font-semibold text-muted-foreground">{expiryDate}</span>
                     </span>
                   )}
@@ -210,13 +210,13 @@ export default async function PublicLeaderboardPage({ params }: Props) {
             {/* Prize pool badge */}
             {hasPrizes && (
               <div className="flex shrink-0 flex-col items-end gap-1.5">
-                <div className="flex items-center gap-2 rounded-2xl border border-amber-500/25 bg-amber-500/8 px-4 py-3">
-                  <Trophy size={16} className="text-amber-400" />
+                <div className="flex items-center gap-2 rounded-2xl border border-amber-500/20 dark:border-amber-500/25 bg-amber-500/10 dark:bg-amber-500/8 px-4 py-3">
+                  <Trophy size={16} className="text-amber-600 dark:text-amber-400" />
                   <div>
-                    <p className="text-[10px] text-muted-foreground/60">Prize pool</p>
+                    <p className="text-[10px] text-muted-foreground/70 dark:text-muted-foreground/60">Prize pool</p>
                     {totalCash > 0
-                      ? <p className="text-lg font-black text-amber-300">${totalCash.toLocaleString()}</p>
-                      : <p className="text-sm font-bold text-amber-300">{waitlist.prizes.length} prizes</p>
+                      ? <p className="text-lg font-black text-amber-700 dark:text-amber-300">${totalCash.toLocaleString()}</p>
+                      : <p className="text-sm font-bold text-amber-700 dark:text-amber-300">{waitlist.prizes.length} prizes</p>
                     }
                   </div>
                 </div>
@@ -244,15 +244,15 @@ export default async function PublicLeaderboardPage({ params }: Props) {
             {top3.length > 0 && (
               <section className="flex flex-col gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-amber-500/25 bg-amber-500/10">
-                    <Trophy size={14} className="text-amber-400" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-amber-500/20 dark:border-amber-500/25 bg-amber-500/10">
+                    <Trophy size={14} className="text-amber-600 dark:text-amber-400" />
                   </div>
                   <div>
                     <h2 className="text-base font-black text-foreground">Top 3 referrers</h2>
-                    <p className="text-[11px] text-muted-foreground/60">The leaders competing for prizes</p>
+                    <p className="text-[11px] text-muted-foreground/70 dark:text-muted-foreground/60">The leaders competing for prizes</p>
                   </div>
                 </div>
-                <div className="rounded-2xl border border-border/60 bg-zinc-900/20 p-6">
+                <div className="rounded-2xl border border-border bg-card/30 p-6 shadow-sm">
                   <PodiumSection top3={top3} prizes={waitlist.prizes} />
                 </div>
               </section>
@@ -264,12 +264,12 @@ export default async function PublicLeaderboardPage({ params }: Props) {
             <section className="flex flex-col gap-4">
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-indigo-500/25 bg-indigo-500/10">
-                    <Users size={14} className="text-indigo-400" />
+                  <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-indigo-500/20 dark:border-indigo-500/25 bg-indigo-500/10">
+                    <Users size={14} className="text-indigo-600 dark:text-indigo-400" />
                   </div>
                   <div>
                     <h2 className="text-base font-black text-foreground">Full leaderboard</h2>
-                    <p className="text-[11px] text-muted-foreground/60">
+                    <p className="text-[11px] text-muted-foreground/70 dark:text-muted-foreground/60">
                       {entries.length} referrers — updated every 5 minutes
                     </p>
                   </div>
@@ -297,7 +297,7 @@ export default async function PublicLeaderboardPage({ params }: Props) {
             {hasPrizes && (
               <div className="flex flex-col gap-3 rounded-2xl border border-border/60 bg-card/30 p-5">
                 <div className="flex items-center gap-2">
-                  <Trophy size={14} className="text-amber-400" />
+                  <Trophy size={14} className="text-amber-600 dark:text-amber-400" />
                   <p className="text-sm font-semibold text-foreground/90">Prize pool</p>
                 </div>
                 <div className="flex flex-col gap-2">
@@ -333,7 +333,7 @@ export default async function PublicLeaderboardPage({ params }: Props) {
             )}
 
             {/* How it works */}
-            <div className="flex flex-col gap-3 rounded-2xl border border-border/60 bg-zinc-900/20 p-5">
+            <div className="flex flex-col gap-3 rounded-2xl border border-border bg-card/40 p-5">
               <p className="text-xs font-semibold text-muted-foreground">How prizes are awarded</p>
               {[
                 { n: "1", text: "Join the waitlist to get your referral link" },
@@ -341,7 +341,7 @@ export default async function PublicLeaderboardPage({ params }: Props) {
                 { n: "3", text: "Top referrers when the waitlist closes win prizes" },
               ].map((s) => (
                 <div key={s.n} className="flex items-start gap-2.5">
-                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-zinc-800 bg-zinc-900 text-[10px] font-bold text-muted-foreground/80">
+                  <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-border bg-muted text-[10px] font-bold text-muted-foreground/80">
                     {s.n}
                   </span>
                   <p className="text-xs leading-relaxed text-muted-foreground/80">{s.text}</p>

@@ -37,8 +37,8 @@ export function BillingFaq() {
   const [open, setOpen] = useState<number | null>(null);
 
   return (
-    <Card className="border-border/80 bg-card/40">
-      <CardHeader className="border-b border-border/60 px-5 py-4">
+    <Card className="border border-zinc-200 dark:border-border/80 bg-card/40">
+      <CardHeader className="border-b border-zinc-200 dark:border-border/60 px-5 py-4">
         <p className="text-sm font-semibold text-foreground/90">Frequently asked questions</p>
       </CardHeader>
       <CardContent className="divide-y divide-border/40 p-0">
@@ -46,7 +46,7 @@ export function BillingFaq() {
           <div key={i}>
             <button
               onClick={() => setOpen(open === i ? null : i)}
-              className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-card/30"
+              className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition-colors hover:bg-muted/40 dark:hover:bg-card/30"
             >
               <span className="text-sm font-medium text-foreground/80">{item.q}</span>
               <ChevronDown
@@ -66,7 +66,7 @@ export function BillingFaq() {
                   transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
                   className="overflow-hidden"
                 >
-                  <p className="border-t border-border/40 bg-zinc-900/20 px-5 py-4 text-xs leading-relaxed text-muted-foreground/80">
+                  <p className="border-t border-zinc-200 dark:border-border/40 bg-zinc-50 dark:bg-zinc-900/20 px-5 py-4 text-xs leading-relaxed text-muted-foreground/80 font-medium">
                     {item.a}
                   </p>
                 </motion.div>

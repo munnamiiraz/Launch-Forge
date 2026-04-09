@@ -12,11 +12,12 @@ interface LivePreviewProps {
   name:        string;
   slug:        string;
   description: string;
-  logoSrc?:    string | null;
   isOpen:      boolean;
+  logoSrc?:    string | null;
+  category:    string;
 }
 
-export function LivePreview({ name, slug, description, isOpen, logoSrc }: LivePreviewProps) {
+export function LivePreview({ name, slug, description, isOpen, logoSrc, category }: LivePreviewProps) {
   const displayName = name.trim()        || "Your Waitlist Name";
   const displaySlug = slug.trim()        || "your-waitlist";
   const displayDesc = description.trim() || "Your waitlist description will appear here, telling visitors what you're building and why they should join.";
@@ -72,11 +73,7 @@ export function LivePreview({ name, slug, description, isOpen, logoSrc }: LivePr
 
           <div className="relative flex flex-col items-center gap-5 text-center">
             {/* Logo mark */}
-            <motion.div
-              key={displayName}
-              initial={{ scale: 0.85, opacity: 0 }}
-              animate={{ scale: 1,    opacity: 1 }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            <div
               className="flex h-12 w-12 items-center justify-center rounded-xl border border-indigo-500/30 bg-indigo-500/15"
             >
               {logoSrc ? (
@@ -89,7 +86,7 @@ export function LivePreview({ name, slug, description, isOpen, logoSrc }: LivePr
               ) : (
                 <Zap size={20} className="text-indigo-400" />
               )}
-            </motion.div>
+            </div>
 
             {/* Status badge */}
             <Badge
@@ -110,7 +107,7 @@ export function LivePreview({ name, slug, description, isOpen, logoSrc }: LivePr
 
             {/* Title */}
             <motion.h1
-              key={displayName}
+              key={`title-${displayName}`}
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
@@ -129,6 +126,14 @@ export function LivePreview({ name, slug, description, isOpen, logoSrc }: LivePr
             >
               {displayDesc}
             </motion.p>
+
+            {/* Category Badge */}
+            <Badge 
+              variant="outline" 
+              className="border-indigo-500/10 bg-indigo-500/5 px-2.5 py-0.5 text-[9px] text-indigo-400 group-hover:border-indigo-500/20 transition-all font-medium"
+            >
+              {category || "Other"}
+            </Badge>
 
             {/* Subscriber count strip */}
             <div className="flex items-center gap-4">

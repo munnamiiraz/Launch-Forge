@@ -115,7 +115,9 @@ export function toExploreCard(
     name:        string;
     description: string | null;
     logoUrl:     string | null;
+    category:    string | null;
     isOpen:      boolean;
+    endDate:     Date | null;
     createdAt:   Date;
     workspace: {
       slug: string;
@@ -135,6 +137,7 @@ export function toExploreCard(
       prizeType: string;
       value:     number | null;
       currency:  string | null;
+      expiresAt: Date | null;
     }>;
   },
   recentJoins: number,
@@ -161,6 +164,7 @@ export function toExploreCard(
     value:     p.value,
     currency:  p.currency,
     emoji:     prizeEmoji(p.prizeType),
+    expiresAt: p.expiresAt ? p.expiresAt.toISOString() : null,
   }));
 
   return {
@@ -170,13 +174,14 @@ export function toExploreCard(
     tagline:          extractTagline(raw.description, raw.name),
     description:      raw.description,
     logoUrl:          raw.logoUrl,
+    category:         raw.category,
     isOpen:           raw.isOpen,
     totalSubscribers,
     recentJoins,
     referralCount,
     viralScore:       calcViralScore(referralCount, totalSubscribers),
     createdAt:        raw.createdAt.toISOString(),
-    expiresAt:        null,   // expiresAt not in schema — placeholder for future
+    expiresAt:        raw.endDate ? raw.endDate.toISOString() : null,
     workspace:        { slug: raw.workspace.slug },
     prizes,
     topReferrers,

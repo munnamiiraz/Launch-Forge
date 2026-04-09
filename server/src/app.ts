@@ -15,6 +15,7 @@ import { IndexRoutes } from "./routes";
 import { paymentRouter } from "./modules/payment/payment.route";
 
 const app: Application = express();
+app.set('trust proxy', 1);
 app.set("query parser", (str : string) => qs.parse(str));
 
 app.set("view engine", "ejs");
@@ -32,18 +33,14 @@ app.use(cors({
 // Needed for auth/payment routes (checkAuth reads req.cookies)
 app.use(cookieParser());
 
-app.use("/api/auth", toNodeHandler(auth))
+app.all('/api/auth/{*any}', toNodeHandler(auth));
 
 // Payment router must be mounted BEFORE express.json()
-// because the webhook route needs raw body for Stripe signature verification.
-// Keep both mounts for backwards-compatibility, but prefer /api/v1/payment.
 app.use("/api/payment", paymentRouter);
 app.use("/api/v1/payment", paymentRouter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-
 
 app.use("/api/v1", IndexRoutes);
 

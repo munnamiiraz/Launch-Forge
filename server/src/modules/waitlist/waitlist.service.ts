@@ -68,6 +68,7 @@ export const waitlistService = {
         description: data.description,
         logoUrl:     data.logoUrl,
         theme:       data.theme,
+        category:    data.category,
         isOpen:      data.isOpen ?? true,
         endDate:     data.endDate,
       },
@@ -77,6 +78,7 @@ export const waitlistService = {
         slug:        true,
         description: true,
         logoUrl:     true,
+        category:    true,
         isOpen:      true,
         archivedAt:  true,
         createdAt:   true,
@@ -122,6 +124,7 @@ export const waitlistService = {
           }
         : {}),
       ...(query.isOpen !== undefined ? { isOpen: query.isOpen } : {}),
+      ...(query.category ? { category: query.category } : {}),
     };
 
     /* 3. Parallel count + data fetch ─────────────────────────────── */
@@ -138,6 +141,7 @@ export const waitlistService = {
           slug:        true,
           description: true,
           logoUrl:     true,
+          category:    true,
           isOpen:      true,
           archivedAt:  true,
           createdAt:   true,
@@ -179,6 +183,7 @@ const WAITLIST_DETAIL_SELECT = {
   description: true,
   logoUrl:     true,
   theme:       true,
+  category:    true,
   isOpen:      true,
   archivedAt:  true,
   createdAt:   true,

@@ -1,7 +1,7 @@
 import { type Metadata } from "next";
 import { Rocket, TrendingUp, Users, Trophy } from "lucide-react";
 import { ExploreClient } from "@/src/components/module/explore/_components/ExploreClient";
-import type { PublicProduct } from "@/src/components/module/explore/_lib/data";
+import { type PublicProduct, type ProductCategory, CATEGORIES } from "@/src/components/module/explore/_lib/data";
 
 export const metadata: Metadata = {
   title:       "Explore Products — LaunchForge",
@@ -34,6 +34,7 @@ type ExploreWaitlistCard = {
   recentJoins: number;
   referralCount: number;
   viralScore: number;
+  category: string | null;
   createdAt: string;
   expiresAt: string | null;
   workspace: { slug: string };
@@ -44,6 +45,7 @@ type ExploreWaitlistCard = {
     value: number | null;
     currency: string | null;
     emoji: string;
+    expiresAt: string | null;
   }>;
   topReferrers: Array<{
     maskedName: string;
@@ -92,10 +94,10 @@ function mapExploreCardToProduct(card: ExploreWaitlistCard): PublicProduct {
     name: card.name,
     tagline: card.tagline,
     description: card.description ?? "",
-    logoUrl: card.logoUrl,
+     logoUrl: card.logoUrl,
     logoInitials: getInitials(card.name),
     logoGradient: pickGradient(card.slug),
-    category: "Other",
+    category: (CATEGORIES.includes(card.category as any) ? card.category : "Other") as ProductCategory,
     tags: [],
     websiteUrl: null,
     isOpen: card.isOpen,
@@ -111,6 +113,7 @@ function mapExploreCardToProduct(card: ExploreWaitlistCard): PublicProduct {
       title: p.title,
       emoji: p.emoji,
       value: formatPrizeValue(p.value, p.currency),
+      expiresAt: p.expiresAt,
     })),
     topReferrers: card.topReferrers ?? [],
   };
@@ -118,6 +121,7 @@ function mapExploreCardToProduct(card: ExploreWaitlistCard): PublicProduct {
 
 async function fetchExploreProducts(opts: {
   search?: string;
+  category?: string;
   openOnly?: boolean;
   prizesOnly?: boolean;
 }): Promise<PublicProduct[]> {
@@ -125,6 +129,7 @@ async function fetchExploreProducts(opts: {
 
   const qs = new URLSearchParams({ page: "1", limit: "48" });
   if (opts.search?.trim()) qs.set("search", opts.search.trim());
+  if (opts.category?.trim() && opts.category !== "All") qs.set("category", opts.category.trim());
   if (opts.openOnly) qs.set("openOnly", "true");
   if (opts.prizesOnly) qs.set("prizesOnly", "true");
 
@@ -138,18 +143,24 @@ async function fetchExploreProducts(opts: {
   return (json.data ?? []).map(mapExploreCardToProduct);
 }
 
-export default async function ExplorePage({
-  searchParams,
-}: {
-  searchParams?: { filter?: string; search?: string };
+export default async function ExplorePage(props: {
+  searchParams?: Promise<{ filter?: string; search?: string; category?: string }>;
 }) {
+  const searchParams = await props.searchParams;
   const filter = searchParams?.filter;
   const initialShowPrizesOnly = filter === "prizes";
   const initialShowOpen = filter === "open";
   const initialSearch = typeof searchParams?.search === "string" ? searchParams.search : "";
+  
+  // Validate category
+  const rawCategory = typeof searchParams?.category === "string" ? searchParams.category : "All";
+  const initialCategory = (CATEGORIES as string[]).includes(rawCategory) 
+    ? rawCategory 
+    : "All";
 
   const products = await fetchExploreProducts({
     search: initialSearch,
+    category: initialCategory,
     openOnly: initialShowOpen,
     prizesOnly: initialShowPrizesOnly,
   });
@@ -164,20 +175,20 @@ export default async function ExplorePage({
         {/* Background texture */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.012)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.012)_1px,transparent_1px)] bg-[size:48px_48px]"
+          className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.012)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.012)_1px,transparent_1px)] bg-size-[48px_48px]"
         />
 
         {/* Ambient blobs */}
-        <div aria-hidden className="pointer-events-none absolute -left-32 top-0 h-80 w-80 rounded-full bg-indigo-500/8 blur-3xl" />
-        <div aria-hidden className="pointer-events-none absolute -right-24 bottom-0 h-64 w-64 rounded-full bg-violet-500/6 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -left-32 top-0 h-80 w-80 rounded-full bg-indigo-500/5 dark:bg-indigo-500/8 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -right-24 bottom-0 h-64 w-64 rounded-full bg-violet-500/5 dark:bg-violet-500/6 blur-3xl" />
 
         <div className="relative mx-auto max-w-6xl px-4 py-14 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-6">
 
             {/* Badge */}
             <div className="flex">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/25 bg-indigo-500/8 px-3 py-1 text-[11px] font-semibold text-indigo-400">
-                <Rocket size={11} />
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-500/20 dark:border-indigo-500/25 bg-indigo-500/8 px-3 py-1 text-[11px] font-semibold text-indigo-700 dark:text-indigo-400">
+                <Rocket size={11} className="text-indigo-500" />
                 Product discovery
               </span>
             </div>
@@ -186,7 +197,7 @@ export default async function ExplorePage({
             <div className="flex flex-col gap-3 max-w-2xl">
               <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-5xl">
                 Be first in line for{" "}
-                <span className="bg-gradient-to-r from-indigo-400 to-violet-400 bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-indigo-600 to-violet-600 dark:from-indigo-400 dark:to-violet-400 bg-clip-text text-transparent">
                   what's next
                 </span>
               </h1>
@@ -222,6 +233,7 @@ export default async function ExplorePage({
           initialSearch={initialSearch}
           initialShowOpen={initialShowOpen}
           initialShowPrizesOnly={initialShowPrizesOnly}
+          initialCategory={initialCategory as any}
         />
       </div>
     </div>

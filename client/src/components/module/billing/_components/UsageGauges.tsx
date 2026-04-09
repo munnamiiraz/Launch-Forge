@@ -24,10 +24,10 @@ interface UsageGaugesProps {
 
 export function UsageGauges({ usage }: UsageGaugesProps) {
   return (
-    <Card className="relative overflow-hidden border-border/80 bg-card/40">
+    <Card className="relative overflow-hidden border border-zinc-200 dark:border-border/80 bg-card/40">
       <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
 
-      <CardHeader className="border-b border-border/60 px-5 py-4">
+      <CardHeader className="border-b border-zinc-200 dark:border-border/60 px-5 py-4">
         <p className="text-sm font-semibold text-foreground/90">Current usage</p>
         <p className="text-[11px] text-muted-foreground/60">Your resource consumption this billing period</p>
       </CardHeader>
@@ -56,20 +56,20 @@ export function UsageGauges({ usage }: UsageGaugesProps) {
                   )}>
                     {item.used.toLocaleString()}
                     {item.limit !== null && (
-                      <span className="font-normal text-muted-foreground/60">
+                      <span className="font-normal text-muted-foreground/60 dark:text-muted-foreground/60">
                         {" "}/ {item.limit.toLocaleString()}
                       </span>
                     )}
                   </span>
                   {isUnlim && (
-                    <Badge className="border-emerald-500/25 bg-emerald-500/10 px-1.5 py-0 text-[9px] text-emerald-400">
+                    <Badge className="border-emerald-500/25 bg-emerald-500/10 px-1.5 py-0 text-[9px] text-emerald-600 dark:text-emerald-400">
                       Unlimited
                     </Badge>
                   )}
                   {!isUnlim && (
                     <span className={cn(
-                      "text-[10px] tabular-nums",
-                      isHigh ? "text-red-400" : isWarn ? "text-amber-400" : "text-muted-foreground/60",
+                      "text-[10px] tabular-nums font-bold",
+                      isHigh ? "text-red-600 dark:text-red-400" : isWarn ? "text-amber-600 dark:text-amber-400" : "text-muted-foreground/60 dark:text-muted-foreground/60",
                     )}>
                       {p}%
                     </span>
@@ -78,7 +78,7 @@ export function UsageGauges({ usage }: UsageGaugesProps) {
               </div>
 
               {!isUnlim && (
-                <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-800">
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-zinc-100 dark:bg-zinc-800">
                   <motion.div
                     initial={{ width: 0 }}
                     animate={{ width: `${p}%` }}
@@ -89,7 +89,7 @@ export function UsageGauges({ usage }: UsageGaugesProps) {
               )}
 
               {isHigh && (
-                <p className="text-[10px] text-red-400">
+                <p className="text-[10px] text-red-600 dark:text-red-400 font-medium">
                   Approaching your limit — consider upgrading to avoid service interruption.
                 </p>
               )}

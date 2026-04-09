@@ -24,12 +24,12 @@ export function RecentActivityFeed() {
   return (
     <Card className="border-border/80 bg-card/40 overflow-hidden">
       {/* Top accent line */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-indigo-500/30 to-transparent" />
 
       <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <p className="text-sm font-semibold text-foreground/90">Recent activity</p>
-          <div className="flex items-center gap-1.5 text-[10px] text-emerald-400">
+          <div className="flex items-center gap-1.5 text-[10px] text-emerald-600 dark:text-emerald-400">
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-60" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400" />
@@ -55,7 +55,7 @@ export function RecentActivityFeed() {
                 <div className="relative mt-0.5 shrink-0">
                   <div
                     className={cn(
-                      "flex h-7 w-7 items-center justify-center rounded-full bg-gradient-to-br text-[10px] font-bold text-white",
+                      "flex h-7 w-7 items-center justify-center rounded-full bg-linear-to-br text-[10px] font-bold text-white",
                       activity.gradient
                     )}
                   >
@@ -63,7 +63,7 @@ export function RecentActivityFeed() {
                   </div>
                   <span
                     className={cn(
-                      "absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-zinc-900 text-white",
+                      "absolute -bottom-0.5 -right-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-background text-white",
                       cfg.dot
                     )}
                   >
@@ -83,7 +83,7 @@ export function RecentActivityFeed() {
                   <div className="mt-0.5 flex items-center gap-1 text-[10px] text-muted-foreground/60">
                     <MapPin size={9} />
                     <span>{activity.location}</span>
-                    <span className="text-zinc-800">·</span>
+                    <span className="text-muted-foreground/30">·</span>
                     <span>{activity.time}</span>
                   </div>
                 </div>

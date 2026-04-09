@@ -30,6 +30,8 @@ async function getRecentSignups(): Promise<RecentSignup[]> {
   ];
 }
 
+import { NewsletterSection } from "../components/shared/NewsletterSection";
+
 export default async function HomePage() {
   const [initialStats, initialRecent] = await Promise.all([
     getWaitlistStats(),
@@ -43,6 +45,7 @@ export default async function HomePage() {
       <HowItWorksSection />
       <FeaturesSection />
       <SocialProofSection />
+      <NewsletterSection />
       <Footer />
     </>
   );

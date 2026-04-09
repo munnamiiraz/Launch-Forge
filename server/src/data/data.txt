@@ -1,0 +1,764 @@
+# LaunchForge — Complete RAG Knowledge Base
+# Generated for chatbot/AI assistant implementation
+# Format: Structured sections with Q&A pairs, facts, and contextual data
+
+================================================================================
+SECTION 1: PRODUCT OVERVIEW
+================================================================================
+
+## What is LaunchForge?
+LaunchForge is a viral waitlist and feedback SaaS platform built for founders and product teams. It allows users to create branded waitlist landing pages, collect early user emails, track referrals, manage feedback, and build momentum before launching their product. The platform includes gamification through leaderboards, prizes, and referral tracking to encourage viral growth.
+
+## Who is LaunchForge for?
+- Founders validating a startup idea before building
+- Product teams preparing for a public launch
+- Indie hackers collecting early adopters
+- SaaS companies running beta access programs
+- App developers building pre-launch hype
+- Anyone who wants to prove demand before spending months building
+
+## What problem does LaunchForge solve?
+Most founders build in silence, launch to crickets, and wonder what went wrong. LaunchForge forces founders to talk to real people and collect proof of demand before writing production code. A waitlist validates the idea, grows the audience, and gives you a warm audience on launch day.
+
+## Core value proposition
+"Collect early users. Grow virally. Launch with confidence."
+
+================================================================================
+SECTION 2: FEATURES
+================================================================================
+
+## Waitlists
+- Create unlimited waitlists (Pro/Growth plan)
+- Each waitlist has a unique public URL at /w/[slug]
+- Customize name, description, logo, and slug
+- Open/close waitlists at any time
+- Set end dates for urgency
+- Each waitlist gets a public landing page automatically
+- Soft-delete support (data preserved after deletion)
+
+## Referral Tracking
+- Every subscriber gets a unique referral code on signup
+- Invite URL format: /invite/[referralCode]
+- Referral chains tracked up to 4 hops deep
+- Referral count stored on each subscriber (denormalized for performance)
+- Platform k-factor = total referrals / total subscribers
+- Subscribers move up the queue by referring more people
+- Direct vs referral signup tracking
+
+## Leaderboard
+- Public leaderboard at /w/[slug]/leaderboard
+- Ranks subscribers by referral count (desc), then by join date (asc)
+- Queue position calculated with O(1) DB query (count above)
+- Podium display for top 3 (gold/silver/bronze)
+- Masked names for privacy (e.g. "Sarah K.")
+- Full leaderboard available to workspace owners
+- Find My Rank widget for subscribers
+
+## Prizes
+- Attach prizes to waitlist leaderboard positions
+- Prize types: CASH, PRODUCT, GIFT_CARD, DISCOUNT, CUSTOM
+- Each prize has: rankFrom, rankTo, rankLabel, title, description, value, currency, emoji
+- Prize visibility on public waitlist page
+- Prize teaser shown in the join panel
+- Prize pool section on the waitlist page
+
+## Feedback Board
+- Feature request submission by subscribers
+- Voting system (upvote feature requests)
+- Comment threads on feature requests
+- Status tracking: UNDER_REVIEW, PLANNED, IN_PROGRESS, COMPLETED, DECLINED
+- Per-workspace feedback boards
+- Public and private feedback boards
+
+## Roadmap
+- Create roadmap items linked to feature requests
+- Status: PLANNED, IN_PROGRESS, COMPLETED
+- Roadmap visible to subscribers to show progress
+- Builds trust by showing founders are listening
+
+## Changelog
+- Publish product updates and release notes
+- Draft and published states
+- Chronological changelog feed
+- Shows subscribers what has shipped
+- Builds credibility and keeps audience engaged
+
+## Analytics (Dashboard)
+- Subscriber growth charts (7D / 30D / 90D / 12M)
+- Referral funnel: Total → Confirmed → Shared → Got 1+ → Got 5+ referrals
+- Viral k-factor chart (weekly, last 12 weeks)
+- Top referrers with direct + chain counts
+- Waitlist comparison table
+- Cohort retention heatmap (bi-weekly, 7 weeks)
+- Revenue + plan distribution donut
+- Feedback activity timeline (30 days)
+- Signup sources breakdown
+
+## Workspace System
+- Each user owns a workspace
+- Invite team members by email
+- Roles: OWNER, ADMIN, MEMBER
+- Only OWNER can delete waitlists
+- OWNER and ADMIN can manage subscribers
+- Workspace has a plan (FREE/PRO/GROWTH)
+
+## Billing
+- Free plan: 1 waitlist, 500 subscribers, owner only
+- Pro Monthly: $19/mo
+- Pro Yearly: $15/mo (billed $156/yr, saves 20%)
+- Growth Monthly: $49/mo
+- Growth Yearly: $33/mo (billed $396/yr, saves 20%)
+- Stripe-powered checkout
+- Stripe Customer Portal for managing subscriptions
+- 14-day money-back guarantee on first payment
+
+## Explore Page
+- Browse all public waitlists on the platform
+- Search by name
+- Filter by: Open only, Has prizes
+- Sort by: Trending, Newest, Most joined, Closing soon
+- Category pills
+- Product detail sheet with join flow
+- Featured waitlists
+
+================================================================================
+SECTION 3: PLANS & PRICING
+================================================================================
+
+## Free Plan — $0/month
+- 1 waitlist
+- Up to 500 subscribers
+- Referral tracking ✓
+- Public leaderboard ✓
+- Feedback board ✗
+- Roadmap ✗
+- Prize announcements ✗
+- Analytics ✗
+- Team members: Owner only
+- Custom domain ✗
+- API access ✗
+- Priority support ✗
+
+## Pro Plan — $19/month (or $15/mo yearly)
+- Unlimited waitlists
+- Up to 10,000 subscribers
+- Referral tracking ✓
+- Public leaderboard ✓
+- Feedback board ✓
+- Roadmap ✓
+- Prize announcements: 10 per list ✓
+- Analytics ✓
+- Team members: Up to 5
+- Custom domain ✗
+- API access ✗
+- Priority support ✗
+- Best for: Growing products
+
+## Growth Plan — $49/month (or $33/mo yearly)
+- Unlimited waitlists
+- Unlimited subscribers
+- Referral tracking ✓
+- Public leaderboard ✓
+- Feedback board ✓
+- Roadmap ✓
+- Prize announcements: Unlimited ✓
+- Analytics: Advanced ✓
+- Team members: Unlimited ✓
+- Custom domain ✓
+- API access ✓
+- Priority support ✓
+- Best for: Serious launches
+
+## Pricing FAQ
+Q: Can I switch plans at any time?
+A: Yes. Upgrades take effect immediately with prorated charges. Downgrades apply at end of billing period.
+
+Q: What happens to data if I downgrade?
+A: All existing waitlists and subscribers are preserved. You can't create new ones beyond your plan limit.
+
+Q: Do you offer refunds?
+A: 14-day money-back guarantee on first payment. Recurring charges reviewed case by case within 7 days.
+
+Q: What payment methods?
+A: All major credit/debit cards (Visa, Mastercard, Amex) via Stripe.
+
+Q: Is yearly billing worth it?
+A: Yes — 20% savings. Pro: $19/mo vs $15/mo. Growth: $49/mo vs $33/mo.
+
+Q: Is payment secure?
+A: Yes — Stripe PCI-DSS Level 1 certified. LaunchForge never stores card details.
+
+================================================================================
+SECTION 4: HOW TO USE LAUNCHFORGE
+================================================================================
+
+## Getting Started
+1. Sign up for a free account at launchforge.app
+2. A workspace is automatically created for you
+3. Click "+ Create waitlist" in the dashboard
+4. Fill in: name, slug (URL), description, optional logo
+5. Your waitlist is live at /w/[your-slug]
+6. Share your waitlist URL to start collecting subscribers
+
+## How to Join a Waitlist (subscriber flow)
+1. Visit any waitlist page at /w/[slug]
+2. Enter your name and email
+3. Submit — you receive a unique referral code
+4. A subscriberToken cookie is set for 90 days
+5. Share your invite link to move up the queue
+6. Track your position on the public leaderboard
+
+## How to Move Up the Queue
+- Every person who signs up using your referral link gives you +1 referral
+- The leaderboard ranks by referral count (highest first), then by signup date (earliest first)
+- The more people you refer, the higher your position
+- Some waitlists offer prizes to top referrers
+
+## How Referral Links Work
+- Each subscriber gets a unique referral code (e.g. "abc123xyz")
+- Your invite URL is: [SITE_URL]/invite/[your-referral-code]
+- When someone signs up via your link, you are recorded as their referrer
+- Chains are tracked up to 4 hops deep
+- Your referral count updates in real time
+
+## How to Earn Points / Move Up
+1. Join a waitlist and get your referral link
+2. Share it on social media, in communities, with friends
+3. Every signup via your link = +1 position improvement
+4. Monitor your rank on the leaderboard
+5. Keep sharing to stay ahead of competitors
+6. Check what prizes are available for top spots
+
+## How the Leaderboard Works
+- Rankings update in real time as referrals come in
+- Position 1 = most referrals
+- Ties broken by who joined first (earlier signup = higher rank)
+- Your position is displayed in the subscriber navbar
+- Top 3 get a podium display (gold, silver, bronze)
+- Names are masked for privacy ("Sarah K." not "Sarah Kim")
+
+## How to Create a Prize
+1. Go to your waitlist dashboard → Prizes tab
+2. Click "Add prize"
+3. Set rank range (e.g. rank 1, or ranks 1-3)
+4. Choose prize type: Cash, Product, Gift Card, Discount, Custom
+5. Enter title, description, value, currency
+6. Prize appears on the public waitlist page and join panel
+
+## How to Use the Feedback Board
+1. Go to dashboard → Feedback
+2. Subscribers can submit feature requests on your public waitlist page
+3. Other subscribers vote on requests they want
+4. You can update status: Under Review → Planned → In Progress → Completed
+5. Subscribers see their feedback being acted on
+
+## How to Publish a Changelog Entry
+1. Dashboard → Changelog → New entry
+2. Write your update (markdown supported)
+3. Save as draft or publish immediately
+4. Published entries appear chronologically on your changelog page
+5. Keeps subscribers informed and engaged
+
+## How to Invite Team Members
+1. Dashboard → Settings → Team
+2. Enter teammate's email
+3. Choose role: Admin or Member
+4. They receive an invitation email
+5. Once accepted, they can access the workspace
+
+================================================================================
+SECTION 5: FREQUENTLY ASKED QUESTIONS (USER-FACING)
+================================================================================
+
+Q: What is LaunchForge?
+A: LaunchForge is a viral waitlist platform that helps founders collect early users and build momentum before launching their product. You can create a branded landing page, track referrals, manage a leaderboard with prizes, collect feedback, and more.
+
+Q: Is LaunchForge free?
+A: Yes, there's a free plan that lets you create 1 waitlist and collect up to 500 subscribers. Paid plans start at $19/month for unlimited waitlists and more features.
+
+Q: How does the referral system work?
+A: When you join a waitlist, you get a unique referral link. When someone signs up using your link, your position in the queue improves. The more people you refer, the higher you move up.
+
+Q: Will my data be safe?
+A: Yes. Your email is stored securely and only used for waitlist-related communications. Referral codes are anonymized on the public leaderboard (names are masked like "Sarah K.").
+
+Q: Can I join multiple waitlists?
+A: Yes. You can join as many waitlists as you like. Each gives you a separate referral code and position.
+
+Q: How do I check my queue position?
+A: After joining, your position is shown in the top navbar. You can also check the public leaderboard page at /w/[slug]/leaderboard.
+
+Q: What happens when a waitlist closes?
+A: The waitlist owner may close it at any time. You'll keep your position, but no new signups will be accepted. Your referral count is preserved.
+
+Q: Can I leave a waitlist?
+A: Yes. Use the "Leave / clear session" option in the subscriber menu in the navbar. This clears your session cookie.
+
+Q: How are prizes distributed?
+A: Prize distribution is handled by the product owner/founder. LaunchForge shows which prizes are available and tracks who is eligible, but the actual prize delivery is between the founder and the winner.
+
+Q: Is my email shared with third parties?
+A: No. Your email is only shared with the creator of the waitlist you joined.
+
+Q: What is the k-factor?
+A: K-factor (viral coefficient) = total referrals ÷ total subscribers. A k-factor above 1.0 means your waitlist is growing exponentially. LaunchForge tracks this per-waitlist and platform-wide.
+
+Q: How accurate is my queue position?
+A: Very accurate. Position is calculated in real time using a single database count query: "how many subscribers have more referrals than you, or the same referrals but joined earlier?" This gives a precise 1-based rank.
+
+Q: Can a founder see my full name and email?
+A: The waitlist owner can see your name and email in their admin dashboard. The public leaderboard only shows a masked version of your name (e.g. "John D.").
+
+Q: What is the subscriber navbar?
+A: Once you've joined a waitlist, a special navbar appears on public LaunchForge pages showing your queue position, referral count, and a one-click "copy invite link" button.
+
+Q: How do I copy my invite link?
+A: Click the "Copy link" button in the top navbar, or open the subscriber menu (click your avatar) and click "Copy my invite link."
+
+Q: Can I change my email after signing up?
+A: Not yet. Contact the waitlist owner to update your email.
+
+Q: What if someone cheats and uses fake emails?
+A: Referral links require the referred person to confirm their email before they count. Unconfirmed signups don't boost your referral count.
+
+================================================================================
+SECTION 6: FOUNDER / WORKSPACE OWNER FAQ
+================================================================================
+
+Q: How many waitlists can I create?
+A: Free plan: 1. Pro plan: unlimited. Growth plan: unlimited.
+
+Q: Can I customize the look of my waitlist page?
+A: Yes — you can set your product name, logo, description, and custom slug (URL). Growth plan includes custom domain support.
+
+Q: Can I export my subscriber list?
+A: Yes — use the "Export CSV" button on the analytics page or subscriber dashboard.
+
+Q: How do I close/open a waitlist?
+A: Go to your waitlist settings and toggle the "Open/Closed" status. Closed waitlists still show on the explore page but don't accept new signups.
+
+Q: Can I delete a waitlist?
+A: Yes, but only if it has 0 active subscribers (to protect subscriber data). Archive it first by removing subscribers, or contact support.
+
+Q: How do I set up Stripe for payments?
+A: Stripe integration is handled by LaunchForge — you don't need to set up your own Stripe account. Subscribers pay LaunchForge, not you directly, for the platform subscription.
+
+Q: Can I have multiple team members?
+A: Free: owner only. Pro: up to 5 members. Growth: unlimited members.
+
+Q: How do I track which referrers are most effective?
+A: Go to Analytics → Referrals → Top referrers. You'll see a ranked list of your most active referrers with direct + chain counts.
+
+Q: What's the difference between direct and chain referrals?
+A: Direct referrals = people who signed up using your referral link directly. Chain referrals = people who signed up via someone else who you originally referred. The platform tracks up to 4 hops.
+
+Q: How do I see my waitlist's k-factor?
+A: Dashboard → Analytics → Referrals. The k-factor chart shows weekly viral coefficient for the last 12 weeks.
+
+Q: Can I invite someone directly to my waitlist?
+A: Yes — share your waitlist URL or use the "Invite" feature in the workspace settings to send a direct invite with a pre-filled referral code.
+
+Q: What does "confirmation rate" mean?
+A: The percentage of subscribers who verified their email. A high confirmation rate (70%+) means your audience is genuinely engaged.
+
+Q: How do I use the cohort retention chart?
+A: It shows what % of subscribers who joined in a given bi-weekly period are still active over the following weeks. Higher retention = more engaged early adopters.
+
+Q: Can I set an end date for my waitlist?
+A: Yes. Set an end date in your waitlist settings. A countdown badge appears on the public page showing "Closes in X days" with an animated pulse when < 7 days remain.
+
+Q: How do I view the full leaderboard (unmasked)?
+A: Dashboard → Leaderboard. You can see full names and emails. The public page only shows masked names.
+
+================================================================================
+SECTION 7: TECHNICAL ARCHITECTURE
+================================================================================
+
+## Tech Stack
+- Frontend: Next.js 15 (App Router), TypeScript, TailwindCSS
+- UI Components: shadcn/ui, Radix UI, Lucide Icons
+- Animations: framer-motion
+- State Management: TanStack Query (React Query)
+- Forms: react-hook-form + Zod
+- Backend: Express.js (Node.js), TypeScript
+- Database: PostgreSQL via Prisma ORM
+- Auth: Better-Auth (JWT sessions + RBAC)
+- Payments: Stripe (Checkout + Customer Portal + Webhooks)
+- Deployment: Vercel (frontend), Railway/Render (backend)
+
+## Database Models
+- User: id, name, email, role (USER/ADMIN), status, isDeleted, emailVerified
+- Session: userId, createdAt, expiresAt
+- Workspace: id, name, slug, ownerId, plan (FREE/PRO/GROWTH)
+- WorkspaceMember: workspaceId, userId, role (OWNER/ADMIN/MEMBER)
+- Waitlist: id, workspaceId, name, slug, description, logoUrl, isOpen, endDate, deletedAt
+- Subscriber: id, waitlistId, name, email, referralCode (unique), referredById, referralsCount, isConfirmed, createdAt
+- FeedbackBoard: id, workspaceId, name
+- FeatureRequest: id, boardId, title, description, status, createdAt
+- Vote: id, featureRequestId, userId/email
+- Comment: id, featureRequestId, content, authorName
+- Roadmap: id, workspaceId, name
+- RoadmapItem: id, roadmapId, title, description, status (PLANNED/IN_PROGRESS/COMPLETED)
+- Changelog: id, workspaceId, title, content, publishedAt, createdAt
+- LeaderboardPrize: id, waitlistId, rankFrom, rankTo, rankLabel, title, description, prizeType, value, currency, status
+- Payment: id, userId (unique), status (PAID/UNPAID), planType (PRO/GROWTH), planMode (MONTHLY/YEARLY), amount, transactionId, stripeEventId
+
+## API Endpoints (Backend)
+
+### Authentication
+- POST /api/auth/signin — email + password login
+- POST /api/auth/signup — register new user
+- POST /api/auth/signout — logout
+- GET  /api/auth/session — get current session
+
+### Public Waitlist (no auth)
+- GET  /api/public/waitlist/:slug — get waitlist by slug (public data)
+- POST /api/public/waitlist/:slug/join — join a waitlist (subscribe)
+- GET  /api/public/waitlist/:slug/leaderboard — public masked leaderboard
+
+### Workspaces
+- GET    /api/workspaces — list user's workspaces
+- POST   /api/workspaces — create workspace
+- GET    /api/workspaces/:workspaceId — get workspace detail
+- PATCH  /api/workspaces/:workspaceId — update workspace
+- DELETE /api/workspaces/:workspaceId — delete workspace
+- POST   /api/workspaces/:workspaceId/members — add member
+- DELETE /api/workspaces/:workspaceId/members/:userId — remove member
+
+### Waitlists
+- GET    /api/workspaces/:workspaceId/waitlists — list waitlists
+- POST   /api/workspaces/:workspaceId/waitlists — create waitlist
+- GET    /api/workspaces/:workspaceId/waitlists/:id — get waitlist
+- PATCH  /api/workspaces/:workspaceId/waitlists/:id — update waitlist
+- DELETE /api/workspaces/:workspaceId/waitlists/:id — soft-delete waitlist
+
+### Subscribers
+- GET /api/workspaces/:workspaceId/waitlists/:id/subscribers — list subscribers
+- GET /api/workspaces/:workspaceId/waitlists/:id/leaderboard — full leaderboard
+- GET /api/workspaces/:workspaceId/waitlists/:id/leaderboard/full — unmasked
+
+### Analytics
+- GET /api/workspaces/:workspaceId/analytics/summary — KPI strip
+- GET /api/workspaces/:workspaceId/analytics/growth — subscriber growth
+- GET /api/workspaces/:workspaceId/analytics/funnel — referral funnel
+- GET /api/workspaces/:workspaceId/analytics/kfactor — viral k-factor
+- GET /api/workspaces/:workspaceId/analytics/referrers — top referrers
+- GET /api/workspaces/:workspaceId/analytics/waitlists — waitlist comparison
+- GET /api/workspaces/:workspaceId/analytics/cohorts — cohort retention
+- GET /api/workspaces/:workspaceId/analytics/revenue — MRR + plan distribution
+- GET /api/workspaces/:workspaceId/analytics/feedback — feedback activity
+
+### Feedback
+- POST /api/feedback — submit feature request
+- GET  /api/feedback — list feature requests
+- POST /api/feedback/:id/vote — vote on a request
+
+### Roadmap
+- GET  /api/roadmap — list roadmap items
+- POST /api/roadmap — create roadmap item
+- PATCH /api/roadmap/:id — update roadmap item
+
+### Changelog
+- GET  /api/changelog — list entries
+- POST /api/changelog — create entry
+- PATCH /api/changelog/:id — update entry
+- POST /api/changelog/:id/publish — publish draft
+
+### Prizes
+- GET    /api/prizes — list prizes for a waitlist
+- POST   /api/prizes — create prize
+- PATCH  /api/prizes/:id — update prize
+- DELETE /api/prizes/:id — delete prize
+
+### Payment
+- POST /api/payment/checkout — create Stripe Checkout session
+- POST /api/payment/webhook — Stripe webhook handler
+- GET  /api/payment/status — get current subscription status
+- POST /api/payment/portal — create Stripe Customer Portal session
+
+### Explore
+- GET /api/explore/waitlists — browse all public waitlists
+- GET /api/explore/waitlists/:slug — get single public waitlist
+
+### Invite
+- POST /api/invite — create invite
+- GET  /api/invite/:code — resolve invite code
+- POST /api/invite/:code/join — join via invite
+
+### Admin
+- GET /api/admin/overview/kpis — platform KPIs
+- GET /api/admin/overview/revenue — MRR trend
+- GET /api/admin/overview/growth — user growth
+- GET /api/admin/overview/plans — plan breakdown
+- GET /api/admin/overview/sources — signup sources
+- GET /api/admin/overview/activity — recent activity feed
+- GET /api/admin/overview/health — system health
+- GET /api/admin/overview/top-waitlists — top 10 waitlists
+- GET /api/admin/overview/recent-users — last 10 users
+- GET /api/admin/users — paginated user list
+- GET /api/admin/users/stats — user stats
+- GET /api/admin/users/:userId — user detail
+- PATCH /api/admin/users/:userId/suspend — suspend user
+- PATCH /api/admin/users/:userId/reactivate — reactivate
+- DELETE /api/admin/users/:userId — soft-delete
+- PATCH /api/admin/users/:userId/promote — make admin
+- PATCH /api/admin/users/:userId/demote — remove admin
+- POST /api/admin/users/invite — invite user
+- POST /api/admin/users/bulk/suspend — bulk suspend
+- POST /api/admin/users/bulk/delete — bulk delete
+- GET /api/admin/revenue/kpis — revenue KPIs
+- GET /api/admin/revenue/waterfall — MRR waterfall
+- GET /api/admin/revenue/plans — plan revenue breakdown
+- GET /api/admin/revenue/churn — churn analysis
+- GET /api/admin/revenue/cohorts — cohort LTV heatmap
+- GET /api/admin/revenue/countries — revenue by country
+- GET /api/admin/revenue/transactions — paginated transactions
+- GET /api/admin/analytics/engagement — DAU/WAU/MAU stats
+- GET /api/admin/analytics/engagement/timeline — DAU timeline
+- GET /api/admin/analytics/features — feature adoption
+- GET /api/admin/analytics/subscribers — platform subscriber growth
+- GET /api/admin/analytics/waitlists — waitlist health
+- GET /api/admin/analytics/referrals — referral network
+- GET /api/admin/analytics/feedback — feedback health
+- GET /api/admin/analytics/roadmap — roadmap progress
+- GET /api/admin/analytics/changelog — changelog timeline
+- GET /api/admin/analytics/heatmap — workspace activity heatmap
+
+================================================================================
+SECTION 8: GLOSSARY / TERMINOLOGY
+================================================================================
+
+**Waitlist**: A landing page that collects emails from people interested in a product before it launches.
+
+**Subscriber**: A person who has signed up for a waitlist. Has a name, email, unique referral code, and queue position.
+
+**Referral Code**: A unique alphanumeric code assigned to each subscriber. Used to create their personal invite URL.
+
+**Invite URL**: The shareable link a subscriber uses to refer others. Format: [site]/invite/[referralCode]
+
+**Referral Count**: The number of people who signed up using a subscriber's referral link (direct count, not chain).
+
+**Chain Referral**: A referral that came indirectly through someone you referred (2+ hops). Tracked up to 4 levels deep.
+
+**K-Factor (Viral Coefficient)**: Total referrals ÷ total subscribers. A k-factor > 1.0 means exponential growth.
+
+**Queue Position**: A subscriber's rank on the waitlist leaderboard. Lower number = closer to the front.
+
+**Leaderboard**: A public ranking of subscribers sorted by referral count (desc), then signup date (asc).
+
+**Confirmation Rate**: Percentage of subscribers who verified their email address.
+
+**Workspace**: A team/organization unit that owns waitlists. One user can own one workspace.
+
+**Plan Tier**: The subscription level of a workspace: FREE, PRO, or GROWTH.
+
+**MRR**: Monthly Recurring Revenue — total monthly subscription revenue across all paying users.
+
+**ARR**: Annual Recurring Revenue — MRR × 12.
+
+**ARPU**: Average Revenue Per User — MRR ÷ number of paying users.
+
+**LTV**: Customer Lifetime Value — ARPU ÷ monthly churn rate.
+
+**Churn Rate**: Percentage of paying users who cancel in a given month.
+
+**Stickiness (DAU/MAU)**: Daily Active Users ÷ Monthly Active Users. Measures how often users come back.
+
+**Feature Request**: A product idea submitted by a subscriber on the feedback board.
+
+**Roadmap Item**: A planned or in-progress feature that the founder is committing to build.
+
+**Changelog Entry**: A published update or release note showing subscribers what has shipped.
+
+**Prize**: A reward offered to top leaderboard positions to incentivize referrals.
+
+**Subscriber Token**: An HTTP cookie set after joining a waitlist. Stores the subscriber's ID. Valid for 90 days.
+
+**Subscriber Navbar**: A special navigation bar shown to waitlist subscribers on public pages. Shows queue position, referral count, and copy-invite-link button.
+
+**Owner Dashboard**: The authenticated area at /dashboard where workspace owners manage their waitlists, analytics, billing, etc.
+
+**Explore Page**: A public directory of all open waitlists on the LaunchForge platform.
+
+**Slug**: The URL-friendly identifier for a waitlist. Example: "my-product-v2" → /w/my-product-v2
+
+**Workspace Member Roles**:
+- OWNER: Full access, can delete waitlists, only one per workspace
+- ADMIN: Can manage subscribers, prizes, feedback, cannot delete workspace
+- MEMBER: Read-only access to dashboard data
+
+================================================================================
+SECTION 9: TROUBLESHOOTING & SUPPORT
+================================================================================
+
+Q: I signed up but my position keeps changing — why?
+A: Your position updates in real time as other subscribers get more referrals. If someone else's referral count surpasses yours, they move ahead of you. Keep sharing your referral link to stay ahead.
+
+Q: My referral link isn't working — what do I do?
+A: Make sure you're sharing the full URL including https://. If the link is broken, try copying it again from the subscriber menu in the navbar. If the issue persists, the waitlist may be closed.
+
+Q: I didn't receive a confirmation email.
+A: Check your spam/junk folder. If it's not there, the waitlist owner may not have email confirmation enabled. Your signup is still recorded.
+
+Q: I lost my referral link — how do I get it back?
+A: Visit any LaunchForge waitlist page. If your subscriberToken cookie is still active (within 90 days), the subscriber navbar will appear with your referral link. Click "Copy my invite link."
+
+Q: The waitlist page says "Closed" — can I still see my position?
+A: Yes. Closed waitlists preserve all existing subscribers. You can still view the leaderboard and your position, but new signups are not accepted.
+
+Q: I want to change my email address after signing up.
+A: Email changes are not currently self-serve. Contact the waitlist owner directly to update your email.
+
+Q: Can I join from multiple email addresses to boost my rank?
+A: No — this violates our terms of service. Each person should have one account. Duplicate or fraudulent accounts will be removed.
+
+Q: My referrals aren't counting — why?
+A: Referrals may not count if: (1) the referred person hasn't confirmed their email, (2) they signed up without using your referral link, or (3) they created a duplicate account. Make sure people use your exact invite URL.
+
+Q: The website is slow or not loading.
+A: Try refreshing the page. If the issue persists, contact support at support@launchforge.app.
+
+Q: I'm a founder and my billing portal isn't opening.
+A: Make sure you're logged in and have an active subscription. If you're on the free plan, there's no billing portal (no payment on file). If you're on a paid plan and the portal fails, contact support.
+
+Q: How do I cancel my subscription?
+A: Go to Dashboard → Billing → "Manage subscription" → Stripe Customer Portal → Cancel subscription. You'll keep access until the end of your current billing period.
+
+Q: I was charged but my plan didn't upgrade.
+A: This can happen if there's a webhook delivery delay. Wait a few minutes and refresh. If your plan still shows as Free, contact support@launchforge.app with your payment receipt.
+
+Q: Can I get an invoice/receipt?
+A: Yes. Go to Dashboard → Billing. Your invoice history is shown there. For Growth annual subscribers, PDF invoices are available via the Stripe Customer Portal.
+
+Q: How do I delete my account?
+A: Contact support@launchforge.app to request account deletion. This will delete your workspace, waitlists, and subscriber data.
+
+================================================================================
+SECTION 10: POLICIES
+================================================================================
+
+## Refund Policy
+- 14-day money-back guarantee on first payment
+- For recurring charges, contact within 7 days — reviewed case by case
+- No refunds on yearly plans after 30 days
+
+## Privacy
+- Subscriber emails are only shared with the waitlist creator
+- Names on public leaderboard are masked ("Sarah K." format)
+- LaunchForge does not sell user data
+- No ads are shown on the platform
+- All payment processing via Stripe — card details never stored by LaunchForge
+
+## Fair Use
+- One account per person
+- No bots, fake emails, or automated referrals
+- Fraudulent referral activity results in account suspension
+- Spam or misleading waitlist content will be removed
+
+## Data Retention
+- Deleted waitlists are soft-deleted (data preserved for 90 days before purge)
+- Deleted accounts: data purged within 30 days of request
+- Subscriber data preserved even after a waitlist is closed
+
+================================================================================
+SECTION 11: SAMPLE Q&A PAIRS (RAG TRAINING)
+================================================================================
+
+Q: How do I create a waitlist?
+A: Sign up for a LaunchForge account, go to your dashboard, click "+ Create waitlist," fill in your product name, slug (URL), and description, then click Create. Your waitlist is instantly live at launchforge.app/w/[your-slug].
+
+Q: How much does LaunchForge cost?
+A: Free plan is available with 1 waitlist and 500 subscribers. Pro is $19/month (or $15/month yearly). Growth is $49/month (or $33/month yearly).
+
+Q: What is a referral code?
+A: A unique code given to every subscriber when they join a waitlist. Sharing your invite link (which contains this code) lets you earn referrals and move up the queue.
+
+Q: How do I move up in the waitlist queue?
+A: Share your unique referral link. Every person who signs up through your link increases your referral count, which moves you higher in the leaderboard/queue.
+
+Q: What is the k-factor?
+A: The viral coefficient. Calculated as total referrals ÷ total subscribers. A k-factor above 1.0 means each subscriber is bringing in more than one new person — exponential growth.
+
+Q: Can I have team members on my account?
+A: Yes. Pro allows up to 5 team members. Growth allows unlimited team members. Free plan is owner only.
+
+Q: Does LaunchForge work for apps, SaaS, physical products?
+A: Yes — LaunchForge works for any product that benefits from building an early audience: apps, SaaS tools, physical products, newsletters, communities, events, and more.
+
+Q: What is the subscriber navbar?
+A: A special top navigation bar that appears for users who have joined a waitlist. It shows their queue position, referral count, and a one-click button to copy their invite link. Powered by a cookie valid for 90 days.
+
+Q: How do prizes work?
+A: Waitlist creators can set prizes for top leaderboard positions (e.g. "1st place wins a $100 Amazon gift card"). Prizes incentivize subscribers to share more aggressively. Prize delivery is handled directly between the creator and winner.
+
+Q: Is there an API?
+A: Yes — API access is available on the Growth plan. It allows programmatic access to waitlist data, subscribers, analytics, and more.
+
+Q: Can I use a custom domain?
+A: Yes — custom domain support is available on the Growth plan.
+
+Q: What happens after launch? Do I need LaunchForge anymore?
+A: LaunchForge is most valuable pre-launch. After you launch, you can use the subscriber list to invite early users, collect feedback via the feedback board, publish product updates via changelog, and run roadmap planning. Many teams keep it for ongoing community engagement.
+
+Q: How secure is subscriber data?
+A: All data is stored in a PostgreSQL database. Emails are not shown publicly. Leaderboard names are masked. Payments are handled by Stripe. LaunchForge does not share or sell subscriber data.
+
+Q: Can I export my subscriber list?
+A: Yes — use the Export CSV button in your analytics dashboard.
+
+Q: What is the explore page?
+A: A public directory at launchforge.app/explore where anyone can browse all open waitlists on the platform. Good for discovery if you want to reach new audiences.
+
+Q: How long does it take to set up a waitlist?
+A: Under 5 minutes. Fill in your product name, slug, and description — your page is live instantly.
+
+Q: What makes LaunchForge different from a Google Form?
+A: LaunchForge adds viral mechanics (referral tracking, leaderboard, prizes), analytics (k-factor, cohort retention, referral funnels), team collaboration, feedback boards, roadmap, changelog, and a professional branded landing page — all in one platform.
+
+Q: Can I close my waitlist temporarily?
+A: Yes. Toggle the Open/Closed status in your waitlist settings at any time. Closed waitlists preserve all subscribers but don't accept new signups.
+
+Q: What is cohort retention?
+A: It shows what % of subscribers who joined in a given period are still engaged over subsequent weeks. Helps you understand how sticky your waitlist is.
+
+Q: Can subscribers see each other's emails?
+A: No. Only the workspace owner and admins can see full subscriber details. The public leaderboard only shows masked names.
+
+Q: How do I get my invite link?
+A: After joining a waitlist, your invite link appears in the subscriber navbar at the top of the page. Click "Copy link" or open your subscriber menu (avatar) and click "Copy my invite link."
+
+================================================================================
+SECTION 12: PLATFORM METRICS (DEMO/SEED DATA CONTEXT)
+================================================================================
+
+Note: These are representative numbers from the platform seed/demo data.
+
+- Platform users: ~4,800+
+- Total waitlists: ~8,700+
+- Total subscribers: ~1.2M+
+- Total referrals: ~348,000+
+- Platform k-factor: ~0.28×
+- Average subscribers per waitlist: ~141
+- Median subscribers per waitlist: ~87
+- P90 subscribers per waitlist: ~1,240
+- Confirmation rate: ~71.4%
+- Active referrers: ~94,000+
+- Average referrals per referrer: ~3.7×
+- Daily active users (DAU): ~847
+- Weekly active users (WAU): ~2,940
+- Monthly active users (MAU): ~3,812
+- Stickiness (DAU/MAU): ~22.2%
+- Platform MRR: ~$41k
+- Platform ARR: ~$495k
+- Average revenue per user (ARPU): ~$33/mo
+- Average LTV: ~$284
+- Monthly churn rate: ~2.7%
+- Average subscription length: ~8.6 months
+- Paying users: ~1,247
+- Free users: ~3,574
+- Pro users: ~941
+- Growth users: ~306
+
+================================================================================
+END OF KNOWLEDGE BASE
+================================================================================

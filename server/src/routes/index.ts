@@ -17,6 +17,7 @@ import { adminUsersRouter } from "../modules/admin-user/admin-user.routes";
 import { adminRevenueRouter } from "../modules/admin-review/admin-review.routes";
 import { adminAnalyticsRouter } from "../modules/admin-analytics/admin-analytics.route";
 import { userRouter } from "../modules/user/user.route";
+import { AiChatRoutes } from "../modules/ai-chat/ai-chat.route";
 
 const router = Router();
 
@@ -70,5 +71,6 @@ router.use("/admin/users", adminUsersRouter);
 router.use("/admin/revenue", adminRevenueRouter);
 router.use("/admin/analytics", adminAnalyticsRouter);
 router.use("/user", userRouter);
+router.use("/ai-chat", AiChatRoutes);
 
 export const IndexRoutes = router;

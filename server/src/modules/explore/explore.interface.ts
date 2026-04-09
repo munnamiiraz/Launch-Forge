@@ -11,6 +11,8 @@ export interface ExploreQuery {
   openOnly?:    boolean;
   /** Filter to waitlists that have at least one prize */
   prizesOnly?:  boolean;
+  /** Filter by category */
+  category?:    string;
 }
 
 /* ── Service payload ─────────────────────────────────────────────── */
@@ -34,6 +36,7 @@ export interface ExploreWaitlistCard {
   tagline:          string;
   description:      string | null;
   logoUrl:          string | null;
+  category:         string | null;
   isOpen:           boolean;
 
   /* Stats */
@@ -68,6 +71,7 @@ export interface ExplorePrizeSummary {
   value:      number | null;
   currency:   string | null;
   emoji:      string;
+  expiresAt:  string | null;
 }
 
 export interface ExploreReferrer {

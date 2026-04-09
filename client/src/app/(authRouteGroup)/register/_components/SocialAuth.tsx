@@ -34,7 +34,7 @@ const GoogleIcon = () => (
 
 interface SocialButtonProps {
   provider: "github" | "google";
-  onClick: () => Promise<void>;
+  onClick: () => Promise<void> | void;
 }
 
 function SocialButton({ provider, onClick }: SocialButtonProps) {
@@ -55,9 +55,9 @@ function SocialButton({ provider, onClick }: SocialButtonProps) {
       onClick={handle}
       disabled={loading}
       className={cn(
-        "flex flex-1 items-center justify-center gap-2 rounded-lg border border-zinc-800",
-        "bg-card/60 px-4 py-2.5 text-sm font-medium text-foreground/80",
-        "transition-all duration-150 hover:border-zinc-700 hover:bg-zinc-800/80 hover:text-foreground",
+        "h-11 flex flex-1 items-center justify-center gap-2 rounded-xl border border-border/80 dark:border-zinc-800",
+        "bg-card/60 px-4 text-sm font-medium text-foreground/80",
+        "transition-all duration-150 hover:border-border hover:bg-muted/50 dark:hover:border-zinc-700 dark:hover:bg-zinc-800/80 hover:text-foreground",
         "disabled:pointer-events-none disabled:opacity-50"
       )}
     >
@@ -74,23 +74,22 @@ function SocialButton({ provider, onClick }: SocialButtonProps) {
 }
 
 interface SocialAuthProps {
-  /**
-   * Wire these up with better-auth's client-side signIn helpers:
-   *
-   * import { authClient } from "@/lib/auth-client";
-   *
-   * onGithub={async () => { await authClient.signIn.social({ provider: "github" }); }}
-   * onGoogle={async () => { await authClient.signIn.social({ provider: "google" }); }}
-   */
-  onGithub: () => Promise<void>;
-  onGoogle: () => Promise<void>;
+  onGoogle?: () => void | Promise<void>;
+  onGithub?: () => void | Promise<void>;
+  className?: string;
 }
 
-export function SocialAuth({ onGithub, onGoogle }: SocialAuthProps) {
+export function SocialAuth({ onGoogle, onGithub, className }: SocialAuthProps) {
+  const defaultGoogleLogin = () => {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
+    window.location.href = `${apiBaseUrl}/auth/login/google?redirect=/dashboard`;
+  };
+
   return (
-    <div className="flex gap-3">
-      <SocialButton provider="github" onClick={onGithub} />
-      <SocialButton provider="google" onClick={onGoogle} />
+    <div className={cn("flex gap-3", className)}>
+      <SocialButton provider="google" onClick={onGoogle || (async () => defaultGoogleLogin())} />
+      {/* GitHub hidden for now since only Google requested, but kept component structure */}
+      {/* <SocialButton provider="github" onClick={onGithub || (async () => defaultGithubLogin())} /> */}
     </div>
   );
 }

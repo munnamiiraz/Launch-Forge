@@ -2,7 +2,7 @@
 
 import { motion, Variants } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { Badge } from "@/src/components/ui/badge";
 
 import { LiveStatsBadge } from "./LiveStatsBadge";
@@ -48,10 +48,10 @@ function HeroContent({ initialStats, initialRecent }: HeroSectionProps) {
       {/* Secondary right glow */}
       <div aria-hidden className="pointer-events-none absolute -right-48 top-1/3 h-[500px] w-[500px] rounded-full bg-violet-600/8 blur-[130px]" />
       {/* Bottom warmth */}
-      <div aria-hidden className="pointer-events-none absolute -bottom-32 left-1/3 h-[400px] w-[600px] rounded-full bg-indigo-900/15 blur-[120px]" />
+      <div aria-hidden className="pointer-events-none absolute -bottom-32 left-1/3 h-[400px] w-[600px] rounded-full bg-indigo-600/5 dark:bg-indigo-900/15 blur-[120px]" />
 
       {/* Grid */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.018)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.018)_1px,transparent_1px)] bg-[size:72px_72px]" />
+      <div aria-hidden className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(99,102,241,0.04)_1px,transparent_1px),linear-gradient(to_bottom,rgba(99,102,241,0.04)_1px,transparent_1px)] bg-size-[72px_72px]" />
 
       {/* Radial vignette */}
       <div aria-hidden className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-10%,rgba(99,102,241,0.12),transparent)]" />
@@ -71,10 +71,10 @@ function HeroContent({ initialStats, initialRecent }: HeroSectionProps) {
           >
             <Badge
               variant="outline"
-              className="gap-2 border-indigo-500/25 bg-indigo-500/8 px-3.5 py-1.5 text-xs font-medium text-indigo-300"
+              className="gap-2 border-indigo-500/20 dark:border-indigo-500/25 bg-indigo-500/8 px-3.5 py-1.5 text-xs font-medium text-indigo-700 dark:text-indigo-300"
             >
-              <span className="flex h-1.5 w-1.5 rounded-full bg-indigo-400" />
-              Launching Q1 2025 — get early access
+              <Sparkles size={11} className="text-indigo-500" />
+              Scale your launch with AI-powered viral mechanics
               <ArrowRight size={11} />
             </Badge>
           </motion.div>
@@ -102,7 +102,7 @@ function HeroContent({ initialStats, initialRecent }: HeroSectionProps) {
               Build waitlists
               <br />
               <span className="relative inline-block">
-                <span className="bg-gradient-to-r from-indigo-400 via-violet-400 to-indigo-300 bg-clip-text text-transparent">
+                <span className="bg-linear-to-r from-indigo-600 dark:from-indigo-400 via-violet-600 dark:via-violet-400 to-indigo-500 dark:to-indigo-300 bg-clip-text text-transparent">
                   that go viral
                 </span>
                 {/* Underline accent */}
@@ -110,7 +110,7 @@ function HeroContent({ initialStats, initialRecent }: HeroSectionProps) {
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
                   transition={{ delay: 0.6, duration: 0.6, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-                  className="absolute -bottom-1 left-0 right-0 h-px origin-left bg-gradient-to-r from-indigo-500/60 via-violet-500/60 to-transparent"
+                  className="absolute -bottom-1 left-0 right-0 h-px origin-left bg-linear-to-r from-indigo-500/60 via-violet-500/60 to-transparent"
                 />
               </span>
             </h1>
@@ -163,7 +163,7 @@ function HeroContent({ initialStats, initialRecent }: HeroSectionProps) {
                   key={i}
                   src={user.img}
                   alt={user.alt}
-                  className="h-8 w-8 rounded-full object-cover ring-2 ring-zinc-950"
+                  className="h-8 w-8 rounded-full object-cover ring-2 ring-background"
                 />
               ))}
             </div>
@@ -192,9 +192,9 @@ function HeroContent({ initialStats, initialRecent }: HeroSectionProps) {
       {/* ── Social proof ticker ─────────────────────────────────── */}
       <div className="relative z-10 mx-auto max-w-7xl border-t border-border/50 py-5 px-6 xl:px-12">
         <div className="mb-3 flex items-center justify-center gap-2 text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/40">
-          <div className="h-px w-12 bg-zinc-800" />
+          <div className="h-px w-12 bg-border/60" />
           Recent signups
-          <div className="h-px w-12 bg-zinc-800" />
+          <div className="h-px w-12 bg-border/60" />
         </div>
         <RecentSignupsTicker initialRecent={initialRecent} />
       </div>

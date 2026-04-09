@@ -5,6 +5,7 @@ import { Role, UserStatus } from "../constraint/index";
 import { envVars } from "../config/env";
 import AppError from "../errorHelpers/AppError";
 import { prisma } from "../lib/prisma";
+import { auth } from "../lib/auth";
 import { CookieUtils } from "../utils/cookie";
 import { jwtUtils } from "../utils/jwt";
 
@@ -12,63 +13,54 @@ export const checkAuth = (...authRoles: Role[]) => async (req: Request, res: Res
     try {
         // ── Path 1: Better Auth session token ─────────────────────────
         const sessionToken = CookieUtils.getCookie(req, "better-auth.session_token");
+        let sessionResolved = false;
 
         if (sessionToken) {
             console.log("[AuthDebug] Better Auth token found:", sessionToken.slice(0, 10) + "...");
-            const sessionExists = await prisma.session.findFirst({
-                where: {
-                    token: sessionToken,
-                    expiresAt: { gt: new Date() },
-                },
-                include: { user: true },
-            });
+            
+            try {
+                const sessionExists = await auth.api.getSession({
+                    headers: {
+                        "cookie": `better-auth.session_token=${sessionToken}`
+                    }
+                });
 
-            if (sessionExists && sessionExists.user) {
-                const user = sessionExists.user;
-                console.log("[AuthDebug] Session validated for user:", user.email);
+                if (sessionExists && sessionExists.user) {
+                    const user = sessionExists.user;
+                    console.log("[AuthDebug] Session validated for user:", user.email);
 
-                // War if session is expiring soon
-                const now        = new Date();
-                const expiresAt  = new Date(sessionExists.expiresAt);
-                const createdAt  = new Date(sessionExists.createdAt);
-                const lifetime   = expiresAt.getTime() - createdAt.getTime();
-                const remaining  = expiresAt.getTime() - now.getTime();
-                const pctLeft    = (remaining / lifetime) * 100;
+                    // Reject suspended / inactive / deleted users
+                    if (user.status === UserStatus.SUSPENDED || user.status === UserStatus.INACTIVE) {
+                        throw new AppError(status.UNAUTHORIZED, "Unauthorized access! User is not active.");
+                    }
+                    if (user.isDeleted) {
+                        throw new AppError(status.UNAUTHORIZED, "Unauthorized access! User is deleted.");
+                    }
 
-                if (pctLeft < 20) {
-                    res.setHeader("X-Session-Refresh",    "true");
-                    res.setHeader("X-Session-Expires-At", expiresAt.toISOString());
-                    res.setHeader("X-Time-Remaining",     remaining.toString());
+                    // Role gate
+                    if (authRoles.length > 0 && !authRoles.includes(user.role as Role)) {
+                        throw new AppError(status.FORBIDDEN, "Forbidden access! You do not have permission to access this resource.");
+                    }
+
+                    req.user = {
+                        id:    user.id,
+                        role:  user.role as Role,
+                        email: user.email,
+                    };
+
+                    sessionResolved = true;
+                    return next();
                 }
-
-                // Reject suspended / inactive / deleted users
-                if (user.status === UserStatus.SUSPENDED || user.status === UserStatus.INACTIVE) {
-                    console.log("[AuthDebug] User status blocked:", user.status);
-                    throw new AppError(status.UNAUTHORIZED, "Unauthorized access! User is not active.");
-                }
-                if (user.isDeleted) {
-                    console.log("[AuthDebug] User is deleted");
-                    throw new AppError(status.UNAUTHORIZED, "Unauthorized access! User is deleted.");
-                }
-
-                // Role gate
-                if (authRoles.length > 0 && !authRoles.includes(user.role as Role)) {
-                    console.log("[AuthDebug] Role mismatch. User:", user.role, "Required:", authRoles);
-                    throw new AppError(status.FORBIDDEN, "Forbidden access! You do not have permission to access this resource.");
-                }
-
-                req.user = {
-                    id:    user.id,
-                    role:  user.role as Role,
-                    email: user.email,
-                };
-
-                return next();
+            } catch (sessionError: any) {
+                // If it's our own AppError (status/role block), re-throw immediately
+                if (sessionError instanceof AppError) throw sessionError;
+                // Otherwise, Better Auth session lookup failed — fall through to JWT
+                console.warn("[AuthDebug] Better Auth session lookup failed, falling through to JWT:", sessionError.message);
             }
 
-            // Session token present but invalid / expired
-            console.log("[AuthDebug] Session token present but not found in DB or expired.");
-            throw new AppError(status.UNAUTHORIZED, "Unauthorized access! Session is invalid or expired.");
+            if (!sessionResolved) {
+                console.log("[AuthDebug] Better Auth session invalid/expired — trying JWT fallback.");
+            }
         }
 
         // ── Path 2: fallback to JWT access token ──────────────────────

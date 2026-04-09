@@ -1,4 +1,4 @@
-import { Role, UserStatus } from "../../../generated/client/client";
+import { Role, UserStatus } from "../../generated/client/client";
 
 declare module "better-auth" {
   interface User {

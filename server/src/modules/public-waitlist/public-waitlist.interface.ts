@@ -1,4 +1,4 @@
-import { Waitlist, Subscriber } from "../../../generated/client";
+import { Waitlist, Subscriber } from "../../generated/client";
 
 /* ── Service-layer payloads ──────────────────────────────────────── */
 

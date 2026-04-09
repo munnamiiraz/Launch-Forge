@@ -36,12 +36,12 @@ export function NavLinks() {
               "relative flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-all duration-150",
               isActive
                 ? "text-foreground"
-                : "text-muted-foreground/80 hover:bg-zinc-800/50 hover:text-foreground/80"
+                : "text-muted-foreground/80 hover:bg-muted/50 hover:text-foreground"
             )}
           >
             {/* Active indicator dot */}
             {isActive && (
-              <span className="absolute inset-x-3 -bottom-px h-px rounded-full bg-gradient-to-r from-indigo-500/60 via-indigo-400 to-indigo-500/60" />
+              <span className="absolute inset-x-3 -bottom-px h-[1.5px] rounded-full bg-indigo-600 dark:bg-indigo-400" />
             )}
 
             {link.label}
@@ -51,7 +51,7 @@ export function NavLinks() {
             )}
 
             {link.badge && (
-              <Badge className="h-4 rounded-full border-indigo-500/30 bg-indigo-500/15 px-1.5 py-0 text-[9px] font-semibold text-indigo-400">
+              <Badge className="h-4 rounded-full border-indigo-500/20 dark:border-indigo-500/30 bg-indigo-500/10 dark:bg-indigo-500/15 px-1.5 py-0 text-[10px] font-bold text-indigo-700 dark:text-indigo-400 leading-none">
                 {link.badge}
               </Badge>
             )}
@@ -61,9 +61,9 @@ export function NavLinks() {
 
       {/* Subtle vertical divider */}
       <div className="mx-2 flex items-center">
-        <div className="h-4 w-px bg-zinc-700/50" />
-        <div className="mx-1.5 h-1.5 w-px rounded-full bg-zinc-600/50" />
-        <div className="h-4 w-px bg-zinc-700/50" />
+        <div className="h-4 w-px bg-border" />
+        <div className="mx-1.5 h-1.5 w-px rounded-full bg-border/60" />
+        <div className="h-4 w-px bg-border" />
       </div>
 
       {/* Subscriber Section - Explore & How to Earn */}
@@ -80,12 +80,12 @@ export function NavLinks() {
               "relative flex items-center gap-1.5 rounded-md px-3 py-1.5 text-sm transition-all duration-150",
               isActive
                 ? "text-foreground"
-                : "text-muted-foreground/80 hover:bg-zinc-800/50 hover:text-foreground/80"
+                : "text-muted-foreground/80 hover:bg-muted/50 hover:text-foreground"
             )}
           >
             {/* Active indicator dot */}
             {isActive && (
-              <span className="absolute inset-x-3 -bottom-px h-px rounded-full bg-gradient-to-r from-indigo-500/60 via-indigo-400 to-indigo-500/60" />
+              <span className="absolute inset-x-3 -bottom-px h-[1.5px] rounded-full bg-indigo-600 dark:bg-indigo-400" />
             )}
 
             {link.label}
@@ -95,7 +95,7 @@ export function NavLinks() {
             )}
 
             {link.badge && (
-              <Badge className="h-4 rounded-full border-indigo-500/30 bg-indigo-500/15 px-1.5 py-0 text-[9px] font-semibold text-indigo-400">
+              <Badge className="h-4 rounded-full border-indigo-500/20 dark:border-indigo-500/30 bg-indigo-500/10 dark:bg-indigo-500/15 px-1.5 py-0 text-[10px] font-bold text-indigo-700 dark:text-indigo-400 leading-none">
                 {link.badge}
               </Badge>
             )}

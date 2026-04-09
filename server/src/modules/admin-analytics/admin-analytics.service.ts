@@ -96,7 +96,7 @@ export const adminAnalyticsService = {
      * and deduplicating in-process (Prisma doesn't support count distinct
      * on a related field directly without $queryRaw).
      */
-    const [dauSessions, wauSessions, mauSessions, totalSessions30d] =
+    const [dauSessions, wauSessions, mauSessions, totalSessions30d, newUsersToday, activeWorkspaceSessions] =
       await prisma.$transaction([
         prisma.session.findMany({
           where:    { createdAt: { gte: today } },
@@ -113,11 +113,25 @@ export const adminAnalyticsService = {
         prisma.session.count({
           where: { createdAt: { gte: daysAgo(30) } },
         }),
+        prisma.user.count({
+          where: { createdAt: { gte: today }, isDeleted: false },
+        }),
+        prisma.workspace.count({
+          where: {
+            deletedAt: null,
+            owner: {
+              sessions: {
+                some: { createdAt: { gte: daysAgo(30) } }
+              }
+            }
+          }
+        }),
       ]);
 
     const dauToday     = new Set(dauSessions.map(s => s.userId)).size;
     const wauThisWeek  = new Set(wauSessions.map(s => s.userId)).size;
     const mauThisMonth = new Set(mauSessions.map(s => s.userId)).size;
+    const activeWorkspaces30d = activeWorkspaceSessions;
 
     const dauOverMau = mauThisMonth > 0
       ? round1((dauToday / mauThisMonth) * 100)
@@ -142,6 +156,8 @@ export const adminAnalyticsService = {
       dauOverMau,
       avgSessionsPerUser,
       avgSessionLengthMin,
+      newUsersToday,
+      activeWorkspaces30d,
     };
   },
 

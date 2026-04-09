@@ -25,7 +25,7 @@ export function NavbarClient({ children }: NavbarClientProps) {
       className={cn(
         "sticky top-0 z-50 w-full transition-all duration-300",
         scrolled
-          ? "border-b border-zinc-800/70 bg-background/90 shadow-lg shadow-black/20 backdrop-blur-xl"
+          ? "border-b border-border/80 bg-background/90 shadow-lg shadow-indigo-500/5 backdrop-blur-xl"
           : "border-b border-border/40 bg-background"
       )}
     >

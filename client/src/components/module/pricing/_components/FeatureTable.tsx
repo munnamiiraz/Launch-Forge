@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check, Minus } from "lucide-react";
+import { Check, Minus, Sparkles } from "lucide-react";
 import { Badge } from "@/src/components/ui/badge";
 import { COMPARISON_FEATURES, PLANS } from "../_lib/pricing-data";
 import { cn } from "@/src/lib/utils";
@@ -12,13 +12,13 @@ function Cell({ value, isFeatured }: { value: boolean | string; isFeatured?: boo
       <span
         className={cn(
           "inline-flex h-5 w-5 items-center justify-center rounded-full",
-          isFeatured ? "bg-indigo-500/20 text-indigo-400" : "bg-zinc-800 text-muted-foreground"
+          isFeatured ? "bg-indigo-500/20 text-indigo-600 dark:text-indigo-400" : "bg-muted text-muted-foreground"
         )}
       >
         <Check size={11} strokeWidth={2.5} />
       </span>
     ) : (
-      <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-zinc-900 text-muted-foreground/40">
+      <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-muted/60 text-muted-foreground/40">
         <Minus size={11} strokeWidth={2} />
       </span>
     );
@@ -51,7 +51,7 @@ export function FeatureTable() {
       className="w-full overflow-hidden rounded-2xl border border-border/80"
     >
       {/* Table header */}
-      <div className="grid grid-cols-[1fr_repeat(3,_minmax(0,_160px))] items-center border-b border-border/80 bg-card/60 px-6 py-4">
+      <div className="grid grid-cols-[1fr_repeat(3,minmax(0,160px))] items-center border-b border-border/80 bg-card/60 px-6 py-4">
         {/* Empty feature label col */}
         <div />
 
@@ -101,8 +101,8 @@ export function FeatureTable() {
                   viewport={{ once: true }}
                   transition={{ delay: rowIdx * 0.03, duration: 0.3 }}
                   className={cn(
-                    "grid grid-cols-[1fr_repeat(3,_minmax(0,_160px))] items-center px-6 py-3.5 transition-colors hover:bg-card/40",
-                    !isLast && "border-b border-zinc-800/30"
+                    "grid grid-cols-[1fr_repeat(3,minmax(0,160px))] items-center px-6 py-3.5 transition-colors hover:bg-muted/30",
+                    !isLast && "border-b border-border/40"
                   )}
                 >
                   {/* Feature label */}
