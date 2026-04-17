@@ -4,10 +4,9 @@ import { validateRequest, validateQuery }  from "../../middlewares/validateReque
 import { checkAuth }                       from "../../middlewares/checkAuth";
 import {
   getLeaderboardQuerySchema,
-  getPublicLeaderboardQuerySchema,
-  publicLeaderboardParamSchema,
 } from "./leaderboard.validation";
 import { Role } from "../../constraint/index";
+import { cacheMiddleware } from "../../middlewares/cache.middleware";
 
 const router = Router({ mergeParams: true });
 
@@ -56,6 +55,7 @@ router
   .get(
     // validateRequest(publicLeaderboardParamSchema),
     // validateQuery(getPublicLeaderboardQuerySchema),
+    cacheMiddleware(30, "public_leaderboard"), // Cache for 30s
     leaderboardController.getPublicLeaderboard,
   );
 

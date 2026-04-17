@@ -6,6 +6,7 @@ import {
   exploreQuerySchema,
   exploreSlugParamSchema,
 } from "./explore.validation";
+import { cacheMiddleware } from "../../middlewares/cache.middleware";
 
 /**
  * Mount in app.ts:
@@ -33,11 +34,11 @@ import {
  *    before the user joins.
  */
 const router = Router();
-//TODO:
 router
   .route("/waitlists")
   .get(
     // validateQuery(exploreQuerySchema),
+    cacheMiddleware(60, "explore"), // Cache for 60 seconds
     exploreController.getExploreWaitlists,
   );
 
@@ -45,6 +46,7 @@ router
   .route("/waitlists/:slug")
   .get(
     validateParams(exploreSlugParamSchema),
+    cacheMiddleware(120, "explore_detail"), // Cache detail page for 2 minutes
     exploreController.getExploreWaitlistBySlug,
   );
 

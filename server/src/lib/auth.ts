@@ -1,10 +1,12 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { bearer, emailOTP } from "better-auth/plugins";
+import { redisStorage } from "@better-auth/redis-storage"; // [!code highlight]
 import { Role, UserStatus } from "../constraint/index";
 import { envVars } from "../config/env";
 import { sendEmail } from "../utils/email";
 import { prisma } from "./prisma";
+import { ioRedis } from "./redis"; // [!code highlight]
 // If your Prisma file is located elsewhere, you can change the path
 
 const isHttpsUrl = (url: string | undefined) =>
@@ -25,6 +27,11 @@ export const auth = betterAuth({
       provider: "postgresql", // or "mysql", "postgresql", ...etc
     }),
 
+    secondaryStorage: redisStorage({ // [!code highlight]
+      client: ioRedis, // [!code highlight]
+      keyPrefix: "auth:", // [!code highlight]
+    }), 
+
     emailAndPassword: {
       enabled: true,
       requireEmailVerification: false,
@@ -34,7 +41,7 @@ export const auth = betterAuth({
       google:{
         clientId: envVars.GOOGLE_CLIENT_ID,
         clientSecret: envVars.GOOGLE_CLIENT_SECRET,
-        callbackURL: envVars.GOOGLE_CALLBACK_URL,
+        redirectURI: envVars.GOOGLE_CALLBACK_URL,
         mapProfileToUser: ()=>{
           return {
             role : Role.OWNER,
@@ -116,11 +123,12 @@ export const auth = betterAuth({
     ],
 
     session: {
-      expiresIn: 60 * 60 * 60 * 24, // 1 day in seconds
-      updateAge: 60 * 60 * 60 * 24, // 1 day in seconds
+      expiresIn: 24 * 60 * 60, // 1 day in seconds
+      updateAge: 24 * 60 * 60, // 1 day in seconds
       cookieCache: {
         enabled: true,
-        maxAge: 60 * 60 * 60 * 24, // 1 day in seconds
+        maxAge: 5 * 60, // 5 minutes caching on cookie side
+        refreshCache: false // disable stateless cookie refresh since we hit redis
       }
     },
 

@@ -13,20 +13,22 @@ import { jwtUtils } from "../utils/jwt";
 export const checkAuth = (...authRoles: Role[]) => async (req: Request, res: Response, next: NextFunction) => {
     try {
         // ── Path 1: Better Auth session token ─────────────────────────
-        const sessionToken = CookieUtils.getCookie(req, "better-auth.session_token");
+        const betterAuthToken = CookieUtils.getCookie(req, "better-auth.session_token");
         let sessionResolved = false;
 
-        if (sessionToken) {
-            console.log("[AuthDebug] Better Auth token found:", sessionToken.slice(0, 10) + "...");
+        if (betterAuthToken) {
+            console.log("[AuthDebug] Better Auth token found in cookie:", betterAuthToken.slice(0, 10) + "...");
             
             try {
+                // We pass the full headers so Better Auth can resolve cookies/bearer tokens
+                const headers = fromNodeHeaders(req.headers);
                 const sessionExists = await auth.api.getSession({
-                    headers: fromNodeHeaders(req.headers)
+                    headers
                 });
 
-                if (sessionExists && sessionExists.user) {
-                    const user = sessionExists.user;
-                    console.log("[AuthDebug] Session validated for user:", user.email);
+                if (sessionExists && sessionExists.session) {
+                    const user = sessionExists.user as any;
+                    console.log("[AuthDebug] Better Auth session validated for user:", user.email);
 
                     // Reject suspended / inactive / deleted users
                     if (user.status === UserStatus.SUSPENDED || user.status === UserStatus.INACTIVE) {

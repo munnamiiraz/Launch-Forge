@@ -141,8 +141,9 @@ const changePassword = catchAsync(
 
 const logoutUser = catchAsync(
     async (req: Request, res: Response) => {
-        const betterAuthSessionToken = CookieUtils.getCookie(req, "better-auth.session_token");
-        const result = await AuthService.logoutUser(betterAuthSessionToken as string);
+        const headers = fromNodeHeaders(req.headers);
+        const betterAuthToken = CookieUtils.getCookie(req, "better-auth.session_token") as string;
+        const result = await AuthService.logoutUser(headers, req.user?.id, betterAuthToken);
         tokenUtils.clearAuthCookies(res);
 
         sendResponse(res, {

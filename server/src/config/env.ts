@@ -43,6 +43,7 @@ interface EnvConfig {
     NEXT_PUBLIC_APP_URL: string;
     ADMIN_EMAIL: string;
     ADMIN_PASSWORD: string;
+    REDIS_URL?: string;
 }
 
 
@@ -129,6 +130,7 @@ const loadEnvVariables = (): EnvConfig => {
         NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL as string,
         ADMIN_EMAIL: process.env.ADMIN_EMAIL as string,
         ADMIN_PASSWORD: process.env.ADMIN_PASSWORD as string,
+        REDIS_URL: process.env.REDIS_URL,
     }
 }
 

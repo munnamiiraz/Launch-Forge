@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(redis-cli KEYS \"*\")",
+      "Bash(redis-cli -u redis://localhost:6379 KEYS \"*\")",
+      "Bash(node --input-type=module)",
+      "Bash(xargs grep *)",
+      "Bash(node -e ' *)"
+    ]
+  }
+}

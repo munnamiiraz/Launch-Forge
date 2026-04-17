@@ -1,18 +1,19 @@
-version: '3.8'
-
 services:
-  backend:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-    container_name: launch-forge-backend
+
+  redis:
+    image: redis:7-alpine
+    container_name: launch-forge-redis
+    command: ["redis-server", "--maxmemory", "200mb", "--maxmemory-policy", "allkeys-lru"]
     ports:
-      - "5000:5000"
-    env_file:
-      - ./server/.env
-    environment:
-      - NODE_ENV=production
-    restart: always
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+    restart: unless-stopped
 
 # If you need a local database for testing
 #  postgres:
@@ -27,5 +28,6 @@ services:
 #    volumes:
 #      - postgres_data:/var/lib/postgresql/data
 
-# volumes:
+volumes:
+  redis_data:
 #  postgres_data:
