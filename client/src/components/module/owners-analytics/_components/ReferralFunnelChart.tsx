@@ -42,12 +42,7 @@ export function ReferralFunnelChart() {
           <div className="flex h-44 items-center justify-center text-xs text-red-400">
             {(error as Error)?.message || "Failed to load referral funnel."}
           </div>
-        ) : isLoading ? (
-          <div className="flex h-44 items-center justify-center text-xs text-muted-foreground/80">
-            <Loader2 size={16} className="mr-2 animate-spin" />
-            Loading…
-          </div>
-        ) : funnel.length === 0 ? (
+        ) : funnel.length === 0 && !isLoading ? (
           <div className="flex h-44 items-center justify-center text-xs text-muted-foreground/80">
             No data yet.
           </div>
@@ -155,12 +150,7 @@ export function SignupSourceChart() {
           <div className="flex h-44 items-center justify-center text-xs text-red-400">
             {(error as Error)?.message || "Failed to load signup sources."}
           </div>
-        ) : isLoading ? (
-          <div className="flex h-44 items-center justify-center text-xs text-muted-foreground/80">
-            <Loader2 size={16} className="mr-2 animate-spin" />
-            Loading…
-          </div>
-        ) : withPct.length === 0 ? (
+        ) : withPct.length === 0 && !isLoading ? (
           <div className="flex h-44 items-center justify-center text-xs text-muted-foreground/80">
             No data yet.
           </div>

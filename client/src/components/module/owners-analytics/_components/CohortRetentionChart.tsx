@@ -55,12 +55,7 @@ export function CohortRetentionChart() {
           <div className="flex h-28 items-center justify-center text-xs text-red-400">
             {(error as Error)?.message || "Failed to load cohort retention."}
           </div>
-        ) : isLoading ? (
-          <div className="flex h-28 items-center justify-center text-xs text-muted-foreground/80">
-            <Loader2 size={16} className="mr-2 animate-spin" />
-            Loading…
-          </div>
-        ) : rows.length === 0 ? (
+        ) : rows.length === 0 && !isLoading ? (
           <div className="flex h-28 items-center justify-center text-xs text-muted-foreground/80">
             No data yet.
           </div>
@@ -174,12 +169,7 @@ export function FeedbackActivityChart() {
           <div className="flex h-44 items-center justify-center text-xs text-red-400">
             {(error as Error)?.message || "Failed to load feedback activity."}
           </div>
-        ) : isLoading ? (
-          <div className="flex h-44 items-center justify-center text-xs text-muted-foreground/80">
-            <Loader2 size={16} className="mr-2 animate-spin" />
-            Loading…
-          </div>
-        ) : points.length === 0 ? (
+        ) : points.length === 0 && !isLoading ? (
           <div className="flex h-44 items-center justify-center text-xs text-muted-foreground/80">
             No data yet.
           </div>

@@ -8,6 +8,7 @@ import { Button } from "@/src/components/ui/button";
 import { PrizesClient } from "@/src/components/module/prizes/_components/PrizesClient";
 import { authFetch } from "@/src/lib/axios/authFetch";
 import { useWorkspace } from "@/src/provider/WorkspaceProvider";
+import { Skeleton } from "@/src/components/ui/skeleton";
 import type { Prize, PrizeWaitlist } from "@/src/components/module/prizes/_types";
 
 const API_BASE =
@@ -150,9 +151,27 @@ export function PrizesPageClient() {
           </div>
 
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-32 text-muted-foreground/80">
-              <RefreshCw size={24} className="mb-4 animate-spin text-zinc-400 opacity-50" />
-              <span className="text-sm font-medium tracking-wide">Syncing prize inventory...</span>
+            <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+              <div className="flex flex-col gap-5">
+                <div className="grid grid-cols-3 gap-3">
+                  <Skeleton className="h-[78px] rounded-xl border border-zinc-200 dark:border-zinc-800 bg-card/40" />
+                  <Skeleton className="h-[78px] rounded-xl border border-zinc-200 dark:border-zinc-800 bg-card/40" />
+                  <Skeleton className="h-[78px] rounded-xl border border-zinc-200 dark:border-zinc-800 bg-card/40" />
+                </div>
+                <div className="flex items-center justify-between">
+                  <Skeleton className="h-9 w-64 rounded-lg" />
+                  <Skeleton className="h-9 w-32 rounded-lg" />
+                </div>
+                <div className="flex flex-col gap-4">
+                  {[1, 2, 3].map((i) => (
+                    <Skeleton key={i} className="h-[140px] w-full rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-card/20" />
+                  ))}
+                </div>
+              </div>
+              <div className="hidden lg:flex lg:flex-col lg:gap-4">
+                <Skeleton className="h-[20px] w-32" />
+                <Skeleton className="h-[500px] w-full rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-card/20" />
+              </div>
             </div>
           ) : error ? (
             <div className="flex flex-col items-center justify-center rounded-2xl border border-red-500/20 bg-red-500/[0.02] py-20 text-center dark:bg-red-500/[0.05]">

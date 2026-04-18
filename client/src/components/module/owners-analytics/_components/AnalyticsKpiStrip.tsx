@@ -166,14 +166,6 @@ export function AnalyticsKpiStrip() {
           {(error as Error)?.message || "Failed to load analytics."}
         </div>
       )}
-      {isLoading && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-xl bg-background/40">
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Loader2 size={14} className="animate-spin" />
-            Loading analytics…
-          </div>
-        </div>
-      )}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-3 xl:grid-cols-6">
         {kpis.map((kpi) => (
           <KpiCard key={kpi.label} {...kpi} />

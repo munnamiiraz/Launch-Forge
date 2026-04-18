@@ -77,7 +77,7 @@ export async function DashboardLayout({ children }: DashboardLayoutProps) {
 
         {/* Main content area */}
         <div className="flex flex-1 flex-col overflow-hidden">
-          <main className="flex-1 overflow-y-auto">
+          <main className="flex-1 overflow-y-auto overscroll-behavior-contain custom-scrollbar">
             {children}
           </main>
         </div>

@@ -124,30 +124,54 @@
   body {
     @apply bg-background text-foreground;
   }
-  html, body {
-    height: 100%;
-    min-height: 100%;
-    @apply bg-background;
-  }
-
   html {
     @apply font-sans;
   }
+
+  /* 
+   * High-Fidelity Global Scrollbar
+   * Targets all scrollable areas (body, cards, main app)
+   * with a sleek, floating indigo finish.
+   */
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.25); /* Indigo-500 @ 25% */
+    border-radius: 100px;
+    border: 1px solid transparent;
+    background-clip: content-box;
+    transition: background 0.2s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.45); /* Indigo-500 @ 45% */
+    background-clip: content-box;
+  }
+
+  /* Specific handling for Dark Mode */
+  .dark ::-webkit-scrollbar-thumb {
+    background: rgba(129, 140, 248, 0.2); /* Indigo-400 @ 20% */
+  }
+
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background: rgba(129, 140, 248, 0.4);
+  }
 }
 
-.custom-scrollbar::-webkit-scrollbar {
-  width: 5px;
+/* Utilities */
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+  display: none !important;
 }
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(129, 140, 248, 0.2);
-  border-radius: 10px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(129, 140, 248, 0.4);
+.no-scrollbar,
+.scrollbar-none {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
 }

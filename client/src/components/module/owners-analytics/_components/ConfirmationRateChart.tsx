@@ -62,12 +62,7 @@ export function ConfirmationRateChart() {
           <div className="flex h-52 items-center justify-center text-xs text-red-400">
             {(error as Error)?.message || "Failed to load confirmation rate."}
           </div>
-        ) : isLoading ? (
-          <div className="flex h-52 items-center justify-center text-xs text-muted-foreground/80">
-            <Loader2 size={16} className="mr-2 animate-spin" />
-            Loading…
-          </div>
-        ) : points.length === 0 ? (
+        ) : points.length === 0 && !isLoading ? (
           <div className="flex h-52 items-center justify-center text-xs text-muted-foreground/80">
             No data yet.
           </div>
@@ -153,12 +148,7 @@ export function TopReferrersChart() {
           <div className="flex h-40 items-center justify-center text-xs text-red-400">
             {(error as Error)?.message || "Failed to load top referrers."}
           </div>
-        ) : isLoading ? (
-          <div className="flex h-40 items-center justify-center text-xs text-muted-foreground/80">
-            <Loader2 size={16} className="mr-2 animate-spin" />
-            Loading…
-          </div>
-        ) : rows.length === 0 ? (
+        ) : rows.length === 0 && !isLoading ? (
           <div className="flex h-40 items-center justify-center text-xs text-muted-foreground/80">
             No data yet.
           </div>

@@ -388,7 +388,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
         </div>
 
         {/* ── Nav groups ────────────────────────────────────────── */}
-        <nav className="flex-1 overflow-y-auto px-2 pb-2 scrollbar-none">
+        <nav className="flex-1 overflow-y-auto px-2 pb-2 no-scrollbar">
           {NAV_GROUPS.map((group) => (
             <div key={group.label} className="mb-4">
               {!collapsed && (

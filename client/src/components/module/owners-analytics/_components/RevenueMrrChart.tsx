@@ -72,12 +72,7 @@ export function RevenueMrrChart() {
           <div className="flex h-52 items-center justify-center text-xs text-red-400">
             {(error as Error)?.message || "Failed to load revenue."}
           </div>
-        ) : isLoading ? (
-          <div className="flex h-52 items-center justify-center text-xs text-muted-foreground/80">
-            <Loader2 size={16} className="mr-2 animate-spin" />
-            Loading…
-          </div>
-        ) : trend.length === 0 ? (
+        ) : trend.length === 0 && !isLoading ? (
           <div className="flex h-52 items-center justify-center text-xs text-muted-foreground/80">
             No data yet.
           </div>
@@ -153,12 +148,7 @@ export function PlanDistributionChart() {
           <div className="flex h-40 items-center justify-center text-xs text-red-400">
             {(error as Error)?.message || "Failed to load plan distribution."}
           </div>
-        ) : isLoading ? (
-          <div className="flex h-40 items-center justify-center text-xs text-muted-foreground/80">
-            <Loader2 size={16} className="mr-2 animate-spin" />
-            Loading…
-          </div>
-        ) : distribution.length === 0 ? (
+        ) : distribution.length === 0 && !isLoading ? (
           <div className="flex h-40 items-center justify-center text-xs text-muted-foreground/80">
             No data yet.
           </div>
