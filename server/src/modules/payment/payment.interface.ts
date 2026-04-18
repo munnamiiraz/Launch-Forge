@@ -17,11 +17,13 @@ export interface CreateCheckoutPayload {
   requestingUserId: string;
   planType:         PaymentType;
   planMode:         PaymentMode;
+  ownerEmail?:      string;
 }
 
 /** GET /api/payment/status — get the caller's current payment record */
 export interface GetPaymentStatusPayload {
   requestingUserId: string;
+  ownerEmail?:      string;
 }
 
 /** POST /api/payment/webhook — raw Stripe event already verified */
@@ -35,12 +37,34 @@ export interface HandleWebhookPayload {
 /** POST /api/payment/portal — customer billing portal session */
 export interface CreatePortalSessionPayload {
   requestingUserId: string;
+  ownerEmail?:      string;
 }
 
 /** POST /api/payment/confirm - confirm a Checkout Session after returning from Stripe */
 export interface ConfirmCheckoutPayload {
   requestingUserId: string;
   sessionId: string;
+  ownerEmail?:      string;
+}
+
+export interface GetInvoicesPayload {
+  requestingUserId: string;
+  ownerEmail?:      string;
+}
+
+export interface CancelSubscriptionPayload {
+  requestingUserId: string;
+  ownerEmail?:      string;
+}
+
+export interface SyncSubscriptionPayload {
+  requestingUserId: string;
+  ownerEmail?:      string;
+}
+
+export interface GetUsagePayload {
+  requestingUserId: string;
+  ownerEmail?:      string;
 }
 
 /* ─────────────────────────────────────────────────────────────────

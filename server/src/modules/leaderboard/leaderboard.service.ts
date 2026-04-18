@@ -28,7 +28,7 @@ import {
   buildLeaderboardMeta,
   maskEmail,
 } from "./leaderboard.utils";
-import { withCache } from "../../lib/redis";
+import { withCache } from "../../lib/redis/with-cache";
 
 /* ──────────────────────────────────────────────────────────────
    Internal Service Implementations (Raw)
@@ -177,9 +177,11 @@ export const leaderboardService = {
 
   /* ── GET /api/waitlists/:id/leaderboard/full ─────────────────── */
 
-  async getLeaderboard(
-    payload: GetLeaderboardPayload,
-  ): Promise<PaginatedLeaderboard> {
+  getLeaderboard: withCache(
+    (payload: GetLeaderboardPayload) => 
+      `owner:${payload.ownerEmail || "system"}:workspace-${payload.workspaceId}:leaderboard:full`,
+    300,
+    async (payload: GetLeaderboardPayload): Promise<PaginatedLeaderboard> => {
     const { waitlistId, workspaceId, requestingUserId, query } = payload;
 
     /* 1. Verify workspace membership ────────────────────────────── */
@@ -363,7 +365,8 @@ export const leaderboardService = {
       meta:    buildLeaderboardMeta(filtered.length, page, limit),
       summary,
     };
-  },
+  }
+  ),
 
 
   /* ── GET /api/leaderboard/:waitlistSlug ──────────────────────────── */
@@ -413,143 +416,147 @@ export const leaderboardService = {
       waitlistId: waitlist.id,
       workspaceId: waitlist.workspaceId,
       requestingUserId,
+      ownerEmail: payload.ownerEmail,
       query,
     });
   },
 
   /* ── GET /api/workspaces/:workspaceId/waitlists/:waitlistId/leaderboard/:waitlistSlug ─ */
 
-  async getMinimalLeaderboard(
-    payload: GetLeaderboardPayloadWithSlug,
-  ): Promise<{
-    data: MinimalLeaderboardEntry[];
-    meta: LeaderboardPaginationMeta;
-    summary: LeaderboardSummary;
-  }> {
-    const { waitlistSlug, requestingUserId, query } = payload;
+  getMinimalLeaderboard: withCache(
+    (payload: GetLeaderboardPayloadWithSlug) => 
+      `owner:${payload.ownerEmail || "system"}:leaderboard:minimal:${payload.waitlistSlug}`,
+    300,
+    async (payload: GetLeaderboardPayloadWithSlug): Promise<{
+      data: MinimalLeaderboardEntry[];
+      meta: LeaderboardPaginationMeta;
+      summary: LeaderboardSummary;
+    }> => {
+      const { waitlistSlug, requestingUserId, query } = payload;
 
-    /* 1. Find waitlist by slug OR by ID (UUID) and get its workspace */
-    let waitlist = await prisma.waitlist.findFirst({
-      where: { slug: waitlistSlug, deletedAt: null },
-      select: { id: true, workspaceId: true, slug: true },
-    });
-
-    if (!waitlist) {
-      waitlist = await prisma.waitlist.findUnique({
-        where: { id: waitlistSlug, deletedAt: null },
+      /* 1. Find waitlist by slug OR by ID (UUID) and get its workspace */
+      let waitlist = await prisma.waitlist.findFirst({
+        where: { slug: waitlistSlug, deletedAt: null },
         select: { id: true, workspaceId: true, slug: true },
       });
+
+      if (!waitlist) {
+        waitlist = await prisma.waitlist.findUnique({
+          where: { id: waitlistSlug, deletedAt: null },
+          select: { id: true, workspaceId: true, slug: true },
+        });
+      }
+
+      if (!waitlist) {
+        throw new AppError(status.NOT_FOUND, LEADERBOARD_MESSAGES.NOT_FOUND);
+      }
+
+      /* 2. Verify workspace membership */
+      const membership = await prisma.workspaceMember.findUnique({
+        where: {
+          workspaceId_userId: { workspaceId: waitlist.workspaceId, userId: requestingUserId },
+          deletedAt: null,
+        },
+      });
+
+      if (!membership) {
+        throw new AppError(status.FORBIDDEN, LEADERBOARD_MESSAGES.UNAUTHORIZED);
+      }
+
+      /* 3. Fetch all non-deleted subscribers for full context */
+      const allRaw: RawSubscriberRow[] = await prisma.subscriber.findMany({
+        where: { waitlistId: waitlist.id, deletedAt: null },
+        orderBy: [
+          { referralsCount: "desc" },
+          { createdAt:      "asc"  },
+        ],
+        select: {
+          id:             true,
+          name:           true,
+          email:          true,
+          referralCode:   true,
+          referralsCount: true,
+          referredById:   true,
+          isConfirmed:    true,
+          createdAt:      true,
+        },
+      });
+
+      /* 4. Rank */
+      const idToRank     = new Map<string, number>();
+      const idToQueuePos = new Map<string, number>();
+
+      allRaw.forEach((s, i) => {
+        idToRank.set(s.id,     i + 1);
+        idToQueuePos.set(s.id, i + 1);
+      });
+
+      /* 5. Build children map for chain calculations */
+      const childrenMap = buildChildrenMap(allRaw);
+
+      /* 6. Summary stats */
+      const totalSubscribers = allRaw.length;
+      const activeReferrers  = allRaw.filter(s => s.referralsCount > 0).length;
+      const totalReferrals   = allRaw.reduce((sum, s) => sum + s.referralsCount, 0);
+      const topReferralCount = allRaw.length > 0 ? allRaw[0].referralsCount : 0;
+      const avgReferralsPerReferrer =
+        activeReferrers === 0
+          ? 0
+          : Math.round((totalReferrals / activeReferrers) * 10) / 10;
+
+      const newestSubscriberAt =
+        allRaw.length === 0
+          ? null
+          : allRaw.reduce(
+              (latest, s) => (s.createdAt > latest ? s.createdAt : latest),
+              allRaw[0].createdAt,
+            );
+
+      const summary: LeaderboardSummary = {
+        totalSubscribers,
+        totalReferrals,
+        activeReferrers,
+        avgReferralsPerReferrer,
+        topReferralCount,
+        newestSubscriberAt,
+      };
+
+      /* 7. Build minimal entries */
+      const entries: MinimalLeaderboardEntry[] = allRaw.map(sub => ({
+        rank:            idToRank.get(sub.id)!,
+        tier:            resolveTier(idToRank.get(sub.id)!),
+        id:              sub.id,
+        name:            sub.name,
+        email:           sub.email,
+        directReferrals: sub.referralsCount,
+        chainReferrals:  countChain(sub.id, childrenMap),
+        sharePercent:    calcSharePercent(sub.referralsCount, totalReferrals),
+        queuePosition:   idToQueuePos.get(sub.id)!,
+      }));
+
+      /* 8. Apply filters */
+      let filtered = entries;
+
+      if (query.tier && query.tier !== "all") {
+        filtered = filtered.filter(e => e.tier === query.tier);
+      }
+
+      if (query.search) {
+        const q = query.search.toLowerCase();
+        filtered = filtered.filter(
+          e => e.name.toLowerCase().includes(q) || e.email.toLowerCase().includes(q),
+        );
+      }
+
+      /* 9. Paginate */
+      const { page, limit, skip } = normaliseLeaderboardPagination(query);
+      const pageSlice = filtered.slice(skip, skip + limit);
+
+      return {
+        data:    pageSlice,
+        meta:    buildLeaderboardMeta(filtered.length, page, limit),
+        summary,
+      };
     }
-
-    if (!waitlist) {
-      throw new AppError(status.NOT_FOUND, LEADERBOARD_MESSAGES.NOT_FOUND);
-    }
-
-    /* 2. Verify workspace membership */
-    const membership = await prisma.workspaceMember.findUnique({
-      where: {
-        workspaceId_userId: { workspaceId: waitlist.workspaceId, userId: requestingUserId },
-        deletedAt: null,
-      },
-    });
-
-    if (!membership) {
-      throw new AppError(status.FORBIDDEN, LEADERBOARD_MESSAGES.UNAUTHORIZED);
-    }
-
-    /* 3. Fetch all non-deleted subscribers for full context */
-    const allRaw: RawSubscriberRow[] = await prisma.subscriber.findMany({
-      where: { waitlistId: waitlist.id, deletedAt: null },
-      orderBy: [
-        { referralsCount: "desc" },
-        { createdAt:      "asc"  },
-      ],
-      select: {
-        id:             true,
-        name:           true,
-        email:          true,
-        referralCode:   true,
-        referralsCount: true,
-        referredById:   true,
-        isConfirmed:    true,
-        createdAt:      true,
-      },
-    });
-
-    /* 4. Rank */
-    const idToRank     = new Map<string, number>();
-    const idToQueuePos = new Map<string, number>();
-
-    allRaw.forEach((s, i) => {
-      idToRank.set(s.id,     i + 1);
-      idToQueuePos.set(s.id, i + 1);
-    });
-
-    /* 5. Build children map for chain calculations */
-    const childrenMap = buildChildrenMap(allRaw);
-
-    /* 6. Summary stats */
-    const totalSubscribers = allRaw.length;
-    const activeReferrers  = allRaw.filter(s => s.referralsCount > 0).length;
-    const totalReferrals   = allRaw.reduce((sum, s) => sum + s.referralsCount, 0);
-    const topReferralCount = allRaw.length > 0 ? allRaw[0].referralsCount : 0;
-    const avgReferralsPerReferrer =
-      activeReferrers === 0
-        ? 0
-        : Math.round((totalReferrals / activeReferrers) * 10) / 10;
-
-    const newestSubscriberAt =
-      allRaw.length === 0
-        ? null
-        : allRaw.reduce(
-            (latest, s) => (s.createdAt > latest ? s.createdAt : latest),
-            allRaw[0].createdAt,
-          );
-
-    const summary: LeaderboardSummary = {
-      totalSubscribers,
-      totalReferrals,
-      activeReferrers,
-      avgReferralsPerReferrer,
-      topReferralCount,
-      newestSubscriberAt,
-    };
-
-    /* 7. Build minimal entries */
-    const entries: MinimalLeaderboardEntry[] = allRaw.map(sub => ({
-      rank:            idToRank.get(sub.id)!,
-      tier:            resolveTier(idToRank.get(sub.id)!),
-      id:              sub.id,
-      name:            sub.name,
-      email:           sub.email,
-      directReferrals: sub.referralsCount,
-      chainReferrals:  countChain(sub.id, childrenMap),
-      sharePercent:    calcSharePercent(sub.referralsCount, totalReferrals),
-      queuePosition:   idToQueuePos.get(sub.id)!,
-    }));
-
-    /* 8. Apply filters */
-    let filtered = entries;
-
-    if (query.tier && query.tier !== "all") {
-      filtered = filtered.filter(e => e.tier === query.tier);
-    }
-
-    if (query.search) {
-      const q = query.search.toLowerCase();
-      filtered = filtered.filter(
-        e => e.name.toLowerCase().includes(q) || e.email.toLowerCase().includes(q),
-      );
-    }
-
-    /* 9. Paginate */
-    const { page, limit, skip } = normaliseLeaderboardPagination(query);
-    const pageSlice = filtered.slice(skip, skip + limit);
-
-    return {
-      data:    pageSlice,
-      meta:    buildLeaderboardMeta(filtered.length, page, limit),
-      summary,
-    };
-  },
+  ),
 };

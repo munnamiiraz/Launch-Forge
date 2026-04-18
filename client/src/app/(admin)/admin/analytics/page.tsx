@@ -134,7 +134,7 @@ export default async function AdminAnalyticsPage() {
   const safeChangelog  = changelogDataRes?.data || [];
 
   return (
-    <div className="flex flex-col gap-8 p-6">
+    <div className="flex min-h-full flex-col gap-8 p-6">
 
       {/* ── Page identity band ───────────────────────────── */}
       <div className="relative overflow-hidden rounded-2xl border border-red-500/15 bg-card/30 px-6 py-5">

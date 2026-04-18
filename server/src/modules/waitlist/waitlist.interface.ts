@@ -33,6 +33,7 @@ export interface CreateWaitlistPayload extends CreateWaitlistInput {
 export interface GetWaitlistsPayload {
   workspaceId: string;
   requestingUserId: string;
+  ownerEmail?: string;
   query: GetWaitlistsQuery;
 }
 

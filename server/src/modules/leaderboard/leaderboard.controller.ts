@@ -1,9 +1,18 @@
-// controller
 import { Request, Response, NextFunction } from "express";
 import status from "http-status";
+import { prisma }   from "../../lib/prisma";
 import { leaderboardService }   from "./leaderboard.service";
 import { LEADERBOARD_MESSAGES } from "./leaderboard.constants";
 import { GetLeaderboardQuery, GetPublicLeaderboardQuery } from "./leaderboard.interface";
+
+async function resolveOwnerEmail(workspaceId: string, defaultEmail: string) {
+  if (!workspaceId || workspaceId === "undefined") return defaultEmail;
+  const ws = await prisma.workspace.findUnique({
+    where: { id: workspaceId },
+    select: { owner: { select: { email: true } } }
+  });
+  return ws?.owner?.email || defaultEmail;
+}
 
 export const leaderboardController = {
 
@@ -18,6 +27,7 @@ export const leaderboardController = {
       const waitlistId       = req.params.id;
       const workspaceId      = req.params.workspaceId;
       const requestingUserId = req.user!.id;
+      const ownerEmail       = await resolveOwnerEmail(workspaceId as string, req.user!.email);
 
       // Query params already coerced + validated by validateRequest
       const query = req.query as unknown as GetLeaderboardQuery;
@@ -26,6 +36,7 @@ export const leaderboardController = {
         waitlistId: waitlistId as string,
         workspaceId: workspaceId as string,
         requestingUserId,
+        ownerEmail,
         query,
       });
 
@@ -101,13 +112,17 @@ export const leaderboardController = {
     next: NextFunction,
   ): Promise<void> {
     try {
+      const waitlistId       = req.params.id;
+      const workspaceId      = req.params.workspaceId;
       const { waitlistSlug } = req.params;
       const requestingUserId = req.user!.id;
+      const ownerEmail       = await resolveOwnerEmail(workspaceId as string, req.user!.email);
       const query = req.query as unknown as GetLeaderboardQuery;
 
       const result = await leaderboardService.getMinimalLeaderboard({
         waitlistSlug: waitlistSlug as string,
         requestingUserId,
+        ownerEmail,
         query,
       });
 

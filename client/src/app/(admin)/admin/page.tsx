@@ -57,7 +57,7 @@ export default async function AdminPage() {
   const growthData = { "7d": growth7d, "30d": growth30d, "90d": growth90d };
 
   return (
-    <div className="flex flex-col gap-8 p-6">
+    <div className="flex min-h-full flex-col gap-8 p-6">
 
       {/* ── Page title ────────────────────────────────────────── */}
       <div className="relative overflow-hidden rounded-2xl border border-red-500/15 bg-card/30 px-6 py-5">

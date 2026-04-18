@@ -65,6 +65,7 @@ export interface AddMemberPayload {
 export interface GetDashboardOverviewPayload {
   requestingUserId: string;
   workspaceId?:      string;
+  ownerEmail?:      string;
   includeArchived?: boolean;
 }
 

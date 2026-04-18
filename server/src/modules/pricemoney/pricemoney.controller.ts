@@ -1,7 +1,17 @@
 import { Request, Response, NextFunction } from "express";
 import status from "http-status";
+import { prisma } from "../../lib/prisma";
 import { prizeService }   from "./pricemoney.service";
 import { PRIZE_MESSAGES } from "./pricemoney.constant";
+
+async function resolveOwnerEmail(workspaceId: string, defaultEmail: string) {
+  if (!workspaceId || workspaceId === "undefined") return defaultEmail;
+  const ws = await prisma.workspace.findUnique({
+    where: { id: workspaceId },
+    select: { owner: { select: { email: true } } }
+  });
+  return ws?.owner?.email || defaultEmail;
+}
 
 export const prizeController = {
 
@@ -22,8 +32,10 @@ export const prizeController = {
         imageUrl, expiresAt,
       } = req.body;
 
+      const ownerEmail = await resolveOwnerEmail(workspaceId as string, req.user!.email);
+
       const prize = await prizeService.createPrize({
-        waitlistId, workspaceId, requestingUserId,
+        waitlistId, workspaceId, requestingUserId, ownerEmail,
         title, description, prizeType, value, currency,
         rankFrom, rankTo, imageUrl, expiresAt,
       });
@@ -56,8 +68,10 @@ export const prizeController = {
         imageUrl, expiresAt, status: prizeStatus,
       } = req.body;
 
+      const ownerEmail = await resolveOwnerEmail(workspaceId as string, req.user!.email);
+
       const prize = await prizeService.updatePrize({
-        prizeId: prizeId as string, waitlistId, workspaceId, requestingUserId,
+        prizeId: prizeId as string, waitlistId, workspaceId, requestingUserId, ownerEmail,
         title, description, prizeType, value, currency,
         rankFrom, rankTo, imageUrl, expiresAt,
         status: prizeStatus,
@@ -85,10 +99,12 @@ export const prizeController = {
     try {
       const prizeId          = req.params.id;
       const requestingUserId = req.user!.id;
-      const { workspaceId, waitlistId } = req.body;
+      const { workspaceId, waitlistId } = req.query; // Check body first, then query
+
+      const ownerEmail = await resolveOwnerEmail(workspaceId as string, req.user!.email);
 
       const ack = await prizeService.deletePrize({
-        prizeId: prizeId as string, waitlistId, workspaceId, requestingUserId,
+        prizeId: prizeId as string, waitlistId: waitlistId as string, workspaceId: workspaceId as string, requestingUserId, ownerEmail,
       });
 
       res.status(status.OK).json({
@@ -115,8 +131,10 @@ export const prizeController = {
       const requestingUserId = req.user!.id;
       const workspaceId      = req.query.workspaceId as string;
 
+      const ownerEmail = await resolveOwnerEmail(workspaceId as string, req.user!.email);
+
       const prizes = await prizeService.getPrizes({
-        waitlistId: waitlistId as string, workspaceId, requestingUserId,
+        waitlistId: waitlistId as string, workspaceId, requestingUserId, ownerEmail,
       });
 
       res.status(status.OK).json({

@@ -32,12 +32,23 @@ const chartConfig = {
   value: { label: "New signups", color: "hsl(var(--chart-1))" },
 };
 
-export function GrowthChart() {
+interface GrowthChartProps {
+  externalData?: GrowthDataPoint[];
+}
+
+export function GrowthChart({ externalData }: GrowthChartProps) {
   const { activeWorkspace } = useWorkspace();
-  const [weeklyData, setWeeklyData] = useState<GrowthDataPoint[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [weeklyData, setWeeklyData] = useState<GrowthDataPoint[]>(externalData || []);
+  const [loading, setLoading] = useState(!externalData);
 
   useEffect(() => {
+    // If external data is provided, use it and don't fetch
+    if (externalData && externalData.length > 0) {
+      setWeeklyData(externalData);
+      setLoading(false);
+      return;
+    }
+
     async function fetchGrowthData() {
       if (!activeWorkspace) {
         setLoading(false);
@@ -62,7 +73,6 @@ export function GrowthChart() {
             setWeeklyData(transformed);
           }
         } else {
-           // Fallback to mock data if not ok (like API failing)
            setWeeklyData(MOCK_WEEKLY_DATA);
         }
       } catch (error) {
@@ -74,12 +84,11 @@ export function GrowthChart() {
     }
 
     fetchGrowthData();
-  }, [activeWorkspace]);
+  }, [activeWorkspace, externalData]);
 
   const data = weeklyData.length > 0 ? weeklyData : MOCK_WEEKLY_DATA;
   const total = weeklyData.reduce((s, d) => s + d.value, 0);
   
-  // Example simplistic logic to showcase a "wow" percentage
   const prevTotal = Math.round(total * 0.78) || 1;
   const pct = Math.round(((total - prevTotal) / prevTotal) * 100);
 
@@ -112,7 +121,6 @@ export function GrowthChart() {
 
       <CardContent className="p-5">
         {loading ? (
-          // Loading skeleton
           <div className="flex h-28 flex-col gap-4">
             <div className="flex items-end justify-between gap-2">
               {[1, 2, 3, 4, 5, 6, 7].map((i) => (

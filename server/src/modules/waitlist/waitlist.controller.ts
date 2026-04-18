@@ -1,8 +1,18 @@
 import { Request, Response, NextFunction } from "express";
 import status from "http-status";
+import { prisma } from "../../lib/prisma";
 import { waitlistService, waitlistByIdService } from "./waitlist.service";
 import { WAITLIST_MESSAGES, WAITLIST_BY_ID_MESSAGES } from "./waitlist.constants";
 import { GetWaitlistsQuery } from "./waitlist.interface";
+
+async function resolveOwnerEmail(workspaceId: string, defaultEmail: string) {
+  if (!workspaceId || workspaceId === "undefined") return defaultEmail;
+  const ws = await prisma.workspace.findUnique({
+    where: { id: workspaceId },
+    select: { owner: { select: { email: true } } }
+  });
+  return ws?.owner?.email || defaultEmail;
+}
 
 export const waitlistController = {
   /* ── POST /api/v1/waitlists/:workspaceId ────────────────────────── */
@@ -45,6 +55,7 @@ export const waitlistController = {
     try {
       const workspaceId      = req.params.workspaceId as string;
       const requestingUserId = req.user!.id;
+      const ownerEmail       = await resolveOwnerEmail(workspaceId, req.user!.email);
 
       // Query params were already coerced by validateQuery
       const query = req.query as unknown as GetWaitlistsQuery;
@@ -52,6 +63,7 @@ export const waitlistController = {
       const result = await waitlistService.getWaitlists({
         workspaceId,
         requestingUserId,
+        ownerEmail,
         query,
       });
 

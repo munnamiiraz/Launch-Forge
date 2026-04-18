@@ -11,6 +11,8 @@ out/
 build/
 *.tsbuildinfo
 
+.claude
+CLAUDE.md
 # Environment variables
 .env
 .env.local

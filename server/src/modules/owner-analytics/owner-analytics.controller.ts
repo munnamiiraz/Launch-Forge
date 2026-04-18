@@ -1,8 +1,18 @@
 import { Request, Response, NextFunction } from "express";
 import status from "http-status";
+import { prisma } from "../../lib/prisma";
 import { analyticsService }   from "./owner-analytics.service";
 import { ANALYTICS_MESSAGES } from "./owner-analytics.constants";
 import { AnalyticsQuery }     from "./owner-analytics.interface";
+
+async function resolveOwnerEmail(workspaceId: string, defaultEmail: string) {
+  if (!workspaceId || workspaceId === "undefined") return defaultEmail;
+  const ws = await prisma.workspace.findUnique({
+    where: { id: workspaceId },
+    select: { owner: { select: { email: true } } }
+  });
+  return ws?.owner?.email || defaultEmail;
+}
 
 export const analyticsController = {
 
@@ -10,9 +20,13 @@ export const analyticsController = {
 
   async getSummary(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      const workspaceId = req.params.workspaceId as string;
+      const ownerEmail = await resolveOwnerEmail(workspaceId, req.user!.email);
+
       const data = await analyticsService.getSummary({
-        workspaceId:      req.params.workspaceId as string,
+        workspaceId,
         requestingUserId: req.user!.id as string,
+        ownerEmail,
         query:            req.query as unknown as AnalyticsQuery,
       });
       res.status(status.OK).json({ success: true, message: ANALYTICS_MESSAGES.SUMMARY_FETCHED, data });
@@ -23,9 +37,13 @@ export const analyticsController = {
 
   async getSubscriberGrowth(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      const workspaceId = req.params.workspaceId as string;
+      const ownerEmail = await resolveOwnerEmail(workspaceId, req.user!.email);
+
       const data = await analyticsService.getSubscriberGrowth({
-        workspaceId:      req.params.workspaceId as string,
+        workspaceId,
         requestingUserId: req.user!.id as string,
+        ownerEmail,
         query:            req.query as unknown as AnalyticsQuery,
       });
       res.status(status.OK).json({ success: true, message: ANALYTICS_MESSAGES.GROWTH_FETCHED, data });
@@ -36,9 +54,13 @@ export const analyticsController = {
 
   async getReferralFunnel(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      const workspaceId = req.params.workspaceId as string;
+      const ownerEmail = await resolveOwnerEmail(workspaceId, req.user!.email);
+
       const data = await analyticsService.getReferralFunnel({
-        workspaceId:      req.params.workspaceId as string,
+        workspaceId,
         requestingUserId: req.user!.id as string,
+        ownerEmail,
         query:            req.query as unknown as AnalyticsQuery,
       });
       res.status(status.OK).json({ success: true, message: ANALYTICS_MESSAGES.FUNNEL_FETCHED, data });
@@ -49,9 +71,13 @@ export const analyticsController = {
 
   async getViralKFactor(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      const workspaceId = req.params.workspaceId as string;
+      const ownerEmail = await resolveOwnerEmail(workspaceId, req.user!.email);
+
       const data = await analyticsService.getViralKFactor({
-        workspaceId:      req.params.workspaceId as string,
+        workspaceId,
         requestingUserId: req.user!.id as string,
+        ownerEmail,
         query:            req.query as unknown as AnalyticsQuery,
       });
       res.status(status.OK).json({ success: true, message: ANALYTICS_MESSAGES.KFACTOR_FETCHED, data });
@@ -62,9 +88,13 @@ export const analyticsController = {
 
   async getConfirmationRate(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      const workspaceId = req.params.workspaceId as string;
+      const ownerEmail = await resolveOwnerEmail(workspaceId, req.user!.email);
+
       const data = await analyticsService.getConfirmationRate({
-        workspaceId:      req.params.workspaceId as string,
+        workspaceId,
         requestingUserId: req.user!.id as string,
+        ownerEmail,
         query:            req.query as unknown as AnalyticsQuery,
       });
       res.status(status.OK).json({ success: true, message: ANALYTICS_MESSAGES.CONFIRMATION_FETCHED, data });
@@ -75,9 +105,13 @@ export const analyticsController = {
 
   async getTopReferrers(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      const workspaceId = req.params.workspaceId as string;
+      const ownerEmail = await resolveOwnerEmail(workspaceId, req.user!.email);
+
       const data = await analyticsService.getTopReferrers({
-        workspaceId:      req.params.workspaceId as string,
+        workspaceId,
         requestingUserId: req.user!.id as string,
+        ownerEmail,
         query:            req.query as unknown as AnalyticsQuery,
       });
       res.status(status.OK).json({ success: true, message: ANALYTICS_MESSAGES.REFERRERS_FETCHED, data });
@@ -88,9 +122,13 @@ export const analyticsController = {
 
   async getWaitlistComparison(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      const workspaceId = req.params.workspaceId as string;
+      const ownerEmail = await resolveOwnerEmail(workspaceId, req.user!.email);
+
       const data = await analyticsService.getWaitlistComparison({
-        workspaceId:      req.params.workspaceId as string,
+        workspaceId,
         requestingUserId: req.user!.id as string,
+        ownerEmail,
         query:            req.query as unknown as AnalyticsQuery,
       });
       res.status(status.OK).json({ success: true, message: ANALYTICS_MESSAGES.WAITLISTS_FETCHED, data });
@@ -101,9 +139,13 @@ export const analyticsController = {
 
   async getCohortRetention(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      const workspaceId = req.params.workspaceId as string;
+      const ownerEmail = await resolveOwnerEmail(workspaceId, req.user!.email);
+
       const data = await analyticsService.getCohortRetention({
-        workspaceId:      req.params.workspaceId as string,
+        workspaceId,
         requestingUserId: req.user!.id as string,
+        ownerEmail,
         query:            req.query as unknown as AnalyticsQuery,
       });
       res.status(status.OK).json({ success: true, message: ANALYTICS_MESSAGES.COHORT_FETCHED, data });
@@ -114,9 +156,13 @@ export const analyticsController = {
 
   async getRevenue(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      const workspaceId = req.params.workspaceId as string;
+      const ownerEmail = await resolveOwnerEmail(workspaceId, req.user!.email);
+
       const data = await analyticsService.getRevenue({
-        workspaceId:      req.params.workspaceId as string,
+        workspaceId,
         requestingUserId: req.user!.id as string,
+        ownerEmail,
         query:            req.query as unknown as AnalyticsQuery,
       });
       res.status(status.OK).json({ success: true, message: ANALYTICS_MESSAGES.REVENUE_FETCHED, data });
@@ -127,9 +173,13 @@ export const analyticsController = {
 
   async getFeedbackActivity(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      const workspaceId = req.params.workspaceId as string;
+      const ownerEmail = await resolveOwnerEmail(workspaceId, req.user!.email);
+
       const data = await analyticsService.getFeedbackActivity({
-        workspaceId:      req.params.workspaceId as string,
+        workspaceId,
         requestingUserId: req.user!.id as string,
+        ownerEmail,
         query:            req.query as unknown as AnalyticsQuery,
       });
       res.status(status.OK).json({ success: true, message: ANALYTICS_MESSAGES.FEEDBACK_FETCHED, data });

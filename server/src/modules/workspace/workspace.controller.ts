@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import status from "http-status";
+import { prisma } from "../../lib/prisma";
 import { workspaceService }   from "./workspace.service";
 import { WORKSPACE_MESSAGES } from "./workspace.constant";
 import {
@@ -78,8 +79,19 @@ export const workspaceController = {
         includeArchived?: string;
       };
 
+      // Resolve owner email for Redis partitioning
+      let ownerEmail = req.user!.email;
+      if (workspaceId && workspaceId !== "undefined") {
+        const ws = await prisma.workspace.findUnique({
+          where: { id: workspaceId },
+          select: { owner: { select: { email: true } } }
+        });
+        if (ws?.owner?.email) ownerEmail = ws.owner.email;
+      }
+
       const overview = await workspaceService.getDashboardOverview({
         requestingUserId,
+        ownerEmail,
         workspaceId: workspaceId as string,
         includeArchived: includeArchived === "true",
       });

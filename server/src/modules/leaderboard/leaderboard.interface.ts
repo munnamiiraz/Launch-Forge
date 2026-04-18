@@ -22,12 +22,14 @@ export interface GetLeaderboardPayload {
   waitlistId:       string;
   workspaceId:      string;
   requestingUserId: string;
+  ownerEmail?:      string;
   query:            GetLeaderboardQuery;
 }
 
 export interface GetLeaderboardPayloadWithSlug {
   waitlistSlug:     string;
   requestingUserId: string;
+  ownerEmail?:      string;
   query:            GetLeaderboardQuery;
 }
 

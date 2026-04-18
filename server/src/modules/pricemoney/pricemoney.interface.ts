@@ -22,6 +22,7 @@ export interface CreatePrizePayload {
   waitlistId:        string;
   workspaceId:       string;
   requestingUserId:  string;
+  ownerEmail?:       string;
   title:             string;
   description?:      string;
   prizeType:         PrizeType;
@@ -41,6 +42,7 @@ export interface UpdatePrizePayload {
   waitlistId:        string;
   workspaceId:       string;
   requestingUserId:  string;
+  ownerEmail?:       string;
   title?:            string;
   description?:      string;
   prizeType?:        PrizeType;
@@ -58,12 +60,14 @@ export interface DeletePrizePayload {
   waitlistId:        string;
   workspaceId:       string;
   requestingUserId:  string;
+  ownerEmail?:       string;
 }
 
 export interface GetPrizesPayload {
   waitlistId:        string;
   workspaceId:       string;
   requestingUserId:  string;
+  ownerEmail?:       string;
 }
 
 /** Public — no auth required */

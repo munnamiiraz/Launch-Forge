@@ -37,7 +37,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
   const { data: users, meta } = paginated;
 
   return (
-    <div className="flex flex-col gap-6 p-6">
+    <div className="flex min-h-full flex-col gap-6 p-6">
 
       {/* ── Page header ───────────────────────────────────── */}
       <div className="relative overflow-hidden rounded-2xl border border-red-500/15 bg-card/30 px-6 py-5">

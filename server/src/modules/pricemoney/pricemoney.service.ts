@@ -24,6 +24,9 @@ import {
 } from "./pricemoney.utils";
 import { assertPlanFeature } from "../../middlewares/checkPlanFeature";
 
+import { withCache } from "../../lib/redis/with-cache";
+import { cacheDel }  from "../../lib/redis/cache";
+
 /* ── Shared Prisma select ────────────────────────────────────────── */
 
 const PRIZE_SELECT = {
@@ -134,6 +137,10 @@ export const prizeService = {
       select: PRIZE_SELECT,
     });
 
+    /* Invalidate Cache */
+    await cacheDel(`owner:${payload.ownerEmail || "system"}:workspace-${workspaceId}:prizes:${waitlistId}`);
+    await cacheDel(`prizes:public:${waitlistId}`);
+
     return prize as PrizeRow;
   },
 
@@ -240,6 +247,13 @@ export const prizeService = {
       select: PRIZE_SELECT,
     });
 
+    /* Invalidate Cache — Use IDs from the record (more reliable than payload) */
+    const wsId = workspaceId || prize.waitlist.workspaceId;
+    const wlId = waitlistId  || updated.waitlistId;
+
+    await cacheDel(`owner:${payload.ownerEmail || "system"}:workspace-${wsId}:prizes:${wlId}`);
+    await cacheDel(`prizes:public:${wlId}`);
+
     return updated as PrizeRow;
   },
 
@@ -272,10 +286,11 @@ export const prizeService = {
     const prize = await prisma.leaderboardPrize.findUnique({
       where: { id: prizeId, deletedAt: null },
       select: {
-        id:     true,
-        title:  true,
-        status: true,
-        waitlist: { select: { workspaceId: true } },
+        id:         true,
+        title:      true,
+        status:     true,
+        waitlistId: true,
+        waitlist:   { select: { workspaceId: true } },
       },
     });
 
@@ -299,6 +314,13 @@ export const prizeService = {
       data:  { deletedAt },
     });
 
+    /* Invalidate Cache — Use IDs from the record */
+    const wsId = workspaceId || prize.waitlist.workspaceId;
+    const wlId = waitlistId  || prize.waitlistId;
+
+    await cacheDel(`owner:${payload.ownerEmail || "system"}:workspace-${wsId}:prizes:${wlId}`);
+    await cacheDel(`prizes:public:${wlId}`);
+
     return { id: prize.id, title: prize.title, deletedAt };
   },
 
@@ -307,7 +329,11 @@ export const prizeService = {
      Workspace members see all prizes including CANCELLED/AWARDED.
      ────────────────────────────────────────────────────────────── */
 
-  async getPrizes(payload: GetPrizesPayload): Promise<PrizeRow[]> {
+  getPrizes: withCache(
+    (payload: GetPrizesPayload) => 
+      `owner:${payload.ownerEmail || "system"}:workspace-${payload.workspaceId}:prizes:${payload.waitlistId}`,
+    0, // PERSIST until manual invalidation
+    async (payload: GetPrizesPayload): Promise<PrizeRow[]> => {
     const { waitlistId, workspaceId, requestingUserId } = payload;
 
     /* 1. Membership check ───────────────────────────────────────── */
@@ -340,16 +366,20 @@ export const prizeService = {
     });
 
     return prizes as PrizeRow[];
-  },
+  }
+  ),
 
   /* ──────────────────────────────────────────────────────────────
      GET /api/prizes/public/:waitlistId   (no auth)
      Public visitors see only ACTIVE prizes that haven't expired.
      ────────────────────────────────────────────────────────────── */
 
-  async getPublicPrizes(
+  getPublicPrizes: withCache(
+    (payload: GetPublicPrizesPayload) => `prizes:public:${payload.waitlistId}`,
+    0, // PERSIST until manual invalidation
+    async (
     payload: GetPublicPrizesPayload,
-  ): Promise<PublicPrizeRow[]> {
+  ): Promise<PublicPrizeRow[]> => {
     const { waitlistId } = payload;
 
     /* Verify the waitlist exists and is public (not deleted) ─────── */
@@ -380,5 +410,6 @@ export const prizeService = {
     });
 
     return sortPrizesByRank(prizes as PrizeRow[]).map(toPublicPrizeRow);
-  },
+  }
+  ),
 };

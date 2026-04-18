@@ -38,9 +38,10 @@ export function StatCard({
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.07, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      className="h-full"
     >
       <Card className={cn(
-        "group relative overflow-hidden border-border bg-card dark:bg-card/40 backdrop-blur-sm",
+        "group relative flex h-[142px] flex-col overflow-hidden border-border bg-card dark:bg-card/40 backdrop-blur-sm",
         "transition-all duration-300 hover:bg-muted/5 dark:hover:bg-card/60 hover:shadow-xl",
         "shadow-indigo-500/5 dark:shadow-none",
         a.glow
@@ -48,17 +49,19 @@ export function StatCard({
         {/* top accent line */}
         <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-indigo-500/30" />
 
-        <CardContent className="p-5">
-          <div className="mb-3 flex items-center justify-between">
-            <p className="text-xs font-medium text-muted-foreground/80">{label}</p>
-            <div className={cn("flex h-8 w-8 items-center justify-center rounded-lg border transition-transform duration-300 group-hover:scale-110", a.icon)}>
-              {icon}
+        <CardContent className="flex h-full flex-col justify-between p-5">
+          <div>
+            <div className="mb-3 flex items-center justify-between">
+              <p className="text-xs font-medium text-muted-foreground/80">{label}</p>
+              <div className={cn("flex h-8 w-8 items-center justify-center rounded-lg border transition-transform duration-300 group-hover:scale-110", a.icon)}>
+                {icon}
+              </div>
             </div>
-          </div>
 
-          <p className={cn("text-2xl font-black tracking-tight", a.value)}>
-            {typeof value === "number" ? value.toLocaleString() : value}
-          </p>
+            <p className={cn("text-2xl font-black tracking-tight", a.value)}>
+              {typeof value === "number" ? value.toLocaleString() : value}
+            </p>
+          </div>
 
           {(delta || subtext) && (
             <div className="mt-2 flex items-center gap-1.5">

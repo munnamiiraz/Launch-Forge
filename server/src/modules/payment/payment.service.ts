@@ -15,6 +15,10 @@ import {
   ActiveSubscriptionInfo,
   GetPaymentUsageResult,
   UsageItem,
+  GetInvoicesPayload,
+  CancelSubscriptionPayload,
+  SyncSubscriptionPayload,
+  GetUsagePayload,
 } from "./payment.interface";
 import {
   PAYMENT_MESSAGES,
@@ -35,6 +39,18 @@ import {
   isSubscription,
   toPaymentStatus,
 } from "./payment.utils";
+import { withCache } from "../../lib/redis/with-cache";
+import { cacheDel }  from "../../lib/redis/cache";
+
+/* ── Invalidation Helper ────────────────────────────────────────── */
+async function invalidateBillingCache(userEmail: string) {
+  if (!userEmail) return;
+  await Promise.all([
+    cacheDel(`owner:${userEmail}:billing:status`),
+    cacheDel(`owner:${userEmail}:billing:invoices`),
+    cacheDel(`owner:${userEmail}:billing:usage`),
+  ]);
+}
 
 /* ─────────────────────────────────────────────────────────────────
    Stripe SDK singleton
@@ -117,6 +133,9 @@ export const paymentService = {
           where: { ownerId: requestingUserId, deletedAt: null },
           data:  { plan: planType },
         });
+
+        /* Invalidate Cache */
+        await invalidateBillingCache(user.email);
 
         /*
          * Return the billing page URL instead of a checkout URL.
@@ -258,6 +277,9 @@ export const paymentService = {
       });
     });
 
+    /* Invalidate Cache */
+    if (payload.ownerEmail) await invalidateBillingCache(payload.ownerEmail);
+
     return { updated: true, status: "PAID" };
   },
 
@@ -346,6 +368,9 @@ export const paymentService = {
           });
         });
 
+        const user = await prisma.user.findUnique({ where: { id: meta.userId }, select: { email: true } });
+        if (user) await invalidateBillingCache(user.email);
+
         break;
       }
 
@@ -366,6 +391,9 @@ export const paymentService = {
             paymentGatewayData: obj as object,
           },
         });
+
+        const user = await prisma.user.findUnique({ where: { id: meta.userId }, select: { email: true } });
+        if (user) await invalidateBillingCache(user.email);
 
         break;
       }
@@ -462,6 +490,9 @@ export const paymentService = {
           }
         });
 
+        const user = await prisma.user.findUnique({ where: { id: meta.userId }, select: { email: true } });
+        if (user) await invalidateBillingCache(user.email);
+
         break;
       }
 
@@ -497,6 +528,9 @@ export const paymentService = {
           });
         });
 
+        const user = await prisma.user.findUnique({ where: { id: meta.userId }, select: { email: true } });
+        if (user) await invalidateBillingCache(user.email);
+
         break;
       }
     }
@@ -509,9 +543,12 @@ export const paymentService = {
      Return the caller's current payment record and resolved plan.
      ────────────────────────────────────────────────────────────── */
 
-  async getPaymentStatus(
+  getPaymentStatus: withCache(
+    (payload: GetPaymentStatusPayload) => `owner:${payload.ownerEmail}:billing:status`,
+    300,
+    async (
     payload: GetPaymentStatusPayload,
-  ): Promise<PaymentStatusResult> {
+  ): Promise<PaymentStatusResult> => {
     const { requestingUserId } = payload;
 
     const payment = await prisma.payment.findUnique({
@@ -584,14 +621,18 @@ export const paymentService = {
       activePlan,
       subscription,
     };
-  },
+  }
+  ),
 
   /* ──────────────────────────────────────────────────────────────
      GET /api/payment/invoices
      Fetch real invoice history from Stripe.
      ────────────────────────────────────────────────────────────── */
 
-  async getInvoices(payload: { requestingUserId: string }): Promise<any[]> {
+  getInvoices: withCache(
+    (payload: GetInvoicesPayload) => `owner:${payload.ownerEmail}:billing:invoices`,
+    300,
+    async (payload: GetInvoicesPayload): Promise<any[]> => {
     const { requestingUserId } = payload;
 
     const payment = await prisma.payment.findUnique({
@@ -624,7 +665,8 @@ export const paymentService = {
     } catch {
       return [];
     }
-  },
+  }
+  ),
 
   /* ──────────────────────────────────────────────────────────────
      POST /api/payment/portal
@@ -687,7 +729,7 @@ export const paymentService = {
      ────────────────────────────────────────────────────────────── */
 
   async cancelSubscription(
-    payload: { requestingUserId: string },
+    payload: CancelSubscriptionPayload,
   ): Promise<{ cancelledAt: string; accessUntil: string }> {
     const { requestingUserId } = payload;
 
@@ -722,6 +764,12 @@ export const paymentService = {
         ? new Date(periodEnd * 1000).toISOString()
         : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // fallback: 30 days
 
+      /* Invalidate Cache */
+      if (payload.requestingUserId) {
+        const user = await prisma.user.findUnique({ where: { id: payload.requestingUserId }, select: { email: true } });
+        if (user) await invalidateBillingCache(user.email);
+      }
+
       return {
         cancelledAt: new Date().toISOString(),
         accessUntil,
@@ -744,7 +792,7 @@ export const paymentService = {
      or when a user paid but the plan shows as FREE.
      ────────────────────────────────────────────────────────────── */
 
-  async syncSubscription(payload: { requestingUserId: string }): Promise<{
+  async syncSubscription(payload: SyncSubscriptionPayload): Promise<{
     synced: boolean;
     plan: "FREE" | "PRO" | "GROWTH";
     message: string;
@@ -845,6 +893,9 @@ export const paymentService = {
         });
       });
 
+      /* Invalidate Cache */
+      await invalidateBillingCache(user.email);
+
       return { synced: true, plan: planType, message: `Plan synced to ${planType} from Stripe.` };
     }
 
@@ -881,10 +932,17 @@ export const paymentService = {
     });
 
     const finalPlan = isActive ? meta.planType : "FREE";
+
+    /* Invalidate Cache */
+    await invalidateBillingCache(user.email);
+
     return { synced: true, plan: finalPlan, message: `Plan synced to ${finalPlan} from Stripe.` };
   },
 
-  async getUsage(payload: { requestingUserId: string }): Promise<GetPaymentUsageResult> {
+  getUsage: withCache(
+    (payload: GetUsagePayload) => `owner:${payload.ownerEmail}:billing:usage`,
+    300,
+    async (payload: GetUsagePayload): Promise<GetPaymentUsageResult> => {
     const { requestingUserId } = payload;
 
     // 1. Resolve current plan
@@ -932,5 +990,6 @@ export const paymentService = {
     ];
 
     return { usage };
-  },
+  }
+  ),
 };

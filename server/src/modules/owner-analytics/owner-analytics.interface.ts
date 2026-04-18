@@ -13,6 +13,7 @@ export interface AnalyticsQuery {
 export interface AnalyticsPayload {
   workspaceId:      string;
   requestingUserId: string;
+  ownerEmail?:      string;
   query:            AnalyticsQuery;
 }
 

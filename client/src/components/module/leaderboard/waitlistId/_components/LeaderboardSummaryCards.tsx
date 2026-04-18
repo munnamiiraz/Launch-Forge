@@ -21,17 +21,20 @@ function SummaryCard({ icon, label, value, sub, accent, index }: SummaryCardProp
       initial={{ opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.07, duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+      className="h-full"
     >
-      <Card className="group relative overflow-hidden border-zinc-200 dark:border-border/80 bg-card/40 transition-all duration-300 hover:bg-card/60 hover:shadow-lg hover:shadow-black/20">
+      <Card className="group relative flex h-[118px] flex-col overflow-hidden border-zinc-200 dark:border-border/80 bg-card/40 transition-all duration-300 hover:bg-card/60 hover:shadow-lg hover:shadow-black/20">
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-zinc-200 dark:via-border to-transparent transition-all duration-300 group-hover:via-indigo-500/30" />
-        <CardContent className="p-4">
-          <div className="mb-2 flex items-center justify-between">
-            <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/60">{label}</p>
-            <div className={cn("flex h-7 w-7 items-center justify-center rounded-lg border transition-transform group-hover:scale-110", accent)}>
-              {icon}
+        <CardContent className="flex h-full flex-col justify-between p-4">
+          <div>
+            <div className="mb-2 flex items-center justify-between">
+              <p className="text-[10px] font-medium uppercase tracking-widest text-muted-foreground/60">{label}</p>
+              <div className={cn("flex h-7 w-7 items-center justify-center rounded-lg border transition-transform group-hover:scale-110", accent)}>
+                {icon}
+              </div>
             </div>
+            <p className="text-2xl font-black tracking-tight text-foreground tabular-nums">{value}</p>
           </div>
-          <p className="text-2xl font-black tracking-tight text-foreground tabular-nums">{value}</p>
           {sub && <p className="mt-1 text-[11px] text-muted-foreground/60">{sub}</p>}
         </CardContent>
       </Card>

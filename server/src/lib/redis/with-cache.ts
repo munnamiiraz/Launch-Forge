@@ -1,5 +1,16 @@
 import { cacheGetJson, cacheSetJson } from "./cache";
-import { isRedisReady } from "./client";
+import { isRedisReady, redis } from "./client";
+
+/**
+ * Calculates the number of seconds remaining until the next midnight (00:00:00).
+ * Useful for caching daily analytics that should refresh at the start of a new day.
+ */
+export function secondsUntilMidnight(): number {
+  const now = new Date();
+  const midnight = new Date(now);
+  midnight.setHours(24, 0, 0, 0); // Next midnight
+  return Math.floor((midnight.getTime() - now.getTime()) / 1000);
+}
 
 /**
  * Helper to flatten arguments into a clean string for Redis keys.
@@ -8,7 +19,7 @@ import { isRedisReady } from "./client";
 function generateKey(prefix: string, args: any[]): string {
   const parts: string[] = [];
 
-  const IGNORE_KEYS = ["requestingUserId"];
+  const IGNORE_KEYS = ["requestingUserId", "ownerEmail", "workspaceId"];
 
   const flatten = (obj: any) => {
     if (obj === null || obj === undefined) return;
@@ -27,29 +38,28 @@ function generateKey(prefix: string, args: any[]): string {
       if (typeof val === "object") {
         flatten(val);
       } else {
-        parts.push(`${key}_${val}`);
+        // Use colon for folder structure
+        parts.push(`${key}:${val}`);
       }
     }
   };
 
   args.forEach(flatten);
 
-  // Return "folder:key_content" structure. 
-  // If no parts (all were ignored/empty), return just the prefix.
+  // Return "folder:subfolder:subfolder" structure. 
   if (parts.length === 0) return prefix;
-  return `${prefix}:${parts.join("_")}`;
+  return `${prefix}:${parts.join(":")}`;
 }
 
 /**
  * Higher-order function to wrap a service method with Redis caching.
- * @param key The primary key or folder prefix (e.g., "explore" or "leaderboard")
- * @param ttl TTL in seconds (default: 300)
+ * @param keyPrefix String or function to generate the primary key folder prefix
+ * @param ttl TTL in seconds or function to generate TTL
  * @param fn The service method to wrap
- * @returns A wrapped function that checks cache before executing
  */
 export function withCache<TArgs extends any[], TResult>(
-  keyPrefix: string,
-  ttl: number = 300,
+  keyPrefix: string | ((...args: TArgs) => string),
+  ttl: number | (() => number) = 300,
   fn: (...args: TArgs) => Promise<TResult>
 ) {
   return async (...args: TArgs): Promise<TResult> => {
@@ -57,8 +67,8 @@ export function withCache<TArgs extends any[], TResult>(
       return fn(...args);
     }
 
-    // Generate a clean folder-based cache key
-    const cacheKey = generateKey(keyPrefix, args);
+    const finalPrefix = typeof keyPrefix === "function" ? keyPrefix(...args) : keyPrefix;
+    const cacheKey = generateKey(finalPrefix, args);
 
     try {
       const cached = await cacheGetJson<TResult>(cacheKey);
@@ -69,13 +79,30 @@ export function withCache<TArgs extends any[], TResult>(
       const result = await fn(...args);
 
       if (result) {
-        await cacheSetJson(cacheKey, result, ttl);
+        const finalTtl = typeof ttl === "function" ? ttl() : ttl;
+        await cacheSetJson(cacheKey, result, finalTtl);
       }
 
       return result;
     } catch (error) {
-      console.error(`[Redis Cache Error] ${keyPrefix}:`, error);
+      console.error(`[Redis Cache Error] ${finalPrefix}:`, error);
       return fn(...args);
     }
   };
+}
+/**
+ * Manually invalidate cache entries starting with a specific prefix/pattern.
+ * @param pattern The key pattern to delete (e.g., "workspace:dashboard:overview:*")
+ */
+export async function invalidateCache(pattern: string): Promise<void> {
+  if (!isRedisReady()) return;
+
+  try {
+    const keys = await redis.keys(pattern);
+    if (keys.length > 0) {
+      await redis.del(...keys);
+    }
+  } catch (error) {
+    console.error(`[Redis Invalidate Error] ${pattern}:`, error);
+  }
 }

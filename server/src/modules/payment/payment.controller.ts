@@ -35,6 +35,7 @@ export const paymentController = {
         requestingUserId,
         planType,
         planMode,
+        ownerEmail: req.user!.email,
       });
 
       res.status(status.CREATED).json({
@@ -101,6 +102,7 @@ export const paymentController = {
       const result = await paymentService.confirmCheckoutSession({
         requestingUserId,
         sessionId,
+        ownerEmail: req.user!.email,
       });
 
       res.status(status.OK).json({
@@ -125,7 +127,10 @@ export const paymentController = {
     try {
       const requestingUserId = req.user!.id;
 
-      const result = await paymentService.getPaymentStatus({ requestingUserId });
+      const result = await paymentService.getPaymentStatus({ 
+        requestingUserId,
+        ownerEmail: req.user!.email,
+      });
 
       res.status(status.OK).json({
         success: true,
@@ -149,7 +154,10 @@ export const paymentController = {
     try {
       const requestingUserId = req.user!.id;
 
-      const result = await paymentService.getInvoices({ requestingUserId });
+      const result = await paymentService.getInvoices({ 
+        requestingUserId,
+        ownerEmail: req.user!.email,
+      });
 
       res.status(status.OK).json({
         success: true,
@@ -173,7 +181,10 @@ export const paymentController = {
     try {
       const requestingUserId = req.user!.id;
 
-      const result = await paymentService.createPortalSession({ requestingUserId });
+      const result = await paymentService.createPortalSession({ 
+        requestingUserId,
+        ownerEmail: req.user!.email,
+      });
 
       res.status(status.CREATED).json({
         success: true,
@@ -197,7 +208,10 @@ export const paymentController = {
     try {
       const requestingUserId = req.user!.id;
 
-      const result = await paymentService.cancelSubscription({ requestingUserId });
+      const result = await paymentService.cancelSubscription({ 
+        requestingUserId,
+        ownerEmail: req.user!.email,
+      });
 
       res.status(status.OK).json({
         success: true,
@@ -220,7 +234,10 @@ export const paymentController = {
   ): Promise<void> {
     try {
       const requestingUserId = req.user!.id;
-      const result = await paymentService.syncSubscription({ requestingUserId });
+      const result = await paymentService.syncSubscription({ 
+        requestingUserId,
+        ownerEmail: req.user!.email,
+      });
 
       res.status(status.OK).json({
         success: true,
@@ -239,7 +256,10 @@ export const paymentController = {
   ): Promise<void> {
     try {
       const requestingUserId = req.user!.id;
-      const result = await paymentService.getUsage({ requestingUserId });
+      const result = await paymentService.getUsage({ 
+        requestingUserId,
+        ownerEmail: req.user!.email,
+      });
 
       res.status(status.OK).json({
         success: true,

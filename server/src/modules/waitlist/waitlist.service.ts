@@ -12,6 +12,7 @@ import {
   WAITLIST_PLAN_LIMITS,
 } from "./waitlist.constants";
 import { normalisePagination, buildPaginationMeta } from "./waitlist.utils";
+import { withCache, invalidateCache } from "../../lib/redis/with-cache";
 
 export const waitlistService = {
   /* ── POST /api/waitlists ─────────────────────────────────────── */
@@ -87,12 +88,19 @@ export const waitlistService = {
       },
     });
 
+    // Invalidate dashboard cache for this workspace
+    await invalidateCache(`owner:*:workspace-${workspaceId}:*`);
+
     return waitlist;
   },
 
   /* ── GET /api/waitlists ──────────────────────────────────────── */
 
-  async getWaitlists(payload: GetWaitlistsPayload): Promise<PaginatedWaitlists> {
+  getWaitlists: withCache(
+    (payload: GetWaitlistsPayload) =>
+      `owner:${payload.ownerEmail || "system"}:workspace-${payload.workspaceId}:waitlists:list`,
+    31536000, // 1 year, invalidated on mutation
+    async (payload: GetWaitlistsPayload): Promise<PaginatedWaitlists> => {
     const { workspaceId, requestingUserId, query } = payload;
 
     /* 1. Verify membership ───────────────────────────────────────── */
@@ -155,7 +163,8 @@ export const waitlistService = {
       data: waitlists,
       meta: buildPaginationMeta(total, page, limit),
     };
-  },
+  }
+  ),
 
 };
 
@@ -350,6 +359,9 @@ export const waitlistByIdService = {
       }
     }
 
+    // Invalidate dashboard cache for this workspace
+    await invalidateCache(`owner:*:workspace-${workspaceId}:*`);
+
     return {
       id:        waitlist.id,
       name:      waitlist.name,
@@ -408,6 +420,9 @@ export const waitlistByIdService = {
       select: { id: true, isOpen: true, archivedAt: true, updatedAt: true },
     });
 
+    // Invalidate dashboard cache for this workspace
+    await invalidateCache(`owner:*:workspace-${workspaceId}:*`);
+
     return updated;
   },
 
@@ -461,6 +476,9 @@ export const waitlistByIdService = {
       data,
       select: { id: true, isOpen: true, archivedAt: true, updatedAt: true },
     });
+
+    // Invalidate dashboard cache for this workspace
+    await invalidateCache(`owner:*:workspace-${workspaceId}:*`);
 
     return updated;
   },
