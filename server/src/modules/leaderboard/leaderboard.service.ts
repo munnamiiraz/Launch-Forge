@@ -368,7 +368,7 @@ export const leaderboardService = {
 
   /* ── GET /api/leaderboard/:waitlistSlug ──────────────────────────── */
 
-  getPublicLeaderboard: withCache("leaderboard", 300, getPublicLeaderboardRaw),
+  getPublicLeaderboard: withCache("leaderboard:public", 300, getPublicLeaderboardRaw),
 
   /* ── GET /api/leaderboard/by-slug/:waitlistSlug (authenticated) ── */
 

@@ -66,9 +66,12 @@ export default async function AdminPage() {
           <h1 className="text-lg font-black tracking-tight text-foreground">
             Platform overview
           </h1>
-          <p className="mt-1 text-xs text-muted-foreground/80">
-            Real-time metrics across all users, workspaces, waitlists, and revenue.
-            You are logged in as <span className="text-red-400 font-semibold">Admin</span>.
+          <p className="mt-1 text-xs text-muted-foreground/80 flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span>Analytics data refreshes every <span className="font-bold text-foreground">6 hours</span>.</span>
+            <span className="hidden sm:inline text-muted-foreground/30">•</span>
+            <span>Activity feed is <span className="text-emerald-500 font-bold">Live</span>.</span>
+            <span className="hidden sm:inline text-muted-foreground/30">•</span>
+            <span>Logged in as <span className="text-red-400 font-semibold">Admin</span>.</span>
           </p>
         </div>
       </div>

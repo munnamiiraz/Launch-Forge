@@ -53,7 +53,7 @@ export default async function AdminUsersPage({ searchParams }: PageProps) {
             </h1>
             <p className="mt-1 text-xs leading-relaxed text-muted-foreground/80">
               View, search, filter and manage every registered account on the platform.
-              Click any row to open the full user detail drawer. Use the checkboxes for bulk actions.
+              <span className="block mt-1 font-semibold text-red-400">List and stats refresh every 30 minutes.</span>
             </p>
           </div>
         </div>

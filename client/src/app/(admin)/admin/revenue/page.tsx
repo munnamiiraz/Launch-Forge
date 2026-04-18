@@ -70,10 +70,11 @@ export default async function AdminRevenuePage() {
             <h1 className="text-base font-bold tracking-tight text-foreground">
               Revenue analytics
             </h1>
-            <p className="mt-1 text-xs leading-relaxed text-muted-foreground/80">
-              Full financial picture of the LaunchForge platform — MRR waterfall, plan breakdowns,
-              churn analysis, cohort LTV, and every recent payment transaction.
-            </p>
+             <p className="mt-1 text-xs leading-relaxed text-muted-foreground/80">
+               Full financial picture of the LaunchForge platform — MRR waterfall, plan breakdowns,
+               churn analysis, cohort LTV, and every recent payment transaction.
+               <span className="block mt-1 font-semibold text-emerald-400">Charts refresh every 6h. Transactions refresh every 1m.</span>
+             </p>
           </div>
         </div>
       </div>

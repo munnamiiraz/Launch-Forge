@@ -152,6 +152,7 @@ export default async function AdminAnalyticsPage() {
               Full behavioural and product health metrics across every model —
               engagement, feature adoption, subscriber growth, referral network,
               feedback health, roadmap progress, and workspace activity patterns.
+              <span className="block mt-1 font-semibold text-red-400">Data refreshes every 6 hours.</span>
             </p>
             {/* Model legend */}
             <div className="mt-3 flex flex-wrap gap-1.5">

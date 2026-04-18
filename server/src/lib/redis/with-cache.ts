@@ -8,6 +8,8 @@ import { isRedisReady } from "./client";
 function generateKey(prefix: string, args: any[]): string {
   const parts: string[] = [];
 
+  const IGNORE_KEYS = ["requestingUserId"];
+
   const flatten = (obj: any) => {
     if (obj === null || obj === undefined) return;
     if (typeof obj !== "object") {
@@ -17,6 +19,8 @@ function generateKey(prefix: string, args: any[]): string {
 
     const keys = Object.keys(obj).sort();
     for (const key of keys) {
+      if (IGNORE_KEYS.includes(key)) continue;
+
       const val = obj[key];
       if (val === null || val === undefined || val === "") continue;
 
@@ -30,7 +34,9 @@ function generateKey(prefix: string, args: any[]): string {
 
   args.forEach(flatten);
 
-  // Return "folder:key_content" structure
+  // Return "folder:key_content" structure. 
+  // If no parts (all were ignored/empty), return just the prefix.
+  if (parts.length === 0) return prefix;
   return `${prefix}:${parts.join("_")}`;
 }
 

@@ -193,6 +193,6 @@ const getExploreWaitlistBySlugRaw = async (
    ────────────────────────────────────────────────────────────── */
 
 export const exploreService = {
-  getExploreWaitlists:      withCache("explore", 300, getExploreWaitlistsRaw),
-  getExploreWaitlistBySlug: withCache("content", 300, getExploreWaitlistBySlugRaw),
+  getExploreWaitlists:      withCache("explore:grid", 300, getExploreWaitlistsRaw),
+  getExploreWaitlistBySlug: withCache("explore:details", 300, getExploreWaitlistBySlugRaw),
 };
