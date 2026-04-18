@@ -61,6 +61,15 @@ export interface LeaderboardEntry {
   isTop3:        boolean;
 }
 
+export interface PaginationMeta {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+
 export interface JoinWaitlistForm {
   name:  string;
   email: string;

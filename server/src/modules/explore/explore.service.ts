@@ -16,6 +16,8 @@ import {
   toExploreCard,
 } from "./explore.utils";
 
+import { withCache } from "../../lib/redis";
+
 /* ── Shared Prisma select for a waitlist card ────────────────────── */
 
 const WAITLIST_CARD_SELECT = {
@@ -62,178 +64,135 @@ const WAITLIST_CARD_SELECT = {
   },
 } as const;
 
-export const exploreService = {
+/* ──────────────────────────────────────────────────────────────
+   Internal Service Implementations (Raw)
+   ────────────────────────────────────────────────────────────── */
 
-  /* ──────────────────────────────────────────────────────────────
-     GET /api/explore/waitlists
-     ──────────────────────────────────────────────────────────────
-     Public — no auth required.
+const getExploreWaitlistsRaw = async (
+  payload: GetExploreWaitlistsPayload,
+): Promise<PaginatedExploreWaitlists> => {
+  const { query } = payload;
+  const { page, limit, skip } = normaliseExploreQuery(query);
 
-     Returns a paginated list of all non-deleted waitlists, enriched
-     with subscriber counts, top referrers, and prizes.
+  /* 1. Build the where clause ──────────────────────────────────── */
+  const where: Prisma.WaitlistWhereInput = {
+    deletedAt: null,
+    archivedAt: null,
+  };
 
-     Supports:
-       ?search=     — full-text search on name + description
-       ?sort=       — trending | newest | most-joined | closing-soon
-       ?openOnly=   — true to filter to isOpen = true
-       ?prizesOnly= — true to filter to waitlists with ≥1 active prize
-       ?page=       — pagination
-       ?limit=      — page size (max 48)
-     ────────────────────────────────────────────────────────────── */
+  if (query.search?.trim()) {
+    const q = query.search.trim();
+    where.OR = [
+      { name:        { contains: q, mode: "insensitive" } },
+      { description: { contains: q, mode: "insensitive" } },
+      { slug:        { contains: q, mode: "insensitive" } },
+    ];
+  }
 
-  async getExploreWaitlists(
-    payload: GetExploreWaitlistsPayload,
-  ): Promise<PaginatedExploreWaitlists> {
-    const { query } = payload;
-    const { page, limit, skip } = normaliseExploreQuery(query);
+  if (query.openOnly) {
+    where.isOpen = true;
+  }
 
-    /* 1. Build the where clause ──────────────────────────────────── */
-    const where: Prisma.WaitlistWhereInput = {
-      deletedAt: null,
-      archivedAt: null,
+  if (query.prizesOnly) {
+    where.prizes = {
+      some: { deletedAt: null, status: "ACTIVE" },
     };
+  }
 
-    if (query.search?.trim()) {
-      const q = query.search.trim();
-      where.OR = [
-        { name:        { contains: q, mode: "insensitive" } },
-        { description: { contains: q, mode: "insensitive" } },
-        { slug:        { contains: q, mode: "insensitive" } },
-      ];
-    }
+  if (query.category) {
+    where.category = { equals: query.category, mode: "insensitive" };
+  }
 
-    if (query.openOnly) {
-      where.isOpen = true;
-    }
+  /* 2. Build the orderBy clause ────────────────────────────────── */
+  const sort = query.sort ?? "trending";
 
-    /*
-     * prizesOnly: waitlists with at least one ACTIVE, non-deleted prize.
-     * Using `some` on the nested relation filter.
-     */
-    if (query.prizesOnly) {
-      where.prizes = {
-        some: { deletedAt: null, status: "ACTIVE" },
-      };
-    }
+  const orderBy: Prisma.WaitlistOrderByWithRelationInput =
+    sort === "newest"
+       ? { createdAt: "desc" as const }
+       : sort === "most-joined"
+       ? { subscribers: { _count: "desc" as const } }
+       : { createdAt: "desc" as const };
 
-    if (query.category) {
-      where.category = { equals: query.category, mode: "insensitive" };
-    }
-
-    /* 2. Build the orderBy clause ────────────────────────────────── */
-    /*
-     * "trending"    — we sort by recentJoins in-process after fetching,
-     *                 because Prisma can't directly ORDER BY a nested COUNT
-     *                 with a date filter inline. We over-fetch and re-sort.
-     * "newest"      — createdAt DESC (simple)
-     * "most-joined" — _count.subscribers DESC (Prisma supports this)
-     * "closing-soon"— expiresAt ASC (nulls last — not in current schema,
-     *                 falls back to newest)
-     */
-    const sort = query.sort ?? "trending";
-
-    const orderBy: Prisma.WaitlistOrderByWithRelationInput =
-      sort === "newest"
-         ? { createdAt: "desc" as const }
-         : sort === "most-joined"
-         ? { subscribers: { _count: "desc" as const } }
-         : { createdAt: "desc" as const };  // default for trending / closing-soon
-
-    /* 3. Parallel: total count + page of waitlists ───────────────── */
-    // Read-only endpoint: avoid Prisma transactions here (P2028 maxWait/timeout).
-    const [total, rawWaitlists] = await Promise.all([
-      prisma.waitlist.count({ where }),
-      prisma.waitlist.findMany({
-        where,
-        orderBy,
-        /*
-         * For "trending" we need to score by recentJoins.
-         * Fetch up to 3× the page to have enough rows to sort + slice.
-         * For all other sorts, fetch exactly skip + limit.
-         */
-        skip:  sort === "trending" ? 0 : skip,
-        take:  sort === "trending" ? Math.min(limit * 3, 200) : limit,
-        select: WAITLIST_CARD_SELECT,
-      }),
-    ]);
-
-    /* 4. Calculate recentJoins per waitlist ──────────────────────── */
-    /*
-     * "Trending" requires counting signups in the last 24h per waitlist.
-     * We do this in a single aggregate query rather than N+1 queries.
-     *
-     * Result shape: [{ waitlistId: string, _count: { id: number } }]
-     */
-    const cutoff = trendingCutoff();
-
-    const recentJoinMap = new Map<string, number>();
-
-    if (rawWaitlists.length > 0) {
-      const recentJoinRows = await prisma.subscriber.groupBy({
-        by:     ["waitlistId"],
-        where: {
-          waitlistId: { in: rawWaitlists.map((w) => w.id) },
-          createdAt:  { gte: cutoff },
-          deletedAt:  null,
-        },
-        _count: { id: true },
-      });
-
-      for (const row of recentJoinRows) {
-        recentJoinMap.set(row.waitlistId, row._count.id);
-      }
-    }
-
-    /* 5. Map to card shapes ─────────────────────────────────────── */
-    let cards = rawWaitlists.map((raw) =>
-      toExploreCard(raw, recentJoinMap.get(raw.id) ?? 0),
-    );
-
-    /* 6. Re-sort + paginate for "trending" ──────────────────────── */
-    if (sort === "trending") {
-      cards.sort((a, b) => b.recentJoins - a.recentJoins);
-      cards = cards.slice(skip, skip + limit);
-    }
-
-    return {
-      data: cards,
-      meta: buildExploreMeta(total, page, limit),
-    };
-  },
-
-  /* ──────────────────────────────────────────────────────────────
-     GET /api/explore/waitlists/:slug
-     ──────────────────────────────────────────────────────────────
-     Public — no auth required.
-     Returns the full card detail for a single waitlist by slug.
-     Used when the frontend needs to pre-render the product detail
-     sheet before the user submits the join form.
-     ────────────────────────────────────────────────────────────── */
-
-  async getExploreWaitlistBySlug(
-    payload: GetExploreWaitlistBySlugPayload,
-  ): Promise<ExploreWaitlistCard> {
-    const { slug } = payload;
-
-    const raw = await prisma.waitlist.findFirst({
-      where:  { slug, deletedAt: null, archivedAt: null },
+  /* 3. Parallel: total count + page of waitlists ───────────────── */
+  const [total, rawWaitlists] = await Promise.all([
+    prisma.waitlist.count({ where }),
+    prisma.waitlist.findMany({
+      where,
+      orderBy,
+      skip:  sort === "trending" ? 0 : skip,
+      take:  sort === "trending" ? Math.min(limit * 3, 200) : limit,
       select: WAITLIST_CARD_SELECT,
-    });
+    }),
+  ]);
 
-    if (!raw) {
-      throw new AppError(status.NOT_FOUND, EXPLORE_MESSAGES.NOT_FOUND);
-    }
+  /* 4. Calculate recentJoins per waitlist ──────────────────────── */
+  const cutoff = trendingCutoff();
+  const recentJoinMap = new Map<string, number>();
 
-    /* Recent joins for this one waitlist */
-    const cutoff = trendingCutoff();
-    const recentCount = await prisma.subscriber.count({
+  if (rawWaitlists.length > 0) {
+    const recentJoinRows = await prisma.subscriber.groupBy({
+      by:     ["waitlistId"],
       where: {
-        waitlistId: raw.id,
+        waitlistId: { in: rawWaitlists.map((w) => w.id) },
         createdAt:  { gte: cutoff },
         deletedAt:  null,
       },
+      _count: { id: true },
     });
 
-    return toExploreCard(raw, recentCount);
-  },
+    for (const row of recentJoinRows) {
+      recentJoinMap.set(row.waitlistId, row._count.id);
+    }
+  }
+
+  /* 5. Map to card shapes ─────────────────────────────────────── */
+  let cards = rawWaitlists.map((raw) =>
+    toExploreCard(raw, recentJoinMap.get(raw.id) ?? 0),
+  );
+
+  /* 6. Re-sort + paginate for "trending" ──────────────────────── */
+  if (sort === "trending") {
+    cards.sort((a, b) => b.recentJoins - a.recentJoins);
+    cards = cards.slice(skip, skip + limit);
+  }
+
+  return {
+    data: cards,
+    meta: buildExploreMeta(total, page, limit),
+  };
+};
+
+const getExploreWaitlistBySlugRaw = async (
+  payload: GetExploreWaitlistBySlugPayload,
+): Promise<ExploreWaitlistCard> => {
+  const { slug } = payload;
+
+  const raw = await prisma.waitlist.findFirst({
+    where:  { slug, deletedAt: null, archivedAt: null },
+    select: WAITLIST_CARD_SELECT,
+  });
+
+  if (!raw) {
+    throw new AppError(status.NOT_FOUND, EXPLORE_MESSAGES.NOT_FOUND);
+  }
+
+  const cutoff = trendingCutoff();
+  const recentCount = await prisma.subscriber.count({
+    where: {
+      waitlistId: raw.id,
+      createdAt:  { gte: cutoff },
+      deletedAt:  null,
+    },
+  });
+
+  return toExploreCard(raw, recentCount);
+};
+
+/* ──────────────────────────────────────────────────────────────
+   Exported Service with Redis Caching
+   ────────────────────────────────────────────────────────────── */
+
+export const exploreService = {
+  getExploreWaitlists:      withCache("explore", 300, getExploreWaitlistsRaw),
+  getExploreWaitlistBySlug: withCache("content", 300, getExploreWaitlistBySlugRaw),
 };

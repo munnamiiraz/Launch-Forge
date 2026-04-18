@@ -124,10 +124,11 @@ async function fetchExploreProducts(opts: {
   category?: string;
   openOnly?: boolean;
   prizesOnly?: boolean;
-}): Promise<PublicProduct[]> {
+  page?: number;
+}): Promise<{ products: PublicProduct[]; meta: any }> {
   const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
 
-  const qs = new URLSearchParams({ page: "1", limit: "48" });
+  const qs = new URLSearchParams({ page: (opts.page ?? 1).toString(), limit: "12" });
   if (opts.search?.trim()) qs.set("search", opts.search.trim());
   if (opts.category?.trim() && opts.category !== "All") qs.set("category", opts.category.trim());
   if (opts.openOnly) qs.set("openOnly", "true");
@@ -137,20 +138,24 @@ async function fetchExploreProducts(opts: {
     next: { revalidate: 30 },
   });
 
-  if (!res.ok) return [];
+  if (!res.ok) return { products: [], meta: null };
 
   const json = (await res.json()) as ApiResponse<ExploreWaitlistCard[]>;
-  return (json.data ?? []).map(mapExploreCardToProduct);
+  return {
+    products: (json.data ?? []).map(mapExploreCardToProduct),
+    meta: json.meta,
+  };
 }
 
 export default async function ExplorePage(props: {
-  searchParams?: Promise<{ filter?: string; search?: string; category?: string }>;
+  searchParams?: Promise<{ filter?: string; search?: string; category?: string; page?: string }>;
 }) {
   const searchParams = await props.searchParams;
   const filter = searchParams?.filter;
   const initialShowPrizesOnly = filter === "prizes";
   const initialShowOpen = filter === "open";
   const initialSearch = typeof searchParams?.search === "string" ? searchParams.search : "";
+  const initialPage = typeof searchParams?.page === "string" ? parseInt(searchParams.page) : 1;
   
   // Validate category
   const rawCategory = typeof searchParams?.category === "string" ? searchParams.category : "All";
@@ -158,11 +163,12 @@ export default async function ExplorePage(props: {
     ? rawCategory 
     : "All";
 
-  const products = await fetchExploreProducts({
+  const { products, meta } = await fetchExploreProducts({
     search: initialSearch,
     category: initialCategory,
     openOnly: initialShowOpen,
     prizesOnly: initialShowPrizesOnly,
+    page: initialPage,
   });
   const stats = getHeroStats(products);
 
@@ -230,6 +236,7 @@ export default async function ExplorePage(props: {
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
         <ExploreClient
           products={products}
+          meta={meta}
           initialSearch={initialSearch}
           initialShowOpen={initialShowOpen}
           initialShowPrizesOnly={initialShowPrizesOnly}

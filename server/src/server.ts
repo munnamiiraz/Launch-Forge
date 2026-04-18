@@ -1,6 +1,6 @@
 import app from "./app";
 import { envVars } from "./config/env";
-import { connectRedis } from "./lib/redis";
+import { connectRedis } from "./lib/redis/index";
 
 const bootstrap = async() => {
     try {

@@ -28,6 +28,150 @@ import {
   buildLeaderboardMeta,
   maskEmail,
 } from "./leaderboard.utils";
+import { withCache } from "../../lib/redis";
+
+/* ──────────────────────────────────────────────────────────────
+   Internal Service Implementations (Raw)
+   ────────────────────────────────────────────────────────────── */
+
+const getPublicLeaderboardRaw = async (
+  payload: GetPublicLeaderboardPayload,
+): Promise<PaginatedPublicLeaderboard> => {
+  const { waitlistSlug, query } = payload;
+
+  /* 1. Resolve waitlist by slug (public — no workspace check) ───── */
+  const waitlist = await prisma.waitlist.findFirst({
+    where: { slug: waitlistSlug, deletedAt: null },
+    select: { id: true, slug: true },
+  });
+
+  if (!waitlist) {
+    throw new AppError(status.NOT_FOUND, LEADERBOARD_MESSAGES.NOT_FOUND);
+  }
+
+  /* 2. Fetch all non-deleted, confirmed subscribers ─────────────── */
+  const allRaw: RawSubscriberRow[] = await prisma.subscriber.findMany({
+    where: { waitlistId: waitlist.id, deletedAt: null },
+    orderBy: [
+      { referralsCount: "desc" },
+      { createdAt:      "asc"  },
+    ],
+    select: {
+      id:             true,
+      name:           true,
+      email:          true,
+      referralCode:   true,
+      referralsCount: true,
+      referredById:   true,
+      isConfirmed:    true,
+      createdAt:      true,
+    },
+  });
+
+  /* 3. Rank ─────────────────────────────────────────────────────── */
+  const idToRank     = new Map<string, number>();
+  const idToQueuePos = new Map<string, number>();
+
+  allRaw.forEach((s, i) => {
+    idToRank.set(s.id,     i + 1);
+    idToQueuePos.set(s.id, i + 1);
+  });
+
+  /* 4. Summary stats ────────────────────────────────────────────── */
+  const totalSubscribers = allRaw.length;
+  const activeReferrers  = allRaw.filter(s => s.referralsCount > 0).length;
+  const totalReferrals   = allRaw.reduce((sum, s) => sum + s.referralsCount, 0);
+  const topReferralCount = allRaw.length > 0 ? allRaw[0].referralsCount : 0;
+  const avgReferralsPerReferrer =
+    activeReferrers === 0
+      ? 0
+      : Math.round((totalReferrals / activeReferrers) * 10) / 10;
+
+  const newestSubscriberAt =
+    allRaw.length === 0
+      ? null
+      : allRaw.reduce(
+          (latest, s) => (s.createdAt > latest ? s.createdAt : latest),
+          allRaw[0].createdAt,
+        );
+
+  const summary = {
+    totalSubscribers,
+    totalReferrals,
+    activeReferrers,
+    avgReferralsPerReferrer,
+    topReferralCount,
+    newestSubscriberAt,
+  };
+
+  /* 5. Build entries ────────────────────────────────────────────── */
+  const childrenMap    = buildChildrenMap(allRaw);
+  const subscribersMap = new Map<string, RawSubscriberRow>(
+    allRaw.map(s => [s.id, s]),
+  );
+
+  const entries: PublicLeaderboardEntry[] = allRaw.map(sub => {
+    const rank = idToRank.get(sub.id)!;
+
+    const referredBy = sub.referredById
+      ? (() => {
+          const referrer = subscribersMap.get(sub.referredById);
+          if (!referrer) return null;
+          return {
+            id:   referrer.id,
+            name: referrer.name,
+            rank: idToRank.get(referrer.id) ?? null,
+            // email intentionally omitted
+          };
+        })()
+      : null;
+
+    return {
+      rank,
+      tier:            resolveTier(rank),
+      id:              sub.id,
+      name:            sub.name,
+      email:           maskEmail(sub.email),
+      referralCode:    sub.referralCode,
+      referralUrl:     buildReferralUrl(waitlistSlug, sub.referralCode),
+      directReferrals: sub.referralsCount,
+      chainReferrals:  countChain(sub.id, childrenMap),
+      sharePercent:    calcSharePercent(sub.referralsCount, totalReferrals),
+      queuePosition:   idToQueuePos.get(sub.id)!,
+      isConfirmed:     sub.isConfirmed,
+      joinedAt:        sub.createdAt,
+      referredBy,
+      referralPreview: buildReferralPreview(sub.id, allRaw),
+    };
+  });
+
+  /* 6. Apply tier + search filters ─────────────────────────────── */
+  let filtered = filterByTier(entries, query.tier);
+
+  if (query.search) {
+    const q = query.search.toLowerCase();
+    // Search on masked email intentionally — avoid leaking real addresses
+    filtered = filtered.filter(
+      e =>
+        e.name.toLowerCase().includes(q) ||
+        e.email.toLowerCase().includes(q),
+    );
+  }
+
+  /* 7. Paginate ─────────────────────────────────────────────────── */
+  const { page, limit, skip } = normaliseLeaderboardPagination(query);
+  const pageSlice = filtered.slice(skip, skip + limit);
+
+  return {
+    data:    pageSlice,
+    meta:    buildLeaderboardMeta(filtered.length, page, limit),
+    summary,
+  };
+};
+
+/* ──────────────────────────────────────────────────────────────
+   Exported Service with Redis Caching
+   ────────────────────────────────────────────────────────────── */
 
 export const leaderboardService = {
 
@@ -224,140 +368,7 @@ export const leaderboardService = {
 
   /* ── GET /api/leaderboard/:waitlistSlug ──────────────────────────── */
 
-  async getPublicLeaderboard(
-    payload: GetPublicLeaderboardPayload,
-  ): Promise<PaginatedPublicLeaderboard> {
-    const { waitlistSlug, query } = payload;
-
-    /* 1. Resolve waitlist by slug (public — no workspace check) ───── */
-    const waitlist = await prisma.waitlist.findFirst({
-      where: { slug: waitlistSlug, deletedAt: null },
-      select: { id: true, slug: true },
-    });
-
-    if (!waitlist) {
-      throw new AppError(status.NOT_FOUND, LEADERBOARD_MESSAGES.NOT_FOUND);
-    }
-
-    /* 2. Fetch all non-deleted, confirmed subscribers ─────────────── */
-    const allRaw: RawSubscriberRow[] = await prisma.subscriber.findMany({
-      where: { waitlistId: waitlist.id, deletedAt: null },
-      orderBy: [
-        { referralsCount: "desc" },
-        { createdAt:      "asc"  },
-      ],
-      select: {
-        id:             true,
-        name:           true,
-        email:          true,
-        referralCode:   true,
-        referralsCount: true,
-        referredById:   true,
-        isConfirmed:    true,
-        createdAt:      true,
-      },
-    });
-
-    /* 3. Rank ─────────────────────────────────────────────────────── */
-    const idToRank     = new Map<string, number>();
-    const idToQueuePos = new Map<string, number>();
-
-    allRaw.forEach((s, i) => {
-      idToRank.set(s.id,     i + 1);
-      idToQueuePos.set(s.id, i + 1);
-    });
-
-    /* 4. Summary stats ────────────────────────────────────────────── */
-    const totalSubscribers = allRaw.length;
-    const activeReferrers  = allRaw.filter(s => s.referralsCount > 0).length;
-    const totalReferrals   = allRaw.reduce((sum, s) => sum + s.referralsCount, 0);
-    const topReferralCount = allRaw.length > 0 ? allRaw[0].referralsCount : 0;
-    const avgReferralsPerReferrer =
-      activeReferrers === 0
-        ? 0
-        : Math.round((totalReferrals / activeReferrers) * 10) / 10;
-
-    const newestSubscriberAt =
-      allRaw.length === 0
-        ? null
-        : allRaw.reduce(
-            (latest, s) => (s.createdAt > latest ? s.createdAt : latest),
-            allRaw[0].createdAt,
-          );
-
-    const summary = {
-      totalSubscribers,
-      totalReferrals,
-      activeReferrers,
-      avgReferralsPerReferrer,
-      topReferralCount,
-      newestSubscriberAt,
-    };
-
-    /* 5. Build entries ────────────────────────────────────────────── */
-    const childrenMap    = buildChildrenMap(allRaw);
-    const subscribersMap = new Map<string, RawSubscriberRow>(
-      allRaw.map(s => [s.id, s]),
-    );
-
-    const entries: PublicLeaderboardEntry[] = allRaw.map(sub => {
-      const rank = idToRank.get(sub.id)!;
-
-      const referredBy = sub.referredById
-        ? (() => {
-            const referrer = subscribersMap.get(sub.referredById);
-            if (!referrer) return null;
-            return {
-              id:   referrer.id,
-              name: referrer.name,
-              rank: idToRank.get(referrer.id) ?? null,
-              // email intentionally omitted
-            };
-          })()
-        : null;
-
-      return {
-        rank,
-        tier:            resolveTier(rank),
-        id:              sub.id,
-        name:            sub.name,
-        email:           maskEmail(sub.email),
-        referralCode:    sub.referralCode,
-        referralUrl:     buildReferralUrl(waitlistSlug, sub.referralCode),
-        directReferrals: sub.referralsCount,
-        chainReferrals:  countChain(sub.id, childrenMap),
-        sharePercent:    calcSharePercent(sub.referralsCount, totalReferrals),
-        queuePosition:   idToQueuePos.get(sub.id)!,
-        isConfirmed:     sub.isConfirmed,
-        joinedAt:        sub.createdAt,
-        referredBy,
-        referralPreview: buildReferralPreview(sub.id, allRaw),
-      };
-    });
-
-    /* 6. Apply tier + search filters ─────────────────────────────── */
-    let filtered = filterByTier(entries, query.tier);
-
-    if (query.search) {
-      const q = query.search.toLowerCase();
-      // Search on masked email intentionally — avoid leaking real addresses
-      filtered = filtered.filter(
-        e =>
-          e.name.toLowerCase().includes(q) ||
-          e.email.toLowerCase().includes(q),
-      );
-    }
-
-    /* 7. Paginate ─────────────────────────────────────────────────── */
-    const { page, limit, skip } = normaliseLeaderboardPagination(query);
-    const pageSlice = filtered.slice(skip, skip + limit);
-
-    return {
-      data:    pageSlice,
-      meta:    buildLeaderboardMeta(filtered.length, page, limit),
-      summary,
-    };
-  },
+  getPublicLeaderboard: withCache("leaderboard", 300, getPublicLeaderboardRaw),
 
   /* ── GET /api/leaderboard/by-slug/:waitlistSlug (authenticated) ── */
 
@@ -379,10 +390,6 @@ export const leaderboardService = {
         where: { id: waitlistSlug, deletedAt: null },
         select: { id: true, workspaceId: true },
       });
-    }
-
-    if (!waitlist) {
-      throw new AppError(status.NOT_FOUND, LEADERBOARD_MESSAGES.NOT_FOUND);
     }
 
     if (!waitlist) {

@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Search, SlidersHorizontal, X, Rocket,
-  TrendingUp, Clock, Users, Flame,
+  TrendingUp, Clock, Users, Flame, ChevronLeft, ChevronRight,
 } from "lucide-react";
 
 import { Input }   from "@/src/components/ui/input";
@@ -16,7 +16,7 @@ import { ProductCard }        from "./ProductCard";
 import { ProductDetailSheet } from "./ProductDetailSheet";
 import { JoinWaitlistModal }  from "./JoinWaitlistModal";
 import { CATEGORIES } from "../_lib/data";
-import type { PublicProduct, ProductCategory, SortOption } from "../_lib/data";
+import type { PublicProduct, ProductCategory, SortOption, PaginationMeta } from "../_lib/data";
 
 const SORT_OPTIONS: { id: SortOption; label: string; icon: React.ReactNode }[] = [
   { id: "trending",     label: "Trending",     icon: <Flame      size={13} /> },
@@ -46,12 +46,14 @@ export function ExploreClient({
   initialCategory = "All",
   initialShowOpen = false,
   initialShowPrizesOnly = false,
+  meta,
 }: {
   products: PublicProduct[];
   initialSearch?: string;
   initialCategory?: ProductCategory | "All";
   initialShowOpen?: boolean;
   initialShowPrizesOnly?: boolean;
+  meta: PaginationMeta | null;
 }) {
   const router = useRouter();
   const [search,          setSearch]          = useState(initialSearch);
@@ -123,6 +125,12 @@ export function ExploreClient({
     setShowOpen(false);
     setShowPrizesOnly(false);
     router.push("/explore");
+  };
+
+  const handlePageChange = (page: number) => {
+    const params = new URLSearchParams(window.location.search);
+    params.set("page", page.toString());
+    router.push(`/explore?${params.toString()}`, { scroll: true });
   };
 
   return (
@@ -300,6 +308,72 @@ export function ExploreClient({
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* ── Pagination ──────────────────────────────────── */}
+      {meta && meta.totalPages > 1 && (
+        <div className="mt-8 flex items-center justify-center gap-2 border-t border-border/40 pt-8">
+          <Button
+            variant="outline"
+            size="icon"
+            disabled={!meta.hasPreviousPage}
+            onClick={() => handlePageChange(meta.page - 1)}
+            className="h-9 w-9 border-border/80 bg-card/60 hover:bg-muted/80 disabled:opacity-40"
+          >
+            <ChevronLeft size={16} />
+          </Button>
+
+          <div className="flex items-center gap-1.5">
+            {Array.from({ length: Math.min(5, meta.totalPages) }, (_, i) => {
+              // Simplify for now: show first 5 pages or logical range
+              let pageNum = i + 1;
+              if (meta.totalPages > 5) {
+                if (meta.page > 3) {
+                  pageNum = meta.page - 2 + i;
+                  if (pageNum > meta.totalPages) pageNum = meta.totalPages - (4 - i);
+                }
+              }
+              if (pageNum <= 0 || pageNum > meta.totalPages) return null;
+
+              return (
+                <button
+                  key={pageNum}
+                  onClick={() => handlePageChange(pageNum)}
+                  className={cn(
+                    "flex h-9 min-w-9 items-center justify-center rounded-lg border px-3 text-sm font-medium transition-all",
+                    meta.page === pageNum
+                      ? "border-indigo-500/40 bg-indigo-500/10 text-indigo-700 dark:text-indigo-300"
+                      : "border-border/80 bg-card/60 text-muted-foreground hover:border-indigo-500/30 hover:text-foreground",
+                  )}
+                >
+                  {pageNum}
+                </button>
+              );
+            })}
+            
+            {meta.totalPages > 5 && meta.page < meta.totalPages - 2 && (
+              <>
+                <span className="px-1 text-muted-foreground/40">...</span>
+                <button
+                  onClick={() => handlePageChange(meta.totalPages)}
+                  className="flex h-9 min-w-9 items-center justify-center rounded-lg border border-border/80 bg-card/60 px-3 text-sm font-medium text-muted-foreground transition-all hover:border-indigo-500/30 hover:text-foreground"
+                >
+                  {meta.totalPages}
+                </button>
+              </>
+            )}
+          </div>
+
+          <Button
+            variant="outline"
+            size="icon"
+            disabled={!meta.hasNextPage}
+            onClick={() => handlePageChange(meta.page + 1)}
+            className="h-9 w-9 border-border/80 bg-card/60 hover:bg-muted/80 disabled:opacity-40"
+          >
+            <ChevronRight size={16} />
+          </Button>
+        </div>
+      )}
 
       {/* ── Modals ──────────────────────────────────────── */}
       <JoinWaitlistModal

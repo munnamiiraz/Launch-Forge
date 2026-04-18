@@ -1,12 +1,12 @@
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { bearer, emailOTP } from "better-auth/plugins";
-import { redisStorage } from "@better-auth/redis-storage"; // [!code highlight]
+import { redisStorage } from "@better-auth/redis-storage";
 import { Role, UserStatus } from "../constraint/index";
 import { envVars } from "../config/env";
 import { sendEmail } from "../utils/email";
 import { prisma } from "./prisma";
-import { ioRedis } from "./redis"; // [!code highlight]
+import { redis as ioRedis } from "./redis";
 // If your Prisma file is located elsewhere, you can change the path
 
 const isHttpsUrl = (url: string | undefined) =>
@@ -27,10 +27,10 @@ export const auth = betterAuth({
       provider: "postgresql", // or "mysql", "postgresql", ...etc
     }),
 
-    secondaryStorage: redisStorage({ // [!code highlight]
-      client: ioRedis, // [!code highlight]
-      keyPrefix: "auth:", // [!code highlight]
-    }), 
+    secondaryStorage: redisStorage({
+      client: ioRedis,
+      keyPrefix: "auth:",
+    }),
 
     emailAndPassword: {
       enabled: true,
