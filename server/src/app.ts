@@ -14,7 +14,21 @@ import { notFound } from "./middlewares/notFound";
 import { IndexRoutes } from "./routes";
 import { paymentRouter } from "./modules/payment/payment.route";
 
+import compression from "compression";
+import { cacheMetadataMiddleware } from "./middlewares/cache-metadata";
+import { prometheusMiddleware, register } from "./lib/prometheus";
+
 const app: Application = express();
+
+// Prometheus Metrics Endpoint (Must be BEFORE other middlewares to avoid noise, or after for better context)
+app.get("/metrics", async (req, res) => {
+  res.setHeader("Content-Type", register.contentType);
+  res.send(await register.metrics());
+});
+
+app.use(compression());
+app.use(cacheMetadataMiddleware);
+app.use(prometheusMiddleware);
 app.set('trust proxy', 1);
 app.set("query parser", (str : string) => qs.parse(str));
 

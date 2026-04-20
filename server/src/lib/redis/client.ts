@@ -17,8 +17,23 @@ redis.on("close", () => console.warn("[Redis] Connection closed."));
 redis.on("reconnecting", () => console.log("[Redis] Reconnecting..."));
 
 export const connectRedis = async (): Promise<void> => {
+  if (process.env.CACHE_DISABLED === "true") {
+    console.log("\x1b[31m[Redis] CONNECTION ABORTED: Caching is EXPLICITLY DISABLED via .env\x1b[0m");
+    return;
+  }
   if (redis.status === "ready") return;
   await redis.connect();
 };
 
-export const isRedisReady = (): boolean => redis.status === "ready";
+let disableLogShown = false;
+
+export const isRedisReady = (): boolean => {
+  if (process.env.CACHE_DISABLED === "true") {
+    if (!disableLogShown) {
+      console.log("\x1b[31m[Redis] Caching is EXPLICITLY DISABLED via environment variable.\x1b[0m");
+      disableLogShown = true;
+    }
+    return false;
+  }
+  return redis.status === "ready";
+};

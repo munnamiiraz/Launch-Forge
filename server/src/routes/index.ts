@@ -18,8 +18,24 @@ import { adminRevenueRouter } from "../modules/admin-review/admin-review.routes"
 import { adminAnalyticsRouter } from "../modules/admin-analytics/admin-analytics.route";
 import { userRouter } from "../modules/user/user.route";
 import { AiChatRoutes } from "../modules/ai-chat/ai-chat.route";
+import { debugRouter } from "../modules/debug/debug.route";
+import { withCache } from "../lib/redis";
 
 const router = Router();
+router.use("/__debug", debugRouter);
+
+const getApiRoot = async () => ({
+  success: true,
+  message: "API is working and cached!",
+  version: "v1"
+});
+
+const cachedApiRoot = withCache("api:root", 3600, getApiRoot);
+
+router.get("/", async (req, res) => {
+  const result = await cachedApiRoot();
+  res.status(200).json(result);
+});
 
 router.use((req, res, next) => {
   console.log(`[API Request] ${req.method} ${req.originalUrl}`);
