@@ -17,6 +17,8 @@ import { paymentRouter } from "./modules/payment/payment.route";
 import compression from "compression";
 import { cacheMetadataMiddleware } from "./middlewares/cache-metadata";
 import { prometheusMiddleware, register } from "./lib/prometheus";
+import { serverAdapter } from "./lib/queue/setup"; // Bull‑Board UI
+import basicAuth from "express-basic-auth"; // optional simple protection
 
 const app: Application = express();
 
@@ -57,6 +59,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/v1", IndexRoutes);
+
+// ----- Bull‑Board UI -----
+// Simple Basic‑Auth protection – change credentials as needed.
+const adminAuth = basicAuth({
+  users: { admin: "adminPassword" },
+  challenge: true,
+});
+app.use('/admin/queues', adminAuth, serverAdapter.getRouter());
 
 // Basic route
 app.get('/', async (req: Request, res: Response) => {

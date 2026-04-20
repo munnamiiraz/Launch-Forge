@@ -4,10 +4,9 @@ import { bearer, emailOTP } from "better-auth/plugins";
 import { redisStorage } from "@better-auth/redis-storage";
 import { Role, UserStatus } from "../constraint/index";
 import { envVars } from "../config/env";
-import { sendEmail } from "../utils/email";
 import { prisma } from "./prisma";
 import { redis as ioRedis } from "./redis";
-// If your Prisma file is located elsewhere, you can change the path
+import { emailQueue } from "./queue";
 
 const isHttpsUrl = (url: string | undefined) =>
   typeof url === "string" && url.startsWith("https://");
@@ -24,7 +23,7 @@ export const auth = betterAuth({
     baseURL: envVars.BETTER_AUTH_URL,
     secret: envVars.BETTER_AUTH_SECRET,
     database: prismaAdapter(prisma, {
-      provider: "postgresql", // or "mysql", "postgresql", ...etc
+      provider: "postgresql",
     }),
 
     secondaryStorage: redisStorage({
@@ -108,7 +107,8 @@ export const auth = betterAuth({
             // non-fatal — fall back to "User"
           }
 
-          await sendEmail({
+          // Offload email sending to BullMQ queue
+          await emailQueue.add("send-otp", {
             to: email,
             subject: type === "email-verification" ? "Verify your email" :
                      type === "forget-password" ? "Password Reset OTP" : "OTP Code",
@@ -138,8 +138,27 @@ export const auth = betterAuth({
 
     trustedOrigins: [process.env.BETTER_AUTH_URL || "http://localhost:5000", envVars.FRONTEND_URL],
 
+    databaseHooks: {
+      user: {
+        create: {
+          after: async (user) => {
+            // Send a cool welcome email via the queue
+            await emailQueue.add("send-welcome", {
+              to: user.email,
+              subject: "Welcome to LaunchForge! 🚀",
+              templateName: "welcome",
+              templateData: {
+                name: user.name || "Founder",
+                dashboardUrl: `${envVars.FRONTEND_URL}/dashboard`,
+              },
+            });
+            console.log(`[Auth] Welcome email queued for: ${user.email}`);
+          },
+        },
+      },
+    },
+
     advanced: {
-        // disableCSRFCheck: true,
       useSecureCookies: authCookieSecure,
       cookies:{
         state:{
@@ -160,5 +179,4 @@ export const auth = betterAuth({
         }
       }
     }
-
 });
