@@ -86,5 +86,19 @@ export const newsletterService = {
       newsLadderId: created.newsLadderId!,
     };
   },
+
+  async broadcastNewsletter(subject: string, body: string) {
+    const { newsletterQueue } = await import("../../lib/queue");
+    
+    const job = await newsletterQueue.add("broadcast-" + Date.now(), {
+      subject,
+      body,
+    });
+
+    return {
+      jobId: job.id,
+      status: "enqueued"
+    };
+  }
 };
 

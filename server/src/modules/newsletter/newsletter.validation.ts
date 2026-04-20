@@ -14,5 +14,11 @@ export const subscribeNewsletterSchema = z.object({
     .optional(),
 });
 
+export const broadcastNewsletterSchema = z.object({
+  subject: z.string().min(5).max(150),
+  body: z.string().min(10),
+});
+
 export type SubscribeNewsletterDto = z.infer<typeof subscribeNewsletterSchema>;
+export type BroadcastNewsletterDto = z.infer<typeof broadcastNewsletterSchema>;
 

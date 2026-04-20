@@ -25,5 +25,25 @@ export const newsletterController = {
       next(error);
     }
   },
+
+  /* ── POST /api/v1/newsletter/broadcast ─────────────────────────── */
+  async broadcast(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ): Promise<void> {
+    try {
+      const { subject, body } = req.body;
+      const result = await newsletterService.broadcastNewsletter(subject, body);
+
+      res.status(status.ACCEPTED).json({
+        success: true,
+        message: "Newsletter broadcast started in the background",
+        data: result,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 };
 
