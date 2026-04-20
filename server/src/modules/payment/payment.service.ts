@@ -300,8 +300,7 @@ export const paymentService = {
       throw new AppError(status.BAD_REQUEST, "Webhook signature verification failed.");
     }
 
-    /* 2. Idempotency guard — skip already-processed events ─────────
-     *    stripeEventId is @@unique in the Payment model.              */
+    /* 2. Idempotency guard — skip already-processed events ───────── */
     const alreadyProcessed = await prisma.payment.findFirst({
       where:  { stripeEventId: event.id },
       select: { id: true },
@@ -311,15 +310,26 @@ export const paymentService = {
       return { processed: false, eventType: event.type };
     }
 
-    /* 3. Route to the correct handler ───────────────────────────── */
-    if (!isHandledEvent(event.type)) {
-      return { processed: false, eventType: event.type };
+    /* 3. Delegate to Background Queue ───────────────────────────── */
+    if (isHandledEvent(event.type)) {
+      // NOTE: We import this dynamically or use the exported instance
+      const { webhookQueue } = await import("../../lib/queue");
+      await webhookQueue.add(`stripe-${event.type}-${event.id}`, { event });
+      console.log(`[Payment] Webhook enqueued: ${event.type} (${event.id})`);
+      return { processed: true, eventType: event.type };
     }
 
+    return { processed: false, eventType: event.type };
+  },
+
+  /**
+   * Internal processor for BullMQ worker.
+   * This handles the actual business logic for a verified event.
+   */
+  async processWebhookEvent(event: Stripe.Event): Promise<void> {
     const obj = event.data.object;
 
     switch (event.type) {
-
       /* ── Checkout completed — user paid for the first time ─────── */
       case "checkout.session.completed": {
         if (!isCheckoutSession(obj)) break;
@@ -332,11 +342,6 @@ export const paymentService = {
           ? centsToDollars(obj.amount_total)
           : derivePlanAmount(meta.planType, meta.planMode);
 
-        /*
-         * Upsert — handles both new subscribers and returning users
-         * who lapsed and are re-subscribing. transactionId uses the
-         * subscription ID if available, otherwise the session ID.
-         */
         await prisma.$transaction(async (tx) => {
           await tx.payment.upsert({
             where:  { userId: meta.userId },
@@ -534,8 +539,6 @@ export const paymentService = {
         break;
       }
     }
-
-    return { processed: true, eventType: event.type };
   },
 
   /* ──────────────────────────────────────────────────────────────

@@ -50,6 +50,34 @@ export class AiInsightsService {
   }
 
   static async generateDashboardInsights(workspaceId: string, userId: string) {
+    const cacheKey = `ai:insights:${workspaceId}`;
+    
+    // 1. Check if we have a recent cached version
+    const { redis } = await import("../../lib/redis");
+    const cached = await redis.get(cacheKey);
+    
+    if (cached) {
+      return JSON.parse(cached);
+    }
+
+    // 2. If no cache, trigger background generation but return "Processing" 
+    // to keep the API responsive.
+    const { aiQueue } = await import("../../lib/queue");
+    await aiQueue.add(`generate-${workspaceId}`, { workspaceId, userId });
+
+    return {
+      status: "processing",
+      message: "AI is analyzing your data. Check back in a few seconds.",
+      insights: null
+    };
+  }
+
+  /**
+   * Actual logic used by the BullMQ worker
+   */
+  static async generateAndCacheInsights(workspaceId: string, userId: string) {
+    const cacheKey = `ai:insights:${workspaceId}`;
+
     // 1. Fetch current analytics summary
     const stats = await analyticsService.getSummary({
       workspaceId,
@@ -60,10 +88,9 @@ export class AiInsightsService {
     // 2. Pass to AI for analysis
     const insights = await this.getAiAdvice(stats);
 
-    // 3. Save to database (optional, but good for history)
-    // For now we just return it.
-    return {
+    const result = {
       insights,
+      status: "completed",
       generatedAt: new Date().toISOString(),
       statsSnapshot: {
         subscribers: stats.totalSubscribers,
@@ -71,5 +98,11 @@ export class AiInsightsService {
         viralScore: stats.avgViralScore
       }
     };
+
+    // 3. Cache the result for 1 hour
+    const { redis } = await import("../../lib/redis");
+    await redis.set(cacheKey, JSON.stringify(result), "EX", 3600);
+
+    return result;
   }
 }
