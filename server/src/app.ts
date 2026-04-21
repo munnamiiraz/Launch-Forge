@@ -19,12 +19,17 @@ import { cacheMetadataMiddleware } from "./middlewares/cache-metadata";
 import { prometheusMiddleware, register } from "./lib/prometheus";
 import { serverAdapter } from "./lib/queue/setup"; // Bull‑Board UI
 import basicAuth from "express-basic-auth"; 
-import { globalLimiter, strictLimiter } from "./middlewares/security";
+import { globalLimiter, securityShieldMiddleware, strictLimiter } from "./middlewares/security";
 import helmet from "helmet";
 
 const app: Application = express();
 
-// Prometheus Metrics Endpoint (Must be BEFORE other middlewares to avoid noise, or after for better context)
+// ── 1. Security Shield (EDGE) ──────────────────────────────────
+// Drop banned IPs immediately before parsing anything
+app.use(securityShieldMiddleware);
+
+// ── 2. Performance & Monitoring ────────────────────────────────
+// Prometheus Metrics Endpoint (Must be BEFORE other middlewares to avoid noise)
 app.get("/metrics", async (req, res) => {
   res.setHeader("Content-Type", register.contentType);
   res.send(await register.metrics());

@@ -34,6 +34,7 @@ model User {
   ownedWorkspaces      Workspace[]       @relation("WorkspaceOwner")
   workspaceMemberships WorkspaceMember[]
   auditLogs            AuditLog[]
+  notifications        Notification[]
 
   @@map("user")
 }
@@ -431,4 +432,23 @@ model AuditLog {
   @@index([entity])
   @@index([createdAt])
   @@map("audit_log")
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  workspaceId String?
+  type        String   // INFO, SUCCESS, WARNING, ERROR, MILESTONE
+  title       String
+  message     String
+  link        String?
+  isRead      Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([workspaceId])
+  @@index([createdAt])
+  @@map("notification")
 }

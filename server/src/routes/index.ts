@@ -20,6 +20,7 @@ import { userRouter } from "../modules/user/user.route";
 import { AiChatRoutes } from "../modules/ai-chat/ai-chat.route";
 import { debugRouter } from "../modules/debug/debug.route";
 import { auditLogRoutes } from "../modules/audit-log/audit-log.routes";
+import { notificationRouter } from "../modules/notification/notification.route";
 import { withCache } from "../lib/redis";
 
 const router = Router();
@@ -89,6 +90,7 @@ router.use("/admin/revenue", adminRevenueRouter);
 router.use("/admin/analytics", adminAnalyticsRouter);
 router.use("/admin/audit-logs", auditLogRoutes);
 router.use("/user", userRouter);
+router.use("/notifications", notificationRouter);
 router.use("/ai-chat", AiChatRoutes);
 
 export const IndexRoutes = router;

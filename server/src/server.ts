@@ -12,7 +12,11 @@ const bootstrap = async() => {
 
         const mode = process.env.APP_MODE || 'all';
 
-        // 1. Initialize Workers if in 'worker' or 'all' mode
+        // 1. Initialize Notification System listeners
+        const { initNotificationListeners } = await import("./modules/notification/notification.listener");
+        initNotificationListeners();
+
+        // 2. Initialize Workers if in 'worker' or 'all' mode
         if (mode === 'worker' || mode === 'all') {
             const { initWorkers } = await import("./lib/queue");
             await initWorkers();

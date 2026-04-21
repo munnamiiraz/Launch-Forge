@@ -1,5 +1,6 @@
 import { DashboardSidebar } from "./_components/DashboardSidebar";
 import { WorkspaceProvider } from "@/src/provider/WorkspaceProvider";
+import { NotificationBell } from "@/src/components/NotificationBell";
 import type { DashboardUser } from "./_types";
 
 import { cookies } from "next/headers";
@@ -71,13 +72,44 @@ export async function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <WorkspaceProvider initialWorkspaces={workspaces}>
-      <div className="flex h-screen overflow-hidden bg-background">
+      <div className="flex h-screen overflow-hidden bg-background font-inter">
         {/* Sidebar */}
         <DashboardSidebar user={user} initialWorkspaces={workspaces} />
 
         {/* Main content area */}
         <div className="flex flex-1 flex-col overflow-hidden">
-          <main className="flex-1 overflow-y-auto overscroll-behavior-contain custom-scrollbar">
+          {/* Top Navigation / Dashboard Header */}
+          <header className="h-16 border-b border-white/5 flex items-center justify-between px-8 bg-background/50 backdrop-blur-md z-30">
+            <div className="flex items-center gap-4">
+              <h1 className="text-xl font-bold tracking-tight text-white/90">
+                Dashboard
+              </h1>
+              <div className="h-4 w-px bg-white/10 hidden sm:block" />
+              <span className="text-sm font-medium text-white/40 hidden sm:block">
+                Workspace Overview
+              </span>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              {/* Real-time Notifications */}
+              <NotificationBell />
+              
+              <div className="h-8 w-px bg-white/10" />
+              
+              {/* User Identity */}
+              <div className="flex items-center gap-3">
+                <div className="hidden sm:flex flex-col items-end">
+                  <span className="text-sm font-semibold text-white/90">{user.name}</span>
+                  <span className="text-[10px] uppercase tracking-wider text-white/40 font-bold">{user.plan} account</span>
+                </div>
+                <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${user.avatarColor} flex items-center justify-center text-sm font-bold text-white border border-white/10`}>
+                  {user.avatarInitials}
+                </div>
+              </div>
+            </div>
+          </header>
+
+          <main className="flex-1 overflow-y-auto overscroll-behavior-contain custom-scrollbar bg-neutral-950/20">
             {children}
           </main>
         </div>

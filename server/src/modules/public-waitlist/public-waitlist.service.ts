@@ -17,6 +17,7 @@ import {
   derivePosition,
   resolveReferrerId,
 } from "./public-waitlist.utils";
+import { appEvents, EVENTS } from "../../lib/events";
 
 export const publicWaitlistService = {
 
@@ -212,7 +213,7 @@ export const publicWaitlistService = {
           referredById,
           isConfirmed:  false,
         },
-        select: { id: true, referralCode: true },
+        select: { id: true, referralCode: true, email: true },
       });
 
       /* Increment the referring subscriber's denormalised counter */
@@ -225,6 +226,9 @@ export const publicWaitlistService = {
 
       return [subscriber];
     });
+
+    // Emit event for real-time notifications
+    appEvents.emit(EVENTS.SUBSCRIBER.CREATED, { waitlistId: waitlist.id, subscriber: newSubscriber });
 
     /* 7. Derive position from the live ordered list ─────────────── */
     const [totalSubscribers, orderedIds] = await prisma.$transaction([
