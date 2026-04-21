@@ -128,10 +128,10 @@ export function ChangelogChart({ data = [] }: { data?: ChangelogPoint[] }) {
           </div>
           <div className="flex items-center gap-3 text-[10px] text-muted-foreground/60">
             <span>
-              <span className="font-black text-cyan-300">{totalPublished.toLocaleString()}</span>{" "}published
+              <span className="font-bold font-heading text-cyan-300">{totalPublished.toLocaleString()}</span>{" "}published
             </span>
             <span>
-              <span className="font-black text-muted-foreground/80">{totalDrafts.toLocaleString()}</span>{" "}drafts
+              <span className="font-bold font-heading text-muted-foreground/80">{totalDrafts.toLocaleString()}</span>{" "}drafts
             </span>
           </div>
         </div>

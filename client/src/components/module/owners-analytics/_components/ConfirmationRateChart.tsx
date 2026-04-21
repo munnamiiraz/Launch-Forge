@@ -40,7 +40,7 @@ export function ConfirmationRateChart() {
 
   return (
     <Card className="relative overflow-hidden border-border/80 bg-card/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-emerald-500/30 to-transparent" />
       <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">
           <div>
@@ -134,7 +134,7 @@ export function TopReferrersChart() {
 
   return (
     <Card className="relative overflow-hidden border-border/80 bg-card/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-violet-500/30 to-transparent" />
       <CardHeader className="border-b border-border/60 px-5 py-4">
         <p className="text-sm font-semibold text-foreground/90">Top referrers</p>
         <p className="text-[11px] text-muted-foreground/60">Direct + chain referrals across all waitlists</p>
@@ -169,7 +169,7 @@ export function TopReferrersChart() {
                 <Avatar className="h-6 w-6 shrink-0 rounded-md">
                   <AvatarFallback
                     className={cn(
-                      "rounded-md bg-gradient-to-br text-[9px] font-bold text-white",
+                      "rounded-md bg-linear-to-br text-[9px] font-bold text-white",
                       AVATAR_GRADS[i % AVATAR_GRADS.length],
                     )}
                   >
@@ -187,7 +187,7 @@ export function TopReferrersChart() {
                   </div>
                   <div className="h-1.5 overflow-hidden rounded-full bg-zinc-800">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-indigo-600 to-violet-500 transition-all duration-700"
+                      className="h-full rounded-full bg-linear-to-r from-indigo-600 to-violet-500 transition-all duration-700"
                       style={{ width: `${pct}%` }}
                     />
                   </div>

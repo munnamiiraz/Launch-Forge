@@ -40,7 +40,7 @@ export function ReferralNetworkChart({
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <p className="text-xl font-black tabular-nums text-violet-300">
+            <p className="text-xl font-bold font-heading tabular-nums text-violet-300">
               {(safeStats.totalReferrals / 1000).toFixed(0)}k
             </p>
             <Badge className="border-violet-500/25 bg-violet-500/10 text-[10px] text-violet-400">
@@ -87,7 +87,7 @@ export function ReferralNetworkChart({
               <div className="mt-0.5 shrink-0">{s.icon}</div>
               <div>
                 <p className="text-[10px] text-muted-foreground/60">{s.label}</p>
-                <p className="text-sm font-black tabular-nums text-foreground/90">{s.value}</p>
+                <p className="text-sm font-bold font-heading tabular-nums text-foreground/90">{s.value}</p>
               </div>
             </div>
           ))}

@@ -42,9 +42,7 @@ export function InfrastructureHealth({ data }: InfrastructureHealthProps) {
 
       const result = await res.json();
       if (result.success) {
-        toast.success(`Recovery successful: ${result.message}`, {
-          description: "Jobs have been re-added to the waiting list.",
-        });
+        toast.success(`Recovery successful: ${result.message}`);
       } else {
         toast.error("Recovery failed", { description: result.message });
       }
@@ -56,17 +54,17 @@ export function InfrastructureHealth({ data }: InfrastructureHealthProps) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       <div className="flex items-center justify-between">
-        <h2 className="text-sm font-bold uppercase tracking-widest text-red-500/70">
+        <h2 className="text-[10px] font-bold uppercase tracking-wider text-red-500/80">
           Infrastructure Vitals
         </h2>
         <div className="flex items-center gap-2">
-          <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/20 gap-1.5 px-2">
+          <Badge variant="outline" className="bg-green-500/10 text-green-400 border-green-500/20 gap-1.5 px-2 py-0.5 text-[10px]">
             <Activity size={10} className="animate-pulse" />
-            System Healthy
+            Healthy
           </Badge>
-          <Badge variant="outline" className="bg-red-500/10 text-red-400 border-red-500/20 capitalize font-bold">
+          <Badge variant="outline" className="bg-red-500/10 text-red-400 border-red-500/20 capitalize font-semibold py-0.5 text-[10px]">
             Mode: {data.mode}
           </Badge>
         </div>
@@ -76,17 +74,17 @@ export function InfrastructureHealth({ data }: InfrastructureHealthProps) {
         {data.queues.map((queue, idx) => (
           <motion.div
             key={queue.name}
-            initial={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, scale: 0.98 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: idx * 0.1 }}
+            transition={{ delay: idx * 0.05 }}
           >
             <Card className="border-border/40 bg-card/30 backdrop-blur-sm overflow-hidden relative group">
-              <div className="absolute inset-x-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-red-500/30 to-transparent" />
+              <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-red-500/20 to-transparent" />
               
-              <CardHeader className="pb-2">
+              <CardHeader className="pb-2 pt-4">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm font-bold flex items-center gap-2">
-                    <Server size={14} className="text-red-400" />
+                  <CardTitle className="text-xs font-semibold font-heading flex items-center gap-2">
+                    <Server size={12} className="text-red-400" />
                     {queue.name}
                   </CardTitle>
                   
@@ -98,41 +96,41 @@ export function InfrastructureHealth({ data }: InfrastructureHealthProps) {
                       onClick={() => handleRetry(queue.name)}
                       disabled={retrying === queue.name}
                     >
-                      <RefreshCw size={12} className={retrying === queue.name ? "animate-spin" : ""} />
+                      <RefreshCw size={10} className={retrying === queue.name ? "animate-spin" : ""} />
                     </Button>
                   )}
                 </div>
               </CardHeader>
               
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 pb-4">
                 {/* Stats Row */}
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="rounded-lg bg-white/[0.03] p-2 border border-white/5">
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tight">Active</p>
-                    <p className="text-lg font-black text-blue-400">{queue.active}</p>
+                  <div className="rounded-lg bg-white/2 p-2 border border-white/5">
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-tight">Active</p>
+                    <p className="text-base font-bold text-blue-400">{queue.active}</p>
                   </div>
-                  <div className="rounded-lg bg-white/[0.03] p-2 border border-white/5">
-                    <p className="text-[10px] text-muted-foreground uppercase font-bold tracking-tight">Waiting</p>
-                    <p className="text-lg font-black text-yellow-400">{queue.waiting}</p>
+                  <div className="rounded-lg bg-white/2 p-2 border border-white/5">
+                    <p className="text-[9px] font-semibold text-muted-foreground uppercase tracking-tight">Waiting</p>
+                    <p className="text-base font-bold text-yellow-400">{queue.waiting}</p>
                   </div>
                 </div>
 
                 {/* Success/Fail Bar */}
                 <div className="space-y-1.5">
-                  <div className="flex justify-between text-[9px] font-bold uppercase text-muted-foreground/60 tracking-wider">
+                  <div className="flex justify-between text-[9px] font-semibold uppercase text-muted-foreground tracking-wide">
                     <span>Performance</span>
-                    <span className="text-foreground">
-                      {Math.round((queue.completed / (queue.completed + queue.failed || 1)) * 100)}% Success
+                    <span className="text-foreground font-bold">
+                      {Math.round((queue.completed / (queue.completed + queue.failed || 1)) * 100)}%
                     </span>
                   </div>
-                  <div className="flex h-1.5 w-full gap-1">
+                  <div className="flex h-1 w-full gap-0.5 rounded-full overflow-hidden bg-white/5">
                     <div 
-                      className="h-full bg-green-500/60 rounded-full transition-all duration-500" 
+                      className="h-full bg-green-500/40 transition-all duration-700" 
                       style={{ width: `${(queue.completed / (queue.completed + queue.failed || 1)) * 100}%` }} 
                     />
                     {queue.failed > 0 && (
                       <div 
-                        className="h-full bg-red-500/60 rounded-full transition-all duration-500" 
+                        className="h-full bg-red-500/50 transition-all duration-700" 
                         style={{ width: `${(queue.failed / (queue.completed + queue.failed || 1)) * 100}%` }} 
                       />
                     )}
@@ -140,25 +138,25 @@ export function InfrastructureHealth({ data }: InfrastructureHealthProps) {
                 </div>
 
                 {/* Throughput Row */}
-                <div className="flex items-center justify-between px-1 bg-white/[0.02] py-2 rounded-lg border border-white/5">
+                <div className="flex items-center justify-between px-2 bg-white/1 py-1.5 rounded border border-white/5">
                   <div className="flex items-center gap-1.5">
-                    <div className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-tight">Total Processed</span>
+                    <div className="h-1 w-1 rounded-full bg-green-500 animate-pulse" />
+                    <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-tight">Processed</span>
                   </div>
-                  <span className="text-sm font-black text-foreground">
+                  <span className="text-xs font-bold text-foreground">
                     {queue.completed.toLocaleString()}
                   </span>
                 </div>
 
                 {/* Footer labels */}
-                <div className="flex items-center justify-between pt-1 opacity-60">
+                <div className="flex items-center justify-between pt-1 opacity-70">
                    <div className="flex items-center gap-1">
                       <Clock size={10} className="text-muted-foreground" />
                       <span className="text-[9px] font-medium">{queue.delayed} Delayed</span>
                    </div>
                    <div className="flex items-center gap-1 text-red-400">
                       <AlertTriangle size={10} />
-                      <span className="text-[9px] font-black">{queue.failed} Failed</span>
+                      <span className="text-[9px] font-bold">{queue.failed} Failed</span>
                    </div>
                 </div>
               </CardContent>

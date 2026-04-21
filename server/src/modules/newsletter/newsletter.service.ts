@@ -99,6 +99,22 @@ export const newsletterService = {
       jobId: job.id,
       status: "enqueued"
     };
+  },
+
+  async sendTestNewsletter(email: string, subject: string, body: string) {
+    const { emailQueue } = await import("../../lib/queue");
+    
+    await emailQueue.add("test-newsletter-" + Date.now(), {
+      to: email,
+      subject: "[PREVIEW] " + subject,
+      templateName: "newsletter", 
+      templateData: {
+        name: "Admin",
+        content: body
+      }
+    });
+
+    return { success: true };
   }
 };
 

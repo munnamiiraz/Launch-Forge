@@ -3,6 +3,7 @@ import status from "http-status";
 import { adminUsersService }    from "./admin-user.service";
 import { ADMIN_USERS_MESSAGES } from "./admin-user.constants";
 import { UsersListQuery }       from "./admin-user.interface";
+import { auditLogger }        from "../../lib/auditLogger";
 
 export const adminUsersController = {
 
@@ -62,6 +63,9 @@ export const adminUsersController = {
         requestingUserId: req.user!.id,
         targetUserId:     req.params.userId as string,
       });
+
+      await auditLogger.log(req, "USER_SUSPENDED", "User", req.params.userId as string);
+
       res.status(status.OK).json({
         success: true,
         message: ADMIN_USERS_MESSAGES.SUSPENDED,
@@ -78,6 +82,9 @@ export const adminUsersController = {
         requestingUserId: req.user!.id,
         targetUserId:     req.params.userId as string,
       });
+
+      await auditLogger.log(req, "USER_REACTIVATED", "User", req.params.userId as string);
+
       res.status(status.OK).json({
         success: true,
         message: ADMIN_USERS_MESSAGES.REACTIVATED,
@@ -94,6 +101,9 @@ export const adminUsersController = {
         requestingUserId: req.user!.id,
         targetUserId:     req.params.userId as string,
       });
+
+      await auditLogger.log(req, "USER_DELETED", "User", req.params.userId as string);
+
       res.status(status.OK).json({
         success: true,
         message: ADMIN_USERS_MESSAGES.DELETED,
@@ -109,6 +119,9 @@ export const adminUsersController = {
         requestingUserId: req.user!.id,
         targetUserId:     req.params.userId as string,
       });
+
+      await auditLogger.log(req, "USER_PROMOTED", "User", req.params.userId as string, { role: "ADMIN" });
+
       res.status(status.OK).json({
         success: true,
         message: ADMIN_USERS_MESSAGES.PROMOTED,
@@ -125,6 +138,9 @@ export const adminUsersController = {
         requestingUserId: req.user!.id,
         targetUserId:     req.params.userId as string,
       });
+
+      await auditLogger.log(req, "USER_DEMOTED", "User", req.params.userId as string, { role: "USER" });
+
       res.status(status.OK).json({
         success: true,
         message: ADMIN_USERS_MESSAGES.DEMOTED,
@@ -142,6 +158,9 @@ export const adminUsersController = {
         email:            req.body.email,
         role:             req.body.role,
       });
+
+      await auditLogger.log(req, "USER_INVITED", "User", null, { email: req.body.email, role: req.body.role });
+
       res.status(status.CREATED).json({
         success: true,
         message: ADMIN_USERS_MESSAGES.INVITED,
@@ -158,6 +177,9 @@ export const adminUsersController = {
         requestingUserId: req.user!.id,
         userIds:          req.body.userIds,
       });
+
+      await auditLogger.log(req, "USER_BULK_SUSPEND", "User", null, { count, userIds: req.body.userIds });
+
       res.status(status.OK).json({
         success: true,
         message: `${count} ${ADMIN_USERS_MESSAGES.BULK_SUSPENDED}`,
@@ -174,6 +196,9 @@ export const adminUsersController = {
         requestingUserId: req.user!.id,
         userIds:          req.body.userIds,
       });
+
+      await auditLogger.log(req, "USER_BULK_DELETE", "User", null, { count, userIds: req.body.userIds });
+
       res.status(status.OK).json({
         success: true,
         message: `${count} ${ADMIN_USERS_MESSAGES.BULK_DELETED}`,

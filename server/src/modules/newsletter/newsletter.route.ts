@@ -22,5 +22,13 @@ router
     newsletterController.broadcast,
   );
 
+router
+  .route("/test")
+  .post(
+    checkAuth(Role.ADMIN),
+    validateRequest(broadcastNewsletterSchema), 
+    newsletterController.sendTest,
+  );
+
 export const newsletterRouter = router;
 

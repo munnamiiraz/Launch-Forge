@@ -108,9 +108,9 @@ export function PrizesPageClient() {
     <div className="relative flex min-h-screen flex-col bg-zinc-50/50 dark:bg-[#0f1115]">
       {/* Premium Background Mesh - Adjusted for slightly lighter base */}
       <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
-        <div className="absolute -left-[10%] -top-[10%] h-[600px] w-[600px] rounded-full bg-indigo-500/15 blur-[120px] dark:bg-indigo-500/[0.08]" />
-        <div className="absolute -right-[5%] top-[10%] h-[500px] w-[500px] rounded-full bg-amber-500/15 blur-[100px] dark:bg-amber-500/[0.06]" />
-        <div className="absolute bottom-[20%] left-[15%] h-[550px] w-[550px] rounded-full bg-violet-500/15 blur-[130px] dark:bg-violet-500/[0.07]" />
+        <div className="absolute -left-[10%] -top-[10%] h-[600px] w-[600px] rounded-full bg-indigo-500/15 blur-[120px] dark:bg-indigo-500/8" />
+        <div className="absolute -right-[5%] top-[10%] h-[500px] w-[500px] rounded-full bg-amber-500/15 blur-[100px] dark:bg-amber-500/6" />
+        <div className="absolute bottom-[20%] left-[15%] h-[550px] w-[550px] rounded-full bg-violet-500/15 blur-[130px] dark:bg-violet-500/7" />
         
         {/* Animated noise/grain texture for depth */}
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] brightness-100 contrast-150" />
@@ -130,7 +130,7 @@ export function PrizesPageClient() {
           {/* Enhanced Promo/Info Banner - Lighter glassmorphism */}
           <div className="group relative overflow-hidden rounded-2xl border border-zinc-200 bg-white/60 px-6 py-6 shadow-sm transition-all duration-300 hover:shadow-md dark:border-amber-500/25 dark:bg-zinc-900/60 dark:backdrop-blur-xl">
             {/* Animated accent line */}
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+            <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-amber-500/50 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
             
             <div aria-hidden className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-amber-500/10 blur-3xl transition-all duration-500 group-hover:bg-amber-500/15" />
             <div aria-hidden className="pointer-events-none absolute -left-8 bottom-0 h-32 w-64 rounded-full bg-indigo-500/5 blur-3xl" />
@@ -174,7 +174,7 @@ export function PrizesPageClient() {
               </div>
             </div>
           ) : error ? (
-            <div className="flex flex-col items-center justify-center rounded-2xl border border-red-500/20 bg-red-500/[0.02] py-20 text-center dark:bg-red-500/[0.05]">
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-red-500/20 bg-red-500/2 py-20 text-center dark:bg-red-500/5">
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-500/10 text-red-500">
                 <RefreshCw size={20} />
               </div>

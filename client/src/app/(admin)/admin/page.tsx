@@ -23,11 +23,11 @@ function Section({ title, description, children }: {
       <div className="flex items-center gap-3">
         <div className="h-px flex-1 bg-muted/60" />
         <div className="flex flex-col items-center gap-0.5">
-          <span className="text-[10px] font-bold uppercase tracking-widest text-red-500/70">
+          <span className="text-[9px] font-semibold uppercase tracking-wider text-red-500/60">
             {title}
           </span>
           {description && (
-            <span className="text-[9px] text-muted-foreground/40">{description}</span>
+            <span className="text-[9px] text-muted-foreground/30">{description}</span>
           )}
         </div>
         <div className="h-px flex-1 bg-muted/60" />
@@ -63,15 +63,15 @@ export default async function AdminPage() {
       <div className="relative overflow-hidden rounded-2xl border border-red-500/15 bg-card/30 px-6 py-5">
         <div aria-hidden className="pointer-events-none absolute -right-12 -top-12 h-48 w-48 rounded-full bg-red-500/6 blur-3xl" />
         <div className="relative">
-          <h1 className="text-lg font-black tracking-tight text-foreground">
+          <h1 className="text-lg font-semibold font-heading text-foreground">
             Platform overview
           </h1>
-          <p className="mt-1 text-xs text-muted-foreground/80 flex flex-wrap items-center gap-x-2 gap-y-1">
-            <span>Analytics data refreshes every <span className="font-bold text-foreground">6 hours</span>.</span>
+          <p className="mt-1 text-xs text-muted-foreground/70 flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span>Analytics data refreshes every <span className="font-semibold text-foreground">6 hours</span>.</span>
             <span className="hidden sm:inline text-muted-foreground/30">•</span>
-            <span>Activity feed is <span className="text-emerald-500 font-bold">Live</span>.</span>
+            <span>Activity feed is <span className="text-emerald-500 font-semibold">Live</span>.</span>
             <span className="hidden sm:inline text-muted-foreground/30">•</span>
-            <span>Logged in as <span className="text-red-400 font-semibold">Admin</span>.</span>
+            <span>Logged in as <span className="text-red-400 font-medium">Admin</span>.</span>
           </p>
         </div>
       </div>

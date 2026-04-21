@@ -40,7 +40,7 @@ export function PlatformSubscriberChart({ data = [] }: { data?: PlatformSubscrib
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <div className="text-right">
-              <p className="text-xl font-black tabular-nums text-indigo-300">
+              <p className="text-xl font-bold font-heading tabular-nums text-indigo-300">
                 {(current.cumulative / 1_000_000).toFixed(2)}M
               </p>
               <p className="text-[10px] text-muted-foreground/60">cumulative</p>
@@ -86,7 +86,7 @@ export function PlatformSubscriberChart({ data = [] }: { data?: PlatformSubscrib
           ].map((s) => (
             <div key={s.label} className="rounded-lg border border-border/60 bg-card/40 px-3 py-2">
               <p className="text-[10px] text-muted-foreground/60">{s.label}</p>
-              <p className={cn("text-sm font-black tabular-nums", s.color)}>{s.value}</p>
+              <p className={cn("text-sm font-bold font-heading tabular-nums", s.color)}>{s.value}</p>
             </div>
           ))}
         </div>
@@ -145,7 +145,7 @@ export function WaitlistHealthChart({
           ].map((s) => (
             <div key={s.label} className="rounded-lg border border-border/60 bg-card/40 px-3 py-2">
               <p className="text-[10px] text-muted-foreground/60">{s.label}</p>
-              <p className={cn("text-sm font-black tabular-nums", s.color)}>{s.value}</p>
+              <p className={cn("text-sm font-bold font-heading tabular-nums", s.color)}>{s.value}</p>
             </div>
           ))}
         </div>

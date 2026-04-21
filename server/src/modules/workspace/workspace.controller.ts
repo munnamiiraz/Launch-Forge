@@ -3,6 +3,7 @@ import status from "http-status";
 import { prisma } from "../../lib/prisma";
 import { workspaceService }   from "./workspace.service";
 import { WORKSPACE_MESSAGES } from "./workspace.constant";
+import { auditLogger }      from "../../lib/auditLogger";
 import {
   GetWorkspacesQuery,
   GetMembersQuery,
@@ -27,6 +28,8 @@ export const workspaceController = {
         slug,
         logo,
       });
+
+      await auditLogger.log(req, "WORKSPACE_CREATED", "Workspace", workspace.id, { name, slug });
 
       res.status(status.CREATED).json({
         success: true,
@@ -152,6 +155,8 @@ export const workspaceController = {
         logo,
       });
 
+      await auditLogger.log(req, "WORKSPACE_UPDATED", "Workspace", workspace.id, { name, slug });
+
       res.status(status.OK).json({
         success: true,
         message: WORKSPACE_MESSAGES.UPDATED,
@@ -178,6 +183,8 @@ export const workspaceController = {
         requestingUserId: requestingUserId as string,
       });
       
+      await auditLogger.log(req, "WORKSPACE_DELETED", "Workspace", workspaceId as string);
+
       res.status(status.OK).json({
         success: true,
         message: WORKSPACE_MESSAGES.DELETED,
@@ -234,6 +241,8 @@ export const workspaceController = {
         email,
       });
 
+      await auditLogger.log(req, "WORKSPACE_MEMBER_ADDED", "Workspace", workspaceId as string, { memberEmail: email });
+
       res.status(status.CREATED).json({
         success: true,
         message: WORKSPACE_MESSAGES.MEMBER_ADDED,
@@ -261,6 +270,8 @@ export const workspaceController = {
         requestingUserId: requestingUserId as string,
         memberId: memberId as string,
       });
+
+      await auditLogger.log(req, "WORKSPACE_MEMBER_REMOVED", "Workspace", workspaceId as string, { memberId });
 
       res.status(status.OK).json({
         success: true,

@@ -40,7 +40,7 @@ export function EngagementChart({ data = [] }: { data?: EngagementPoint[] }) {
             </p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
-            <p className="text-xl font-black tabular-nums text-red-300">
+            <p className="text-xl font-bold font-heading tabular-nums text-red-300">
               {last.dau.toLocaleString()}
             </p>
             <Badge className={cn(

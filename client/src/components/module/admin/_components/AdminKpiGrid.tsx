@@ -108,16 +108,16 @@ export function AdminKpiGrid({ kpis }: AdminKpiGridProps) {
           className="h-full"
         >
           <Card className="group relative h-full overflow-hidden border-border/80 bg-card/40 transition-all duration-300 hover:bg-card/60 hover:shadow-lg hover:shadow-black/20">
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-red-500/20" />
+            <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-red-500/20" />
             <CardContent className="flex h-full flex-col justify-between p-4">
               <div>
                 <div className="mb-2.5 flex items-center justify-between">
-                  <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{card.label}</p>
+                  <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/50">{card.label}</p>
                   <div className={cn("flex h-7 w-7 items-center justify-center rounded-lg border text-current transition-transform group-hover:scale-110", card.accent, card.valueColor)}>
                     {card.icon}
                   </div>
                 </div>
-                <p className={cn("text-2xl font-black tracking-tight tabular-nums", card.valueColor)}>{card.value}</p>
+                <p className={cn("text-xl font-bold font-heading tabular-nums", card.valueColor)}>{card.value}</p>
                 <p className="mt-1 text-[10px] text-muted-foreground/60">{card.sub}</p>
               </div>
               {card.delta && (

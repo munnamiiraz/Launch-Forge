@@ -6,15 +6,33 @@ import { envVars } from "../config/env";
 // ── 1. Initialize Sentry ────────────────────────────────────────
 // Sentry should be initialized as early as possible
 if (envVars.SENTRY_DSN) {
+  const isProd = envVars.NODE_ENV === "production";
+  
   Sentry.init({
     dsn: envVars.SENTRY_DSN,
     integrations: [
       nodeProfilingIntegration(),
     ],
     // Performance Monitoring
-    tracesSampleRate: 1.0, 
-    profilesSampleRate: 1.0,
+    // In production, we only sample 10% of transactions to reduce noise & performance overhead
+    tracesSampleRate: isProd ? 0.1 : 1.0, 
+    profilesSampleRate: isProd ? 0.1 : 1.0,
     environment: envVars.NODE_ENV || "development",
+    
+    // Deduplication and noise reduction
+    beforeSend(event, hint) {
+      const error = hint.originalException;
+      
+      // Filter out low-priority errors that might spam
+      if (error && error instanceof Error) {
+        // Ignore abort errors from the browser or standard socket hangs
+        if (error.message.includes("aborted") || error.message.includes("socket hang up")) {
+          return null;
+        }
+      }
+      
+      return event;
+    },
   });
   console.log("\x1b[32m[Telemetry] Sentry initialized successfully.\x1b[0m");
 } else {

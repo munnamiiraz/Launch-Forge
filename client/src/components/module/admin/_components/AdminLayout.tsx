@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import {
   LayoutDashboard, Users, DollarSign, BarChart3,
   Shield, ChevronLeft, ChevronRight,
-  Bell, LogOut, Home, Mail
+  Bell, LogOut, Home, Mail, ShieldAlert
 } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
@@ -24,6 +24,7 @@ const NAV = [
   { href: "/admin/revenue",  label: "Revenue",    icon: DollarSign      },
   { href: "/admin/analytics",label: "Analytics",  icon: BarChart3       },
   { href: "/admin/newsletter",label: "Newsletter",icon: Mail            },
+  { href: "/admin/audit-logs",label: "Audit Logs",icon: ShieldAlert     },
   { href: "/",               label: "Home",       icon: Home            },
 ];
 
@@ -43,7 +44,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
           className="relative flex h-screen shrink-0 flex-col border-r border-border/60 bg-background overflow-hidden"
         >
           {/* Accent line */}
-          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/40 to-transparent" />
+          <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-red-500/40 to-transparent" />
 
           {/* Logo */}
           <div className="flex h-14 items-center justify-between border-b border-border/60 px-3">
@@ -137,7 +138,7 @@ export function AdminLayout({ children }: { children: React.ReactNode }) {
                   <LogOut size={14} />
                 </Button>
                 <Avatar className="h-7 w-7 rounded-lg">
-                  <AvatarFallback className="rounded-lg bg-gradient-to-br from-red-500 to-rose-600 text-[10px] font-black text-white">
+                  <AvatarFallback className="rounded-lg bg-linear-to-br from-red-500 to-rose-600 text-[10px] font-black text-white">
                     A
                   </AvatarFallback>
                 </Avatar>

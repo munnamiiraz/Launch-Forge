@@ -94,7 +94,7 @@ export function GrowthChart({ externalData }: GrowthChartProps) {
 
   return (
     <Card className="relative overflow-hidden border-border/80 bg-card/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-indigo-500/30 to-transparent" />
 
       <CardHeader className="border-b border-border/60 px-5 py-4">
         <div className="flex items-center justify-between">

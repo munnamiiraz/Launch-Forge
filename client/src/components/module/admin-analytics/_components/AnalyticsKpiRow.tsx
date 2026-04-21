@@ -33,12 +33,12 @@ function KpiCard({ icon, label, value, sub, accent, val_c, badge, index }: Pill)
         <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-border to-transparent transition-all duration-300 group-hover:via-red-500/20" />
         <CardContent className="flex h-full flex-col justify-between p-4">
           <div className="mb-2 flex items-center justify-between">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground/60">{label}</p>
+            <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground/50">{label}</p>
             <div className={cn("flex h-7 w-7 items-center justify-center rounded-lg border transition-transform group-hover:scale-110", accent)}>
               {icon}
             </div>
           </div>
-          <p className={cn("text-2xl font-black tracking-tight tabular-nums", val_c)}>{value}</p>
+          <p className={cn("text-xl font-bold font-heading tabular-nums", val_c)}>{value}</p>
           <div className="mt-1.5 flex items-center gap-1.5 flex-wrap">
             {badge && (
               <Badge className="border-emerald-500/25 bg-emerald-500/10 px-1.5 py-0 text-[9px] text-emerald-400">

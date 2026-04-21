@@ -28,7 +28,7 @@ export function ReferralFunnelChart() {
 
   return (
     <Card className="relative overflow-hidden border-border/80 bg-card/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-violet-500/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-violet-500/30 to-transparent" />
       <CardHeader className="border-b border-border/60 px-5 py-4">
         <p className="text-sm font-semibold text-foreground/90">Referral funnel</p>
         <p className="text-[11px] text-muted-foreground/60">From signup to active referrer</p>
@@ -136,7 +136,7 @@ export function SignupSourceChart() {
 
   return (
     <Card className="relative overflow-hidden border-border/80 bg-card/40">
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-rose-500/30 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-rose-500/30 to-transparent" />
       <CardHeader className="border-b border-border/60 px-5 py-4">
         <p className="text-sm font-semibold text-foreground/90">Signup sources</p>
         <p className="text-[11px] text-muted-foreground/60">How people find your waitlists</p>

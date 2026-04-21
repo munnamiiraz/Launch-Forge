@@ -234,7 +234,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
         )}
       >
         {/* Top gradient line */}
-        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-indigo-500/30 to-transparent" />
+        <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-indigo-500/30 to-transparent" />
 
         {/* ── Logo / workspace switcher ─────────────────────────── */}
         <div className="flex h-14 items-center justify-between border-b border-border/60 px-3">
@@ -379,7 +379,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                 size="sm"
                 className="group relative w-full overflow-hidden bg-indigo-600 text-xs font-medium text-white hover:bg-indigo-500 transition-all duration-200"
               >
-                <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
+                <span className="absolute inset-0 -translate-x-full bg-linear-to-r from-transparent via-white/10 to-transparent transition-transform duration-500 group-hover:translate-x-full" />
                 <Plus size={13} />
                 Create waitlist
               </Button>
@@ -501,7 +501,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                   {user.avatar && <AvatarImage src={user.avatar} alt={user.name} className="object-cover" />}
                   <AvatarFallback
                     className={cn(
-                      "rounded-lg bg-gradient-to-br text-[11px] font-bold text-white",
+                      "rounded-lg bg-linear-to-br text-[11px] font-bold text-white",
                       user.avatarColor
                     )}
                   >
@@ -530,7 +530,7 @@ export function DashboardSidebar({ user, initialWorkspaces = [] }: DashboardSide
                 <div className="flex items-center gap-2.5">
                   <Avatar className="h-8 w-8 rounded-lg">
                     {user.avatar && <AvatarImage src={user.avatar} alt={user.name} className="object-cover" />}
-                    <AvatarFallback className={cn("rounded-lg bg-gradient-to-br text-sm font-bold text-white", user.avatarColor)}>
+                    <AvatarFallback className={cn("rounded-lg bg-linear-to-br text-sm font-bold text-white", user.avatarColor)}>
                       {user.avatarInitials}
                     </AvatarFallback>
                   </Avatar>

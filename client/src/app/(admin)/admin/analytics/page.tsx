@@ -72,8 +72,8 @@ function Divider({ title, sub }: { title: string; sub: string }) {
     <div className="flex items-center gap-3">
       <div className="h-px flex-1 bg-muted/60" />
       <div className="flex flex-col items-center gap-0.5">
-        <span className="text-[10px] font-bold uppercase tracking-widest text-red-500/70">{title}</span>
-        {sub && <span className="text-[9px] text-muted-foreground/40">{sub}</span>}
+        <span className="text-[9px] font-semibold uppercase tracking-wider text-red-500/60">{title}</span>
+        {sub && <span className="text-[9px] text-muted-foreground/30">{sub}</span>}
       </div>
       <div className="h-px flex-1 bg-muted/60" />
     </div>
@@ -150,14 +150,14 @@ export default async function AdminAnalyticsPage() {
             <BarChart3 size={18} className="text-red-400" />
           </div>
           <div>
-            <h1 className="text-base font-bold tracking-tight text-foreground">
+            <h1 className="text-base font-semibold font-heading text-foreground">
               Platform analytics
             </h1>
-            <p className="mt-1 text-xs leading-relaxed text-muted-foreground/80">
+            <p className="mt-1 text-xs leading-relaxed text-muted-foreground/70">
               Full behavioural and product health metrics across every model —
               engagement, feature adoption, subscriber growth, referral network,
               feedback health, roadmap progress, and workspace activity patterns.
-              <span className="block mt-1 font-semibold text-red-400">Data refreshes every 6 hours.</span>
+              <span className="block mt-1 font-medium text-red-400">Data refreshes every 6 hours.</span>
             </p>
             {/* Model legend */}
             <div className="mt-3 flex flex-wrap gap-1.5">

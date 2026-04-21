@@ -1,170 +1,242 @@
 "use client";
 
 import { useState } from "react";
-import { toast } from "sonner";
-import { Mail, Send, AlertCircle, Info } from "lucide-react";
-import { motion } from "framer-motion";
-
+import { Send, Eye, ShieldCheck, Mail, Sparkles, Loader2, CheckCircle2, AlertCircle, Activity } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/src/components/ui/card";
 import { Input } from "@/src/components/ui/input";
-import { Label } from "@/src/components/ui/label";
 import { Textarea } from "@/src/components/ui/textarea";
-import { broadcastNewsletterAction } from "@/src/services/newsletter/newsletter.action";
+import { Badge } from "@/src/components/ui/badge";
+import { toast } from "sonner";
 
-export default function NewsletterPage() {
+export default function NewsletterAdminPage() {
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isPreview, setIsPreview] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [lastBlast, setLastBlast] = useState<{ id: string, count: number } | null>(null);
 
-  const handleBroadcast = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!subject.trim() || !body.trim()) {
-      toast.error("Please fill in both subject and message body.");
-      return;
+  const handleTestSend = async () => {
+    if (!subject || !body) return toast.error("Please fill in subject and body");
+    setIsSending(true);
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
+      const res = await fetch(`${baseUrl}/newsletter/test`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subject, body }),
+      });
+      const data = await res.json();
+      if (data.success) toast.success("Test email sent to your inbox!");
+      else toast.error(data.message);
+    } catch (err) {
+      toast.error("Failed to send test email");
+    } finally {
+      setIsSending(false);
     }
+  };
 
-    if (subject.length < 5) {
-      toast.error("Subject is too short.");
-      return;
-    }
+  const handleBroadcast = async () => {
+    if (!subject || !body) return toast.error("Please fill in subject and body");
+    
+    const confirm = window.confirm("🚨 WARNING: You are about to send this email to ALL subscribers. This action cannot be undone. Proceed?");
+    if (!confirm) return;
 
-    setIsLoading(true);
-    const result = await broadcastNewsletterAction({ subject, body });
-    setIsLoading(false);
-
-    if (result.success) {
-      toast.success("Broadcast started! The jobs are now processing in the background.");
-      setSubject("");
-      setBody("");
-    } else {
-      toast.error(result.error || "Something went wrong.");
+    setIsSending(true);
+    try {
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
+      const res = await fetch(`${baseUrl}/newsletter/broadcast`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subject, body }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        toast.success("Broadcast started!", { description: "The newsletter is now being enqueued." });
+        setLastBlast({ id: data.data.jobId, count: 0 }); // We would need a real count if available
+      } else {
+        toast.error(data.message);
+      }
+    } catch (err) {
+      toast.error("Critical error during broadcast");
+    } finally {
+      setIsSending(false);
     }
   };
 
   return (
-    <div className="p-6 lg:p-10 max-w-5xl mx-auto space-y-8 h-full">
-      <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
-        <div className="flex items-center gap-4 mb-4">
-          <div className="h-12 w-12 rounded-2xl bg-red-500/10 flex items-center justify-center border border-red-500/20">
-            <Mail className="text-red-400" size={24} />
-          </div>
-          <div>
-            <h1 className="text-3xl font-black tracking-tight text-foreground">Newsletter HQ</h1>
-            <p className="text-muted-foreground">Broadcast messages to your entire subscriber list instantly.</p>
-          </div>
+    <div className="flex min-h-full flex-col gap-8 p-6 font-sans">
+      {/* ── Header ────────────────────────────────────────── */}
+      <div className="flex items-center justify-between">
+        <div className="flex flex-col gap-1">
+          <h1 className="text-2xl font-bold font-heading text-foreground">Newsletter Command Center</h1>
+          <p className="text-sm text-muted-foreground">Broadcast updates, news, and insights to your entire user base.</p>
         </div>
-      </motion.div>
+        <Badge variant="outline" className="bg-red-500/10 text-red-400 border-red-500/20 font-semibold px-3 py-1">
+          ADMIN
+        </Badge>
+      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* ── Main Form ────────────────────────────────────────── */}
-        <div className="lg:col-span-2">
-          <Card className="border-border/60 bg-zinc-900/50 backdrop-blur-sm shadow-2xl overflow-hidden relative group">
-            {/* Top highlight */}
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-red-500/50 to-transparent opacity-50 group-hover:opacity-100 transition-opacity" />
-            
-            <CardHeader>
-              <CardTitle className="text-lg">Compose Broadcast</CardTitle>
-              <CardDescription>
-                Craft your message. Markdown is supported (depending on your email worker).
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <form onSubmit={handleBroadcast} className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="subject" className="text-xs font-bold uppercase tracking-wider text-muted-foreground/70">
-                    Email Subject
-                  </Label>
-                  <Input
-                    id="subject"
-                    placeholder="e.g., Exciting updates from LaunchForge! 🚀"
-                    value={subject}
-                    onChange={(e) => setSubject(e.target.value)}
-                    className="bg-zinc-950/50 border-white/5 focus-visible:ring-red-500/50 h-11"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="body" className="text-xs font-bold uppercase tracking-wider text-muted-foreground/70">
-                    Message Body
-                  </Label>
-                  <Textarea
-                    id="body"
-                    placeholder="Write your newsletter content here..."
-                    className="min-h-[300px] bg-zinc-950/50 border-white/5 focus-visible:ring-red-500/50 resize-none leading-relaxed"
-                    value={body}
-                    onChange={(e) => setBody(e.target.value)}
-                  />
-                </div>
-
-                <div className="pt-2">
+      <div className="grid gap-8 lg:grid-cols-5">
+        
+        {/* ── Editor Section ──────────────────────────────── */}
+        <div className="lg:col-span-3 space-y-6">
+          <Card className="border-border/40 bg-card/30 backdrop-blur-sm">
+            <CardHeader className="border-b border-border/40 pb-4">
+               <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <CardTitle className="text-base font-semibold font-heading flex items-center gap-2">
+                       <Sparkles size={18} className="text-red-400" />
+                       Compose Newsletter
+                    </CardTitle>
+                    <CardDescription className="text-xs">Use HTML or Markdown for the email body.</CardDescription>
+                  </div>
                   <Button 
-                    type="submit" 
-                    disabled={isLoading}
-                    className="w-full bg-red-600 hover:bg-red-700 text-white font-bold h-12 gap-2 shadow-[0_0_20px_rgba(220,38,38,0.3)] hover:shadow-[0_0_25px_rgba(220,38,38,0.5)] transition-all"
+                    variant="outline" 
+                    size="sm" 
+                    onClick={() => setIsPreview(!isPreview)}
+                    className="gap-2 h-8 text-xs font-medium"
                   >
-                    {isLoading ? (
-                      <span className="flex items-center gap-2">
-                        <motion.div
-                          animate={{ rotate: 360 }}
-                          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-                        >
-                          <Send size={18} />
-                        </motion.div>
-                        Processing...
-                      </span>
-                    ) : (
-                      <>
-                        <Send size={18} />
-                        Launch Broadcast
-                      </>
-                    )}
+                    {isPreview ? <Loader2 size={12} /> : <Eye size={12} />}
+                    {isPreview ? "Edit Mode" : "Preview Mode"}
                   </Button>
+               </div>
+            </CardHeader>
+            <CardContent className="pt-6 space-y-6">
+              <AnimatePresence mode="wait">
+                {isPreview ? (
+                  <motion.div 
+                    key="preview"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="min-h-[400px] rounded-xl border border-border/40 bg-white/5 p-8"
+                  >
+                    <div className="mb-4 pb-4 border-b border-white/10">
+                      <p className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider mb-1">Subject</p>
+                      <h2 className="text-lg font-bold text-foreground font-heading">{subject || "(No Subject)"}</h2>
+                    </div>
+                    <div 
+                      className="prose prose-invert max-w-none text-muted-foreground/90 text-sm leading-relaxed"
+                      dangerouslySetInnerHTML={{ __html: body || "<p>Email body will appear here...</p>" }}
+                    />
+                  </motion.div>
+                ) : (
+                  <motion.div 
+                    key="editor"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="space-y-6"
+                  >
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Subject Line</label>
+                      <Input 
+                        placeholder="Weekly Round-up: New Features and More!" 
+                        value={subject}
+                        onChange={(e) => setSubject(e.target.value)}
+                        className="bg-background/50 text-base font-medium h-11 border-border/40"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Email Content (HTML)</label>
+                      <Textarea 
+                        placeholder="<h1>Welcome to the update!</h1><p>We've added some amazing things...</p>" 
+                        value={body}
+                        onChange={(e) => setBody(e.target.value)}
+                        className="min-h-[400px] bg-background/50 font-mono text-xs leading-relaxed border-border/40"
+                      />
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* ── Control Panel Section ────────────────────────── */}
+        <div className="lg:col-span-2 space-y-6">
+          
+          <Card className="border-border/40 bg-card/30 backdrop-blur-sm sticky top-6">
+            <CardHeader>
+              <CardTitle className="text-base font-semibold font-heading flex items-center gap-2">
+                <ShieldCheck size={18} className="text-red-400" />
+                Launch Control
+              </CardTitle>
+              <CardDescription className="text-xs">Final stage safety protocols.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              
+              <div className="space-y-3">
+                <Button 
+                  onClick={handleTestSend}
+                  disabled={isSending || !subject || !body}
+                  variant="outline" 
+                  className="w-full h-11 gap-3 border-border/40 hover:bg-white/5 text-sm font-medium transition-all"
+                >
+                  {isSending ? <Loader2 className="animate-spin" size={14} /> : <Mail size={14} />}
+                  Send Test Preview
+                </Button>
+                <p className="text-[10px] text-center text-muted-foreground px-4 italic">
+                  Always send a test to yourself first.
+                </p>
+              </div>
+
+              <div className="h-px bg-border/40" />
+
+              <div className="space-y-3">
+                <Button 
+                  onClick={handleBroadcast}
+                  disabled={isSending || !subject || !body}
+                  className="w-full h-12 gap-3 bg-red-600 hover:bg-red-500 text-white font-bold text-sm shadow-sm transition-all"
+                >
+                  {isSending ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}
+                  INITIALIZE BROADCAST
+                </Button>
+                <div className="flex items-start gap-2 rounded-lg bg-red-500/5 p-3 border border-red-500/10">
+                   <AlertCircle size={12} className="text-red-400 mt-0.5 shrink-0" />
+                   <p className="text-[10px] text-red-300/80 leading-normal">
+                     Broadcast will be sent to all subscribers using the distributed worker system.
+                   </p>
                 </div>
-              </form>
-            </CardContent>
-            <CardFooter className="bg-white/[0.02] border-t border-white/5 text-[10px] text-muted-foreground/40 justify-center">
-              Targeting all users with 'newsLadder: true'. Be careful: this action cannot be undone.
-            </CardFooter>
-          </Card>
-        </div>
-
-        {/* ── Tips & Safety ────────────────────────────────────── */}
-        <div className="space-y-6">
-          <Card className="border-border/40 bg-zinc-900/30">
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-2 text-yellow-500/80">
-                <AlertCircle size={16} />
-                <h3 className="text-sm font-bold uppercase tracking-wide">Safety Check</h3>
               </div>
-            </CardHeader>
-            <CardContent className="text-xs text-muted-foreground leading-relaxed space-y-3">
-              <p>You are about to send an email to all your active subscribers.</p>
-              <ul className="list-disc pl-4 space-y-2">
-                <li>Double check for typos in the subject.</li>
-                <li>Ensure all links are working.</li>
-                <li>Broadcasts are processed in the background; you can monitor status in the <b>Admin Queues</b> dashboard.</li>
-              </ul>
+
+              {lastBlast && (
+                <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="rounded-xl border border-green-500/20 bg-green-500/5 p-4 space-y-2"
+                >
+                  <div className="flex items-center justify-between">
+                     <span className="text-[10px] font-semibold text-green-400 uppercase tracking-wider">Broadcast Live</span>
+                     <CheckCircle2 size={12} className="text-green-500" />
+                  </div>
+                  <p className="text-[11px] text-muted-foreground">
+                    Job ID: <code className="text-foreground font-mono">{lastBlast.id}</code>
+                  </p>
+                  <p className="text-[11px] text-muted-foreground">
+                    Status: <span className="text-green-400 font-semibold italic">Enqueued</span>
+                  </p>
+                </motion.div>
+              )}
+
             </CardContent>
           </Card>
 
-          <Card className="border-border/40 bg-zinc-900/30">
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-2 text-blue-500/80">
-                <Info size={16} />
-                <h3 className="text-sm font-bold uppercase tracking-wide">Pro Tip</h3>
-              </div>
-            </CardHeader>
-            <CardContent className="text-xs text-muted-foreground leading-relaxed">
-              Using emojis in the subject line can increase open rates by up to <b>15%</b>. Don't overdo it, but a well-placed 🚀 or 🎉 works wonders!
-            </CardContent>
+          <Card className="border-border/40 bg-zinc-950/20">
+             <CardContent className="p-4 flex items-center gap-4">
+                <div className="h-9 w-9 shrink-0 flex items-center justify-center rounded-lg bg-white/5">
+                   <Activity size={16} className="text-muted-foreground" />
+                </div>
+                <div>
+                   <p className="text-xs font-semibold text-foreground">Infrastructure Monitoring</p>
+                   <p className="text-[10px] text-muted-foreground">Check queue vitals for real-time success rates.</p>
+                </div>
+             </CardContent>
           </Card>
+
         </div>
+        
       </div>
     </div>
   );

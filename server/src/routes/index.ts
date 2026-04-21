@@ -19,6 +19,7 @@ import { adminAnalyticsRouter } from "../modules/admin-analytics/admin-analytics
 import { userRouter } from "../modules/user/user.route";
 import { AiChatRoutes } from "../modules/ai-chat/ai-chat.route";
 import { debugRouter } from "../modules/debug/debug.route";
+import { auditLogRoutes } from "../modules/audit-log/audit-log.routes";
 import { withCache } from "../lib/redis";
 
 const router = Router();
@@ -86,6 +87,7 @@ router.use("/admin/overview", adminOverviewRouter);
 router.use("/admin/users", adminUsersRouter);
 router.use("/admin/revenue", adminRevenueRouter);
 router.use("/admin/analytics", adminAnalyticsRouter);
+router.use("/admin/audit-logs", auditLogRoutes);
 router.use("/user", userRouter);
 router.use("/ai-chat", AiChatRoutes);
 
