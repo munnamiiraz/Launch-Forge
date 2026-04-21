@@ -15,6 +15,8 @@ export const emailQueue = new Queue('email', {
   },
 });
 
+import { logger } from '../../../lib/logger';
+
 // Worker processes jobs from the email queue.
 export const emailWorker = new Worker(
   'email',
@@ -32,9 +34,16 @@ export const emailWorker = new Worker(
 );
 
 emailWorker.on('failed', (job, err) => {
-  console.error(`[EmailWorker] Job ${job?.id ?? 'unknown'} failed:`, err);
+  logger.error(`[EmailWorker] Job ${job?.id ?? 'unknown'} failed`, err, {
+    jobId: job?.id,
+    queueName: 'email',
+    attemptsMade: job?.attemptsMade
+  });
 });
 
 emailWorker.on('completed', (job) => {
-  console.log(`[EmailWorker] Job ${job?.id ?? 'unknown'} completed`);
+  logger.info(`[EmailWorker] Job ${job?.id ?? 'unknown'} completed`, {
+    jobId: job?.id,
+    queueName: 'email'
+  });
 });

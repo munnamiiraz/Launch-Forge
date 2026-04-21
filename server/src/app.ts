@@ -18,7 +18,9 @@ import compression from "compression";
 import { cacheMetadataMiddleware } from "./middlewares/cache-metadata";
 import { prometheusMiddleware, register } from "./lib/prometheus";
 import { serverAdapter } from "./lib/queue/setup"; // Bull‑Board UI
-import basicAuth from "express-basic-auth"; // optional simple protection
+import basicAuth from "express-basic-auth"; 
+import { globalLimiter, strictLimiter } from "./middlewares/security";
+import helmet from "helmet";
 
 const app: Application = express();
 
@@ -28,40 +30,57 @@ app.get("/metrics", async (req, res) => {
   res.send(await register.metrics());
 });
 
+// ── 3. Standard Middlewares ────────────────────────────────────
+app.use(cors({
+    origin : [envVars.FRONTEND_URL, envVars.BETTER_AUTH_URL, "http://localhost:3000", "http://localhost:5000", "http://127.0.0.1:3000"],
+    credentials : true,
+    methods : ["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allowedHeaders : ["Content-Type", "Authorization", "Cookie"]
+}))
+
+// Use compression and caching
 app.use(compression());
 app.use(cacheMetadataMiddleware);
 app.use(prometheusMiddleware);
+
+// Security Middlewares
+// Relax cross-origin-opener-policy for better-auth callback compatibility
+app.use(helmet({
+  crossOriginOpenerPolicy: false, 
+}));
+
+if (process.env.NODE_ENV === "production") {
+  app.use(globalLimiter);
+}
+
 app.set('trust proxy', 1);
 app.set("query parser", (str : string) => qs.parse(str));
-
 app.set("view engine", "ejs");
 app.set("views", path.resolve(process.cwd(), `src/templates`) )
 
-// app.post("/webhook", express.raw({ type: "application/json" }), PaymentController.handleStripeWebhookEvent)
-
-app.use(cors({
-    origin : [envVars.FRONTEND_URL, envVars.BETTER_AUTH_URL, "http://localhost:3000", "http://localhost:5000"],
-    credentials : true,
-    methods : ["GET", "POST", "PUT", "DELETE", "PATCH"],
-    allowedHeaders : ["Content-Type", "Authorization", "x-auth-cookies"]
-}))
-
-// Needed for auth/payment routes (checkAuth reads req.cookies)
+// ── 4. Critical Parser Middlewares ────────────────────────────
+// MUST be before routes to handle Cookies and JSON bodies
 app.use(cookieParser());
-
-app.all('/api/auth/{*any}', toNodeHandler(auth));
-
-// Payment router must be mounted BEFORE express.json()
-app.use("/api/payment", paymentRouter);
-app.use("/api/v1/payment", paymentRouter);
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// ── 5. Routes ─────────────────────────────────────────────────
+
+// BETTER-AUTH (Prefix mount - works with all Express versions)
+app.use('/api/auth', toNodeHandler(auth));
+
+// STRIPE
+app.use("/api/payment", paymentRouter);
+app.use("/api/v1/payment", paymentRouter);
+
+// Apply strict rate limiting to sensitive AUTH routes BEFORE they are matched
+app.use("/api/v1/auth", strictLimiter);
+app.use("/api/v1/newsletter", strictLimiter);
+
+// MAIN API
 app.use("/api/v1", IndexRoutes);
 
 // ----- Bull‑Board UI -----
-// Simple Basic‑Auth protection – change credentials as needed.
 const adminAuth = basicAuth({
   users: { admin: "adminPassword" },
   challenge: true,

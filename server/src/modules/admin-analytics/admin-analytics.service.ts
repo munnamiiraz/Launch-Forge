@@ -21,6 +21,8 @@ import {
   RoadmapStats,
   ChangelogPoint,
   HeatmapCell,
+  InfrastructureHealthStats,
+  QueueMetrics
 } from "./admin-analytics.interface";
 
 import {
@@ -280,6 +282,63 @@ async function getWorkspaceHeatmapRaw(payload: AdminAnalyticsBasePayload): Promi
   return cells;
 }
 
+async function getInfrastructureHealthRaw(payload: AdminAnalyticsBasePayload): Promise<InfrastructureHealthStats> {
+  await assertAdmin(payload.requestingUserId);
+  
+  // Dynamically import queues to avoid circular dependencies if any
+  const { emailQueue, aiQueue, newsletterQueue, webhookQueue } = await import("../../lib/queue");
+  
+  const queueList = [
+    { name: "Email", queue: emailQueue },
+    { name: "AI Insight", queue: aiQueue },
+    { name: "Newsletter", queue: newsletterQueue },
+    { name: "Webhooks", queue: webhookQueue },
+  ];
+
+  const queues: QueueMetrics[] = await Promise.all(
+    queueList.map(async (q) => {
+      const [waiting, active, completed, failed, delayed] = await Promise.all([
+        q.queue.getWaitingCount(),
+        q.queue.getActiveCount(),
+        q.queue.getCompletedCount(),
+        q.queue.getFailedCount(),
+        q.queue.getDelayedCount(),
+      ]);
+      return { name: q.name, waiting, active, completed, failed, delayed };
+    })
+  );
+
+  return {
+    queues,
+    totalWorkers: queues.length, // Placeholder or actual worker count if available
+    mode: process.env.APP_MODE || "all",
+  };
+}
+
+async function retryQueueJobsRaw(payload: { requestingUserId: string; queueName: string }): Promise<{ success: boolean; count: number }> {
+  await assertAdmin(payload.requestingUserId);
+  
+  const { emailQueue, aiQueue, newsletterQueue, webhookQueue } = await import("../../lib/queue");
+  
+  let queue;
+  switch (payload.queueName.toLowerCase()) {
+    case "email": queue = emailQueue; break;
+    case "ai insight": queue = aiQueue; break;
+    case "newsletter": queue = newsletterQueue; break;
+    case "webhooks": queue = webhookQueue; break;
+    default: throw new AppError(status.BAD_REQUEST, "Invalid queue name");
+  }
+
+  // BullMQ: Re-adds failed jobs to the waiting list
+  const jobs = await queue.getFailed();
+  await Promise.all(jobs.map(job => job.retry()));
+  
+  return {
+    success: true,
+    count: jobs.length
+  };
+}
+
 /* ──────────────────────────────────────────────────────────────
    Exported Service with Redis Caching
    ────────────────────────────────────────────────────────────── */
@@ -295,4 +354,6 @@ export const adminAnalyticsService = {
   getRoadmapProgress:     withCache("admin:analytics:roadmap_progress", 21600, getRoadmapProgressRaw),
   getChangelogTimeline:   withCache("admin:analytics:changelog", 21600, getChangelogTimelineRaw),
   getWorkspaceHeatmap:    withCache("admin:analytics:heatmap", 21600, getWorkspaceHeatmapRaw),
+  getInfrastructureHealth: withCache("admin:analytics:infra", 60, getInfrastructureHealthRaw), // Lower cache for infra status
+  retryQueueJobs: retryQueueJobsRaw, // No cache for mutation
 };

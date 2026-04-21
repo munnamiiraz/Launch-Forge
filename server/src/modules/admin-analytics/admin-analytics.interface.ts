@@ -14,70 +14,70 @@ export interface EngagementTimelinePayload extends AdminAnalyticsBasePayload {
 
 /* ─────────────────────────────────────────────────────────────────
    1. Engagement KPI strip (6 cards at top)
-      Feeds: AnalyticsKpiRow
+   Feeds: AnalyticsKpiRow
    ──────────────────────────────────────────────────────────────── */
 
 export interface EngagementStats {
-  dauToday:            number;   // unique users with a session today
-  wauThisWeek:         number;   // unique users with a session this week
-  mauThisMonth:        number;   // unique users with a session this month
-  dauOverMau:          number;   // (dau / mau) × 100 — stickiness %
-  avgSessionsPerUser:  number;   // total sessions / unique users (30d)
-  avgSessionLengthMin: number;   // placeholder — schema has no session.duration
-  newUsersToday:       number;   // new registrations since start of today
-  activeWorkspaces30d: number;   // workspaces with ≥1 session in 30d
+  dauToday:            number;
+  wauThisWeek:         number;
+  mauThisMonth:        number;
+  dauOverMau:          number;
+  avgSessionsPerUser:  number;
+  avgSessionLengthMin: number;
+  newUsersToday:       number;
+  activeWorkspaces30d: number;
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   2. Engagement timeline chart (DAU/WAU/new registrations)
-      Feeds: EngagementChart
+   2. Engagement timeline chart
+   Feeds: EngagementChart
    ──────────────────────────────────────────────────────────────── */
 
 export interface EngagementPoint {
   date:   string;
-  dau:    number;   // unique users with a session on this day
-  wau:    number;   // rolling 7-day unique active users
-  newReg: number;   // new user registrations on this day
+  dau:    number;
+  wau:    number;
+  newReg: number;
 }
 
 /* ─────────────────────────────────────────────────────────────────
    3. Feature adoption
-      Feeds: FeatureAdoptionChart
+   Feeds: FeatureAdoptionChart
    ──────────────────────────────────────────────────────────────── */
 
 export interface FeatureAdoptionItem {
   feature:  string;
-  adopted:  number;   // workspace count using this feature
-  total:    number;   // total workspace count (denominator)
-  pct:      number;   // adopted / total × 100
-  deltaWoW: number;   // WoW change in percentage points (estimated)
+  adopted:  number;
+  total:    number;
+  pct:      number;
+  deltaWoW: number;
   fill:     string;
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   4. Platform subscriber growth (12 months)
-      Feeds: PlatformSubscriberChart
+   4. Platform subscriber growth
+   Feeds: PlatformSubscriberChart
    ──────────────────────────────────────────────────────────────── */
 
 export interface PlatformSubscriberPoint {
   month:          string;
   newSubscribers: number;
   cumulative:     number;
-  referralSubs:   number;   // joined via referral (referredById IS NOT NULL)
-  directSubs:     number;   // joined directly
+  referralSubs:   number;
+  directSubs:     number;
 }
 
 export interface PlatformSubscriberStats {
   newThisMonth:  number;
-  referralPct:   number;   // % of new subs via referral
+  referralPct:   number;
   directPct:     number;
   cumulativeTotal: number;
-  momGrowthPct:  number;   // month-over-month growth %
+  momGrowthPct:  number;
 }
 
 /* ─────────────────────────────────────────────────────────────────
    5. Waitlist health distribution
-      Feeds: WaitlistHealthChart
+   Feeds: WaitlistHealthChart
    ──────────────────────────────────────────────────────────────── */
 
 export interface WaitlistHealthBucket {
@@ -97,15 +97,15 @@ export interface WaitlistHealthStats {
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   6. Referral network (12 months)
-      Feeds: ReferralNetworkChart
+   6. Referral network
+   Feeds: ReferralNetworkChart
    ──────────────────────────────────────────────────────────────── */
 
 export interface ReferralNetworkPoint {
   month:          string;
   totalReferrals: number;
-  chainReferrals: number;   // multi-hop referrals
-  referrers:      number;   // unique subscribers who referred ≥1 person
+  chainReferrals: number;
+  referrers:      number;
   avgChainDepth:  number;
 }
 
@@ -113,14 +113,14 @@ export interface ReferralStats {
   totalReferrals:          number;
   totalReferrers:          number;
   avgReferralsPerReferrer: number;
-  topKFactor:              number;   // highest single-waitlist k-factor
-  platformKFactor:         number;   // totalReferrals / totalSubscribers
-  confirmedPct:            number;   // % of subscribers with isConfirmed
+  topKFactor:              number;
+  platformKFactor:         number;
+  confirmedPct:            number;
 }
 
 /* ─────────────────────────────────────────────────────────────────
    7. Feedback health
-      Feeds: FeedbackHealthChart
+   Feeds: FeedbackHealthChart
    ──────────────────────────────────────────────────────────────── */
 
 export interface FeedbackStatusBreakdown {
@@ -149,7 +149,7 @@ export interface FeedbackStats {
 
 /* ─────────────────────────────────────────────────────────────────
    8. Roadmap progress
-      Feeds: RoadmapProgressChart
+   Feeds: RoadmapProgressChart
    ──────────────────────────────────────────────────────────────── */
 
 export interface RoadmapProgressItem {
@@ -168,8 +168,8 @@ export interface RoadmapStats {
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   9. Changelog publishing (12 months)
-      Feeds: ChangelogChart
+   9. Changelog publishing
+   Feeds: ChangelogChart
    ──────────────────────────────────────────────────────────────── */
 
 export interface ChangelogPoint {
@@ -179,12 +179,31 @@ export interface ChangelogPoint {
 }
 
 /* ─────────────────────────────────────────────────────────────────
-   10. Workspace activity heatmap (day × hour)
-       Feeds: WorkspaceHeatmap
+   10. Workspace activity heatmap
+   Feeds: WorkspaceHeatmap
    ──────────────────────────────────────────────────────────────── */
 
 export interface HeatmapCell {
-  day:   string;   // "Mon"–"Sun"
-  hour:  number;   // 0–23
-  value: number;   // normalised activity score 0–100
+  day:   string;
+  hour:  number;
+  value: number;
+}
+
+/* ─────────────────────────────────────────────────────────────────
+   11. Infrastructure Health
+   ──────────────────────────────────────────────────────────────── */
+
+export interface QueueMetrics {
+  name:      string;
+  waiting:   number;
+  active:    number;
+  completed: number;
+  failed:    number;
+  delayed:   number;
+}
+
+export interface InfrastructureHealthStats {
+  queues: QueueMetrics[];
+  totalWorkers: number;
+  mode: string;
 }

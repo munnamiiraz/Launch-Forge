@@ -13,12 +13,17 @@ export const newsletterQueue = new Queue('newsletter-broadcaster', {
   connection: bullRedis,
 });
 
+import { logger } from '../../../lib/logger';
+
 export const newsletterWorker = new Worker(
   'newsletter-broadcaster',
   async (job: Job) => {
     const { subject, body, templateName } = job.data;
     
-    console.log(`[Newsletter-Worker] Starting broadcast: ${subject}`);
+    logger.info(`[Newsletter-Worker] Starting broadcast: ${subject}`, {
+      subject,
+      jobId: job.id
+    });
     
     // 1. Fetch all subscribers in batches to save memory
     // (Senior move: Batch processing for large datasets)
@@ -58,7 +63,7 @@ export const newsletterWorker = new Worker(
       
       // Update job progress for UI visibility
       await job.updateProgress(processedCount);
-      console.log(`[Newsletter-Worker] Enqueued ${processedCount} emails...`);
+      logger.info(`[Newsletter-Worker] Enqueued ${processedCount} emails...`, { jobId: job.id });
     }
 
     return { totalSent: processedCount };

@@ -49,7 +49,7 @@ export interface PlatformSubscriberPoint {
 export interface PlatformSubscriberStats {
   newThisMonth:    number;
   referralPct:     number;
-  directPct:       number;
+  directPct:     number;
   cumulativeTotal: number;
   momGrowthPct:    number;
 }
@@ -58,13 +58,13 @@ export interface PlatformSubscriberStats {
 export interface WaitlistHealthBucket {
   bucket:  string;   // "0–100", "100–500", etc.
   count:   number;   // number of waitlists in this bucket
-  fill:    string;
+  fill:   string;
 }
 
 export interface WaitlistHealthStats {
   total:       number;
-  open:        number;
-  closed:      number;
+  open:       number;
+  closed:     number;
   avgSubs:     number;
   medianSubs:  number;
   p90Subs:     number;
@@ -137,11 +137,27 @@ export interface ChangelogPoint {
   drafts:    number;
 }
 
-/* ── Workspace activity heatmap ──────────────────────────────────── */
+/* ── Workspace activity heatmap (day × hour) ─────────────────────── */
 export interface HeatmapCell {
   day:   string;    // "Mon"
   hour:  number;    // 0–23
   value: number;    // activity score 0–100
+}
+
+/* ── Infrastructure Health ───────────────────────────────────────── */
+export interface QueueMetrics {
+  name:      string;
+  waiting:   number;
+  active:    number;
+  completed: number;
+  failed:    number;
+  delayed:   number;
+}
+
+export interface InfrastructureHealthStats {
+  queues: QueueMetrics[];
+  totalWorkers: number;
+  mode: string;
 }
 
 /* ═══════════════════════════════════════════════════════════════════

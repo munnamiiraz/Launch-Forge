@@ -18,12 +18,18 @@ export const aiQueue = new Queue('ai-insights', {
   },
 });
 
+import { logger } from '../../../lib/logger';
+
 export const aiWorker = new Worker(
   'ai-insights',
   async (job: Job) => {
     const { workspaceId, userId } = job.data;
     
-    console.log(`[AI-Worker] Generating insights for workspace: ${workspaceId}`);
+    logger.info(`[AI-Worker] Generating insights for workspace: ${workspaceId}`, {
+      workspaceId,
+      userId,
+      jobId: job.id
+    });
     
     // Call the background processor
     const result = await AiInsightsService.generateAndCacheInsights(workspaceId, userId);
@@ -37,9 +43,16 @@ export const aiWorker = new Worker(
 );
 
 aiWorker.on('completed', (job) => {
-  console.log(`[AI-Worker] Insight generation completed for job ${job.id}`);
+  logger.info(`[AI-Worker] Insight generation completed for job ${job.id}`, {
+    jobId: job.id,
+    queueName: 'ai-insights'
+  });
 });
 
 aiWorker.on('failed', (job, err) => {
-  console.error(`[AI-Worker] Insight generation failed for job ${job?.id}:`, err);
+  logger.error(`[AI-Worker] Insight generation failed for job ${job?.id}`, err, {
+    jobId: job?.id,
+    queueName: 'ai-insights',
+    data: job?.data
+  });
 });

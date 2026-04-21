@@ -21,8 +21,22 @@ export const connectRedis = async (): Promise<void> => {
     console.log("\x1b[31m[Redis] CONNECTION ABORTED: Caching is EXPLICITLY DISABLED via .env\x1b[0m");
     return;
   }
-  if (redis.status === "ready") return;
+  
+  // Prevent calling connect() if we are already ready, connecting, or reconnecting
+  const status = redis.status;
+  if (status === "ready" || status === "connecting" || status === "reconnecting") {
+    return;
+  }
+  
   await redis.connect();
+
+  // Check Redis Eviction Policy (Critical for BullMQ)
+  try {
+    const memoryRes = await redis.config("GET", "maxmemory-policy") as string[];
+    if (memoryRes && memoryRes[1] !== "noeviction") {
+      console.warn(`\x1b[33mIMPORTANT! Redis eviction policy is ${memoryRes[1]}. For background jobs, it should be "noeviction" to prevent data loss.\x1b[0m`);
+    }
+  } catch (e) { /* Ignore config get errors (e.g. on managed Redis) */ }
 };
 
 let disableLogShown = false;

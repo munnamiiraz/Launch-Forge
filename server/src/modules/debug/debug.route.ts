@@ -1,42 +1,49 @@
-import { Router } from "express";
-import { flushRedis, preWarmCache } from "../../lib/redis/with-cache";
-import { exploreService } from "../explore/explore.service";
+import { Request, Response, NextFunction, Router } from "express";
+import status from "http-status";
+import { logger } from "../../lib/logger";
 
 const router = Router();
 
 /**
- * Resets all Redis data and metrics.
- * GET /api/v1/__debug/reset
+ * GET /api/v1/debug/error
+ * Intentional crash to demonstrate Sentry + Winston
  */
-router.get("/reset", async (req, res) => {
+router.get("/error", (req: Request, res: Response, next: NextFunction) => {
   try {
-    await flushRedis();
-    res.status(200).json({
-      success: true,
-      message: "Redis cache flushed and hit/miss metrics reset.",
+    // 1. Log some useful breadcrumbs first
+    logger.info("Demo: User is attempting to access the high-security debug vault.");
+    logger.debug("Demo: Checking authorization levels...", { authType: "Senior-Demo" });
+    
+    // 2. Trigger an intentional error
+    throw new Error("🚀 Sentry Demo: Simulated System Meltdown!");
+
+  } catch (error) {
+    // 3. Log with metadata and ship to Sentry
+    logger.error("Demo: A critical failure occurred in the debug vault!", error, {
+      demoMode: true,
+      userSecret: "Nothing-to-see-here",
+      timestamp: new Date().toISOString()
     });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
+    
+    // Pass to global error handler to send the standard JSON response
+    next(error);
   }
 });
 
 /**
- * Pre-warms high-traffic endpoints.
- * GET /api/v1/__debug/warmup
+ * GET /api/v1/debug/info
+ * Demonstrate structured info logging
  */
-router.get("/warmup", async (req, res) => {
-  try {
-    await preWarmCache([
-      () => exploreService.getExploreWaitlists({ query: {} }), // Warm up explore page
-      // Add other heavy functions here as needed
-    ]);
-    res.status(200).json({
-      success: true,
-      message: "Cache pre-warming initiated.",
-    });
-  } catch (error: any) {
-    res.status(500).json({ success: false, error: error.message });
-  }
+router.get("/info", (req: Request, res: Response) => {
+  logger.info("Demo: This is a structured info log. System is healthy.", {
+    uptime: process.uptime(),
+    memoryUsage: process.memoryUsage().rss
+  });
+  
+  res.status(status.OK).json({
+    success: true,
+    message: "Check your server console for a beautiful green log!"
+  });
 });
 
 export const debugRouter = router;

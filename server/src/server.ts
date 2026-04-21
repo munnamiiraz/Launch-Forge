@@ -9,9 +9,23 @@ let server: Server;
 const bootstrap = async() => {
     try {
         await connectRedis();
-        server = app.listen(envVars.PORT, () => {
-            console.log(`Server is running on http://localhost:${envVars.PORT}`);
-        });
+
+        const mode = process.env.APP_MODE || 'all';
+
+        // 1. Initialize Workers if in 'worker' or 'all' mode
+        if (mode === 'worker' || mode === 'all') {
+            const { initWorkers } = await import("./lib/queue");
+            await initWorkers();
+        }
+
+        // 2. Start HTTP Server if in 'web' or 'all' mode
+        if (mode === 'web' || mode === 'all') {
+            server = app.listen(envVars.PORT, () => {
+                console.log(`Server is running on http://localhost:${envVars.PORT} (Mode: ${mode})`);
+            });
+        } else {
+            console.log(`[System] Background Workers Running (Mode: ${mode}). No HTTP server started.`);
+        }
 
         // ----- Graceful Shutdown Handling -----
         const handleShutdown = async (signal: string) => {

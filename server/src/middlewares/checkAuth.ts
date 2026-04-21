@@ -12,12 +12,21 @@ import { jwtUtils } from "../utils/jwt";
 
 export const checkAuth = (...authRoles: Role[]) => async (req: Request, res: Response, next: NextFunction) => {
     try {
+        // Log all cookie keys for debugging (without values for safety)
+        const cookieKeys = Object.keys(req.cookies || {});
+        console.log("[AuthDebug] Incoming Cookie Keys:", cookieKeys);
+
         // ── Path 1: Better Auth session token ─────────────────────────
-        const betterAuthToken = CookieUtils.getCookie(req, "better-auth.session_token");
+        // We check for both underscore and hyphen versions for maximum compatibility
+        const betterAuthToken = 
+            CookieUtils.getCookie(req, "better-auth.session_token") || 
+            CookieUtils.getCookie(req, "better-auth.session-token") ||
+            CookieUtils.getCookie(req, "__Secure-better-auth.session-token");
+
         let sessionResolved = false;
 
         if (betterAuthToken) {
-            console.log("[AuthDebug] Better Auth token found in cookie:", betterAuthToken.slice(0, 10) + "...");
+            console.log("[AuthDebug] Found session token. Length:", betterAuthToken.length);
             
             try {
                 // We pass the full headers so Better Auth can resolve cookies/bearer tokens

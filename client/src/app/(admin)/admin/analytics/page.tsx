@@ -18,6 +18,7 @@ import {
   WorkspaceHeatmap,
   ChangelogChart,
 }                                   from "@/src/components/module/admin-analytics/_components/WorkspaceHeatmap";
+import { InfrastructureHealth }     from "@/src/components/module/admin-analytics/_components/InfrastructureHealth";
 import { 
   type EngagementStats, 
   type EngagementPoint, 
@@ -34,7 +35,8 @@ import {
   type RoadmapProgressItem, 
   type RoadmapStats, 
   type HeatmapCell, 
-  type ChangelogPoint 
+  type ChangelogPoint,
+  type InfrastructureHealthStats 
 } from "@/src/components/module/admin-analytics/_lib/analytics-data";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000/api/v1";
@@ -99,6 +101,7 @@ export default async function AdminAnalyticsPage() {
     roadmapDataRes,
     changelogDataRes,
     heatmapDataRes,
+    infrastructureDataRes,
   ] = await Promise.all([
     fetchAnalyticsData<AdminApiResponse<EngagementStats>>("/admin/analytics/engagement"),
     fetchAnalyticsData<AdminApiResponse<EngagementPoint[]>>("/admin/analytics/engagement/timeline"),
@@ -110,6 +113,7 @@ export default async function AdminAnalyticsPage() {
     fetchAnalyticsData<AdminApiResponse<RoadmapProgressItem[], RoadmapStats>>("/admin/analytics/roadmap"),
     fetchAnalyticsData<AdminApiResponse<ChangelogPoint[]>>("/admin/analytics/changelog"),
     fetchAnalyticsData<AdminApiResponse<HeatmapCell[]>>("/admin/analytics/heatmap"),
+    fetchAnalyticsData<AdminApiResponse<InfrastructureHealthStats>>("/admin/analytics/infrastructure"),
   ]);
   
   // Safe fallbacks — only real data or empty defaults (NO MOCK FALLBACKS)
@@ -132,6 +136,7 @@ export default async function AdminAnalyticsPage() {
   const safeRoadStats  = roadmapDataRes?.stats || { totalRoadmaps: 0, totalItems: 0, completedPct: 0, inProgressPct: 0, plannedPct: 0 };
   const safeHeatmap    = heatmapDataRes?.data || [];
   const safeChangelog  = changelogDataRes?.data || [];
+  const safeInfra      = infrastructureDataRes?.data || { queues: [], totalWorkers: 0, mode: "unknown" };
 
   return (
     <div className="flex min-h-full flex-col gap-8 p-6">
@@ -172,6 +177,11 @@ export default async function AdminAnalyticsPage() {
           </div>
         </div>
       </div>
+
+      {/* ── Infrastructure Health ─────────────────────────── */}
+      <section className="flex flex-col gap-4">
+        <InfrastructureHealth data={safeInfra} />
+      </section>
 
       {/* ── Engagement KPIs ─────────────────────────────── */}
       <section className="flex flex-col gap-4">

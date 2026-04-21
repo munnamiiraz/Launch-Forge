@@ -44,6 +44,7 @@ interface EnvConfig {
     ADMIN_EMAIL: string;
     ADMIN_PASSWORD: string;
     REDIS_URL?: string;
+    SENTRY_DSN?: string;
 }
 
 
@@ -131,6 +132,7 @@ const loadEnvVariables = (): EnvConfig => {
         ADMIN_EMAIL: process.env.ADMIN_EMAIL as string,
         ADMIN_PASSWORD: process.env.ADMIN_PASSWORD as string,
         REDIS_URL: process.env.REDIS_URL,
+        SENTRY_DSN: process.env.SENTRY_DSN,
     }
 }
 

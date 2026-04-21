@@ -164,4 +164,36 @@ export const adminAnalyticsController = {
       });
     } catch (e) { next(e); }
   },
+
+  /* ── GET /api/admin/analytics/infrastructure ────────────────── */
+
+  async getInfrastructureHealth(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const result = await adminAnalyticsService.getInfrastructureHealth({
+        requestingUserId: req.user!.id,
+      });
+      res.status(status.OK).json({
+        success: true,
+        message: "Infrastructure health stats fetched successfully",
+        data: result,
+      });
+    } catch (e) { next(e); }
+  },
+
+  /* ── POST /api/admin/analytics/infrastructure/retry ─────────── */
+
+  async retryQueueJobs(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { queueName } = req.body;
+      const result = await adminAnalyticsService.retryQueueJobs({
+        requestingUserId: req.user!.id,
+        queueName,
+      });
+      res.status(status.OK).json({
+        success: true,
+        message: `Successfully triggered retry for ${result.count} failed jobs in ${queueName}`,
+        data: result,
+      });
+    } catch (e) { next(e); }
+  },
 };

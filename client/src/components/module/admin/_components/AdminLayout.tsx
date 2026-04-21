@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import {
   LayoutDashboard, Users, DollarSign, BarChart3,
   Shield, ChevronLeft, ChevronRight,
-  Bell, LogOut, Home,
+  Bell, LogOut, Home, Mail
 } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/src/components/ui/avatar";
@@ -19,11 +19,12 @@ import { cn } from "@/src/lib/utils";
 import { adminLogoutAction } from "@/src/services/auth/admin-logout.action";
 
 const NAV = [
-  { href: "/admin",          label: "Overview",  icon: LayoutDashboard },
-  { href: "/admin/users",    label: "Users",     icon: Users           },
-  { href: "/admin/revenue",  label: "Revenue",   icon: DollarSign      },
-  { href: "/admin/analytics",label: "Analytics", icon: BarChart3       },
-  { href: "/",               label: "Home",      icon: Home            },
+  { href: "/admin",          label: "Overview",   icon: LayoutDashboard },
+  { href: "/admin/users",    label: "Users",      icon: Users           },
+  { href: "/admin/revenue",  label: "Revenue",    icon: DollarSign      },
+  { href: "/admin/analytics",label: "Analytics",  icon: BarChart3       },
+  { href: "/admin/newsletter",label: "Newsletter",icon: Mail            },
+  { href: "/",               label: "Home",       icon: Home            },
 ];
 
 export function AdminLayout({ children }: { children: React.ReactNode }) {

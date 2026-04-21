@@ -10,11 +10,17 @@ import { TErrorResponse, TErrorSources } from "../interfaces/error.interface";
 
 
 
+import { logger } from "../lib/logger";
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const globalErrorHandler = async (err: any, req: Request, res: Response, next: NextFunction) => {
-    if (envVars.NODE_ENV === 'development') {
-        console.log("Error from Global Error Handler", err);
-    }
+    // Log full error details using our optimized logger
+    logger.error(`API Error: ${err.message || 'Unknown Error'}`, err, {
+        path: req.path,
+        method: req.method,
+        ip: req.ip,
+        requestId: req.headers['x-request-id']
+    });
 
     if(req.file){
         await deleteFileFromCloudinary(req.file.path)
